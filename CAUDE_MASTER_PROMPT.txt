@@ -1,0 +1,70 @@
+Create an interactive HTML study guide to explain [TOPIC] in detail, for use as exam prep material for CGAI at https://charteredcertifications.com/learning/courses/cgai.
+
+---
+
+## 1. CONTENT
+
+Cover CNN end-to-end with the following sections (one tab per section):
+
+- Overview: what CNN is, why it matters, comparison table vs alternatives
+- Pipeline / Process: step-by-step breakdown of how [TOPIC] works
+- Core Mechanism: deep-dive on [KEY_MECHANISM] with interactive demo
+- Architecture: internal structure, components, and how they connect
+- Key Concepts: refer to the attched image, challenges, exam must-knows
+- Diagrams: embedded reference images with annotated captions (see section 4)
+- Quiz: 10 practice questions with instant feedback and score tracking
+
+For each section include:
+- Concrete worked example using [EXAMPLE]
+- Comparison table where relevant
+- A glossary / key-term cards
+
+---
+
+## 2. INTERACTIVITY
+
+- Sticky tabbed navigation (one tab per section above)
+- Clickable step-by-step pipeline stepper (click each step to expand details)
+- Interactive demo of [KEY_MECHANISM] — user clicks/selects elements to see live output
+- 10-question practice quiz with:
+  - Instant per-question feedback + explanation
+  - Progress bar
+  - Final score with pass/fail grade
+  - Retry button
+
+---
+
+## 3. DESIGN
+
+- Pastel color theme, distinct hue per section
+- Google Fonts for typography (serif display + clean body)
+- Smooth tab transitions
+- Mobile-friendly responsive layout
+- Hero banner with topic title, badge showing certification name, and topic pill tags
+
+---
+
+## 4. IMAGES
+
+[Attach any reference diagrams or infographics to this message]
+
+- Embed each image as a SEPARATE FILE — do NOT use base64 inline src
+- Reference them with relative paths: src="image_filename.png"
+- Place each image in the "Diagrams" tab with a heading and 2–3 sentence annotated caption explaining what the diagram shows and what to look for
+
+---
+
+## 5. OUTPUT
+
+Deliver THREE files:
+1. CNN_DETAIL.html  — the main guide (lightweight, no embedded images)
+2. CNN.jpg reference diagram
+
+
+All three must be saved as separate downloadable files and kept in the same folder for the images to load correctly.
+
+Constraints:
+- Single self-contained HTML (inline CSS + JS, no external frameworks)
+- Only Google Fonts loaded externally
+- No base64 image data in the HTML
+- Works offline once all files are downloaded
