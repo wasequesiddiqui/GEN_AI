@@ -6,6 +6,7 @@
   <title>Variational Inference | CGAI Exam Prep</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
     * {
       margin: 0;
@@ -501,7 +502,7 @@
   <!-- ================= DIAGRAMS ================= -->
   <div id="diagrams" class="tab-pane">
     <div class="diagram-card">
-      <img class="diagram-img" src="VARIATIONAL_INFERENCE.png" alt="Variational Inference infographic" onerror="this.onerror=null; this.alt='Place VARIATIONAL_INFERENCE.png in same folder'; this.style.opacity='0.6';">
+      <img class="diagram-img" src="images/VARIATIONAL_INFERENCE.png" alt="Variational Inference infographic" onerror="this.onerror=null; this.alt='Place VARIATIONAL_INFERENCE.png in images folder'; this.style.opacity='0.6';">
       <div class="caption"><strong>Figure 1: Variational Inference – Complete Infographic</strong><br>This diagram explains the core idea: approximate the intractable true posterior P(z|x) with a simpler distribution q<sub>φ</sub>(z|x) by minimising KL divergence, equivalently maximising the ELBO. It also shows the VAE architecture, the reparameterisation trick, and compares VI to MCMC. Pay attention to the ELBO decomposition and the “intuitive analogy” section.</div>
     </div>
     <div class="card"><h3>🗺️ Guided walkthrough of the infographic</h3><p><strong>Top:</strong> Bayes’ theorem and the intractability of the marginal likelihood. <strong>Middle:</strong> Core idea – introduce q(z|x) and minimise KL. <strong>ELBO box:</strong> shows the decomposition log P(x) = ELBO + KL. <strong>Bottom:</strong> VAE architecture and reparameterisation trick. Use this graphic as your quick reference for understanding how VI powers modern generative AI.</p></div>
@@ -721,5 +722,8 @@
     updateQuizProgress();
   })();
 </script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
 </body>
 </html>

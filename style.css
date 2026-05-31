@@ -1,0 +1,22 @@
+/* ===== GLOBAL BACK-TO-HUB LINK ===== */
+.back-to-hub {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  border-top: 1px solid rgba(108,92,231,.15);
+  margin-top: 2rem;
+  background: rgba(108,92,231,.03);
+}
+.back-to-hub a {
+  color: #6c5ce7;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .95rem;
+  transition: color .2s ease, gap .2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+.back-to-hub a:hover {
+  color: #4a2c7a;
+  gap: .55rem;
+}

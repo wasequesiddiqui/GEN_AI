@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>RNN Deep Dive — CGAI Exam Prep</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
 <style>
 :root{
   --bg:#f9f7f2;--ink:#1c1a16;--muted:#6b6560;--border:#e5e0d8;--white:#fff;
@@ -606,7 +607,7 @@ history = model.<span class="fn">fit</span>(X_train, y_train, epochs=<span class
   <div class="sh sh-dg"><h2>Reference Diagrams</h2><p>Annotated study material from your course. Read each caption carefully &mdash; these panels map directly to CGAI exam questions.</p></div>
   <div class="dgcard">
     <h3>Hyperparameter Tuning of RNN &mdash; Complete Reference Infographic</h3>
-    <img src="RNN.png" alt="Full RNN hyperparameter tuning infographic with 12 panels covering hyperparameters A-J, vanishing and exploding gradient problems, search methods, common ranges, Keras code, evaluation metrics, early stopping, RNN vs LSTM vs GRU comparison, typical workflow, best practices, most important HPs, and practical recommendations."/>
+    <img src="images/RNN.png" alt="Full RNN hyperparameter tuning infographic with 12 panels covering hyperparameters A-J, vanishing and exploding gradient problems, search methods, common ranges, Keras code, evaluation metrics, early stopping, RNN vs LSTM vs GRU comparison, typical workflow, best practices, most important HPs, and practical recommendations."/>
     <div class="dgcap">
       <strong>What this diagram shows:</strong> A comprehensive 12-panel reference covering every major RNN tuning concept in the CGAI exam. The top-left block (Panel 1, items A&ndash;J) is the most exam-critical &mdash; each letter maps to a specific hyperparameter with typical value ranges and the effects of setting it too high or too low. <strong>Where to focus:</strong> Panel 2 (vanishing and exploding gradients &mdash; the theoretical core of RNN limitations), Panel 4 (common hyperparameter ranges &mdash; memorise for multiple-choice), Panel 9 (RNN vs LSTM vs GRU comparison &mdash; most frequently tested), and Panel 5 (Keras code template &mdash; appears in coding-style questions). Panel 12 (bottom-right) gives task-specific recommendations that feature in CGAI scenario questions.
     </div>
@@ -753,5 +754,8 @@ function showResult(){
 }
 startQuiz();
 </script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
 </body>
 </html>

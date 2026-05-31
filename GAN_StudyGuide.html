@@ -6,6 +6,7 @@
 <title>GANs – Interactive Study Guide | CGAI Exam Prep</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>
 /* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -448,21 +449,21 @@ body{font-family:'Inter',sans-serif;background:#f8f6f9;color:#2d2d3a;line-height
 <h2>📊 Diagrams &amp; Visual References</h2>
 
 <figure class="diagram-fig">
-  <img src="GAN.png" alt="GAN Architecture Diagram">
+  <img src="images/GAN.png" alt="GAN Architecture Diagram">
   <figcaption>
     <strong>Figure 1: Standard GAN Architecture.</strong> Random noise sampled from a latent space is fed into the Generator, which produces fake images. Both real images (from the dataset) and fake images are passed to the Discriminator, which learns to classify them. The feedback (loss) is used to fine‑tune both networks. Key takeaway: the Generator never sees real data directly — it learns entirely through the Discriminator's feedback.
   </figcaption>
 </figure>
 
 <figure class="diagram-fig">
-  <img src="GAN_Training_Curves.png" alt="GAN Training Loss Curves">
+  <img src="images/GAN_Training_Curves.png" alt="GAN Training Loss Curves">
   <figcaption>
     <strong>Figure 2: Generator vs Discriminator Loss During Training.</strong> This hypothetical plot shows G loss (log(1−D(G(z)))) in orange and D loss (−[log D(x)+log(1−D(G(z)))]) in blue over training epochs. Early on, D quickly learns to reject fake samples, causing G loss to rise. As G improves, both losses converge toward log(2) ≈ 0.69 — the theoretical equilibrium where D(G(z)) = 0.5. Watch for oscillations: when one network improves too fast, the other's loss may spike, indicating instability.
   </figcaption>
 </figure>
 
 <figure class="diagram-fig">
-  <img src="GAN_Latent_Interpolation.png" alt="Latent Space Interpolation">
+  <img src="images/GAN_Latent_Interpolation.png" alt="Latent Space Interpolation">
   <figcaption>
     <strong>Figure 3: Latent Space Interpolation.</strong> By smoothly interpolating between two latent vectors z₁ and z₂ (using spherical linear interpolation, slerp), the Generator produces a continuous morph between two output images. This demonstrates that the latent space is smooth and semantically meaningful — a key property of well‑trained GANs. The intermediate frames show meaningful blending of features (e.g., face shape, hair colour, expression).
   </figcaption>
@@ -880,5 +881,8 @@ renderQuiz();
 })();
 </script>
 
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
 </body>
 </html>

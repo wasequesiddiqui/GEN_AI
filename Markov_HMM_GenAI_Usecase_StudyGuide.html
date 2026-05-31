@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>
 /* ============ RESET & BASE ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -527,7 +528,7 @@ Observations = {C4, D4, E4, F4, G4, A4, B4, C5} (8 possible melody notes).</p>
 
 <figure class="diagram-figure">
   <h3>Figure 1: Markov &amp; Hidden Markov Model Use Cases in Generative AI</h3>
-  <img src="MARKOV_USE_CASE_GENAI.png" alt="Markov and HMM Use Cases in Gen AI — Comprehensive overview diagram showing applications, algorithms, and connections to modern generative AI paradigms" loading="lazy">
+  <img src="images/MARKOV_USE_CASE_GENAI.png" alt="Markov and HMM Use Cases in Gen AI — Comprehensive overview diagram showing applications, algorithms, and connections to modern generative AI paradigms" loading="lazy">
   <figcaption>
     <strong>What this diagram shows:</strong> A comprehensive map of how Markov chains and Hidden Markov Models are applied across the Generative AI landscape. It illustrates the key use cases — from foundational sequence modelling to modern applications in text generation, speech synthesis, and bioinformatics — along with the core algorithms (Forward, Viterbi, Baum–Welch) that power them.
     <br><br>
@@ -538,7 +539,7 @@ Observations = {C4, D4, E4, F4, G4, A4, B4, C5} (8 possible melody notes).</p>
 <figure class="diagram-figure">
   <h3>Figure 2: HMM Generative Process — State Transition &amp; Emission Flow</h3>
   <!-- Placeholder for second diagram image -->
-  <img src="HMM_Generative_Process_Flow.jpg" alt="HMM Generative Process Flow Diagram — Illustrates the two-layer stochastic process: hidden state transitions (via matrix A) and observation emissions (via matrix B)" loading="lazy" onerror="this.parentElement.querySelector('.placeholder-note').style.display='block';this.style.display='none'">
+  <img src="images/HMM_Generative_Process_Flow.jpg" alt="HMM Generative Process Flow Diagram — Illustrates the two-layer stochastic process: hidden state transitions (via matrix A) and observation emissions (via matrix B)" loading="lazy" onerror="this.parentElement.querySelector('.placeholder-note').style.display='block';this.style.display='none'">
   <div class="placeholder-note" style="display:none;background:#fff3cd;padding:1rem;border-radius:8px;margin-top:.5rem;font-size:.85rem;color:#856404">
     ⚠️ <strong>Note:</strong> To complete this study guide, place a diagram named <code>HMM_Generative_Process_Flow.jpg</code> in the same folder. This image should illustrate the two-layer HMM architecture: hidden state chain (q₁→q₂→q₃→…) at the top emitting observable outputs (o₁, o₂, o₃, …) at the bottom, with transition matrix A governing state changes and emission matrix B governing observations. Ideal content: a trellis/trellis diagram showing states as nodes and transitions/emissions as edges.
   </div>
@@ -869,5 +870,8 @@ function retryQuiz() {
 }
 </script>
 
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
 </body>
 </html>

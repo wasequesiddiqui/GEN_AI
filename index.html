@@ -1,10 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Generative AI Tutorial</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGAI Study Hub — Generative AI Master Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ===== INDEX PAGE SPECIFIC STYLES ===== */
+body{font-family:'Inter',sans-serif;background:#f4f1fa;color:#2d2d3a;min-height:100vh;display:flex;flex-direction:column}
+.hero{
+  background:linear-gradient(135deg,#2d1b4e 0%,#4a2c7a 50%,#6c5ce7 100%);
+  padding:4rem 1.5rem 3rem;text-align:center;color:#fff;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 70%);
+  animation:pulse 8s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;position:relative;z-index:1;margin-bottom:.5rem}
+.hero .subtitle{font-size:1.1rem;opacity:.85;position:relative;z-index:1;max-width:600px;margin:0 auto 1.5rem}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);padding:.35rem 1rem;border-radius:20px;font-size:.8rem;position:relative;z-index:1}
+.container{max-width:1200px;margin:0 auto;padding:2.5rem 1.5rem;flex:1}
+.section-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:#2d1b4e;margin-bottom:.5rem}
+.section-desc{color:#6b5b7b;margin-bottom:2rem;font-size:.95rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
+.card{
+  background:#fff;border-radius:14px;padding:1.5rem;box-shadow:0 2px 12px rgba(45,27,78,.08);
+  transition:transform .25s ease,box-shadow .3s ease;cursor:pointer;
+  border:1px solid rgba(108,92,231,.1);position:relative;overflow:hidden;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(45,27,78,.14)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#6c5ce7,#a29bfe);border-radius:14px 14px 0 0}
+.card h3{font-size:1.1rem;font-weight:600;color:#2d1b4e;margin-bottom:.4rem}
+.card p{font-size:.85rem;color:#6b5b7b;line-height:1.5;margin-bottom:.8rem}
+.card .tag{display:inline-block;font-size:.7rem;padding:.15rem .6rem;border-radius:8px;background:#e8dff5;color:#4a2c7a;font-weight:500}
+.card a{text-decoration:none;color:inherit;display:block}
+.card a:hover{color:inherit}
+footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:1px solid rgba(108,92,231,.1)}
+</style>
 </head>
 <body>
-  <h1>Welcome to Generative AI Tutorial</h1>
-  <p>This is your website!</p>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="badge">📘 CGAI Exam Preparation</div>
+  <h1>Generative AI Study Hub</h1>
+  <p class="subtitle">A comprehensive collection of interactive study guides, diagrams, and practice quizzes covering every major topic in the CGAI certification.</p>
+</header>
+
+<!-- ===== TOPICS GRID ===== -->
+<div class="container">
+  <h2 class="section-title">📚 All Study Guides</h2>
+  <p class="section-desc">Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.</p>
+
+  <div class="grid" id="studyGrid">
+    <!-- Cards injected by JS below -->
+  </div>
+</div>
+
+<footer>
+  <p>CGAI Study Hub — Built for CharteredCertifications exam preparation</p>
+</footer>
+
+<script>
+const topics = [
+  { title:"Fundamentals of Generative AI", file:"GENAI_FUNDAMENTALS.html", desc:"Core concepts: generative vs discriminative models, likelihood, latent variables, and the foundation of modern generative AI.", tag:"Core Theory" },
+  { title:"Generative vs Discriminative Models", file:"Generative_Discriminative_StudyGuide.html", desc:"Side-by-side comparison of generative and discriminative approaches with decision boundary visualizations.", tag:"Core Theory" },
+  { title:"Probability Distributions in Gen AI", file:"ProbDist_GenAI_StudyGuide.html", desc:"Probability distributions that power generative models — from Gaussians to mixtures and beyond.", tag:"Mathematics" },
+  { title:"Probability vs Likelihood vs MLE", file:"PROB_LIKELIHOOD_MLE.html", desc:"Clear distinction between probability, likelihood, and maximum likelihood estimation with worked examples.", tag:"Mathematics" },
+  { title:"Maximum Likelihood Estimation", file:"MLE.html", desc:"Deep dive into MLE — the estimation principle behind most generative model training.", tag:"Mathematics" },
+  { title:"Variational Inference", file:"VARIATIONAL_INFERENCE.html", desc:"Understanding variational inference, ELBO, and how approximate posteriors enable scalable generative models.", tag:"Advanced" },
+  { title:"Markov & Hidden Markov Models", file:"Markov_HMM_Study_Guide.html", desc:"Markov chains, HMMs, forward-backward algorithm, and the trellis diagram — full visual guide.", tag:"Probabilistic" },
+  { title:"Markov & HMM in Generative AI", file:"Markov_HMM_GenAI_Usecase_StudyGuide.html", desc:"Real-world use cases of Markov models and HMMs in modern generative AI pipelines.", tag:"Applications" },
+  { title:"Convolutional Neural Networks", file:"CNN_DETAIL.html", desc:"Every CNN layer explained: convolution, pooling, activation maps, and full architecture breakdown.", tag:"Deep Learning" },
+  { title:"Recurrent Neural Networks", file:"RNN.html", desc:"RNN hyperparameters, architecture, vanishing gradients, and practical tuning guide.", tag:"Deep Learning" },
+  { title:"RNN Deep Dive", file:"RNN_DETAIL.html", desc:"Comprehensive RNN analysis with hyperparameter tuning, evaluation metrics, and best practices.", tag:"Deep Learning" },
+  { title:"LSTM Hyperparameters", file:"lstm_hyp_param_tuning.html", desc:"Complete guide to all 10 LSTM hyperparameters with tuning strategies and Keras examples.", tag:"Deep Learning" },
+  { title:"GRU Hyperparameters", file:"GRU.html", desc:"GRU gate mechanisms, hyperparameter optimization, and comparison with LSTM.", tag:"Deep Learning" },
+  { title:"Transformers", file:"transformers_guide.html", desc:"Transformer architecture: self-attention, multi-head attention, positional encoding, and the full workflow.", tag:"Deep Learning" },
+  { title:"Generative Adversarial Networks", file:"GAN_StudyGuide.html", desc:"GAN architecture, training dynamics, loss curves, latent space interpolation, and practical tips.", tag:"Generative Models" },
+];
+
+const grid = document.getElementById('studyGrid');
+topics.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<a href="${t.file}"><h3>${t.title}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></a>`;
+  grid.appendChild(card);
+});
+</script>
+
 </body>
 </html>
