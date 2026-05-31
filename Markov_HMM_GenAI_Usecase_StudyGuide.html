@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markov &amp; HMM in Gen AI — CGAI Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',sans-serif;background:#f9f7f4;color:#2d2a35;line-height:1.7;min-height:100vh}
+
+/* ============ HERO BANNER ============ */
+.hero{background:linear-gradient(135deg,#d4e6f1 0%,#e8d5f5 40%,#fce4d6 70%,#d5f5e3 100%);padding:3rem 1.5rem 2rem;text-align:center;border-bottom:3px solid #c8b6e0}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);color:#3b2d5c;margin-bottom:.5rem;letter-spacing:-.02em}
+.hero .badge{display:inline-block;background:#5b4a9a;color:#fff;padding:.35rem 1.2rem;border-radius:999px;font-size:.85rem;font-weight:600;letter-spacing:.04em;margin:.5rem 0 .8rem}
+.hero .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:.8rem}
+.hero .pill{background:rgba(255,255,255,.75);backdrop-filter:blur(4px);border:1.5px solid #c8b6e0;padding:.3rem 1rem;border-radius:999px;font-size:.82rem;font-weight:500;color:#3b2d5c;transition:all .25s}
+.hero .pill:hover{background:#fff;transform:translateY(-1px);box-shadow:0 3px 12px rgba(91,74,154,.12)}
+
+/* ============ STICKY TAB NAV ============ */
+.tab-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:2px solid #e2daf0;display:flex;flex-wrap:wrap;justify-content:center;gap:.15rem;padding:.3rem .5rem;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.tab-nav button{font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;padding:.55rem .9rem;border:none;background:transparent;color:#6b5b8a;cursor:pointer;border-radius:8px 8px 0 0;transition:all .25s;white-space:nowrap;position:relative}
+.tab-nav button:hover{color:#3b2d5c;background:rgba(200,182,224,.18)}
+.tab-nav button.active{color:#5b4a9a;background:rgba(200,182,224,.25)}
+.tab-nav button.active::after{content:'';position:absolute;bottom:0;left:10%;width:80%;height:3px;background:#5b4a9a;border-radius:3px 3px 0 0}
+
+/* ============ TAB CONTENT ============ */
+.tab-content{display:none;animation:fadeSlide .4s ease}
+.tab-content.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.container{max-width:960px;margin:0 auto;padding:2rem 1.5rem 3rem}
+
+/* ============ TYPOGRAPHY ============ */
+h2{font-family:'DM Serif Display',serif;font-size:2rem;color:#3b2d5c;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:3px solid #d5c8eb}
+h3{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#4a3d6e;margin:1.5rem 0 .6rem}
+h4{font-family:'DM Serif Display',serif;font-size:1.15rem;color:#5b4a9a;margin:1.2rem 0 .4rem}
+p{margin-bottom:1rem}
+
+/* ============ CARDS ============ */
+.card{background:#fff;border-radius:14px;padding:1.5rem;margin-bottom:1.2rem;box-shadow:0 3px 16px rgba(0,0,0,.05);border:1px solid #eae3f5;transition:box-shadow .25s}
+.card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.card h4{margin-top:0}
+
+/* ============ TABLES ============ */
+.table-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:.7rem 1rem;text-align:left;border-bottom:1px solid #e2daf0}
+th{background:#f5f0fc;font-weight:700;color:#3b2d5c;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
+tr:hover td{background:#fdfbff}
+
+/* ============ GLOSSARY CARDS ============ */
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1.2rem 0}
+.gloss-card{background:#fff;border-radius:12px;padding:1rem 1.2rem;border-left:4px solid #b8a0d8;box-shadow:0 2px 10px rgba(0,0,0,.04);transition:transform .2s,box-shadow .2s}
+.gloss-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.gloss-card .term{font-weight:700;color:#3b2d5c;font-size:.95rem}
+.gloss-card .def{color:#5a4e6e;font-size:.84rem;margin-top:.3rem}
+
+/* ============ PIPELINE STEPPER ============ */
+.stepper{display:flex;flex-direction:column;gap:0;margin:1.5rem 0}
+.step{border-left:3px solid #d5c8eb;padding-left:1.5rem;position:relative;cursor:pointer;transition:border-color .3s}
+.step:hover{border-left-color:#a088d0}
+.step::before{content:attr(data-num);position:absolute;left:-1rem;top:0;width:2rem;height:2rem;border-radius:50%;background:#d5c8eb;color:#3b2d5c;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.step.open::before,.step:hover::before{background:#5b4a9a;color:#fff}
+.step-header{padding:.6rem 0;font-weight:700;color:#3b2d5c;font-size:1.05rem}
+.step-body{max-height:0;overflow:hidden;transition:max-height .45s ease,padding .45s ease}
+.step.open .step-body{max-height:30rem;padding:.5rem 0 1rem}
+.step-body p,.step-body ul{margin:0 0 .5rem;font-size:.9rem;color:#4a3d5e}
+
+/* ============ INTERACTIVE DEMO ============ */
+.demo-box{background:#faf8ff;border:2px dashed #c8b6e0;border-radius:14px;padding:1.5rem;margin:1.5rem 0;text-align:center}
+.demo-box h4{margin-bottom:.8rem}
+.matrix-grid{display:inline-grid;gap:.3rem;margin:1rem auto}
+.matrix-cell{width:48px;height:48px;border-radius:8px;background:#e8dff5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#3b2d5c;transition:all .3s;cursor:pointer;border:2px solid transparent}
+.matrix-cell:hover{border-color:#5b4a9a;background:#dcd0f5;transform:scale(1.08)}
+.matrix-cell.highlight{background:#5b4a9a;color:#fff;border-color:#3b2d5c}
+.demo-controls{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:center;margin:1rem 0}
+.demo-controls label{font-weight:600;font-size:.85rem;color:#3b2d5c}
+.demo-controls input[type=range]{width:160px;accent-color:#5b4a9a}
+.demo-controls button{background:#5b4a9a;color:#fff;border:none;padding:.5rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;transition:all .25s;font-size:.85rem}
+.demo-controls button:hover{background:#4a3a8a;transform:translateY(-1px)}
+.demo-output{padding:.8rem;background:#fff;border-radius:10px;font-size:.9rem;color:#3b2d5c;margin-top:1rem;min-height:2.5rem;display:flex;align-items:center;justify-content:center;font-weight:600}
+
+/* ============ QUIZ ============ */
+.quiz-progress-bar{width:100%;height:10px;background:#e2daf0;border-radius:5px;margin-bottom:1.5rem;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,#8b7ac0,#5b4a9a);border-radius:5px;transition:width .4s ease}
+.quiz-question{margin-bottom:1.5rem;padding:1.2rem;background:#fff;border-radius:12px;border:1px solid #eae3f5}
+.quiz-question p{font-weight:600;margin-bottom:.8rem}
+.quiz-question label{display:block;padding:.45rem .8rem;margin:.2rem 0;border-radius:8px;cursor:pointer;transition:all .2s;font-size:.9rem}
+.quiz-question label:hover{background:#f5f0fc}
+.quiz-question input[type=radio]{margin-right:.5rem;accent-color:#5b4a9a}
+.quiz-feedback{margin-top:.5rem;padding:.5rem .8rem;border-radius:8px;font-size:.85rem;font-weight:600;display:none}
+.quiz-feedback.correct{display:block;background:#d5f5e3;color:#1a5a2a}
+.quiz-feedback.incorrect{display:block;background:#fce4d6;color:#8a3a1a}
+.quiz-score{margin-top:1.2rem;padding:1rem;text-align:center;font-size:1.2rem;font-weight:700;border-radius:12px}
+.quiz-score.pass{background:#d5f5e3;color:#1a5a2a}
+.quiz-score.fail{background:#fce4d6;color:#8a3a1a}
+.quiz-btns{display:flex;gap:.8rem;justify-content:center;margin:1.2rem 0}
+.quiz-btns button{padding:.6rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .25s;border:none}
+.quiz-btns .btn-submit{background:#5b4a9a;color:#fff}
+.quiz-btns .btn-submit:hover{background:#4a3a8a}
+.quiz-btns .btn-retry{background:#e2daf0;color:#3b2d5c}
+.quiz-btns .btn-retry:hover{background:#d5c8eb}
+
+/* ============ DIAGRAM ============ */
+.diagram-figure{margin:1.5rem 0;text-align:center}
+.diagram-figure img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid #e2daf0}
+.diagram-figure figcaption{margin-top:.8rem;font-size:.88rem;color:#5a4e6e;font-style:italic;max-width:700px;margin-inline:auto}
+
+/* ============ WORKED EXAMPLE BOX ============ */
+.example-box{background:linear-gradient(135deg,#fdf6ff,#f6f0ff);border-left:4px solid #8b7ac0;border-radius:0 12px 12px 0;padding:1.2rem 1.5rem;margin:1.2rem 0;font-size:.9rem}
+.example-box h4{color:#5b4a9a;margin-top:0}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:640px){
+  .tab-nav{overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;gap:.1rem}
+  .tab-nav button{font-size:.74rem;padding:.45rem .6rem}
+  .hero{padding:2rem 1rem 1.5rem}
+  .container{padding:1.2rem .8rem 2rem}
+  h2{font-size:1.5rem}
+  .demo-controls{flex-direction:column}
+}
+
+/* ============ FOOTER ============ */
+.footer{text-align:center;padding:2rem;font-size:.8rem;color:#9a8dae;border-top:1px solid #e2daf0;margin-top:2rem}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO BANNER ==================== -->
+<header class="hero">
+  <h1>Markov &amp; Hidden Markov Models<br>in Generative AI</h1>
+  <span class="badge">CGAI Exam Prep</span>
+  <div class="pills">
+    <span class="pill">Markov Chains</span>
+    <span class="pill">Hidden Markov Models (HMM)</span>
+    <span class="pill">Transition Probabilities</span>
+    <span class="pill">Emission Probabilities</span>
+    <span class="pill">Sequence Generation</span>
+    <span class="pill">Viterbi &amp; Baum–Welch</span>
+  </div>
+</header>
+
+<!-- ==================== STICKY TAB NAVIGATION ==================== -->
+<nav class="tab-nav" id="tabNav">
+  <button class="active" data-tab="overview">Overview</button>
+  <button data-tab="pipeline">Pipeline / Process</button>
+  <button data-tab="mechanism">Core Mechanism</button>
+  <button data-tab="architecture">Architecture</button>
+  <button data-tab="concepts">Key Concepts</button>
+  <button data-tab="diagrams">Diagrams</button>
+  <button data-tab="quiz">Quiz</button>
+</nav>
+
+<!-- ==================== TAB: OVERVIEW ==================== -->
+<section class="tab-content active" id="tab-overview">
+<div class="container">
+<h2>Overview</h2>
+
+<p>Markov Models and Hidden Markov Models (HMMs) are foundational <strong>probabilistic sequence models</strong> that underpin many generative AI techniques. They model systems that transition between states over time, making them ideal for generating and analysing sequential data — from text to speech to biological sequences.</p>
+
+<div class="card">
+<h4>What Is a Markov Model?</h4>
+<p>A <strong>Markov chain</strong> is a stochastic model describing a sequence of possible events where the probability of each event depends only on the state attained in the previous event — the <em>Markov property</em> (memoryless property). In Gen AI, this allows efficient next-step prediction without storing the entire history.</p>
+</div>
+
+<div class="card">
+<h4>What Is a Hidden Markov Model (HMM)?</h4>
+<p>An <strong>HMM</strong> extends Markov chains by introducing <em>hidden (latent) states</em> that emit observable outputs. The true state sequence is not directly visible; we only see the emissions. HMMs are <strong>doubly stochastic</strong>: one process governs state transitions, another governs observation emissions. This makes them powerful for modelling generative processes where the underlying structure is latent — exactly the paradigm of generative AI.</p>
+</div>
+
+<h3>Why Markov &amp; HMMs Matter in Generative AI</h3>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Aspect</th><th>Markov / HMM Role in Gen AI</th></tr></thead>
+<tbody>
+<tr><td><strong>Sequence Generation</strong></td><td>Generate realistic sequences (text, music, DNA) by sampling from learned transition distributions</td></tr>
+<tr><td><strong>Latent Variable Modelling</strong></td><td>HMMs pioneered the idea that observed data is generated by hidden latent causes — the core intuition behind VAEs and diffusion models</td></tr>
+<tr><td><strong>Probabilistic Foundations</strong></td><td>Provide the mathematical basis for likelihood, inference (forward-backward), and learning (Baum–Welch / EM) used throughout modern Gen AI</td></tr>
+<tr><td><strong>Next-Token Prediction</strong></td><td>Autoregressive LLMs (GPT family) implicitly use Markov-like conditional independence: P(xₜ | x₁…xₜ₋₁) ≈ P(xₜ | context window)</td></tr>
+<tr><td><strong>Speech &amp; NLP</strong></td><td>HMMs were the dominant model for speech recognition and part-of-speech tagging for decades; many modern architectures evolved from these ideas</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Comparison: Markov Models vs Alternatives in Gen AI</h3>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Model</th><th>Strengths</th><th>Limitations</th><th>Use in Gen AI</th></tr></thead>
+<tbody>
+<tr><td><strong>Markov Chains</strong></td><td>Simple, interpretable, efficient sampling</td><td>Limited memory (order-k dependency only)</td><td>Basic text/speech generation, n-gram LMs</td></tr>
+<tr><td><strong>Hidden Markov Models</strong></td><td>Handles latent structure, rigorous inference (Viterbi, forward-backward)</td><td>Discrete states, limited long-range dependencies</td><td>Speech synthesis, POS tagging, bioinformatics</td></tr>
+<tr><td><strong>RNNs / LSTMs</strong></td><td>Captures long-range dependencies via hidden state</td><td>Sequential processing, vanishing gradients</td><td>Early neural text generation, machine translation</td></tr>
+<tr><td><strong>Transformers</strong></td><td>Parallel processing, global attention, state-of-the-art</td><td>Quadratic complexity, data-hungry</td><td>Modern LLMs (GPT, BERT), diffusion transformers</td></tr>
+<tr><td><strong>Diffusion Models</strong></td><td>High-quality generation, stable training</td><td>Slow sampling (many steps)</td><td>Image/video generation (Stable Diffusion, DALL·E)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Worked Example: Weather Prediction → Text Generation</h3>
+
+<div class="example-box">
+<h4>From Weather to Words</h4>
+<p>Consider a simple 2-state Markov chain for weather: <strong>Sunny (S)</strong> and <strong>Rainy (R)</strong>.</p>
+<p>Transition matrix:</p>
+<ul>
+  <li>P(S → S) = 0.8, P(S → R) = 0.2</li>
+  <li>P(R → S) = 0.4, P(R → R) = 0.6</li>
+</ul>
+<p>Given today is Sunny, the probability of the sequence [S, S, R] = 1.0 × 0.8 × 0.2 = <strong>0.16</strong>.</p>
+<p>This same principle scales to <strong>text generation</strong>: train a Markov model on a corpus, learn P(wordₜ | wordₜ₋₁, …, wordₜ₋ₖ), and sample new sentences by walking the chain. Modern LLMs extend this with neural embeddings and attention, but the <em>autoregressive sampling</em> principle remains the same.</p>
+</div>
+
+<h3>Glossary — Key Terms</h3>
+<div class="glossary-grid">
+  <div class="gloss-card"><span class="term">Markov Property</span><span class="def">Future state depends only on the present state, not on the sequence of past states.</span></div>
+  <div class="gloss-card"><span class="term">Transition Probability</span><span class="def">Probability of moving from state i to state j: aᵢⱼ = P(qₜ₊₁ = j | qₜ = i).</span></div>
+  <div class="gloss-card"><span class="term">Emission Probability</span><span class="def">Probability of observing output oₖ given hidden state j: bⱼ(oₖ) = P(oₖ | qₜ = j).</span></div>
+  <div class="gloss-card"><span class="term">Stationary Distribution</span><span class="def">The long-run probability distribution over states, π = π·A, reached after many transitions.</span></div>
+  <div class="gloss-card"><span class="term">Baum–Welch Algorithm</span><span class="def">An EM algorithm for learning HMM parameters (A, B, π) from unlabelled observation sequences.</span></div>
+  <div class="gloss-card"><span class="term">Viterbi Algorithm</span><span class="def">Dynamic programming to find the most likely hidden state sequence given observations.</span></div>
+  <div class="gloss-card"><span class="term">Forward–Backward</span><span class="def">Computes P(O|λ) and posterior state probabilities efficiently via DP.</span></div>
+  <div class="gloss-card"><span class="term">Autoregressive Generation</span><span class="def">Generating tokens one at a time, each conditioned on previous outputs — a Markov-like process.</span></div>
+</div>
+</div>
+</section>
+
+<!-- ==================== TAB: PIPELINE / PROCESS ==================== -->
+<section class="tab-content" id="tab-pipeline">
+<div class="container">
+<h2>Pipeline / Process</h2>
+<p>Click each step to expand detailed content. This pipeline shows how Markov/HMM models are used in a typical Gen AI sequence-generation workflow.</p>
+
+<div class="stepper" id="stepper">
+  <div class="step" data-num="1" onclick="toggleStep(this)">
+    <div class="step-header">Data Preparation &amp; State Definition</div>
+    <div class="step-body">
+      <p>Define the <strong>state space</strong> and <strong>observation space</strong>. For text generation, states might be POS tags (hidden) and words (observed). For music, states could be chords and observations the notes.</p>
+      <ul><li>Tokenise / discretise raw data into a finite vocabulary</li><li>Define k (order of Markov assumption) — higher k captures more context but increases parameters exponentially</li><li>For HMMs, decide the number of hidden states N and observation symbols M</li></ul>
+    </div>
+  </div>
+
+  <div class="step" data-num="2" onclick="toggleStep(this)">
+    <div class="step-header">Parameter Initialisation</div>
+    <div class="step-body">
+      <p>Initialise the HMM parameters λ = (A, B, π):</p>
+      <ul><li><strong>A</strong> — N×N transition matrix (random or uniform)</li><li><strong>B</strong> — N×M emission matrix (random or uniform)</li><li><strong>π</strong> — initial state distribution (size N)</li></ul>
+      <p>For simple Markov chains, only the k-th order transition counts need to be initialised.</p>
+    </div>
+  </div>
+
+  <div class="step" data-num="3" onclick="toggleStep(this)">
+    <div class="step-header">Training / Parameter Estimation</div>
+    <div class="step-body">
+      <p><strong>Supervised:</strong> Count transitions and emissions directly from labelled data (MLE).<br>
+      <strong>Unsupervised (HMM):</strong> Use the <strong>Baum–Welch algorithm</strong> (EM):</p>
+      <ul><li><strong>E-step:</strong> Compute expected state occupancies and transition counts via forward-backward</li><li><strong>M-step:</strong> Update A, B, π to maximise expected log-likelihood</li><li>Iterate until convergence</li></ul>
+    </div>
+  </div>
+
+  <div class="step" data-num="4" onclick="toggleStep(this)">
+    <div class="step-header">Inference / Decoding</div>
+    <div class="step-body">
+      <p>Given trained parameters λ, answer key questions:</p>
+      <ul><li><strong>Evaluation:</strong> P(O|λ) — compute likelihood of an observation sequence (forward algorithm)</li><li><strong>Decoding:</strong> Find most likely hidden state sequence Q* = argmax P(Q|O,λ) (Viterbi algorithm)</li><li><strong>Filtering/Smoothing:</strong> P(qₜ | o₁…oₜ) or P(qₜ | o₁…oₜ) via forward-backward posteriors</li></ul>
+    </div>
+  </div>
+
+  <div class="step" data-num="5" onclick="toggleStep(this)">
+    <div class="step-header">Sequence Generation (Sampling)</div>
+    <div class="step-body">
+      <p>Generate new sequences by sampling from the learned model:</p>
+      <ul><li><strong>Markov chain:</strong> Start from initial state ~ π, then repeatedly sample next state: qₜ₊₁ ~ A[qₜ, :]</li><li><strong>HMM:</strong> First sample hidden state sequence, then sample emissions: oₜ ~ B[qₜ, :]</li><li><strong>LLM connection:</strong> Modern LLMs do this at massive scale — sample tokenₜ₊₁ ~ softmax(f(token₁…tokenₜ))</li></ul>
+    </div>
+  </div>
+
+  <div class="step" data-num="6" onclick="toggleStep(this)">
+    <div class="step-header">Evaluation &amp; Refinement</div>
+    <div class="step-body">
+      <p>Assess generated quality:</p>
+      <ul><li><strong>Perplexity:</strong> exp(−1/T Σ log P(oₜ|context)) — lower is better</li><li><strong>Log-likelihood</strong> on held-out data for model selection</li><li>Compare multiple HMM topologies (varying N, k) using AIC/BIC</li><li><strong>Human evaluation</strong> for creative generation tasks</li></ul>
+    </div>
+  </div>
+</div>
+
+<h3>Worked Example: Music Melody Generation with HMM</h3>
+<div class="example-box">
+<h4>Generating a Simple Melody</h4>
+<p>States = {C-major, G-major, A-minor, F-major} (4 hidden chord states).<br>
+Observations = {C4, D4, E4, F4, G4, A4, B4, C5} (8 possible melody notes).</p>
+<p>After training on Mozart excerpts:</p>
+<ol>
+  <li><strong>Sample</strong> initial chord ~ π → "C-major"</li>
+  <li><strong>Emit</strong> note ~ B["C-major", :] → "E4" (with high probability, since E is in C-major)</li>
+  <li><strong>Transition</strong> chord ~ A["C-major", :] → "G-major"</li>
+  <li><strong>Emit</strong> next note → "D4" … and so on</li>
+</ol>
+<p>The result is a <strong>harmonically coherent melody</strong> that sounds "Mozart-like" — an early form of generative music AI.</p>
+</div>
+
+<h3>Comparison: HMM Training Approaches</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Approach</th><th>Data Required</th><th>Algorithm</th><th>Guarantee</th></tr></thead>
+<tbody>
+<tr><td>Maximum Likelihood (MLE)</td><td>Labelled (state-sequence pairs)</td><td>Counting + normalisation</td><td>Global optimum (closed form)</td></tr>
+<tr><td>Baum–Welch (EM)</td><td>Unlabelled (observations only)</td><td>Forward-Backward + re-estimation</td><td>Local optimum only</td></tr>
+<tr><td>Viterbi Training</td><td>Unlabelled</td><td>Hard assignment via Viterbi + MLE</td><td>Local optimum (faster, less accurate)</td></tr>
+<tr><td>Bayesian HMM</td><td>Unlabelled + priors</td><td>MCMC / Variational Inference</td><td>Posterior distribution (not point estimate)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- ==================== TAB: CORE MECHANISM ==================== -->
+<section class="tab-content" id="tab-mechanism">
+<div class="container">
+<h2>Core Mechanism: Markov Transition Dynamics</h2>
+
+<p>The heart of Markov models is the <strong>transition probability matrix</strong> — it encodes all the knowledge the model has about how states evolve. Click the cells below to explore transition probabilities interactively.</p>
+
+<div class="demo-box" id="markovDemo">
+<h4>🎛️ Interactive Markov Chain Explorer</h4>
+<p style="font-size:.9rem;color:#6b5b8a">Click any cell to highlight it and see the transition probability. Use the slider to adjust the "stickiness" of staying in the same state.</p>
+
+<div class="demo-controls">
+  <label>Self-Transition Strength: <span id="selfProbVal">0.70</span></label>
+  <input type="range" id="selfProbSlider" min="0.1" max="0.95" step="0.01" value="0.70" oninput="updateDemo()">
+  <button onclick="randomWalk()">▶ Random Walk (10 steps)</button>
+  <button onclick="resetDemo()">↺ Reset</button>
+</div>
+
+<div class="matrix-grid" id="transitionGrid" style="grid-template-columns:repeat(4,1fr)"></div>
+
+<div class="demo-output" id="demoOutput">
+  👆 Click a cell above or press "Random Walk"
+</div>
+<div id="walkLog" style="font-size:.82rem;color:#5a4e6e;margin-top:.5rem;min-height:1.5rem"></div>
+</div>
+
+<h3>Connection to Generative AI</h3>
+<div class="card">
+<p>The transition matrix is the <strong>generative engine</strong>. In modern LLMs, this matrix is not stored explicitly — it's computed dynamically via a neural network (the transformer). But the <em>principle</em> is identical:</p>
+<ol>
+  <li>Given current state (context), compute a probability distribution over next states (tokens)</li>
+  <li>Sample from that distribution</li>
+  <li>Feed the new state back as input</li>
+  <li>Repeat → <strong>autoregressive generation</strong></li>
+</ol>
+<p>When you prompt ChatGPT and it generates one word at a time, it's performing a <strong>highly sophisticated Markov-like walk</strong> through token space!</p>
+</div>
+
+<h3>Worked Example: Next-Token Sampling in an LLM</h3>
+<div class="example-box">
+<h4>From HMM to GPT</h4>
+<p>Consider the prompt: <em>"The cat sat on the"</em></p>
+<p><strong>HMM approach:</strong> States = grammatical roles (determiner, noun, verb, preposition). Transition matrix learned from corpus. Most likely next state after "the" (determiner) → noun. Sample a noun emission → "mat" (with high probability).</p>
+<p><strong>LLM approach:</strong> Context window → transformer → logits over 50k+ vocabulary → softmax → sample "mat" (P ≈ 0.4), "floor" (P ≈ 0.3), "roof" (P ≈ 0.1), …</p>
+<p>Both follow the same <strong>sample-from-conditional-distribution</strong> paradigm — just at vastly different scales.</p>
+</div>
+
+<h3>Glossary: Core Mechanism Terms</h3>
+<div class="glossary-grid">
+  <div class="gloss-card"><span class="term">Stochastic Matrix</span><span class="def">A square matrix where each row sums to 1 — each row is a valid probability distribution over next states.</span></div>
+  <div class="gloss-card"><span class="term">Ergodicity</span><span class="def">A Markov chain is ergodic if it's possible to reach any state from any other state (irreducible + aperiodic).</span></div>
+  <div class="gloss-card"><span class="term">Temperature (τ)</span><span class="def">Scales logits before softmax: higher τ → more diverse samples; lower τ → more deterministic. Critical for Gen AI output control.</span></div>
+  <div class="gloss-card"><span class="term">Top-k / Top-p Sampling</span><span class="def">Restrict sampling to the k most likely tokens or the smallest set with cumulative probability ≥ p. Prevents low-quality outputs.</span></div>
+</div>
+</div>
+</section>
+
+<!-- ==================== TAB: ARCHITECTURE ==================== -->
+<section class="tab-content" id="tab-architecture">
+<div class="container">
+<h2>Architecture</h2>
+
+<h3>Internal Structure of a Hidden Markov Model</h3>
+<p>An HMM is defined by the 5-tuple λ = (N, M, A, B, π):</p>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>Component</th><th>Symbol</th><th>Dimensions</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>Number of hidden states</td><td>N</td><td>Scalar</td><td>How many distinct latent states the model can be in</td></tr>
+<tr><td>Number of observation symbols</td><td>M</td><td>Scalar</td><td>Size of the discrete observation vocabulary</td></tr>
+<tr><td>State transition matrix</td><td>A = {aᵢⱼ}</td><td>N × N</td><td>aᵢⱼ = P(qₜ₊₁ = j | qₜ = i), each row sums to 1</td></tr>
+<tr><td>Emission matrix</td><td>B = {bⱼ(k)}</td><td>N × M</td><td>bⱼ(k) = P(oₜ = vₖ | qₜ = j), each row sums to 1</td></tr>
+<tr><td>Initial state distribution</td><td>π = {πᵢ}</td><td>1 × N</td><td>πᵢ = P(q₁ = i), sums to 1</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Three Canonical Problems</h3>
+<div class="card">
+<h4>Problem 1: Evaluation — P(O | λ)</h4>
+<p><strong>Given:</strong> Observation sequence O and model λ.<br>
+<strong>Find:</strong> Likelihood P(O|λ).<br>
+<strong>Solution:</strong> <em>Forward algorithm</em> — dynamic programming in O(N²T). Avoids the naive O(Nᵀ) by computing αₜ(i) = P(o₁…oₜ, qₜ=i | λ) recursively.</p>
+</div>
+
+<div class="card">
+<h4>Problem 2: Decoding — Best Hidden State Sequence</h4>
+<p><strong>Given:</strong> Observation sequence O and model λ.<br>
+<strong>Find:</strong> Q* = argmax_Q P(Q | O, λ).<br>
+<strong>Solution:</strong> <em>Viterbi algorithm</em> — similar DP structure but uses max instead of sum. Backtracking recovers the optimal path.</p>
+</div>
+
+<div class="card">
+<h4>Problem 3: Learning — Estimate λ from Data</h4>
+<p><strong>Given:</strong> Observation sequence(s) O.<br>
+<strong>Find:</strong> λ* = argmax_λ P(O | λ).<br>
+<strong>Solution:</strong> <em>Baum–Welch (EM)</em> — iteratively refines A, B, π using expected sufficient statistics from forward-backward.</p>
+</div>
+
+<h3>How HMM Components Connect</h3>
+<div class="card">
+<p>The architecture follows a clean <strong>generative story</strong>:</p>
+<ol>
+  <li><strong>π</strong> determines the first hidden state q₁</li>
+  <li><strong>B</strong> emits the first observation o₁ from q₁</li>
+  <li><strong>A</strong> transitions to the next hidden state q₂</li>
+  <li><strong>B</strong> emits o₂ from q₂</li>
+  <li>Repeat for T time steps…</li>
+</ol>
+<p>This <strong>two-layer stochastic process</strong> (hidden → observed) is the blueprint for virtually all modern deep generative models: VAEs have encoder/decoder; diffusion models have forward/reverse process; even GANs have generator/discriminator — all variations on the HMM's idea of <strong>latent structure generating observed data</strong>.</p>
+</div>
+
+<h3>Worked Example: Connecting Architecture to LLMs</h3>
+<div class="example-box">
+<h4>HMM → Transformer Analogy</h4>
+<table style="width:100%;font-size:.85rem">
+<tr><th>HMM Concept</th><th>Transformer / LLM Analogy</th></tr>
+<tr><td>Hidden states qₜ</td><td>Contextualised token embeddings (the "thought" before output)</td></tr>
+<tr><td>Observations oₜ</td><td>Output tokens (words/subwords)</td></tr>
+<tr><td>Transition matrix A</td><td>Self-attention + feed-forward layers (compute next-state distribution)</td></tr>
+<tr><td>Emission matrix B</td><td>Final projection layer + softmax (token logits)</td></tr>
+<tr><td>Forward algorithm</td><td>Forward pass through transformer layers</td></tr>
+<tr><td>Baum–Welch (EM)</td><td>Backpropagation + gradient descent (maximising log-likelihood)</td></tr>
+</table>
+<p>This analogy is powerful for the CGAI exam — it shows you understand the <strong>conceptual lineage</strong> from classical probabilistic models to modern deep Gen AI.</p>
+</div>
+</div>
+</section>
+
+<!-- ==================== TAB: KEY CONCEPTS ==================== -->
+<section class="tab-content" id="tab-concepts">
+<div class="container">
+<h2>Key Concepts</h2>
+
+<h3>Challenges &amp; Limitations</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Challenge</th><th>Description</th><th>Mitigation in Modern Gen AI</th></tr></thead>
+<tbody>
+<tr><td><strong>Limited Memory (Markov Assumption)</strong></td><td>Only the last k states influence the next; long-range dependencies are lost</td><td>Transformers use attention to access the full history; RNNs/LSTMs maintain a learned hidden state</td></tr>
+<tr><td><strong>Discrete State Space</strong></td><td>Classical HMMs require discrete states and observations</td><td>Continuous HMMs with Gaussian mixtures; neural embeddings map continuous vectors to discrete tokens</td></tr>
+<tr><td><strong>Exponential Parameter Growth</strong></td><td>A k-th order Markov chain over V symbols needs Vᵏ⁺¹ parameters</td><td>Neural networks learn compact representations; parameter sharing via embeddings; attention is O(n²) not O(Vᵏ)</td></tr>
+<tr><td><strong>Local Optima in EM</strong></td><td>Baum–Welch converges to local maxima; sensitive to initialisation</td><td>Multiple random restarts; modern gradient-based optimisation with better initialisation schemes</td></tr>
+<tr><td><strong>Stationarity Assumption</strong></td><td>Transition probabilities are assumed constant over time</td><td>Positional encodings in transformers; time-varying HMM extensions (HSMM, switching HMM)</td></tr>
+<tr><td><strong>Data Sparsity</strong></td><td>Many transition/emission pairs unseen in training (zero probabilities)</td><td>Smoothing (Laplace, Kneser-Ney); neural models generalise via embeddings; backoff strategies</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>CGAI Exam Must-Knows</h3>
+
+<div class="card">
+<h4>🔑 Core Formulas to Memorise</h4>
+<ul>
+  <li><strong>Markov Property:</strong> P(qₜ₊₁ | q₁, …, qₜ) = P(qₜ₊₁ | qₜ)</li>
+  <li><strong>Sequence Probability:</strong> P(O | λ) = Σ_Q π_{q₁} · b_{q₁}(o₁) · Πₜ₌₂ᵀ a_{qₜ₋₁,qₜ} · b_{qₜ}(oₜ)</li>
+  <li><strong>Forward Recursion:</strong> αₜ(j) = [ Σᵢ αₜ₋₁(i) · aᵢⱼ ] · bⱼ(oₜ)</li>
+  <li><strong>Viterbi Recursion:</strong> δₜ(j) = maxᵢ [ δₜ₋₁(i) · aᵢⱼ ] · bⱼ(oₜ)</li>
+  <li><strong>Baum–Welch Re-estimation:</strong> āᵢⱼ = expected transitions i→j / expected visits to i</li>
+</ul>
+</div>
+
+<div class="card">
+<h4>📋 Exam-Ready Summary Points</h4>
+<ol>
+  <li>HMMs are <strong>doubly stochastic</strong>: one process for state transitions (A, π), another for emissions (B)</li>
+  <li>The <strong>three canonical problems</strong> (evaluation, decoding, learning) each have classic DP solutions</li>
+  <li>The <strong>forward-backward algorithm</strong> computes posterior probabilities P(qₜ=i | O, λ) — used in both evaluation and as the E-step of Baum–Welch</li>
+  <li><strong>Baum–Welch = EM for HMMs</strong> — guaranteed to increase likelihood each iteration but may converge to local optimum</li>
+  <li>Modern Gen AI (LLMs, diffusion) <strong>extends and generalises</strong> HMM principles rather than replacing them</li>
+  <li>The <strong>autoregressive generation</strong> paradigm (sample one token at a time, feed back) is directly inherited from Markov models</li>
+</ol>
+</div>
+
+<h3>Worked Example: Viterbi Decoding</h3>
+<div class="example-box">
+<h4>POS Tagging with Viterbi</h4>
+<p><strong>Sentence:</strong> "Time flies like an arrow"<br>
+<strong>Hidden states:</strong> {Noun, Verb, Preposition, Determiner}<br>
+<strong>Observations:</strong> the 5 words above</p>
+<p>Using trained A and B matrices, Viterbi computes:</p>
+<ol>
+  <li>δ₁(Noun) = π_Noun × B_Noun("Time")</li>
+  <li>δ₂(Verb) = max(δ₁(Noun)×A_Noun→Verb, δ₁(Verb)×A_Verb→Verb, …) × B_Verb("flies")</li>
+  <li>Continue for all words…</li>
+  <li>Backtrack: "Time"(Noun) → "flies"(Verb) → "like"(Prep) → "an"(Det) → "arrow"(Noun)</li>
+</ol>
+<p>The Viterbi path reveals the most probable grammatical structure — a classic NLP task that directly inspired neural sequence labelling (BiLSTM-CRF, etc.).</p>
+</div>
+
+<h3>Glossary: Exam Terminology</h3>
+<div class="glossary-grid">
+  <div class="gloss-card"><span class="term">Latent Variable</span><span class="def">A variable that is not directly observed but inferred from observed data. In HMMs, the hidden states are latent variables.</span></div>
+  <div class="gloss-card"><span class="term">Expectation–Maximisation (EM)</span><span class="def">An iterative optimisation method for models with latent variables. E-step computes expectations; M-step maximises.</span></div>
+  <div class="gloss-card"><span class="term">Dynamic Programming (DP)</span><span class="def">Breaking a problem into overlapping subproblems. Forward, backward, and Viterbi all use DP for O(N²T) efficiency.</span></div>
+  <div class="gloss-card"><span class="term">Log-Likelihood</span><span class="def">log P(O|λ) — used instead of likelihood to avoid numerical underflow in long sequences.</span></div>
+</div>
+</div>
+</section>
+
+<!-- ==================== TAB: DIAGRAMS ==================== -->
+<section class="tab-content" id="tab-diagrams">
+<div class="container">
+<h2>Diagrams</h2>
+
+<figure class="diagram-figure">
+  <h3>Figure 1: Markov &amp; Hidden Markov Model Use Cases in Generative AI</h3>
+  <img src="MARKOV_USE_CASE_GENAI.png" alt="Markov and HMM Use Cases in Gen AI — Comprehensive overview diagram showing applications, algorithms, and connections to modern generative AI paradigms" loading="lazy">
+  <figcaption>
+    <strong>What this diagram shows:</strong> A comprehensive map of how Markov chains and Hidden Markov Models are applied across the Generative AI landscape. It illustrates the key use cases — from foundational sequence modelling to modern applications in text generation, speech synthesis, and bioinformatics — along with the core algorithms (Forward, Viterbi, Baum–Welch) that power them.
+    <br><br>
+    <strong>What to look for:</strong> Notice the <em>conceptual bridge</em> between classical probabilistic models (left side) and modern deep Gen AI systems (right side). The diagram traces how the autoregressive sampling paradigm, latent variable modelling, and likelihood-based training all originate from Markov/HMM principles. Pay special attention to the algorithm-to-application mapping — this is a common CGAI exam question format.
+  </figcaption>
+</figure>
+
+<figure class="diagram-figure">
+  <h3>Figure 2: HMM Generative Process — State Transition &amp; Emission Flow</h3>
+  <!-- Placeholder for second diagram image -->
+  <img src="HMM_Generative_Process_Flow.jpg" alt="HMM Generative Process Flow Diagram — Illustrates the two-layer stochastic process: hidden state transitions (via matrix A) and observation emissions (via matrix B)" loading="lazy" onerror="this.parentElement.querySelector('.placeholder-note').style.display='block';this.style.display='none'">
+  <div class="placeholder-note" style="display:none;background:#fff3cd;padding:1rem;border-radius:8px;margin-top:.5rem;font-size:.85rem;color:#856404">
+    ⚠️ <strong>Note:</strong> To complete this study guide, place a diagram named <code>HMM_Generative_Process_Flow.jpg</code> in the same folder. This image should illustrate the two-layer HMM architecture: hidden state chain (q₁→q₂→q₃→…) at the top emitting observable outputs (o₁, o₂, o₃, …) at the bottom, with transition matrix A governing state changes and emission matrix B governing observations. Ideal content: a trellis/trellis diagram showing states as nodes and transitions/emissions as edges.
+  </div>
+  <figcaption>
+    <strong>What this diagram shows:</strong> The two-layer stochastic architecture of an HMM — a hidden Markov chain (top layer) that transitions between latent states according to matrix <strong>A</strong>, and an observation layer (bottom) where each hidden state probabilistically emits a visible symbol according to matrix <strong>B</strong>.
+    <br><br>
+    <strong>What to look for:</strong> The trellis/temporal unrolling of the model over time steps t = 1, 2, …, T. Observe how each observation oₜ depends <em>only</em> on the current hidden state qₜ (the emission independence assumption), and each hidden state qₜ depends <em>only</em> on the previous hidden state qₜ₋₁ (the Markov property). These two conditional independence assumptions are fundamental to HMM tractability.
+  </figcaption>
+</figure>
+
+<h3>Understanding the Diagrams for the CGAI Exam</h3>
+<div class="card">
+<p>When you encounter HMM/Markov diagrams on the CGAI exam, remember:</p>
+<ul>
+  <li><strong>Solid arrows</strong> = deterministic or learned connections (transitions)</li>
+  <li><strong>Dashed arrows</strong> = probabilistic emissions</li>
+  <li><strong>Circles</strong> = hidden/latent states (not directly observed)</li>
+  <li><strong>Squares/rectangles</strong> = observed variables (data points)</li>
+  <li>The <strong>plate notation</strong> (box around repeated structure) = repetition over T time steps</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== TAB: QUIZ ==================== -->
+<section class="tab-content" id="tab-quiz">
+<div class="container">
+<h2>Practice Quiz</h2>
+<p style="margin-bottom:1rem">10 questions to test your knowledge. <strong>Each question has one correct answer.</strong> Instant feedback provided.</p>
+
+<div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgress" style="width:0%"></div></div>
+
+<form id="quizForm">
+  <!-- Q1 -->
+  <div class="quiz-question" id="q1Box">
+    <p>1. What does the Markov property state?</p>
+    <label><input type="radio" name="q1" value="a"> The future state depends on all previous states</label>
+    <label><input type="radio" name="q1" value="b"> The future state depends only on the current state</label>
+    <label><input type="radio" name="q1" value="c"> The future state is independent of all states</label>
+    <label><input type="radio" name="q1" value="d"> States are always observed directly</label>
+    <div class="quiz-feedback" id="fb1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-question" id="q2Box">
+    <p>2. An HMM is described as "doubly stochastic" because:</p>
+    <label><input type="radio" name="q2" value="a"> It uses two different random number generators</label>
+    <label><input type="radio" name="q2" value="b"> It has two hidden layers</label>
+    <label><input type="radio" name="q2" value="c"> One process governs state transitions and another governs observation emissions</label>
+    <label><input type="radio" name="q2" value="d"> It requires training twice on the same data</label>
+    <div class="quiz-feedback" id="fb2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-question" id="q3Box">
+    <p>3. Which algorithm is used to find the most likely hidden state sequence given observations?</p>
+    <label><input type="radio" name="q3" value="a"> Forward algorithm</label>
+    <label><input type="radio" name="q3" value="b"> Baum–Welch algorithm</label>
+    <label><input type="radio" name="q3" value="c"> Viterbi algorithm</label>
+    <label><input type="radio" name="q3" value="d"> Backpropagation</label>
+    <div class="quiz-feedback" id="fb3"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-question" id="q4Box">
+    <p>4. The Baum–Welch algorithm is a special case of which general optimisation method?</p>
+    <label><input type="radio" name="q4" value="a"> Gradient Descent</label>
+    <label><input type="radio" name="q4" value="b"> Expectation–Maximisation (EM)</label>
+    <label><input type="radio" name="q4" value="c"> Markov Chain Monte Carlo (MCMC)</label>
+    <label><input type="radio" name="q4" value="d"> Simulated Annealing</label>
+    <div class="quiz-feedback" id="fb4"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-question" id="q5Box">
+    <p>5. In the forward algorithm, what does αₜ(i) represent?</p>
+    <label><input type="radio" name="q5" value="a"> P(observation sequence and state i at time t | model)</label>
+    <label><input type="radio" name="q5" value="b"> P(state i at time t | observation sequence)</label>
+    <label><input type="radio" name="q5" value="c"> The most likely path ending in state i at time t</label>
+    <label><input type="radio" name="q5" value="d"> The emission probability of state i at time t</label>
+    <div class="quiz-feedback" id="fb5"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-question" id="q6Box">
+    <p>6. Which modern Gen AI paradigm most directly inherits from Markov model autoregressive sampling?</p>
+    <label><input type="radio" name="q6" value="a"> Variational Autoencoders (VAEs)</label>
+    <label><input type="radio" name="q6" value="b"> Generative Adversarial Networks (GANs)</label>
+    <label><input type="radio" name="q6" value="c"> Autoregressive LLMs (e.g., GPT)</label>
+    <label><input type="radio" name="q6" value="d"> Diffusion Models</label>
+    <div class="quiz-feedback" id="fb6"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-question" id="q7Box">
+    <p>7. What is a key limitation of classical HMMs that modern neural approaches address?</p>
+    <label><input type="radio" name="q7" value="a"> They cannot handle any sequential data</label>
+    <label><input type="radio" name="q7" value="b"> Limited ability to capture long-range dependencies due to the Markov assumption</label>
+    <label><input type="radio" name="q7" value="c"> They always require more parameters than neural networks</label>
+    <label><input type="radio" name="q7" value="d"> They cannot be trained on unlabelled data</label>
+    <div class="quiz-feedback" id="fb7"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-question" id="q8Box">
+    <p>8. In the 5-tuple HMM definition λ = (N, M, A, B, π), what does π represent?</p>
+    <label><input type="radio" name="q8" value="a"> The stationary distribution of the Markov chain</label>
+    <label><input type="radio" name="q8" value="b"> The initial state distribution: P(q₁ = i)</label>
+    <label><input type="radio" name="q8" value="c"> The emission probability matrix</label>
+    <label><input type="radio" name="q8" value="d"> The number π ≈ 3.14159</label>
+    <div class="quiz-feedback" id="fb8"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-question" id="q9Box">
+    <p>9. What is the time complexity of the Forward algorithm for an HMM with N states and T observations?</p>
+    <label><input type="radio" name="q9" value="a"> O(Nᵀ)</label>
+    <label><input type="radio" name="q9" value="b"> O(N × T)</label>
+    <label><input type="radio" name="q9" value="c"> O(N² × T)</label>
+    <label><input type="radio" name="q9" value="d"> O(log N × T)</label>
+    <div class="quiz-feedback" id="fb9"></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-question" id="q10Box">
+    <p>10. The temperature parameter τ in autoregressive sampling controls:</p>
+    <label><input type="radio" name="q10" value="a"> The number of tokens in the vocabulary</label>
+    <label><input type="radio" name="q10" value="b"> The learning rate during training</label>
+    <label><input type="radio" name="q10" value="c"> The diversity/randomness of generated outputs (higher τ = more diverse)</label>
+    <label><input type="radio" name="q10" value="d"> The number of attention heads in the transformer</label>
+    <div class="quiz-feedback" id="fb10"></div>
+  </div>
+</form>
+
+<div class="quiz-btns">
+  <button type="button" class="btn-submit" onclick="submitQuiz()">✅ Submit All Answers</button>
+  <button type="button" class="btn-retry" onclick="retryQuiz()">🔄 Retry Quiz</button>
+</div>
+
+<div id="quizScoreDisplay"></div>
+</div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <p>CGAI Exam Prep — Markov &amp; Hidden Markov Models in Generative AI | Study Guide</p>
+  <p style="margin-top:.3rem">Reference: <a href="https://charteredcertifications.com/learning/courses/cgai" style="color:#8b7ac0">charteredcertifications.com/learning/courses/cgai</a></p>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+// ========== TAB NAVIGATION ==========
+const tabNav = document.getElementById('tabNav');
+const tabButtons = tabNav.querySelectorAll('button');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    tabButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    tabContents.forEach(tc => tc.classList.remove('active'));
+    document.getElementById('tab-' + target).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+// ========== PIPELINE STEPPER ==========
+function toggleStep(stepEl) {
+  stepEl.classList.toggle('open');
+}
+
+// ========== INTERACTIVE MARKOV DEMO ==========
+const states = ['S₁', 'S₂', 'S₃', 'S₄'];
+const stateColors = ['#c5e0f5','#d5c8eb','#fce4cc','#c8f0d5'];
+let transitionMatrix = [];
+let currentState = 0;
+let walkLog = [];
+
+function buildTransitionMatrix(selfProb) {
+  const n = states.length;
+  const remaining = (1 - selfProb) / (n - 1);
+  const mat = [];
+  for (let i = 0; i < n; i++) {
+    const row = [];
+    for (let j = 0; j < n; j++) {
+      row.push(i === j ? selfProb : remaining);
+    }
+    mat.push(row);
+  }
+  return mat;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('transitionGrid');
+  grid.innerHTML = '';
+  transitionMatrix.forEach((row, i) => {
+    row.forEach((val, j) => {
+      const cell = document.createElement('div');
+      cell.className = 'matrix-cell';
+      cell.textContent = val.toFixed(2);
+      cell.style.background = stateColors[i];
+      cell.title = `P(${states[j]} | ${states[i]}) = ${val.toFixed(3)}`;
+      if (i === currentState) cell.classList.add('highlight');
+      cell.addEventListener('click', () => {
+        const prev = currentState;
+        currentState = j;
+        renderGrid();
+        document.getElementById('demoOutput').textContent =
+          `P(${states[j]} | ${states[prev]}) = ${val.toFixed(3)} — ${(val*100).toFixed(1)}% probability`;
+      });
+      grid.appendChild(cell);
+    });
+  });
+}
+
+function updateDemo() {
+  const selfProb = parseFloat(document.getElementById('selfProbSlider').value);
+  document.getElementById('selfProbVal').textContent = selfProb.toFixed(2);
+  transitionMatrix = buildTransitionMatrix(selfProb);
+  renderGrid();
+  document.getElementById('demoOutput').textContent =
+    `Self-transition strength set to ${selfProb.toFixed(2)}. Click a cell or press "Random Walk".`;
+  walkLog = [];
+  document.getElementById('walkLog').textContent = '';
+}
+
+function randomWalk() {
+  walkLog = [states[currentState]];
+  let s = currentState;
+  for (let step = 0; step < 10; step++) {
+    const row = transitionMatrix[s];
+    const r = Math.random();
+    let cum = 0;
+    for (let j = 0; j < row.length; j++) {
+      cum += row[j];
+      if (r < cum) { s = j; break; }
+    }
+    walkLog.push(states[s]);
+  }
+  currentState = s;
+  renderGrid();
+  document.getElementById('walkLog').innerHTML =
+    '<strong>Random Walk:</strong> ' + walkLog.join(' → ');
+  document.getElementById('demoOutput').textContent =
+    `Walk complete! Final state: ${states[currentState]}`;
+}
+
+function resetDemo() {
+  currentState = 0;
+  document.getElementById('selfProbSlider').value = 0.70;
+  updateDemo();
+  document.getElementById('walkLog').textContent = '';
+}
+
+// Initialise demo
+currentState = 0;
+transitionMatrix = buildTransitionMatrix(0.70);
+renderGrid();
+
+// ========== QUIZ LOGIC ==========
+const answerKey = {
+  q1: 'b', q2: 'c', q3: 'c', q4: 'b', q5: 'a',
+  q6: 'c', q7: 'b', q8: 'b', q9: 'c', q10: 'c'
+};
+
+const explanations = {
+  q1: { correct: 'Correct! The Markov property (memoryless property) is the defining feature — future depends only on present.', incorrect: 'Incorrect. The Markov property states the future state depends <em>only</em> on the current state, not the full history.' },
+  q2: { correct: 'Correct! HMMs are doubly stochastic because state transitions (A, π) and observation emissions (B) are both probabilistic processes.', incorrect: 'Incorrect. "Doubly stochastic" refers to the two probabilistic layers: hidden state transitions and observation emissions.' },
+  q3: { correct: 'Correct! The Viterbi algorithm uses dynamic programming to find the single most probable hidden state sequence Q* = argmax P(Q|O,λ).', incorrect: 'Incorrect. The <strong>Viterbi algorithm</strong> finds the optimal hidden state sequence. The Forward algorithm computes P(O|λ), and Baum–Welch learns parameters.' },
+  q4: { correct: 'Correct! Baum–Welch is the EM algorithm applied specifically to HMMs. The E-step uses forward-backward; the M-step re-estimates A, B, π.', incorrect: 'Incorrect. Baum–Welch is a special case of the <strong>Expectation–Maximisation (EM)</strong> algorithm for HMMs.' },
+  q5: { correct: 'Correct! αₜ(i) = P(o₁, o₂, …, oₜ, qₜ=i | λ) — the joint probability of the partial observation sequence and being in state i at time t.', incorrect: 'Incorrect. αₜ(i) is the joint probability P(observations up to t AND state i at time t | model), not the conditional probability.' },
+  q6: { correct: 'Correct! Autoregressive LLMs (GPT family) generate one token at a time, conditioning on previous tokens — the same paradigm as Markov chain sampling.', incorrect: 'Incorrect. <strong>Autoregressive LLMs</strong> like GPT directly inherit the "sample next, feed back" loop from Markov models.' },
+  q7: { correct: 'Correct! The Markov assumption means only recent history influences the future, limiting long-range dependency modelling — a key weakness addressed by attention mechanisms.', incorrect: 'Incorrect. The key limitation is <strong>limited long-range dependency capture</strong> due to the Markov assumption. Neural approaches (attention, LSTMs) overcome this.' },
+  q8: { correct: 'Correct! π = {πᵢ} where πᵢ = P(q₁ = i) — the probability distribution over states at the first time step.', incorrect: 'Incorrect. π is the <strong>initial state distribution</strong>: P(q₁ = i) for each state i. It sums to 1.' },
+  q9: { correct: 'Correct! The forward algorithm runs in O(N²T) — for each of T time steps, we compute over all N×N state pairs. This is the DP magic that avoids O(Nᵀ).', incorrect: 'Incorrect. The forward algorithm runs in <strong>O(N²T)</strong> — quadratic in states, linear in time. Without DP it would be O(Nᵀ).' },
+  q10: { correct: 'Correct! Temperature τ scales logits: higher τ flattens the distribution → more diverse/creative outputs; lower τ sharpens it → more deterministic.', incorrect: 'Incorrect. Temperature <strong>controls output diversity</strong>: higher τ = more random/varied; lower τ = more deterministic/focused.' }
+};
+
+function submitQuiz() {
+  let score = 0;
+  let answered = 0;
+  for (const [q, correctAns] of Object.entries(answerKey)) {
+    const selected = document.querySelector(`input[name="${q}"]:checked`);
+    const fb = document.getElementById('fb' + q.slice(1));
+    if (selected) {
+      answered++;
+      if (selected.value === correctAns) {
+        score++;
+        fb.className = 'quiz-feedback correct';
+        fb.innerHTML = '✅ ' + explanations[q].correct;
+      } else {
+        fb.className = 'quiz-feedback incorrect';
+        fb.innerHTML = '❌ ' + explanations[q].incorrect;
+      }
+    } else {
+      fb.className = 'quiz-feedback incorrect';
+      fb.innerHTML = '⚠️ Not answered. The correct answer was: ' + explanations[q].incorrect;
+    }
+  }
+
+  const pct = Math.round((score / 10) * 100);
+  document.getElementById('quizProgress').style.width = pct + '%';
+
+  const display = document.getElementById('quizScoreDisplay');
+  const passed = score >= 7;
+  display.innerHTML = `
+    <div class="quiz-score ${passed ? 'pass' : 'fail'}">
+      ${passed ? '🎉 PASS' : '📚 NEEDS REVIEW'} — Your Score: <strong>${score}/10 (${pct}%)</strong>
+    </div>
+    <p style="text-align:center;margin-top:.5rem;font-size:.9rem">
+      ${passed
+        ? 'Great job! You have a solid understanding of Markov and HMM concepts for the CGAI exam.'
+        : 'Review the sections above — especially the Core Mechanism and Architecture tabs — then try again!'}
+      ${answered < 10 ? `<br>You left ${10-answered} question(s) unanswered.` : ''}
+    </p>`;
+
+  // Scroll to score
+  display.scrollIntoView({behavior:'smooth'});
+}
+
+function retryQuiz() {
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.quiz-feedback').forEach(fb => { fb.className = 'quiz-feedback'; fb.innerHTML = ''; });
+  document.getElementById('quizProgress').style.width = '0%';
+  document.getElementById('quizScoreDisplay').innerHTML = '';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>

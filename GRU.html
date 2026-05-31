@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRU Hyperparameters – Complete Guide</title>
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -60px; right: -80px; width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: -50px; left: -60px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .header .badge {
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+        }
+        .header h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .header h1 span {
+            background: linear-gradient(135deg, #5eead4, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header .tagline { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.75rem; font-weight: 400; letter-spacing: 0.01em; }
+        .header .intro { font-size: 0.95rem; opacity: 0.75; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .infographic-area {
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: -1.5rem auto 2rem;
+            max-width: 900px; padding: 1.5rem; text-align: center; position: relative; z-index: 2; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .infographic-area img { max-width: 100%; height: auto; border-radius: var(--radius); display: block; margin: 0 auto; }
+        .infographic-fallback {
+            display: none; background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); border-radius: var(--radius); padding: 2rem 1.5rem;
+            color: #e2e8f0; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.8; text-align: left; overflow-x: auto;
+        }
+        .infographic-fallback .gru-diagram { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .infographic-fallback .gate-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: center; min-width: 120px;
+        }
+        .infographic-fallback .gate-box strong { display: block; color: #5eead4; font-size: 1rem; margin-bottom: 0.4rem; }
+        .infographic-fallback .gate-box code { color: #fbbf24; font-size: 0.8rem; }
+        .infographic-fallback .arrow-sym { font-size: 1.8rem; color: #94a3b8; }
+        .infographic-area .caption { margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .tab-nav {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 0.5rem;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); position: sticky; top: 12px; z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 auto; min-width: 110px; padding: 0.7rem 1rem; border: none; background: transparent; border-radius: var(--radius);
+            cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); transition: var(--transition); white-space: nowrap; letter-spacing: 0.01em; position: relative;
+        }
+        .tab-btn:hover { color: var(--blue-mid); background: #eff6ff; }
+        .tab-btn.active { background: var(--blue-mid); color: #fff; box-shadow: var(--shadow); }
+        .tab-btn .tab-icon { margin-right: 0.35rem; }
+        .tab-panel { display: none; animation: fadeSlideIn 0.4s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-xl); transform: translateY(-2px); border-color: #cbd5e1; }
+        .card .card-icon { font-size: 2rem; margin-bottom: 0.5rem; display: inline-block; background: #f1f5f9; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0 0.35rem; color: var(--deep-blue); }
+        .card .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; line-height: 1.55; }
+        .code-snippet {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-family: var(--font-mono);
+            font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-snippet .kw { color: #c084fc; } .code-snippet .fn { color: #60a5fa; } .code-snippet .str { color: #fbbf24; } .code-snippet .num { color: #fb923c; } .code-snippet .cm { color: #6b7280; font-style: italic; }
+        .tip-box, .warn-box, .good-box {
+            margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .tip-box { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .warn-box { background: var(--warning-bg); border-left: 4px solid var(--warning-border); color: #92400e; }
+        .good-box { background: #eff6ff; border-left: 4px solid var(--blue-mid); color: #1e40af; }
+        .tip-box .box-icon, .warn-box .box-icon, .good-box .box-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .arch-visual {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 2rem; color: #e2e8f0; text-align: center; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .arch-visual .eq-block {
+            display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+        }
+        .arch-visual .eq-block .hl { color: #5eead4; font-weight: 700; }
+        .arch-visual .eq-block .hl2 { color: #fbbf24; font-weight: 700; }
+        .full-code-block {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow-lg); max-height: 70vh; overflow-y: auto;
+        }
+        .full-code-block .kw { color: #c084fc; } .full-code-block .fn { color: #60a5fa; } .full-code-block .str { color: #a3e635; } .full-code-block .num { color: #fb923c; } .full-code-block .cm { color: #6b7280; font-style: italic; } .full-code-block .anno { color: #f472b6; font-weight: 700; }
+        .summary-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .summary-table { width: 100%; border-collapse: collapse; background: var(--bg-card); font-size: 0.9rem; }
+        .summary-table thead { background: var(--deep-blue); color: #fff; }
+        .summary-table thead th { padding: 0.85rem 1rem; text-align: left; font-weight: 600; letter-spacing: 0.02em; }
+        .summary-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        .summary-table tbody tr:hover { background: #f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .comparison-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+        .comparison-card.params { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #93c5fd; }
+        .comparison-card.hyperparams { background: linear-gradient(135deg, #f0fdf4, #ccfbf1); border: 2px solid #5eead4; }
+        .comparison-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comparison-card ul { list-style: none; padding: 0; text-align: left; display: inline-block; }
+        .comparison-card li { padding: 0.2rem 0; font-size: 0.88rem; }
+        .baseline-card {
+            background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); color: #fff; border-radius: var(--radius-xl); padding: 2rem; text-align: center; box-shadow: var(--shadow-xl);
+        }
+        .baseline-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #5eead4; }
+        .baseline-card .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .baseline-card .config-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.75rem; }
+        .baseline-card .config-item strong { display: block; color: #fbbf24; font-size: 1rem; }
+        .baseline-card .config-item span { font-size: 0.78rem; opacity: 0.8; }
+        .back-to-top {
+            position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue-mid); color: #fff; border: none;
+            cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition); z-index: 99; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--deep-blue); transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        /* Equation breakdown specific */
+        .eq-explanation-card {
+            background: #f8fafc; border-radius: var(--radius-lg); padding: 1.8rem; margin-top: 1.5rem; border: 1px solid #cbd5e1;
+        }
+        .eq-explanation-card h4 { font-size: 1.2rem; color: var(--deep-blue); margin-bottom: 1rem; }
+        .eq-term-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.8rem;
+        }
+        .eq-term-item {
+            background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--teal-light);
+        }
+        .eq-term-item .symbol { font-family: var(--font-mono); font-weight: 700; color: var(--blue-mid); font-size: 1.15rem; }
+        .eq-term-item .meaning { font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem; }
+        .eq-term-item .dims { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-style: italic; }
+        .highlight-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .highlight-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+        .highlight-table tr:last-child td { border-bottom: none; }
+        .highlight-table .sym { font-family: var(--font-mono); color: var(--blue-mid); font-weight: 600; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; } .comparison-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 0.76rem; padding: 0.5rem 0.6rem; min-width: auto; flex: 1 1 calc(33% - 0.3rem); }
+            .header { padding: 2rem 1rem 1.5rem; } .header h1 { font-size: 1.6rem; }
+            .eq-term-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- HEADER -->
+    <!-- ═══════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">🧠 Deep Learning · RNN Family</div>
+            <h1>Gated Recurrent Unit – <span>Hyperparameters</span></h1>
+            <p class="tagline">Master every dial and knob that shapes GRU performance</p>
+            <p class="intro">
+                A Gated Recurrent Unit (GRU) is a streamlined RNN variant designed to combat the vanishing gradient problem.
+                Its real‑world success hinges on choosing the right <strong>hyperparameters</strong>. This guide covers all 10 essential ones —
+                from hidden units to loss functions — with practical Keras examples and a ready‑to‑run stock market prediction demo.
+            </p>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- INFOGRAPHIC IMAGE AREA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <div class="infographic-area" id="infographicArea">
+            <img id="infographicImg" src="GRU_NUTSHELL.png" alt="GRU Nutshell Infographic" loading="lazy" onerror="handleImageFallback()">
+            <div class="infographic-fallback" id="infographicFallback">
+                <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🔬 GRU Cell Architecture</div>
+                <div class="gru-diagram">
+                    <div class="gate-box"><strong>Update Gate</strong><code>z<sub>t</sub> = σ(W<sub>z</sub>x<sub>t</sub> + U<sub>z</sub>h<sub>t-1</sub>)</code><br><small style="color:#94a3b8;">Controls how much past to keep</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Reset Gate</strong><code>r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + U<sub>r</sub>h<sub>t-1</sub>)</code><br><small style="color:#94a3b8;">Controls how much past to forget</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Hidden State</strong><code>h<sub>t</sub> = (1−z<sub>t</sub>)⊙h<sub>t-1</sub> + z<sub>t</sub>⊙h̃<sub>t</sub></code><br><small style="color:#94a3b8;">Blends old &amp; new information</small></div>
+                </div>
+                <div style="text-align:center;color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">σ = sigmoid &nbsp;|&nbsp; ⊙ = element‑wise multiplication &nbsp;|&nbsp; 2 gates (vs LSTM's 3)</div>
+            </div>
+            <p class="caption">📊 GRU architecture overview — update gate, reset gate, and hidden state flow</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB NAVIGATION -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <nav class="tab-nav" id="tabNav">
+            <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Hyperparameters</button>
+            <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+            <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+            <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+            <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+            <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+        </nav>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: All Hyperparameters (1–10) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel active" id="tab-all-concepts">
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🧩</div><h3>① Number of GRU Units (Hidden Units)</h3><p class="card-desc">Defines how many neurons exist in the GRU layer. More units = higher capacity to learn complex patterns, but also more memory and risk of overfitting.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> GRU<br>GRU(<span class="num">128</span>)  <span class="cm"># 128 hidden units</span></div><div class="tip-box"><span class="box-icon">💡</span>Start with <strong>64 or 128</strong>. Double only if underfitting persists.</div><div class="warn-box"><span class="box-icon">⚠️</span>Too many units (≥512) on small datasets → severe overfitting.</div></div>
+                <div class="card"><div class="card-icon">🏢</div><h3>② Number of Layers</h3><p class="card-desc">Stack multiple GRU layers for deeper feature extraction. Use <code>return_sequences=True</code> on all but the last GRU layer.</p><div class="code-snippet">model.add(GRU(<span class="num">128</span>, <span class="fn">return_sequences</span>=<span class="kw">True</span>))<br>model.add(GRU(<span class="num">64</span>))  <span class="cm"># final GRU layer</span></div><div class="good-box"><span class="box-icon">✅</span>1–3 layers usually suffice. More layers = more training time.</div></div>
+                <div class="card"><div class="card-icon">🎯</div><h3>③ Learning Rate</h3><p class="card-desc">Controls the step size during weight updates. The single most impactful hyperparameter.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.optimizers <span class="kw">import</span> Adam<br>optimizer = Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>)</div><div class="tip-box"><span class="box-icon">💡</span><strong>0.001</strong> (Adam default) is a great starting point for most problems.</div><div class="warn-box"><span class="box-icon">⚠️</span>Too high (≥0.1) → loss explodes. Too low (≤1e-5) → painfully slow convergence.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>④ Batch Size</h3><p class="card-desc">Number of samples processed before each weight update. Balances gradient stability and training speed.</p><div class="code-snippet">model.fit(X_train, y_train, <span class="fn">batch_size</span>=<span class="num">32</span>)</div><div class="tip-box"><span class="box-icon">💡</span><strong>32</strong> is a safe default. Use <strong>16</strong> for noisy gradients, <strong>64–128</strong> for speed on large datasets.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>⑤ Number of Epochs</h3><p class="card-desc">How many complete passes through the training dataset. Use Early Stopping to avoid overfitting.</p><div class="code-snippet">model.fit(X_train, y_train, <span class="fn">epochs</span>=<span class="num">50</span>)</div><div class="good-box"><span class="box-icon">✅</span>Always pair with <strong>EarlyStopping</strong> callback — let the model decide when to stop.</div></div>
+                <div class="card"><div class="card-icon">🎲</div><h3>⑥ Dropout &amp; Recurrent Dropout</h3><p class="card-desc">Randomly drops connections during training to prevent overfitting. GRU supports both input dropout and recurrent dropout.</p><div class="code-snippet">GRU(<span class="num">128</span>, <span class="fn">dropout</span>=<span class="num">0.2</span>, <span class="fn">recurrent_dropout</span>=<span class="num">0.2</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Typical range: <strong>0.1–0.5</strong>. Start with 0.2 and increase if overfitting.</div></div>
+                <div class="card"><div class="card-icon">📏</div><h3>⑦ Sequence Length (Time Steps)</h3><p class="card-desc">Number of previous time steps fed into the model. Directly shapes the input tensor.</p><div class="code-snippet"><span class="cm"># Predict stock price using last 30 days</span><br><span class="fn">time_steps</span> = <span class="num">30</span><br><span class="fn">input_shape</span> = (<span class="num">30</span>, <span class="num">5</span>)  <span class="cm"># 30 days, 5 features</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Too long → vanishing gradients return. Too short → misses long‑term patterns.</div></div>
+                <div class="card"><div class="card-icon">⚡</div><h3>⑧ Activation Function</h3><p class="card-desc">GRU internally uses <strong>tanh</strong> (candidate state) and <strong>sigmoid</strong> (gates). You can specify the output activation.</p><div class="code-snippet">GRU(<span class="num">128</span>, <span class="fn">activation</span>=<span class="str">'tanh'</span>)</div><div class="good-box"><span class="box-icon">✅</span>Default <strong>tanh</strong> works well. Rarely needs changing for standard GRU cells.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>⑨ Optimizer</h3><p class="card-desc">Controls the weight update strategy. Adam is the go‑to choice for most GRU applications.</p><div class="code-snippet">model.compile(<span class="fn">optimizer</span>=<span class="str">'adam'</span>, loss=<span class="str">'mse'</span>)<br><span class="cm"># or: optimizer='rmsprop' | 'sgd'</span></div><div class="tip-box"><span class="box-icon">💡</span><strong>Adam</strong> ≈ adaptive learning rate + momentum. Best default for GRU models.</div></div>
+                <div class="card"><div class="card-icon">📉</div><h3>⑩ Loss Function</h3><p class="card-desc">Measures prediction error. Choice depends entirely on problem type.</p><div class="code-snippet"><span class="cm"># Regression</span><br>model.compile(loss=<span class="str">'mse'</span>)<br><span class="cm"># Classification</span><br>model.compile(loss=<span class="str">'categorical_crossentropy'</span>)</div><div class="tip-box"><span class="box-icon">💡</span><strong>MSE</strong> for regression, <strong>Binary/Categorical Crossentropy</strong> for classification.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Architecture / Structure (NOW WITH FULL EQUATION BREAKDOWN) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-architecture">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ GRU Architecture &amp; Structure</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">
+                The GRU cell uses <strong>two gates</strong> (update &amp; reset) instead of LSTM's three,
+                making it computationally lighter while retaining the ability to capture long‑range dependencies.
+            </p>
+            <div class="arch-visual">
+                <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🔬 GRU Core Equations</div>
+                <div class="eq-block"><span class="hl">Update Gate:</span><br>z<sub>t</sub> = σ(<span class="hl2">W<sub>z</sub></span>·x<sub>t</sub> + <span class="hl2">U<sub>z</sub></span>·h<sub>t−1</sub>)</div>
+                <div class="eq-block"><span class="hl">Reset Gate:</span><br>r<sub>t</sub> = σ(<span class="hl2">W<sub>r</sub></span>·x<sub>t</sub> + <span class="hl2">U<sub>r</sub></span>·h<sub>t−1</sub>)</div>
+                <div class="eq-block"><span class="hl">Candidate State:</span><br>h̃<sub>t</sub> = tanh(<span class="hl2">W</span>·x<sub>t</sub> + <span class="hl2">U</span>·(r<sub>t</sub>⊙h<sub>t−1</sub>))</div>
+                <div class="eq-block"><span class="hl">Final Hidden State:</span><br>h<sub>t</sub> = (1−z<sub>t</sub>)⊙h<sub>t−1</sub> + z<sub>t</sub>⊙h̃<sub>t</sub></div>
+            </div>
+
+            <!-- 🔍 DEEP DIVE: Every element explained -->
+            <div class="eq-explanation-card">
+                <h4>📖 Equation Element Breakdown – What every symbol means</h4>
+                <p style="margin-bottom:1.2rem; font-size:0.9rem; color:var(--text-light);">
+                    Let’s dissect each component of the update gate equation <code>z<sub>t</sub> = σ(W<sub>z</sub>·x<sub>t</sub> + U<sub>z</sub>·h<sub>t−1</sub>)</code> and the other GRU equations.
+                    Understanding the role of each tensor helps you see why GRUs work.
+                </p>
+
+                <!-- Equation 1 breakdown -->
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Update Gate:  z<sub>t</sub> = σ(W<sub>z</sub>x<sub>t</sub> + U<sub>z</sub>h<sub>t−1</sub>)</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">σ (sigmoid)</div><div class="meaning">The logistic function, outputs values between 0 and 1. Acts as a soft switch: 0 = “keep nothing”, 1 = “keep everything”.</div><div class="dims">Output: (0,1) per element</div></div>
+                    <div class="eq-term-item"><div class="symbol">W<sub>z</sub></div><div class="meaning">Weight matrix applied to the current input <strong>x<sub>t</sub></strong>. Learned during training. Determines how <strong>current input</strong> influences the update decision.</div><div class="dims">Shape: (hidden_units, input_features)</div></div>
+                    <div class="eq-term-item"><div class="symbol">x<sub>t</sub></div><div class="meaning">The input vector at time step t (e.g., today’s stock features). This is the new information arriving at the cell.</div><div class="dims">Shape: (batch_size, input_features)</div></div>
+                    <div class="eq-term-item"><div class="symbol">U<sub>z</sub></div><div class="meaning">Weight matrix for the <strong>previous hidden state</strong> h<sub>t−1</sub>. Governs how much the past memory affects the update gate.</div><div class="dims">Shape: (hidden_units, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">h<sub>t−1</sub></div><div class="meaning">Hidden state from the previous time step. The cell’s “memory” before seeing x<sub>t</sub>. Carries information from earlier time steps.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">z<sub>t</sub></div><div class="meaning">Update gate output – a vector of values in (0,1). Later used to blend old hidden state and new candidate state. High z<sub>t</sub> → keep more new info; low z<sub>t</sub> → retain old memory.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                </div>
+
+                <!-- Equation 2 breakdown -->
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Reset Gate:  r<sub>t</sub> = σ(W<sub>r</sub>x<sub>t</sub> + U<sub>r</sub>h<sub>t−1</sub>)</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">W<sub>r</sub>, U<sub>r</sub></div><div class="meaning">Similar to W<sub>z</sub>, U<sub>z</sub> but specialised for the <strong>reset</strong> gate. They learn to decide how much of the past to forget when computing the candidate state.</div><div class="dims">W<sub>r</sub>: (hidden_units, input_features), U<sub>r</sub>: (hidden_units, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">r<sub>t</sub></div><div class="meaning">Reset gate vector (values in 0–1). When r<sub>t</sub> is near 0, the cell “forgets” the previous state and treats x<sub>t</sub> as the start of a new sequence.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                </div>
+
+                <!-- Equation 3 breakdown -->
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Candidate Hidden State:  h̃<sub>t</sub> = tanh( W x<sub>t</sub> + U (r<sub>t</sub> ⊙ h<sub>t−1</sub>) )</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">tanh</div><div class="meaning">Hyperbolic tangent function, outputs between -1 and 1. Normalizes the candidate state so it can both increase and decrease the hidden values.</div><div class="dims">Output: (-1,1) per element</div></div>
+                    <div class="eq-term-item"><div class="symbol">W, U</div><div class="meaning">Weight matrices for the candidate state computation. <strong>U</strong> interacts with the reset‑gated previous hidden state, allowing the cell to ignore irrelevant history.</div><div class="dims">W: (hidden_units, input_features), U: (hidden_units, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">⊙ (element‑wise multiplication)</div><div class="meaning">The Hadamard product: multiplies corresponding elements of two vectors. In r<sub>t</sub> ⊙ h<sub>t−1</sub>, it zeros out parts of the previous hidden state that the reset gate deems irrelevant.</div><div class="dims">Output shape matches inputs</div></div>
+                    <div class="eq-term-item"><div class="symbol">h̃<sub>t</sub></div><div class="meaning">Candidate hidden state – a proposed new memory content based on current input and selectively remembered past. It is not the final state; it will be blended with the old state via the update gate.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                </div>
+
+                <!-- Equation 4 breakdown -->
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Final Hidden State:  h<sub>t</sub> = (1 − z<sub>t</sub>) ⊙ h<sub>t−1</sub> + z<sub>t</sub> ⊙ h̃<sub>t</sub></h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">(1 − z<sub>t</sub>) ⊙ h<sub>t−1</sub></div><div class="meaning">Keeps a fraction of the old hidden state. Where z<sub>t</sub> is close to 0, we retain almost all of the previous memory.</div><div class="dims">Same as h<sub>t−1</sub></div></div>
+                    <div class="eq-term-item"><div class="symbol">z<sub>t</sub> ⊙ h̃<sub>t</sub></div><div class="meaning">Adds a fraction of the new candidate state. Where z<sub>t</sub> is high, the new proposal dominates.</div><div class="dims">Same as h̃<sub>t</sub></div></div>
+                    <div class="eq-term-item"><div class="symbol">h<sub>t</sub></div><div class="meaning">The final hidden state at time t – a linear interpolation (convex combination) between old memory and new candidate. This becomes the output and the memory for the next time step.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                </div>
+
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted); background: #e0f2fe; padding:0.8rem; border-radius: var(--radius-sm);">
+                    💡 <strong>Key insight:</strong> Because z<sub>t</sub> is a vector (not a single number), the GRU can decide <strong>independently</strong> for each feature whether to keep the old value or update it.
+                    This adaptive gating is what makes GRUs so effective for sequences.
+                </div>
+            </div>
+
+            <div class="card-grid" style="margin-top:1rem;">
+                <div class="card"><div class="card-icon">🔍</div><h3>Update Gate (z<sub>t</sub>)</h3><p class="card-desc">Decides how much of the <strong>past hidden state</strong> to carry forward. Values near 1 retain old info; near 0 replace it with new info.</p><div class="tip-box"><span class="box-icon">💡</span>This is the key innovation — one gate handles both "forget" and "input" decisions.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Reset Gate (r<sub>t</sub>)</h3><p class="card-desc">Controls how much of the <strong>previous hidden state</strong> contributes to the candidate state. Allows the cell to discard irrelevant history.</p><div class="tip-box"><span class="box-icon">💡</span>When r<sub>t</sub> ≈ 0, the cell behaves as if reading the first symbol of a new sequence.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Training / Process -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-training">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Process Hyperparameters</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">These hyperparameters govern <strong>how</strong> the model learns — controlling the optimization trajectory, convergence speed, and data flow during training.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎯</div><h3>Learning Rate</h3><p class="card-desc">The step size for gradient descent. Arguably the most critical hyperparameter to tune.</p><div class="code-snippet">Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>)</div><div class="good-box"><span class="box-icon">✅</span>Use <strong>learning rate scheduling</strong> (e.g., ReduceLROnPlateau) for automatic adjustment during training.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>Batch Size</h3><p class="card-desc">Affects gradient noise and training speed. Small batches → better generalization; large batches → faster but riskier.</p><div class="code-snippet">model.fit(X, y, <span class="fn">batch_size</span>=<span class="num">32</span>)</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Epochs</h3><p class="card-desc">Full dataset passes. More isn't always better — monitor validation loss.</p><div class="code-snippet">model.fit(X, y, <span class="fn">epochs</span>=<span class="num">50</span>)</div><div class="warn-box"><span class="box-icon">⚠️</span>Without EarlyStopping, too many epochs → memorization of training data.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>Optimizer Choice</h3><p class="card-desc">Adam adapts learning rates per‑parameter; RMSprop handles non‑stationary objectives well; SGD with momentum is a classic.</p><div class="code-snippet"><span class="cm"># Adam: best default</span><br>model.compile(<span class="fn">optimizer</span>=<span class="str">'adam'</span>)<br><span class="cm"># RMSprop: good for RNNs</span><br>model.compile(<span class="fn">optimizer</span>=<span class="str">'rmsprop'</span>)</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Regularization / Tuning -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-regularization">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">Prevent overfitting and improve generalization with these techniques specifically designed for recurrent networks.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎲</div><h3>Dropout (Input)</h3><p class="card-desc">Randomly zeros input units during training. Applied to the <strong>input connections</strong> of the GRU cell.</p><div class="code-snippet">GRU(<span class="num">128</span>, <span class="fn">dropout</span>=<span class="num">0.3</span>)</div><div class="tip-box"><span class="box-icon">💡</span>0.2–0.3 is a safe starting range for most sequence models.</div></div>
+                <div class="card"><div class="card-icon">🔁</div><h3>Recurrent Dropout</h3><p class="card-desc">Applies dropout to the <strong>recurrent connections</strong> (hidden‑to‑hidden). More aggressive regularization.</p><div class="code-snippet">GRU(<span class="num">128</span>, <span class="fn">recurrent_dropout</span>=<span class="num">0.2</span>)</div><div class="warn-box"><span class="box-icon">⚠️</span>Too high (≥0.5) can destroy the cell's ability to maintain long‑term memory.</div></div>
+                <div class="card"><div class="card-icon">⏳</div><h3>Early Stopping</h3><p class="card-desc">Halts training when validation loss stops improving. Essential for preventing overfitting.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> EarlyStopping<br>EarlyStopping(<span class="fn">monitor</span>=<span class="str">'val_loss'</span>, <span class="fn">patience</span>=<span class="num">10</span>)</div></div>
+                <div class="card"><div class="card-icon">📉</div><h3>Learning Rate Scheduling</h3><p class="card-desc">Gradually reduces the learning rate as training plateaus, helping the model settle into a better minimum.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> ReduceLROnPlateau<br>ReduceLROnPlateau(<span class="fn">factor</span>=<span class="num">0.5</span>, <span class="fn">patience</span>=<span class="num">5</span>)</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Full Code Example -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-full-code">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">💻 Full Code – Stock Market Prediction with GRU</h2>
+            <p style="color:var(--text-light);margin-bottom:1rem;">A complete, runnable example using synthetic stock‑like data. Every hyperparameter is annotated with circled numbers (①–⑩) matching the cards above.</p>
+            <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""GRU Stock Market Prediction – All Hyperparameters Demonstrated"""</span>
+
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> MinMaxScaler
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+<span class="kw">from</span> tensorflow.keras.models <span class="kw">import</span> Sequential
+<span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> GRU, Dense, Dropout
+<span class="kw">from</span> tensorflow.keras.optimizers <span class="kw">import</span> Adam
+<span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> EarlyStopping, ReduceLROnPlateau
+
+<span class="cm"># ── Generate Synthetic Stock Data ──</span>
+np.random.seed(<span class="num">42</span>)
+n_samples = <span class="num">2000</span>
+t = np.arange(n_samples)
+trend = <span class="num">0.05</span> * t
+seasonality = <span class="num">15</span> * np.sin(<span class="num">2</span> * np.pi * t / <span class="num">250</span>)
+noise = np.random.normal(<span class="num">0</span>, <span class="num">3</span>, n_samples)
+price = <span class="num">100</span> + trend + seasonality + noise
+price = np.maximum(price, <span class="num">10</span>)  <span class="cm"># no negative prices</span>
+
+<span class="cm"># ── Feature Engineering ──</span>
+returns = np.diff(price, prepend=price[<span class="num">0</span>]) / (price + <span class="num">1e-8</span>)
+ma_10 = np.convolve(price, np.ones(<span class="num">10</span>)/<span class="num">10</span>, mode=<span class="str">'same'</span>)
+ma_30 = np.convolve(price, np.ones(<span class="num">30</span>)/<span class="num">30</span>, mode=<span class="str">'same'</span>)
+volatility = np.array([np.std(price[max(<span class="num">0</span>,i-<span class="num">10</span>):i+<span class="num">1</span>]) <span class="kw">for</span> i <span class="kw">in</span> range(n_samples)])
+
+features = np.column_stack([price, returns, ma_10, ma_30, volatility])
+scaler = MinMaxScaler()
+features_scaled = scaler.fit_transform(features)
+
+<span class="cm"># ── ⑦ SEQUENCE LENGTH / TIME STEPS ──</span>
+<span class="anno">TIME_STEPS</span> = <span class="num">30</span>              <span class="cm"># ⑦ Lookback window: 30 days</span>
+<span class="anno">N_FEATURES</span> = features_scaled.shape[<span class="num">1</span>]  <span class="cm"># 5 features</span>
+
+<span class="kw">def</span> <span class="fn">create_sequences</span>(data, target_idx=<span class="num">0</span>, time_steps=TIME_STEPS):
+    X, y = [], []
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(data) - time_steps):
+        X.append(data[i:i+time_steps])
+        y.append(data[i+time_steps, target_idx])
+    <span class="kw">return</span> np.array(X), np.array(y)
+
+X, y = create_sequences(features_scaled)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=<span class="num">0.2</span>, shuffle=<span class="kw">False</span>
+)
+
+<span class="cm"># ── Build GRU Model ──</span>
+model = Sequential()
+
+<span class="cm"># ① Number of Units: 128 | ⑥ Dropout: 0.2 | ⑧ Activation: tanh</span>
+model.add(GRU(
+    <span class="anno">units</span>=<span class="num">128</span>,                          <span class="cm"># ① Hidden units</span>
+    <span class="anno">dropout</span>=<span class="num">0.2</span>,                         <span class="cm"># ⑥ Input dropout</span>
+    <span class="anno">recurrent_dropout</span>=<span class="num">0.2</span>,               <span class="cm"># ⑥ Recurrent dropout</span>
+    <span class="anno">activation</span>=<span class="str">'tanh'</span>,                    <span class="cm"># ⑧ Activation function</span>
+    <span class="anno">return_sequences</span>=<span class="kw">True</span>,               <span class="cm"># ② Needed for stacking</span>
+    <span class="anno">input_shape</span>=(TIME_STEPS, N_FEATURES) <span class="cm"># ⑦ Shape from sequence length</span>
+))
+
+<span class="cm"># ② Second GRU layer (fewer units)</span>
+model.add(GRU(
+    <span class="anno">units</span>=<span class="num">64</span>,                           <span class="cm"># ① Fewer units in deeper layer</span>
+    <span class="anno">dropout</span>=<span class="num">0.2</span>,                         <span class="cm"># ⑥</span>
+    <span class="anno">recurrent_dropout</span>=<span class="num">0.2</span>,               <span class="cm"># ⑥</span>
+    <span class="anno">return_sequences</span>=<span class="kw">False</span>               <span class="cm"># ② Final GRU: no sequences returned</span>
+))
+
+<span class="cm"># Output layer for regression</span>
+model.add(Dense(<span class="num">1</span>))  <span class="cm"># Single value: predicted price</span>
+
+<span class="cm"># ── ⑨ OPTIMIZER & ③ LEARNING RATE & ⑩ LOSS ──</span>
+<span class="anno">optimizer</span> = Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>)  <span class="cm"># ⑨ Adam optimizer | ③ LR = 0.001</span>
+model.compile(
+    <span class="anno">optimizer</span>=optimizer,                    <span class="cm"># ⑨</span>
+    <span class="anno">loss</span>=<span class="str">'mse'</span>                              <span class="cm"># ⑩ MSE for regression</span>
+)
+
+model.summary()
+
+<span class="cm"># ── Callbacks ──</span>
+early_stop = EarlyStopping(
+    <span class="fn">monitor</span>=<span class="str">'val_loss'</span>,
+    <span class="fn">patience</span>=<span class="num">15</span>,
+    <span class="fn">restore_best_weights</span>=<span class="kw">True</span>
+)
+reduce_lr = ReduceLROnPlateau(
+    <span class="fn">monitor</span>=<span class="str">'val_loss'</span>,
+    <span class="fn">factor</span>=<span class="num">0.5</span>,
+    <span class="fn">patience</span>=<span class="num">5</span>,
+    <span class="fn">min_lr</span>=<span class="num">1e-6</span>
+)
+
+<span class="cm"># ── ④ BATCH SIZE & ⑤ EPOCHS ──</span>
+history = model.fit(
+    X_train, y_train,
+    <span class="anno">batch_size</span>=<span class="num">32</span>,                        <span class="cm"># ④ Batch size</span>
+    <span class="anno">epochs</span>=<span class="num">100</span>,                           <span class="cm"># ⑤ Epochs (with early stopping)</span>
+    <span class="anno">validation_split</span>=<span class="num">0.15</span>,
+    <span class="anno">callbacks</span>=[early_stop, reduce_lr],
+    <span class="anno">verbose</span>=<span class="num">1</span>
+)
+
+<span class="cm"># ── Evaluate ──</span>
+test_loss = model.evaluate(X_test, y_test, verbose=<span class="num">0</span>)
+<span class="kw">print</span>(<span class="str">f"📊 Test MSE: {test_loss:.6f}"</span>)
+
+<span class="cm"># ── Predict ──</span>
+predictions = model.predict(X_test)
+
+<span class="cm"># ── Plot ──</span>
+plt.figure(figsize=(<span class="num">14</span>, <span class="num">5</span>))
+plt.plot(y_test[:<span class="num">200</span>], label=<span class="str">'Actual'</span>, alpha=<span class="num">0.8</span>)
+plt.plot(predictions[:<span class="num">200</span>], label=<span class="str">'Predicted'</span>, alpha=<span class="num">0.8</span>)
+plt.title(<span class="str">'GRU Stock Price Prediction (First 200 Test Samples)'</span>)
+plt.legend()
+plt.tight_layout()
+plt.savefig(<span class="str">'gru_stock_prediction.png'</span>, dpi=<span class="num">150</span>)
+plt.show()
+<span class="kw">print</span>(<span class="str">"✅ Done! Check 'gru_stock_prediction.png'"</span>)
+            </div>
+            <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);text-align:center;">⬆️ Copy &amp; paste into a <code>.py</code> file or Jupyter notebook. All ⑩ hyperparameters are labeled.</p>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Summary & Comparison -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-summary">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead><tr><th>#</th><th>Hyperparameter</th><th>Purpose</th><th>Typical Range / Values</th></tr></thead>
+                    <tbody>
+                        <tr><td>①</td><td><strong>GRU Units</strong></td><td>Model capacity &amp; pattern complexity</td><td>32, 64, 128, 256</td></tr>
+                        <tr><td>②</td><td><strong>Number of Layers</strong></td><td>Depth of feature extraction</td><td>1–3 (rarely more)</td></tr>
+                        <tr><td>③</td><td><strong>Learning Rate</strong></td><td>Step size for weight updates</td><td>1e-4 to 1e-2 (default: 0.001)</td></tr>
+                        <tr><td>④</td><td><strong>Batch Size</strong></td><td>Samples per weight update</td><td>16, 32, 64, 128</td></tr>
+                        <tr><td>⑤</td><td><strong>Epochs</strong></td><td>Full passes through dataset</td><td>10–200 (use EarlyStopping)</td></tr>
+                        <tr><td>⑥</td><td><strong>Dropout</strong></td><td>Prevent overfitting</td><td>0.1–0.5</td></tr>
+                        <tr><td>⑦</td><td><strong>Sequence Length</strong></td><td>Temporal context window</td><td>Problem‑dependent (10–100+)</td></tr>
+                        <tr><td>⑧</td><td><strong>Activation</strong></td><td>Nonlinearity in cell computation</td><td>tanh (default), sigmoid</td></tr>
+                        <tr><td>⑨</td><td><strong>Optimizer</strong></td><td>Weight update strategy</td><td>Adam, RMSprop, SGD</td></tr>
+                        <tr><td>⑩</td><td><strong>Loss Function</strong></td><td>Error measurement</td><td>MSE (regression), Crossentropy (classif.)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card params"><h4>🧠 Learned Parameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Discovered automatically during training</p><ul><li>✅ Weight matrices (W<sub>z</sub>, U<sub>z</sub>, W<sub>r</sub>, U<sub>r</sub>, W, U)</li><li>✅ Bias vectors</li><li>✅ Dense layer weights</li><li>📌 <em>Set by backpropagation</em></li></ul></div>
+                <div class="comparison-card hyperparams"><h4>⚙️ Hyperparameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Set manually before training begins</p><ul><li>🔧 Learning rate, batch size, epochs</li><li>🔧 Number of units, layers, dropout</li><li>🔧 Optimizer, loss, activation, sequence length</li><li>📌 <em>Chosen by the practitioner</em></li></ul></div>
+            </div>
+            <div class="baseline-card">
+                <h3>🚀 Common Starting Configuration</h3><p style="opacity:0.85;margin-bottom:1rem;">Use these defaults as your first experiment baseline:</p>
+                <div class="config-grid">
+                    <div class="config-item"><strong>128</strong><span>① GRU Units</span></div><div class="config-item"><strong>2</strong><span>② Layers</span></div><div class="config-item"><strong>0.001</strong><span>③ Learning Rate</span></div><div class="config-item"><strong>32</strong><span>④ Batch Size</span></div><div class="config-item"><strong>100</strong><span>⑤ Epochs (max)</span></div><div class="config-item"><strong>0.2</strong><span>⑥ Dropout</span></div><div class="config-item"><strong>30</strong><span>⑦ Time Steps</span></div><div class="config-item"><strong>tanh</strong><span>⑧ Activation</span></div><div class="config-item"><strong>Adam</strong><span>⑨ Optimizer</span></div><div class="config-item"><strong>MSE</strong><span>⑩ Loss (regression)</span></div>
+                </div>
+                <p style="margin-top:1rem;font-size:0.82rem;opacity:0.7;">🔬 Tune from here: adjust learning rate first, then units/layers, then dropout.</p>
+            </div>
+            <div class="summary-table-wrap" style="margin-top:1.5rem;">
+                <table class="summary-table">
+                    <thead><tr><th>Feature</th><th>GRU</th><th>LSTM</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gates</td><td>2 (update, reset)</td><td>3 (forget, input, output)</td></tr>
+                        <tr><td>Parameters</td><td>Fewer</td><td>More (~33% more)</td></tr>
+                        <tr><td>Training Speed</td><td>⚡ Faster</td><td>🐢 Slower</td></tr>
+                        <tr><td>Memory Usage</td><td>Lower</td><td>Higher</td></tr>
+                        <tr><td>Best For</td><td>Smaller datasets, faster iteration</td><td>Complex long sequences, large data</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+    <script>
+        function handleImageFallback() {
+            const img = document.getElementById('infographicImg');
+            const fallback = document.getElementById('infographicFallback');
+            if (img && fallback) { img.style.display = 'none'; fallback.style.display = 'block'; }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const img = document.getElementById('infographicImg');
+            if (img && !img.complete) {
+                setTimeout(() => { if (!img.complete || img.naturalWidth === 0) handleImageFallback(); }, 3000);
+            } else if (img && img.naturalWidth === 0) { handleImageFallback(); }
+        });
+        const tabNav = document.getElementById('tabNav');
+        const tabBtns = tabNav.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const targetPanel = document.getElementById('tab-' + targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.style.animation = 'none';
+                    targetPanel.offsetHeight;
+                    targetPanel.style.animation = 'fadeSlideIn 0.4s ease';
+                }
+                if (window.innerWidth < 768) { targetPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+        const backToTopBtn = document.getElementById('backToTop');
+        function toggleBackToTop() { if (window.scrollY > 500) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible'); }
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        toggleBackToTop();
+        const infographicImg = document.getElementById('infographicImg');
+        if (infographicImg) {
+            infographicImg.addEventListener('load', () => { const fallback = document.getElementById('infographicFallback'); if (fallback) fallback.style.display = 'none'; infographicImg.style.display = 'block'; });
+            infographicImg.addEventListener('error', handleImageFallback);
+        }
+        console.log('✅ GRU Hyperparameters Interactive Guide ready!');
+    </script>
+</body>
+</html>

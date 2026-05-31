@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Probability Distributions in Generative AI — CGAI Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+/* ───────── RESET & BASE ───────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c-bg:#f5f3ee;
+  --c-surface:#ffffff;
+  --c-text:#1a1a2e;
+  --c-muted:#6b6b80;
+  --c-border:#e0ddd5;
+
+  /* Per-tab accent palette */
+  --t1:#e8f4fd; --t1a:#2980b9; --t1b:#d4eaf7;
+  --t2:#edfaf1; --t2a:#27ae60; --t2b:#c9f0d5;
+  --t3:#fef9e7; --t3a:#d4ac0d; --t3b:#fdf0b4;
+  --t4:#fdf2e9; --t4a:#e67e22; --t4b:#fae3c8;
+  --t5:#f4ecf7; --t5a:#8e44ad; --t5b:#e8d5f5;
+  --t6:#eafaf1; --t6a:#1abc9c; --t6b:#c0f0e0;
+  --t7:#fef5f5; --t7a:#e74c3c; --t7b:#fddada;
+
+  --radius:14px;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 48px rgba(0,0,0,.13);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --tab-h:56px;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--c-bg);
+  color:var(--c-text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.65;
+}
+
+/* ───────── HERO ───────── */
+.hero{
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;
+  padding:48px 24px 56px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(41,128,185,.35),transparent);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-block;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff;
+  border-radius:40px;
+  padding:6px 18px;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+  backdrop-filter:blur(8px);
+}
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,5vw,3.2rem);
+  line-height:1.15;
+  margin-bottom:14px;
+  letter-spacing:-.01em;
+}
+.hero h1 span{color:#f9ca24}
+.hero-sub{
+  font-size:1.05rem;
+  color:rgba(255,255,255,.75);
+  max-width:640px;
+  margin:0 auto 24px;
+}
+.pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pill{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:30px;
+  padding:5px 14px;
+  font-size:12px;
+  color:rgba(255,255,255,.9);
+  font-weight:500;
+}
+
+/* ───────── STICKY NAV ───────── */
+.nav-wrap{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:#fff;
+  border-bottom:2px solid var(--c-border);
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.nav{
+  display:flex;
+  overflow-x:auto;
+  scrollbar-width:none;
+  max-width:1100px;
+  margin:0 auto;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{
+  flex:none;
+  height:var(--tab-h);
+  padding:0 20px;
+  border:none;
+  background:transparent;
+  font-family:var(--font-body);
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--c-muted);
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:color .2s,border-color .2s;
+  white-space:nowrap;
+}
+.nav-btn.active{color:var(--c-text);border-bottom-color:#2980b9}
+.nav-btn:hover:not(.active){color:var(--c-text)}
+
+/* ───────── LAYOUT ───────── */
+.content{max-width:1100px;margin:0 auto;padding:40px 20px 80px}
+
+.tab-section{display:none}
+.tab-section.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ───────── SECTION HEADERS ───────── */
+.sec-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:32px;
+  padding-bottom:16px;border-bottom:2px solid var(--c-border);
+}
+.sec-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.sec-title{font-family:var(--font-display);font-size:1.8rem;line-height:1.2}
+.sec-sub{font-size:.9rem;color:var(--c-muted);margin-top:2px}
+
+/* ───────── CARDS ───────── */
+.card{
+  background:var(--c-surface);
+  border-radius:var(--radius);
+  border:1px solid var(--c-border);
+  padding:24px;
+  box-shadow:var(--shadow);
+  margin-bottom:24px;
+}
+.card h3{
+  font-family:var(--font-display);
+  font-size:1.2rem;margin-bottom:12px;
+}
+.card p{color:#333;line-height:1.7}
+.card ul{padding-left:20px;line-height:2}
+.card ul li::marker{color:#2980b9}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:720px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ───────── HIGHLIGHT BOX ───────── */
+.highlight{
+  border-left:4px solid;
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;
+  margin:16px 0;
+  font-size:.95rem;
+}
+
+/* ───────── TABLES ───────── */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--c-border)}
+table{width:100%;border-collapse:collapse}
+th{
+  background:#0f2027;color:#fff;
+  padding:12px 16px;font-size:13px;
+  text-transform:uppercase;letter-spacing:.06em;text-align:left;
+}
+td{padding:12px 16px;border-bottom:1px solid var(--c-border);font-size:.93rem}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#fafafa}
+
+/* ───────── TERM CARDS ───────── */
+.terms{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.term-card{
+  background:var(--c-surface);
+  border:1px solid var(--c-border);
+  border-radius:10px;
+  padding:12px 16px;
+  min-width:160px;
+  flex:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.term-card .term{font-weight:700;font-size:.88rem;color:#2980b9;margin-bottom:4px;font-family:var(--font-mono)}
+.term-card .def{font-size:.82rem;color:#444;line-height:1.5}
+
+/* ───────── STEPPER ───────── */
+.stepper{counter-reset:step}
+.step{
+  background:var(--c-surface);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  margin-bottom:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.step-header{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 22px;cursor:pointer;
+  user-select:none;
+}
+.step-num{
+  width:34px;height:34px;border-radius:50%;
+  background:#0f2027;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9rem;flex-shrink:0;
+}
+.step-title{font-weight:600;font-size:1rem;flex:1}
+.step-arrow{font-size:.7rem;color:var(--c-muted);transition:transform .25s}
+.step-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease,padding .25s;
+  padding:0 22px;
+}
+.step.open .step-arrow{transform:rotate(180deg)}
+.step.open .step-body{max-height:800px;padding:0 22px 20px}
+.step-body p,.step-body ul{font-size:.93rem;color:#333;line-height:1.7}
+.step-body ul{padding-left:18px}
+.step-body .code-block{
+  background:#0f2027;color:#e0e0e0;
+  border-radius:8px;padding:12px 16px;
+  font-family:var(--font-mono);font-size:.8rem;
+  line-height:1.6;margin-top:10px;overflow-x:auto;
+}
+.step-body .code-block .kw{color:#f9ca24}
+.step-body .code-block .cm{color:#7ec8e3}
+
+/* ───────── INTERACTIVE DEMO ───────── */
+.demo-wrap{
+  background:var(--c-surface);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  padding:24px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+}
+.demo-wrap h3{font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px}
+.demo-controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.ctrl-btn{
+  padding:8px 18px;
+  border-radius:30px;
+  border:2px solid transparent;
+  font-family:var(--font-body);font-size:.88rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  background:#f0f0f0;color:#333;
+}
+.ctrl-btn.active{background:#0f2027;color:#fff;border-color:#0f2027}
+.ctrl-btn:hover:not(.active){border-color:#0f2027}
+.demo-canvas{
+  width:100%;height:200px;
+  background:#fafafa;
+  border:1px solid var(--c-border);
+  border-radius:10px;
+  position:relative;
+  overflow:hidden;
+  margin-top:12px;
+}
+.demo-output{
+  background:#f8f8f8;
+  border-radius:10px;
+  padding:14px 18px;
+  font-size:.88rem;
+  margin-top:12px;
+  line-height:1.6;
+}
+.demo-output strong{color:#2980b9}
+
+/* ───────── QUIZ ───────── */
+.quiz-wrap{max-width:780px;margin:0 auto}
+.progress-bar-wrap{
+  height:6px;background:#e0e0e0;border-radius:3px;margin-bottom:28px;overflow:hidden
+}
+.progress-bar{height:100%;background:linear-gradient(90deg,#27ae60,#2ecc71);border-radius:3px;transition:width .4s}
+.q-card{
+  background:var(--c-surface);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  padding:28px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+.q-num{font-size:.8rem;font-weight:700;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.q-text{font-size:1.05rem;font-weight:600;margin-bottom:18px;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{
+  border:2px solid var(--c-border);
+  border-radius:10px;padding:12px 18px;
+  cursor:pointer;font-size:.93rem;
+  transition:all .2s;background:#fff;
+  display:flex;align-items:center;gap:12px;
+}
+.opt:hover:not(.disabled){border-color:#2980b9;background:#e8f4fd}
+.opt.correct{border-color:#27ae60;background:#edfaf1;color:#1e8449}
+.opt.wrong{border-color:#e74c3c;background:#fef5f5;color:#c0392b}
+.opt.disabled{cursor:default}
+.opt-letter{
+  width:28px;height:28px;border-radius:50%;
+  background:#f0f0f0;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0;
+}
+.feedback-box{
+  margin-top:14px;padding:12px 16px;border-radius:8px;font-size:.9rem;
+  display:none;line-height:1.5;
+}
+.feedback-box.show{display:block}
+.feedback-box.correct{background:#edfaf1;border-left:4px solid #27ae60;color:#1e8449}
+.feedback-box.wrong{background:#fef5f5;border-left:4px solid #e74c3c;color:#c0392b}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.q-nav button{
+  padding:10px 24px;border-radius:30px;
+  border:none;cursor:pointer;
+  font-family:var(--font-body);font-weight:600;font-size:.9rem;
+  transition:all .2s;
+}
+.btn-prev{background:#f0f0f0;color:#333}
+.btn-prev:hover{background:#e0e0e0}
+.btn-next{background:#0f2027;color:#fff}
+.btn-next:hover{background:#203a43}
+.score-card{
+  text-align:center;padding:40px 24px;
+  background:var(--c-surface);border-radius:var(--radius);
+  border:1px solid var(--c-border);box-shadow:var(--shadow-lg);
+  display:none;
+}
+.score-card.show{display:block;animation:fadeIn .4s ease}
+.score-num{font-family:var(--font-display);font-size:4rem;margin:12px 0}
+.score-grade{
+  display:inline-block;padding:8px 24px;border-radius:30px;
+  font-weight:700;font-size:1.1rem;margin-bottom:16px;
+}
+.pass{background:#edfaf1;color:#1e8449}
+.fail{background:#fef5f5;color:#c0392b}
+.retry-btn{
+  margin-top:20px;padding:12px 32px;border-radius:30px;
+  background:#0f2027;color:#fff;border:none;
+  font-family:var(--font-body);font-weight:700;font-size:1rem;
+  cursor:pointer;transition:all .2s;
+}
+.retry-btn:hover{background:#203a43;transform:translateY(-2px)}
+
+/* ───────── DIAGRAMS ───────── */
+.diagram-card{
+  background:#fff;border:1px solid var(--c-border);border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow);margin-bottom:28px;
+}
+.diagram-img{width:100%;display:block}
+.diagram-caption{
+  padding:18px 22px;
+  border-top:1px solid var(--c-border);
+  background:#fafafa;
+}
+.diagram-caption h4{font-weight:700;margin-bottom:6px;font-size:1rem}
+.diagram-caption p{font-size:.88rem;color:#444;line-height:1.6}
+
+/* ───────── FORMULA ───────── */
+.formula{
+  background:#0f2027;color:#f9ca24;
+  font-family:var(--font-mono);font-size:.95rem;
+  padding:14px 20px;border-radius:10px;
+  margin:12px 0;overflow-x:auto;
+  display:block;line-height:1.8;
+}
+
+/* ───────── COLOR ACCENTS PER TAB ───────── */
+#tab-overview .sec-icon{background:var(--t1);color:var(--t1a)}
+#tab-overview .card{border-top:3px solid var(--t1a)}
+#tab-overview .highlight{background:var(--t1b);border-color:var(--t1a);color:#1a5276}
+
+#tab-pipeline .sec-icon{background:var(--t2);color:var(--t2a)}
+#tab-pipeline .step-num{background:var(--t2a)}
+#tab-pipeline .highlight{background:var(--t2b);border-color:var(--t2a);color:#1d6a3a}
+
+#tab-core .sec-icon{background:var(--t3);color:var(--t3a)}
+#tab-core .card{border-top:3px solid var(--t3a)}
+#tab-core .highlight{background:var(--t3b);border-color:var(--t3a);color:#7d6608}
+
+#tab-arch .sec-icon{background:var(--t4);color:var(--t4a)}
+#tab-arch .card{border-top:3px solid var(--t4a)}
+#tab-arch .highlight{background:var(--t4b);border-color:var(--t4a);color:#784212}
+
+#tab-concepts .sec-icon{background:var(--t5);color:var(--t5a)}
+#tab-concepts .card{border-top:3px solid var(--t5a)}
+#tab-concepts .highlight{background:var(--t5b);border-color:var(--t5a);color:#512e5f}
+
+#tab-diagrams .sec-icon{background:var(--t6);color:var(--t6a)}
+
+#tab-quiz .sec-icon{background:var(--t7);color:var(--t7a)}
+
+/* ───────── MISC ───────── */
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.76rem;font-weight:700;letter-spacing:.04em}
+.exam-tip{
+  background:#fff8e1;border:1px solid #f9ca24;
+  border-radius:10px;padding:14px 18px;
+  font-size:.9rem;margin:12px 0;line-height:1.6;
+}
+.exam-tip::before{content:"⚡ EXAM TIP: ";font-weight:700;color:#d4ac0d}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#e8f4fd;color:#1a5276;
+  border:1px solid #aed6f1;border-radius:20px;
+  padding:4px 12px;font-size:.8rem;font-weight:600;
+}
+.divider{height:1px;background:var(--c-border);margin:24px 0}
+
+/* ─── Chart SVG inside demo ─── */
+.demo-svg-wrap svg{display:block;width:100%;height:180px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div class="hero">
+  <div class="hero-badge">📊 CGAI Exam Prep — charteredcertifications.com</div>
+  <h1>Probability Distributions<br><span>in Generative AI</span></h1>
+  <p class="hero-sub">The mathematical backbone that enables generative models to learn, sample, and create realistic data across text, image, audio, and more.</p>
+  <div class="pills">
+    <span class="pill">📐 Gaussian Distribution</span>
+    <span class="pill">🎲 Bernoulli &amp; Categorical</span>
+    <span class="pill">🤖 VAEs · GANs · LLMs</span>
+    <span class="pill">📉 KL Divergence</span>
+    <span class="pill">🔬 Likelihood &amp; Sampling</span>
+    <span class="pill">⚡ Exam Ready</span>
+  </div>
+</div>
+
+<!-- ══════════════ STICKY NAV ══════════════ -->
+<div class="nav-wrap">
+  <nav class="nav">
+    <button class="nav-btn active" data-tab="overview">📖 Overview</button>
+    <button class="nav-btn" data-tab="pipeline">⚙️ Pipeline</button>
+    <button class="nav-btn" data-tab="core">🔬 Core Mechanism</button>
+    <button class="nav-btn" data-tab="arch">🏛️ Architecture</button>
+    <button class="nav-btn" data-tab="concepts">💡 Key Concepts</button>
+    <button class="nav-btn" data-tab="diagrams">🖼️ Diagrams</button>
+    <button class="nav-btn" data-tab="quiz">🧪 Quiz</button>
+  </nav>
+</div>
+
+<!-- ══════════════ CONTENT ══════════════ -->
+<div class="content">
+
+<!-- ════════ TAB 1: OVERVIEW ════════ -->
+<section id="tab-overview" class="tab-section active">
+  <div class="sec-header">
+    <div class="sec-icon">📖</div>
+    <div>
+      <div class="sec-title">Overview</div>
+      <div class="sec-sub">What probability distributions are, why they matter, and how they differ from alternatives</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>What Is a Probability Distribution?</h3>
+    <p>A <strong>probability distribution</strong> is a mathematical function that describes how likely different outcomes are for a random variable. It models <em>uncertainty, variability, and patterns</em> in data — answering the question: "How probable is each possible value?"</p>
+    <div class="highlight">
+      <strong>Key Insight:</strong> Generative AI models do <em>not</em> memorise data. Instead, they learn the underlying probability distribution of the training data so they can sample new, realistic examples from it.
+    </div>
+    <p style="margin-top:12px">Formally, a model with parameters θ tries to learn a distribution <code style="background:#eee;padding:2px 6px;border-radius:4px">p_θ(x)</code> that approximates the true data distribution <code style="background:#eee;padding:2px 6px;border-radius:4px">p_data(x)</code>.</p>
+    <code class="formula">Goal: p_θ(x) ≈ p_data(x)</code>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🪙 Everyday Examples</h3>
+      <ul>
+        <li><strong>Coin Toss:</strong> P(Heads) = 0.5, P(Tails) = 0.5 — uniform Bernoulli</li>
+        <li><strong>Human Height:</strong> Approximately Gaussian (bell curve)</li>
+        <li><strong>Word Occurrence:</strong> Follows complex statistical distributions (Zipf)</li>
+        <li><strong>Pixel Values:</strong> High-dimensional joint distributions</li>
+        <li><strong>Next Word Prediction:</strong> Categorical over a vocabulary of 50 k+ tokens</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎯 Why It Matters for AI</h3>
+      <ul>
+        <li><strong>Capture Uncertainty:</strong> Real-world data is noisy; distributions model this naturally</li>
+        <li><strong>Realistic Generation:</strong> Sampling from learned distributions creates diverse new data</li>
+        <li><strong>Feature Relationships:</strong> Joint distributions encode correlations between variables</li>
+        <li><strong>Avoid Memorisation:</strong> Models generalise beyond training examples</li>
+        <li><strong>Principled Training:</strong> Objectives like MLE and KL divergence have clean mathematical foundations</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📊 Comparison: Probabilistic vs Deterministic Models</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Aspect</th><th>Deterministic Model</th><th>Probabilistic / Generative Model</th></tr>
+        <tr><td>Output</td><td>Single fixed answer</td><td>Distribution over possible answers</td></tr>
+        <tr><td>Uncertainty</td><td>Ignored</td><td>Explicitly captured</td></tr>
+        <tr><td>New Data</td><td>Cannot generate novel samples</td><td>Samples new realistic examples</td></tr>
+        <tr><td>Training Objective</td><td>Minimise prediction error (e.g., MSE)</td><td>Maximise log-likelihood / minimise divergence</td></tr>
+        <tr><td>Examples</td><td>Linear regression, SVM</td><td>VAEs, GANs, Diffusion, LLMs</td></tr>
+        <tr><td>Memorisation Risk</td><td>High (overfitting)</td><td>Lower — learns shape, not pixels</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔑 Glossary — Key Terms</h3>
+    <div class="terms">
+      <div class="term-card"><div class="term">p_data(x)</div><div class="def">True (unknown) distribution of real-world data</div></div>
+      <div class="term-card"><div class="term">p_θ(x)</div><div class="def">Model's learned approximation with parameters θ</div></div>
+      <div class="term-card"><div class="term">PDF / PMF</div><div class="def">Probability Density / Mass Function — describes the distribution shape</div></div>
+      <div class="term-card"><div class="term">Sampling</div><div class="def">Drawing new values from a learned distribution</div></div>
+      <div class="term-card"><div class="term">Likelihood</div><div class="def">How probable observed data is under the model</div></div>
+      <div class="term-card"><div class="term">MLE</div><div class="def">Maximum Likelihood Estimation — train by maximising log p_θ(x)</div></div>
+      <div class="term-card"><div class="term">KL Divergence</div><div class="def">Measures how different two distributions are; D_KL(P‖Q)</div></div>
+      <div class="term-card"><div class="term">Latent Space</div><div class="def">Compressed representation where distributions are typically Gaussian</div></div>
+    </div>
+  </div>
+
+  <div class="exam-tip">For the CGAI exam, understand that ALL major generative model families (VAEs, GANs, Diffusion, LLMs) are fundamentally probabilistic — they each define or approximate a distribution p_θ(x) differently.</div>
+</section>
+
+<!-- ════════ TAB 2: PIPELINE ════════ -->
+<section id="tab-pipeline" class="tab-section">
+  <div class="sec-header">
+    <div class="sec-icon">⚙️</div>
+    <div>
+      <div class="sec-title">Pipeline / Process</div>
+      <div class="sec-sub">Step-by-step: how a generative model learns and uses probability distributions</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>How Generative Models Learn Distributions</h3>
+    <p>Click each step to expand the detailed explanation and worked example using <strong>next-word prediction in a language model</strong>.</p>
+  </div>
+
+  <div class="stepper">
+
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <div class="step-num">1</div>
+        <div class="step-title">Collect & Represent Data as Samples</div>
+        <span class="step-arrow">▼</span>
+      </div>
+      <div class="step-body">
+        <p>Every training example is treated as a sample <strong>x ~ p_data(x)</strong>. We never know p_data directly — we only see samples from it.</p>
+        <p style="margin-top:8px"><strong>LLM Example:</strong> A sentence like <em>"The cat sat on the mat"</em> is a sample. Each token is an observation from the true language distribution.</p>
+        <ul style="margin-top:8px">
+          <li>Text → token IDs (discrete) → categorical distributions</li>
+          <li>Images → pixel arrays → continuous distributions</li>
+          <li>Audio → waveforms → continuous or discrete representations</li>
+        </ul>
+        <div class="code-block"><span class="cm"># Represent sentence as token sequence</span>
+x = [<span class="kw">"The"</span>, <span class="kw">"cat"</span>, <span class="kw">"sat"</span>, <span class="kw">"on"</span>, <span class="kw">"the"</span>]
+target = <span class="kw">"mat"</span>  <span class="cm"># next token to predict</span></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <div class="step-num">2</div>
+        <div class="step-title">Define the Model's Probability Distribution p_θ(x)</div>
+        <span class="step-arrow">▼</span>
+      </div>
+      <div class="step-body">
+        <p>The model chooses a <strong>distribution family</strong> (Gaussian, Categorical, etc.) and uses parameters θ (neural network weights) to specify that distribution for each input.</p>
+        <p style="margin-top:8px"><strong>LLM Example:</strong> Given context "The cat sat on the", output a <strong>Categorical distribution</strong> over the 50,000-token vocabulary:</p>
+        <div class="code-block">P(next_token | context) = Categorical([p₁, p₂, ..., p₅₀ₖ])
+p("mat") = 0.45,  p("chair") = 0.12,  p("...") = ...</div>
+        <p style="margin-top:8px">The neural network (transformer) computes these probabilities via a <strong>softmax</strong> output layer.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <div class="step-num">3</div>
+        <div class="step-title">Define a Training Objective (Maximum Likelihood)</div>
+        <span class="step-arrow">▼</span>
+      </div>
+      <div class="step-body">
+        <p>We maximise the <strong>log-likelihood</strong> of the training data under the model — equivalent to minimising the <em>cross-entropy loss</em>.</p>
+        <code class="formula">L(θ) = (1/N) Σᵢ log p_θ(xᵢ)</code>
+        <p style="margin-top:8px">This pushes the model distribution <em>toward</em> the true data distribution by making observed samples more probable.</p>
+        <div class="code-block"><span class="cm"># Cross-entropy loss in PyTorch (same as MLE for categoricals)</span>
+loss = F.cross_entropy(logits, target_token_id)
+<span class="cm"># Equivalent to: -log p_θ("mat" | context)</span></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <div class="step-num">4</div>
+        <div class="step-title">Optimise Parameters via Gradient Descent</div>
+        <span class="step-arrow">▼</span>
+      </div>
+      <div class="step-body">
+        <p>Backpropagation computes gradients of the loss with respect to θ. The optimiser (Adam, AdamW) updates weights to increase the probability of training examples.</p>
+        <ul>
+          <li>Repeat over millions/billions of tokens</li>
+          <li>Learning rate schedules, weight decay regularise the process</li>
+          <li>Result: p_θ(x) steadily approaches p_data(x)</li>
+        </ul>
+        <code class="formula">θ ← θ + α · ∇_θ log p_θ(x)</code>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <div class="step-num">5</div>
+        <div class="step-title">Sampling — Generate New Data</div>
+        <span class="step-arrow">▼</span>
+      </div>
+      <div class="step-body">
+        <p>Once trained, we <strong>sample</strong> from p_θ(x) to generate new content. Several strategies exist:</p>
+        <div class="tbl-wrap" style="margin-top:10px">
+          <table>
+            <tr><th>Strategy</th><th>How It Works</th><th>Trade-off</th></tr>
+            <tr><td>Greedy</td><td>Pick token with highest probability</td><td>Deterministic, repetitive</td></tr>
+            <tr><td>Top-k</td><td>Sample from top k tokens</td><td>Balanced quality/diversity</td></tr>
+            <tr><td>Top-p (Nucleus)</td><td>Sample from smallest set summing to p</td><td>Dynamic, context-aware</td></tr>
+            <tr><td>Temperature</td><td>Scale logits: high T = more random</td><td>Controls creativity</td></tr>
+          </table>
+        </div>
+        <div class="code-block"><span class="cm"># Temperature-scaled sampling</span>
+logits = model(context) / temperature  <span class="cm"># T=1 normal, T→0 greedy, T>1 random</span>
+probs = softmax(logits)
+next_token = multinomial_sample(probs)</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <div class="step-num">6</div>
+        <div class="step-title">Evaluate — KL Divergence &amp; Metrics</div>
+        <span class="step-arrow">▼</span>
+      </div>
+      <div class="step-body">
+        <p>We evaluate how close p_θ is to p_data using:</p>
+        <ul>
+          <li><strong>KL Divergence:</strong> D_KL(p_data ‖ p_θ) — penalises model for assigning low probability to real data</li>
+          <li><strong>Perplexity:</strong> exp(cross-entropy) — lower is better for language models</li>
+          <li><strong>FID Score:</strong> Frechet Inception Distance — for image generators</li>
+          <li><strong>ELBO:</strong> Evidence Lower BOund — used in VAEs</li>
+        </ul>
+        <code class="formula">D_KL(P‖Q) = Σ P(x) · log[P(x)/Q(x)]</code>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <h3>🔑 Pipeline Glossary</h3>
+    <div class="terms">
+      <div class="term-card"><div class="term">Log-Likelihood</div><div class="def">log p_θ(x) — numerically stable version of likelihood used for training</div></div>
+      <div class="term-card"><div class="term">Cross-Entropy</div><div class="def">-Σ p(x)·log q(x) — equivalent to NLL for categorical distributions</div></div>
+      <div class="term-card"><div class="term">Softmax</div><div class="def">Converts raw logits to a valid probability distribution (sums to 1)</div></div>
+      <div class="term-card"><div class="term">Perplexity</div><div class="def">exp(NLL) — average branching factor; lower = better language model</div></div>
+      <div class="term-card"><div class="term">ELBO</div><div class="def">Evidence Lower BOund — variational objective for VAEs; tighter = better</div></div>
+    </div>
+  </div>
+
+  <div class="exam-tip">The exam often asks: "What is the training objective of a generative model?" Answer: Maximum Likelihood Estimation (MLE) — maximise log p_θ(x) over training data, equivalent to minimising cross-entropy.</div>
+</section>
+
+<!-- ════════ TAB 3: CORE MECHANISM ════════ -->
+<section id="tab-core" class="tab-section">
+  <div class="sec-header">
+    <div class="sec-icon">🔬</div>
+    <div>
+      <div class="sec-title">Core Mechanism</div>
+      <div class="sec-sub">Interactive exploration of the 5 key probability distributions used in Generative AI</div>
+    </div>
+  </div>
+
+  <div class="demo-wrap">
+    <h3>🎛️ Interactive Distribution Explorer</h3>
+    <p style="font-size:.9rem;color:var(--c-muted)">Select a distribution to see its formula, shape, and use case in generative models:</p>
+    <div class="demo-controls">
+      <button class="ctrl-btn active" onclick="showDist('gaussian',this)">Gaussian</button>
+      <button class="ctrl-btn" onclick="showDist('bernoulli',this)">Bernoulli</button>
+      <button class="ctrl-btn" onclick="showDist('categorical',this)">Categorical</button>
+      <button class="ctrl-btn" onclick="showDist('uniform',this)">Uniform</button>
+      <button class="ctrl-btn" onclick="showDist('poisson',this)">Poisson</button>
+    </div>
+    <div class="demo-svg-wrap" id="distCanvas"></div>
+    <div class="demo-output" id="distOutput"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>1. Gaussian (Normal) Distribution</h3>
+      <code class="formula">X ~ N(μ, σ²)
+f(x) = (1/√(2πσ²)) · exp(-(x-μ)²/2σ²)</code>
+      <p>The most important distribution in generative AI. Natural data (heights, noise, errors) is approximately Gaussian. Critically, <strong>latent spaces in VAEs are constrained to Gaussian</strong>.</p>
+      <div class="highlight"><strong>Use Cases:</strong> VAEs (latent space), Diffusion Models (noise process), weight initialisation, noise modelling</div>
+      <div class="exam-tip" style="margin-top:8px">Why Gaussian? The Central Limit Theorem — sums of many independent effects converge to Gaussian. Also mathematically tractable (closed-form KL divergence).</div>
+    </div>
+    <div class="card">
+      <h3>2. Bernoulli Distribution</h3>
+      <code class="formula">P(X=1) = p,  P(X=0) = 1-p</code>
+      <p>Models binary (yes/no) outcomes. Generalisable to multiple classes via Categorical.</p>
+      <div class="highlight"><strong>Use Cases:</strong> Pixel activation (black/white), token existence, spam/not-spam classification, binary neural network decisions</div>
+      <p style="margin-top:8px">In image generation, pixel values can be modelled as Bernoulli for binary images, or through sigmoid output layers.</p>
+    </div>
+    <div class="card">
+      <h3>3. Categorical Distribution</h3>
+      <code class="formula">P(X=k) = p_k,  Σ pₖ = 1
+Implemented via Softmax over logits</code>
+      <p>Generalises Bernoulli to K outcomes. The <strong>backbone of all language models</strong> — every token prediction is a categorical distribution over the vocabulary.</p>
+      <div class="highlight"><strong>Use Cases:</strong> Next-token prediction (GPT, Llama), multi-class image labels, text generation at each position</div>
+    </div>
+    <div class="card">
+      <h3>4. Uniform Distribution</h3>
+      <code class="formula">X ~ U(a, b)
+f(x) = 1/(b-a),  a ≤ x ≤ b</code>
+      <p>All outcomes equally probable. Used as a starting point before learned structure emerges.</p>
+      <div class="highlight"><strong>Use Cases:</strong> Random weight initialisation, sampling latent vectors (starting point), data augmentation, generating random numbers for noise injection</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>5. Poisson Distribution</h3>
+    <code class="formula">P(X=k) = (e^(-λ) · λ^k) / k!
+λ = expected rate (mean = variance = λ)</code>
+    <p>Models count-based events in a fixed interval. Less central to deep learning but important in certain domains.</p>
+    <div class="highlight"><strong>Use Cases:</strong> Event count modelling, traffic modelling in network simulation, gene count in biological data, queueing theory for system simulation</div>
+  </div>
+
+  <div class="card">
+    <h3>📊 Distribution Comparison Table</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Distribution</th><th>Type</th><th>Parameters</th><th>Shape</th><th>Key GenAI Role</th></tr>
+        <tr><td>Gaussian</td><td>Continuous</td><td>μ (mean), σ² (variance)</td><td>Bell curve</td><td>Latent spaces, noise in diffusion</td></tr>
+        <tr><td>Bernoulli</td><td>Discrete</td><td>p (success prob)</td><td>Two bars</td><td>Binary pixel/token decisions</td></tr>
+        <tr><td>Categorical</td><td>Discrete</td><td>p₁…pₖ (class probs)</td><td>Histogram</td><td>Next-token prediction in LLMs</td></tr>
+        <tr><td>Uniform</td><td>Continuous/Discrete</td><td>a, b (bounds)</td><td>Flat rectangle</td><td>Initialisation, noise source</td></tr>
+        <tr><td>Poisson</td><td>Discrete</td><td>λ (rate)</td><td>Skewed histogram</td><td>Event counts, biological data</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TAB 4: ARCHITECTURE ════════ -->
+<section id="tab-arch" class="tab-section">
+  <div class="sec-header">
+    <div class="sec-icon">🏛️</div>
+    <div>
+      <div class="sec-title">Architecture</div>
+      <div class="sec-sub">How probability distributions are embedded into VAEs, GANs, Diffusion Models, and LLMs</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔷 VAEs — Variational Autoencoders</h3>
+    <div class="highlight">Core Idea: Encode data into a <strong>Gaussian latent distribution</strong>, then decode samples back to data space.</div>
+    <div class="grid-2" style="margin-top:16px">
+      <div>
+        <p><strong>Encoder</strong> q_φ(z|x):</p>
+        <ul>
+          <li>Takes input x, outputs μ and σ (parameters of a Gaussian)</li>
+          <li>Latent vector z ~ N(μ, σ²) is sampled via <em>reparameterisation trick</em></li>
+          <li>z = μ + σ·ε, where ε ~ N(0,1)</li>
+        </ul>
+        <p style="margin-top:12px"><strong>Decoder</strong> p_θ(x|z):</p>
+        <ul>
+          <li>Takes z, reconstructs x</li>
+          <li>Models p(x|z) as Gaussian (images) or Categorical (text)</li>
+        </ul>
+      </div>
+      <div>
+        <p><strong>Training Objective (ELBO):</strong></p>
+        <code class="formula">L = E[log p_θ(x|z)] - D_KL(q_φ(z|x) ‖ N(0,I))</code>
+        <p style="margin-top:8px">Term 1: Reconstruction quality. Term 2: Keep latent near standard Gaussian (regularisation).</p>
+        <div class="exam-tip" style="margin-top:8px">The KL term ensures the latent space is continuous and smooth, enabling interpolation and generation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚔️ GANs — Generative Adversarial Networks</h3>
+    <div class="highlight">Core Idea: A <strong>Generator</strong> and <strong>Discriminator</strong> engage in adversarial training to match data and model distributions.</div>
+    <div class="tbl-wrap" style="margin-top:16px">
+      <table>
+        <tr><th>Component</th><th>Role</th><th>Probability Connection</th></tr>
+        <tr><td>Generator G</td><td>Maps noise z ~ N(0,I) to fake samples</td><td>Implicitly learns p_θ(x) through transformation</td></tr>
+        <tr><td>Discriminator D</td><td>Classifies real vs fake</td><td>Outputs P(real | x) — a Bernoulli probability</td></tr>
+        <tr><td>Noise Vector z</td><td>Starting point for generation</td><td>Drawn from standard Gaussian or Uniform</td></tr>
+        <tr><td>Minimax Loss</td><td>Train G to fool D, D to detect G</td><td>Goal: G's distribution = data distribution</td></tr>
+      </table>
+    </div>
+    <code class="formula">min_G max_D  E[log D(x)] + E[log(1 - D(G(z)))]</code>
+    <p style="margin-top:8px">GANs are <strong>implicit density models</strong> — they don't explicitly compute p_θ(x) but can sample from it.</p>
+  </div>
+
+  <div class="card">
+    <h3>🌊 Diffusion Models</h3>
+    <div class="highlight">Core Idea: Gradually add Gaussian noise (forward), then learn to reverse the process (denoising).</div>
+    <div class="grid-2" style="margin-top:16px">
+      <div>
+        <p><strong>Forward Process q(xₜ|xₜ₋₁):</strong></p>
+        <ul>
+          <li>Each step adds small Gaussian noise</li>
+          <li>After T steps: x_T ~ N(0, I)</li>
+          <li>Analytically tractable (closed form)</li>
+        </ul>
+        <code class="formula">q(xₜ|xₜ₋₁) = N(xₜ; √(1-βₜ)xₜ₋₁, βₜI)</code>
+      </div>
+      <div>
+        <p><strong>Reverse Process p_θ(xₜ₋₁|xₜ):</strong></p>
+        <ul>
+          <li>Neural network predicts denoised version</li>
+          <li>Modelled as Gaussian: N(μ_θ, Σ_θ)</li>
+          <li>Start from pure noise, iterate to data</li>
+        </ul>
+        <code class="formula">p_θ(xₜ₋₁|xₜ) = N(μ_θ(xₜ,t), Σ_θ(xₜ,t))</code>
+      </div>
+    </div>
+    <p style="margin-top:12px"><strong>Used in:</strong> Stable Diffusion, DALL-E, Imagen, Midjourney</p>
+  </div>
+
+  <div class="card">
+    <h3>🧠 Large Language Models (LLMs)</h3>
+    <div class="highlight">Core Idea: Predict the probability distribution over the next token given all previous tokens.</div>
+    <code class="formula">P(w₁,w₂,...,wₙ) = Π P(wᵢ | w₁,...,wᵢ₋₁)   [Chain Rule]</code>
+    <div class="tbl-wrap" style="margin-top:16px">
+      <table>
+        <tr><th>Component</th><th>Distribution Used</th><th>Details</th></tr>
+        <tr><td>Output Layer</td><td>Categorical (Softmax)</td><td>Over vocabulary of 50k+ tokens</td></tr>
+        <tr><td>Attention weights</td><td>Categorical (Softmax)</td><td>Distribution over keys/positions</td></tr>
+        <tr><td>Dropout</td><td>Bernoulli</td><td>Random neuron deactivation (regularisation)</td></tr>
+        <tr><td>Sampling strategy</td><td>Various (Categorical, Temperature)</td><td>Controls diversity of generation</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔑 Architecture Glossary</h3>
+    <div class="terms">
+      <div class="term-card"><div class="term">Reparameterisation</div><div class="def">z = μ + σ·ε trick that enables backpropagation through sampling</div></div>
+      <div class="term-card"><div class="term">Implicit Density</div><div class="def">Model samples from p_θ(x) without evaluating it explicitly (GANs)</div></div>
+      <div class="term-card"><div class="term">Explicit Density</div><div class="def">Model computes p_θ(x) directly (VAEs, GPT, Diffusion)</div></div>
+      <div class="term-card"><div class="term">ELBO</div><div class="def">Variational lower bound on log-likelihood; maximised in VAE training</div></div>
+      <div class="term-card"><div class="term">Score Function</div><div class="def">∇_x log p(x) — gradient of log density; used in diffusion models</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TAB 5: KEY CONCEPTS ════════ -->
+<section id="tab-concepts" class="tab-section">
+  <div class="sec-header">
+    <div class="sec-icon">💡</div>
+    <div>
+      <div class="sec-title">Key Concepts</div>
+      <div class="sec-sub">Deep-dive on concepts from the reference infographic — exam must-knows and challenges</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📌 The Big Picture (from Infographic)</h3>
+    <p>The infographic centres on one core formula: <code style="background:#eee;padding:2px 6px;border-radius:4px">p_θ(x) ≈ p_data(x)</code></p>
+    <ul style="margin-top:12px">
+      <li><strong>p_data(x)</strong> = true data distribution (e.g., distribution over all natural images)</li>
+      <li><strong>p_θ(x)</strong> = model's learned distribution (parameterised by neural network weights θ)</li>
+      <li>A data point <strong>x</strong> is a sample. The model learns the "shape of possibilities" not individual samples</li>
+      <li>Generation = drawing new samples from p_θ — they're novel but statistically consistent with training data</li>
+    </ul>
+    <div class="highlight" style="margin-top:16px">
+      <strong>Simple Analogy (from infographic):</strong> Think of p_data(x) as a map of reality. Traditional programs memorise: "This exact image exists." Generative models learn: "These patterns are likely to appear together."
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>📉 KL Divergence (Deep Dive)</h3>
+      <code class="formula">D_KL(P‖Q) = Σ P(x)·log[P(x)/Q(x)]</code>
+      <ul>
+        <li>Always ≥ 0 (Gibbs' inequality)</li>
+        <li><strong>Asymmetric:</strong> D_KL(P‖Q) ≠ D_KL(Q‖P)</li>
+        <li>= 0 only when P = Q</li>
+        <li>Forward vs Reverse KL have different behaviours (mode-seeking vs mean-seeking)</li>
+      </ul>
+      <div class="exam-tip" style="margin-top:8px">VAEs minimise D_KL(q_φ(z|x) ‖ N(0,I)) — forces posterior to match standard Gaussian prior.</div>
+    </div>
+    <div class="card">
+      <h3>🎯 Maximum Likelihood Estimation</h3>
+      <code class="formula">θ* = argmax_θ Σᵢ log p_θ(xᵢ)</code>
+      <ul>
+        <li>Find θ that makes training data most probable</li>
+        <li>Equivalent to minimising KL divergence from model to data</li>
+        <li>Equivalent to minimising cross-entropy</li>
+        <li>Foundation of training for most generative models</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📊 Sampling Strategies</h3>
+      <ul>
+        <li><strong>Greedy:</strong> argmax — deterministic, repetitive</li>
+        <li><strong>Top-k:</strong> sample from k most likely tokens</li>
+        <li><strong>Top-p:</strong> sample from tokens summing to p</li>
+        <li><strong>Temperature T:</strong> logits/T — T→0: peaked, T→∞: flat</li>
+        <li><strong>Beam Search:</strong> keep B best sequences</li>
+      </ul>
+      <div class="exam-tip" style="margin-top:8px">Temperature controls the "sharpness" of a categorical distribution before sampling.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚠️ Key Challenges</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Challenge</th><th>Description</th><th>Affected Models</th><th>Mitigation</th></tr>
+        <tr><td>Mode Collapse</td><td>Generator produces limited variety; maps to few modes of distribution</td><td>GANs</td><td>Wasserstein loss, minibatch discrimination</td></tr>
+        <tr><td>Posterior Collapse</td><td>VAE encoder ignores input; q(z|x) ≈ p(z) for all x</td><td>VAEs</td><td>β-annealing, free bits</td></tr>
+        <tr><td>Training Instability</td><td>Discriminator too strong/weak; loss doesn't correlate with quality</td><td>GANs</td><td>Gradient penalty, spectral normalisation</td></tr>
+        <tr><td>Blurry Samples</td><td>VAE reconstruction loss averages over distribution modes</td><td>VAEs</td><td>Perceptual loss, adversarial training</td></tr>
+        <tr><td>Slow Sampling</td><td>Diffusion requires many denoising steps at inference</td><td>Diffusion</td><td>DDIM, consistency models</td></tr>
+        <tr><td>Hallucination</td><td>LLM assigns probability to plausible-sounding but false sequences</td><td>LLMs</td><td>RLHF, RAG, better training data</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔑 Summary Table (from Infographic)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Concept</th><th>Role in Generative AI</th></tr>
+        <tr><td>Probability Distribution</td><td>Represents likelihood of data patterns</td></tr>
+        <tr><td>Gaussian Distribution</td><td>Latent spaces, noise modelling</td></tr>
+        <tr><td>Categorical Distribution</td><td>Text / token generation</td></tr>
+        <tr><td>Joint Distribution P(X,Y,...)</td><td>Captures feature relationships</td></tr>
+        <tr><td>Sampling</td><td>Generates new outputs</td></tr>
+        <tr><td>Likelihood</td><td>Trains models to mimic real data</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧠 Exam Must-Knows</h3>
+    <div class="grid-2">
+      <div>
+        <h4 style="margin-bottom:8px;color:#8e44ad">Conceptual</h4>
+        <ul>
+          <li>All generative models learn p_θ(x) ≈ p_data(x)</li>
+          <li>Sampling ≠ memorisation — it is structured randomness</li>
+          <li>KL divergence is always ≥ 0; = 0 only when distributions match</li>
+          <li>VAEs encode to Gaussian distributions, not point estimates</li>
+          <li>LLMs apply Chain Rule of Probability for text generation</li>
+          <li>Diffusion models: forward = add noise, reverse = remove noise</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="margin-bottom:8px;color:#8e44ad">Mathematical</h4>
+        <ul>
+          <li>MLE: θ* = argmax Σ log p_θ(xᵢ)</li>
+          <li>VAE ELBO: E[log p(x|z)] - D_KL(q(z|x) ‖ p(z))</li>
+          <li>Gaussian: X ~ N(μ, σ²)</li>
+          <li>KL: Σ P(x) log[P(x)/Q(x)]</li>
+          <li>Softmax: exp(zᵢ)/Σexp(zⱼ) — converts logits to probabilities</li>
+          <li>Temperature: divide logits by T before softmax</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔑 Key Concepts Glossary</h3>
+    <div class="terms">
+      <div class="term-card"><div class="term">Mode Collapse</div><div class="def">GAN generator learns to produce only a few types of samples</div></div>
+      <div class="term-card"><div class="term">ELBO</div><div class="def">Variational lower bound — maximised instead of intractable log p(x)</div></div>
+      <div class="term-card"><div class="term">Reparameterisation</div><div class="def">Sample z = μ + σ·ε to allow gradients to flow through sampling</div></div>
+      <div class="term-card"><div class="term">FID Score</div><div class="def">Frechet Inception Distance — measures quality of generated images</div></div>
+      <div class="term-card"><div class="term">Temperature</div><div class="def">Scalar dividing logits to control output distribution sharpness</div></div>
+      <div class="term-card"><div class="term">Joint Distribution</div><div class="def">P(X₁,X₂,...,Xₙ) — captures relationships between multiple variables</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TAB 6: DIAGRAMS ════════ -->
+<section id="tab-diagrams" class="tab-section">
+  <div class="sec-header">
+    <div class="sec-icon">🖼️</div>
+    <div>
+      <div class="sec-title">Reference Diagrams</div>
+      <div class="sec-sub">Annotated infographic with guided explanation of each section</div>
+    </div>
+  </div>
+
+  <div class="diagram-card">
+    <img class="diagram-img" src="Probability_Gen_AI.png" alt="Probability Distributions in Generative Models — Full Infographic"/>
+    <div class="diagram-caption">
+      <h4>Probability Distributions in Generative Models — Complete Reference Infographic</h4>
+      <p>This comprehensive infographic maps the full landscape of probability distributions in generative AI. It covers: (1) what a distribution is with everyday examples; (2) the core goal p_θ(x) ≈ p_data(x); (3) why distributions are critical for uncertainty, generation, and feature relationships; (4) the five key distributions (Gaussian, Bernoulli, Categorical, Uniform, Poisson) with use cases; (5) how each major architecture (VAEs, GANs, Diffusion, LLMs) uses distributions; (6) real-world applications; and (7) the key mathematical tools — PDF, MLE, KL Divergence, and Sampling.</p>
+      <p style="margin-top:8px"><strong>What to look for:</strong> Focus on the "Big Picture" box (centre top) showing the goal equation; the "5. Role of Probability Distributions in Major Generative Models" section; and the "Summary" table (bottom right). These three areas are the highest-yield for the CGAI exam.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🗺️ Guided Walk-Through of the Infographic</h3>
+    <div class="grid-2">
+      <div>
+        <h4 style="color:#1abc9c;margin-bottom:8px">Section 1 — What Is a Distribution?</h4>
+        <p style="font-size:.9rem">Four examples anchor the concept: Coin Toss (Bernoulli), Human Height (Gaussian), Word Occurrence (complex statistical), Pixel Values (high-dimensional). These show distributions appear naturally everywhere.</p>
+        <div class="divider"></div>
+        <h4 style="color:#1abc9c;margin-bottom:8px">Section 2 — The Big Picture</h4>
+        <p style="font-size:.9rem">The diagram of two blobs (real world vs model) illustrates the core ML goal: learn a model distribution that matches the data distribution. "x" dots represent samples; the model "shape" wraps around them.</p>
+        <div class="divider"></div>
+        <h4 style="color:#1abc9c;margin-bottom:8px">Section 3 — Why Important</h4>
+        <p style="font-size:.9rem">Three reasons shown with icons: capturing uncertainty (next-word probability table), enabling realistic generation, and modelling feature relationships via joint distributions P(X,Y,...).</p>
+      </div>
+      <div>
+        <h4 style="color:#1abc9c;margin-bottom:8px">Section 4 — Five Distributions</h4>
+        <p style="font-size:.9rem">Each distribution gets a mini-chart (bell curve, bar chart, histogram, flat line) with formula, use cases, and why it's important. The Categorical distribution's bar chart maps directly to LLM token probabilities.</p>
+        <div class="divider"></div>
+        <h4 style="color:#1abc9c;margin-bottom:8px">Section 5 — Four Model Families</h4>
+        <p style="font-size:.9rem">VAEs (encoder-decoder with z), GANs (adversarial real/fake), Diffusion (forward/reverse noise), LLMs (next-token probability bar chart). The diffusion forward/reverse arrows are particularly important for exam prep.</p>
+        <div class="divider"></div>
+        <h4 style="color:#1abc9c;margin-bottom:8px">Sections 7–9 — Math, Analogy, Summary</h4>
+        <p style="font-size:.9rem">The map analogy (bottom centre) captures the paradigm shift. The summary table (bottom right) is a one-page cheat sheet. The math section shows PDF, Likelihood (MLE objective), Sampling, and KL Divergence side by side.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TAB 7: QUIZ ════════ -->
+<section id="tab-quiz" class="tab-section">
+  <div class="sec-header">
+    <div class="sec-icon">🧪</div>
+    <div>
+      <div class="sec-title">Practice Quiz</div>
+      <div class="sec-sub">10 CGAI exam-style questions with instant feedback and score tracking</div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="quizProgress" style="width:10%"></div></div>
+
+    <div id="quizContainer"></div>
+
+    <div class="score-card" id="scoreCard">
+      <div style="font-size:3rem">🎓</div>
+      <h2 style="font-family:var(--font-display);font-size:1.8rem;margin:12px 0">Quiz Complete!</h2>
+      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-grade" id="scoreGrade">—</div>
+      <p id="scoreMsg" style="color:var(--c-muted);max-width:400px;margin:0 auto 16px;font-size:.95rem"></p>
+      <button class="retry-btn" onclick="restartQuiz()">🔄 Try Again</button>
+    </div>
+  </div>
+</section>
+
+</div><!-- /content -->
+
+<!-- ══════════════ SCRIPTS ══════════════ -->
+<script>
+/* ── TAB NAVIGATION ── */
+const tabs=document.querySelectorAll('.nav-btn');
+const sections=document.querySelectorAll('.tab-section');
+tabs.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    tabs.forEach(b=>b.classList.remove('active'));
+    sections.forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:document.querySelector('.nav-wrap').offsetTop-10,behavior:'smooth'});
+  });
+});
+
+/* ── STEPPER ── */
+function toggleStep(header){
+  const step=header.parentElement;
+  step.classList.toggle('open');
+}
+
+/* ── DISTRIBUTION EXPLORER ── */
+const distData={
+  gaussian:{
+    name:'Gaussian (Normal) Distribution',
+    formula:'X ~ N(μ=0, σ²=1)',
+    desc:'Bell-shaped curve centred at mean μ. The Central Limit Theorem guarantees many natural phenomena converge to Gaussian. Ubiquitous in generative AI for latent spaces and noise modelling.',
+    genai:'Used in: VAEs (latent space z ~ N(μ,σ²)), Diffusion Models (noise addition βₜ·N(0,I)), weight initialisation.',
+    draw:(svg)=>{
+      const pts=[];const W=600,H=160;
+      for(let i=0;i<W;i++){const x=(i/W)*8-4;const y=Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);pts.push({x:i,y:y});}
+      const maxY=pts.reduce((m,p)=>Math.max(m,p.y),0);
+      const path='M'+pts.map(p=>`${p.x},${H-10-(p.y/maxY)*(H-30)}`).join('L');
+      return `<svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d4ac0d" stop-opacity=".6"/><stop offset="100%" stop-color="#d4ac0d" stop-opacity=".05"/></linearGradient></defs>
+        <path d="${path}L600,${H-10}L0,${H-10}Z" fill="url(#g1)"/>
+        <path d="${path}" fill="none" stroke="#d4ac0d" stroke-width="2.5"/>
+        <text x="300" y="155" text-anchor="middle" font-size="11" fill="#888">μ=0</text>
+        <line x1="300" y1="10" x2="300" y2="${H-10}" stroke="#d4ac0d" stroke-dasharray="4,3" stroke-width="1"/>
+      </svg>`;
+    }
+  },
+  bernoulli:{
+    name:'Bernoulli Distribution',
+    formula:'P(X=1)=p=0.7,  P(X=0)=1-p=0.3',
+    desc:'Models a single binary trial with probability p of success. Simple but foundational — Categorical extends it to K outcomes, and all binary neural network decisions use Bernoulli.',
+    genai:'Used in: Pixel activation (binary images), dropout regularisation, token existence, spam detection.',
+    draw:()=>{
+      return `<svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+        <rect x="160" y="30" width="90" height="100" fill="#2980b9" opacity=".8" rx="6"/>
+        <rect x="350" y="90" width="90" height="40" fill="#e74c3c" opacity=".8" rx="6"/>
+        <text x="205" y="25" text-anchor="middle" font-size="13" fill="#555" font-weight="700">P(X=1)=0.7</text>
+        <text x="395" y="85" text-anchor="middle" font-size="13" fill="#555" font-weight="700">P(X=0)=0.3</text>
+        <text x="205" y="150" text-anchor="middle" font-size="12" fill="#888">Success (1)</text>
+        <text x="395" y="150" text-anchor="middle" font-size="12" fill="#888">Failure (0)</text>
+        <line x1="50" y1="130" x2="560" y2="130" stroke="#ccc" stroke-width="1.5"/>
+      </svg>`;
+    }
+  },
+  categorical:{
+    name:'Categorical Distribution',
+    formula:'P(X=k)=pₖ, Σpₖ=1 — implemented via Softmax',
+    desc:'Generalises Bernoulli to K classes. At every generation step, an LLM outputs a categorical distribution over ~50,000 tokens. Sampling from this distribution produces the next word.',
+    genai:'Used in: Next-token prediction (GPT, Llama, Claude), multi-class classification, text generation position by position.',
+    draw:()=>{
+      const bars=[
+        {label:'cat',p:0.45,c:'#2ecc71'},
+        {label:'dog',p:0.30,c:'#3498db'},
+        {label:'bird',p:0.10,c:'#e67e22'},
+        {label:'fish',p:0.08,c:'#9b59b6'},
+        {label:'other',p:0.07,c:'#e74c3c'},
+      ];
+      const W=600,H=150,bw=70,gap=30,startX=40;
+      let rects='';
+      bars.forEach((b,i)=>{
+        const x=startX+i*(bw+gap);
+        const bh=b.p*(H-30);
+        rects+=`<rect x="${x}" y="${H-10-bh}" width="${bw}" height="${bh}" fill="${b.c}" opacity=".85" rx="5"/>
+          <text x="${x+bw/2}" y="${H-12-bh}" text-anchor="middle" font-size="11" fill="${b.c}" font-weight="700">${(b.p*100).toFixed(0)}%</text>
+          <text x="${x+bw/2}" y="${H+8}" text-anchor="middle" font-size="11" fill="#666">${b.label}</text>`;
+      });
+      return `<svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+        ${rects}
+        <line x1="30" y1="${H-10}" x2="560" y2="${H-10}" stroke="#ccc" stroke-width="1.5"/>
+        <text x="300" y="155" text-anchor="middle" font-size="10" fill="#aaa">Next-word distribution after "The cat sat on the ___"</text>
+      </svg>`;
+    }
+  },
+  uniform:{
+    name:'Uniform Distribution',
+    formula:'X ~ U(a, b),  f(x) = 1/(b-a)',
+    desc:'All outcomes in [a,b] are equally likely. Serves as a "blank slate" before learning — often used to initialise random noise vectors or set starting weights in neural networks.',
+    genai:'Used in: Random weight initialisation (Xavier/Glorot), noise vector sampling (GAN input), data augmentation, random number generation.',
+    draw:()=>{
+      return `<svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1abc9c" stop-opacity=".5"/><stop offset="100%" stop-color="#1abc9c" stop-opacity=".05"/></linearGradient></defs>
+        <rect x="100" y="40" width="400" height="90" fill="url(#g2)" rx="4"/>
+        <rect x="100" y="40" width="400" height="4" fill="#1abc9c" rx="2"/>
+        <line x1="100" y1="40" x2="100" y2="130" stroke="#1abc9c" stroke-width="2.5"/>
+        <line x1="500" y1="40" x2="500" y2="130" stroke="#1abc9c" stroke-width="2.5"/>
+        <line x1="60" y1="130" x2="550" y2="130" stroke="#ccc" stroke-width="1.5"/>
+        <text x="100" y="148" text-anchor="middle" font-size="12" fill="#888">a</text>
+        <text x="500" y="148" text-anchor="middle" font-size="12" fill="#888">b</text>
+        <text x="300" y="90" text-anchor="middle" font-size="13" fill="#1abc9c" font-weight="700">f(x) = 1/(b-a)</text>
+      </svg>`;
+    }
+  },
+  poisson:{
+    name:'Poisson Distribution',
+    formula:'P(X=k) = (e^(-λ)·λ^k)/k!   (λ=3)',
+    desc:'Models count-based events in a fixed interval. Less central to deep learning but relevant for biological data, event simulation, and queueing theory.',
+    genai:'Used in: Event count modelling, traffic/network simulation, gene expression counts in biological AI, rare event simulation.',
+    draw:()=>{
+      const lam=3;const H=150;
+      const ks=[0,1,2,3,4,5,6,7,8];
+      function poisson(k,l){let logP=-l+k*Math.log(l);for(let i=1;i<=k;i++)logP-=Math.log(i);return Math.exp(logP);}
+      const probs=ks.map(k=>poisson(k,lam));
+      const maxP=Math.max(...probs);
+      const bw=50,gap=10,startX=30;
+      let rects='';
+      ks.forEach((k,i)=>{
+        const x=startX+i*(bw+gap);
+        const bh=(probs[i]/maxP)*(H-40);
+        const c=`hsl(${180+i*15},60%,50%)`;
+        rects+=`<rect x="${x}" y="${H-10-bh}" width="${bw}" height="${bh}" fill="${c}" opacity=".85" rx="5"/>
+          <text x="${x+bw/2}" y="${H-12-bh}" text-anchor="middle" font-size="10" fill="${c}" font-weight="700">${(probs[i]*100).toFixed(1)}%</text>
+          <text x="${x+bw/2}" y="${H+8}" text-anchor="middle" font-size="11" fill="#666">${k}</text>`;
+      });
+      return `<svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+        ${rects}
+        <line x1="20" y1="${H-10}" x2="560" y2="${H-10}" stroke="#ccc" stroke-width="1.5"/>
+        <text x="300" y="155" text-anchor="middle" font-size="10" fill="#aaa">k (event count),  λ=3</text>
+      </svg>`;
+    }
+  }
+};
+
+function showDist(key,btn){
+  document.querySelectorAll('#tab-core .ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const d=distData[key];
+  document.getElementById('distCanvas').innerHTML=d.draw();
+  document.getElementById('distOutput').innerHTML=`
+    <strong>${d.name}</strong><br>
+    <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:.82rem">${d.formula}</code><br><br>
+    ${d.desc}<br><br>
+    <strong>🤖 Generative AI:</strong> ${d.genai}
+  `;
+}
+// Init
+showDist('gaussian',document.querySelector('#tab-core .ctrl-btn.active'));
+
+/* ── QUIZ ── */
+const questions=[
+  {
+    q:"What does it mean for a generative model to 'learn a probability distribution'?",
+    opts:["It memorises every training example","It learns p_θ(x) ≈ p_data(x) so it can sample new realistic examples","It stores data in a lookup table","It computes exact probabilities for each input"],
+    ans:1,
+    exp:"Generative models learn the shape of the data distribution p_data(x), approximating it with p_θ(x). This enables sampling new, statistically consistent examples rather than memorising training data."
+  },
+  {
+    q:"Which distribution is used for the latent space in a Variational Autoencoder (VAE)?",
+    opts:["Uniform distribution","Bernoulli distribution","Poisson distribution","Gaussian (Normal) distribution"],
+    ans:3,
+    exp:"VAEs constrain the latent space to a Gaussian distribution: z ~ N(μ, σ²). The encoder outputs μ and σ, and the KL term regularises the posterior toward N(0,I)."
+  },
+  {
+    q:"What distribution does an LLM use to predict the next token?",
+    opts:["Gaussian","Poisson","Categorical (implemented via Softmax)","Uniform"],
+    ans:2,
+    exp:"At each step, an LLM outputs a Categorical distribution over the vocabulary (e.g., 50,000 tokens) via a Softmax layer. The next token is sampled or selected from this distribution."
+  },
+  {
+    q:"What is KL Divergence used for in generative AI?",
+    opts:["To measure how fast a model trains","To measure how different two probability distributions are","To count the number of parameters","To define the number of training epochs"],
+    ans:1,
+    exp:"KL Divergence D_KL(P‖Q) measures how different distribution Q is from reference P. In VAEs it's used in the ELBO loss to regularise the latent posterior toward the Gaussian prior."
+  },
+  {
+    q:"In a Diffusion Model, what distribution is added at each forward step?",
+    opts:["Uniform noise","Bernoulli noise","Gaussian noise","Categorical noise"],
+    ans:2,
+    exp:"Diffusion models add small amounts of Gaussian noise at each forward step: q(xₜ|xₜ₋₁) = N(xₜ; √(1-βₜ)xₜ₋₁, βₜI). After T steps, the image becomes pure Gaussian noise."
+  },
+  {
+    q:"What is the training objective called that maximises log p_θ(x) over training data?",
+    opts:["Minimum Description Length","Maximum Likelihood Estimation (MLE)","Mean Squared Error","Bayesian Information Criterion"],
+    ans:1,
+    exp:"Maximum Likelihood Estimation (MLE) finds parameters θ that maximise the log-likelihood of training data: θ* = argmax Σ log p_θ(xᵢ). This is equivalent to minimising cross-entropy."
+  },
+  {
+    q:"What problem does 'mode collapse' describe in GANs?",
+    opts:["The discriminator learns too slowly","The generator produces only a few types of outputs, failing to cover the full distribution","The learning rate is too high","The model overfits to the test set"],
+    ans:1,
+    exp:"Mode collapse occurs when the GAN generator learns to produce only a few modes of the data distribution (e.g., always the same face style), ignoring the full diversity of p_data(x)."
+  },
+  {
+    q:"What does increasing the 'temperature' parameter do during LLM sampling?",
+    opts:["Makes the distribution more peaked (less diverse output)","Has no effect on sampling","Makes the distribution flatter (more diverse/random output)","Increases the model's accuracy"],
+    ans:2,
+    exp:"Higher temperature (T>1) divides logits by T before softmax, flattening the categorical distribution and making less likely tokens more probable — increasing output diversity. T→0 approaches greedy (argmax)."
+  },
+  {
+    q:"What is the 'reparameterisation trick' in VAEs used for?",
+    opts:["To speed up inference","To allow gradients to flow through the sampling operation during training","To reduce model size","To compress the input data"],
+    ans:1,
+    exp:"The reparameterisation trick writes z = μ + σ·ε (ε ~ N(0,1)) instead of sampling z directly. This makes sampling differentiable, allowing backpropagation to update encoder parameters μ and σ."
+  },
+  {
+    q:"According to the Big Picture in the infographic, what is the core goal of a generative model?",
+    opts:["Memorise all training images exactly","Maximise discriminator accuracy","Learn p_θ(x) ≈ p_data(x) — match the model's distribution to the data distribution","Minimise the number of model parameters"],
+    ans:2,
+    exp:"The core goal shown in the infographic is p_θ(x) ≈ p_data(x). The model (right blob) learns to match the shape of the real-world data distribution (left blob) so it can generate new realistic samples."
+  }
+];
+
+let currentQ=0;let score=0;let answered=[];
+const letters=['A','B','C','D'];
+
+function buildQuiz(){
+  const q=questions[currentQ];
+  const html=`
+    <div class="q-card">
+      <div class="q-num">Question ${currentQ+1} of ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((o,i)=>`
+          <div class="opt" onclick="selectOpt(${i},this)" id="opt-${i}">
+            <div class="opt-letter">${letters[i]}</div>
+            ${o}
+          </div>
+        `).join('')}
+      </div>
+      <div class="feedback-box" id="feedback"></div>
+    </div>
+    <div class="q-nav">
+      <button class="q-nav btn-prev" onclick="prevQ()" ${currentQ===0?'disabled style="opacity:.4"':''}>← Previous</button>
+      <span style="font-size:.85rem;color:var(--c-muted)">Score: ${score}/${currentQ}</span>
+      <button class="q-nav btn-next" id="nextBtn" onclick="nextQ()" disabled style="opacity:.4">Next →</button>
+    </div>
+  `;
+  document.getElementById('quizContainer').innerHTML=html;
+  document.getElementById('quizProgress').style.width=`${((currentQ+1)/questions.length)*100}%`;
+  // Restore answered state
+  if(answered[currentQ]!==undefined){
+    const q2=questions[currentQ];
+    const opts=document.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.add('disabled'));
+    opts[q2.ans].classList.add('correct');
+    if(answered[currentQ]!==q2.ans)opts[answered[currentQ]].classList.add('wrong');
+    const fb=document.getElementById('feedback');
+    const correct=answered[currentQ]===q2.ans;
+    fb.className=`feedback-box show ${correct?'correct':'wrong'}`;
+    fb.innerHTML=`${correct?'✅ Correct!':'❌ Incorrect.'} ${q2.exp}`;
+    document.getElementById('nextBtn').removeAttribute('disabled');
+    document.getElementById('nextBtn').style.opacity='1';
+  }
+}
+
+function selectOpt(i,el){
+  if(el.classList.contains('disabled'))return;
+  const q=questions[currentQ];
+  const opts=document.querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  const correct=i===q.ans;
+  if(correct)score++;
+  answered[currentQ]=i;
+  opts[q.ans].classList.add('correct');
+  if(!correct)el.classList.add('wrong');
+  const fb=document.getElementById('feedback');
+  fb.className=`feedback-box show ${correct?'correct':'wrong'}`;
+  fb.innerHTML=`${correct?'✅ Correct!':'❌ Incorrect.'} ${q.exp}`;
+  const nb=document.getElementById('nextBtn');
+  nb.removeAttribute('disabled');nb.style.opacity='1';
+  // Update score display
+  document.querySelector('.q-nav span').textContent=`Score: ${score}/${currentQ+1}`;
+}
+
+function nextQ(){
+  if(currentQ<questions.length-1){currentQ++;buildQuiz();}
+  else{showScore();}
+}
+function prevQ(){if(currentQ>0){currentQ--;buildQuiz();}}
+
+function showScore(){
+  document.getElementById('quizContainer').innerHTML='';
+  const sc=document.getElementById('scoreCard');
+  sc.classList.add('show');
+  const pct=Math.round(score/questions.length*100);
+  document.getElementById('scoreNum').textContent=`${score} / ${questions.length}`;
+  const gradeEl=document.getElementById('scoreGrade');
+  const msgEl=document.getElementById('scoreMsg');
+  if(pct>=80){
+    gradeEl.textContent=`✅ PASS — ${pct}%`;
+    gradeEl.className='score-grade pass';
+    msgEl.textContent='Excellent! You have a strong grasp of probability distributions in generative AI. You\'re ready for the CGAI exam on this topic.';
+  } else {
+    gradeEl.textContent=`❌ FAIL — ${pct}%`;
+    gradeEl.className='score-grade fail';
+    msgEl.textContent='Review the Overview, Core Mechanism, and Architecture tabs, then retry. Focus on KL Divergence, VAE ELBO, and sampling strategies.';
+  }
+  document.getElementById('quizProgress').style.width='100%';
+}
+
+function restartQuiz(){
+  currentQ=0;score=0;answered=[];
+  document.getElementById('scoreCard').classList.remove('show');
+  buildQuiz();
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

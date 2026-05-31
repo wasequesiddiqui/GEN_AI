@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>RNN Deep Dive — CGAI Exam Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f9f7f2;--ink:#1c1a16;--muted:#6b6560;--border:#e5e0d8;--white:#fff;
+  --shadow:0 2px 16px rgba(0,0,0,.07);--shadow-lg:0 8px 40px rgba(0,0,0,.12);
+  --r:14px;--trans:.25s cubic-bezier(.4,0,.2,1);
+  --ov-l:#f0eaff;--ov:#9b72f5;--ov-d:#6d28d9;
+  --pp-l:#dff0ff;--pp:#3b9ede;--pp-d:#1a5fa0;
+  --cm-l:#ffe8d8;--cm:#e07a40;--cm-d:#9a3e10;
+  --ar-l:#d8f5e8;--ar:#2fbb72;--ar-d:#166534;
+  --kc-l:#fef3c7;--kc:#d4a017;--kc-d:#92400e;
+  --dg-l:#fce4ec;--dg:#e05c87;--dg-d:#9d1b4e;
+  --qz-l:#e0e7ff;--qz:#5672e4;--qz-d:#3730a3;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;font-size:15px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(140deg,#0f0d0a 0%,#241d14 55%,#1a1410 100%);color:#fff;padding:56px 24px 48px;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 70% 30%,rgba(155,114,245,.22),transparent),radial-gradient(ellipse 45% 55% at 20% 75%,rgba(59,158,222,.15),transparent)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 20px;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#c9b8f5;margin-bottom:22px;backdrop-filter:blur(10px)}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3.8rem);font-weight:900;line-height:1.08;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:#c4a8f5}
+.hero-sub{font-size:1rem;color:rgba(255,255,255,.65);max-width:540px;margin:0 auto 28px}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.hpill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:5px 15px;font-size:.78rem;color:rgba(255,255,255,.75)}
+.nav-sticky{position:sticky;top:0;z-index:200;background:rgba(249,247,242,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;overflow-x:auto;gap:4px;padding:10px 16px;max-width:1080px;margin:0 auto;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;border:none;border-radius:999px;padding:8px 20px;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:500;cursor:pointer;background:transparent;color:var(--muted);transition:var(--trans);white-space:nowrap}
+.ntab:hover{background:var(--border);color:var(--ink)}
+.ntab.on{font-weight:600;color:#fff}
+.ntab[data-t="overview"].on{background:var(--ov-d)}
+.ntab[data-t="pipeline"].on{background:var(--pp-d)}
+.ntab[data-t="mechanism"].on{background:var(--cm-d)}
+.ntab[data-t="architecture"].on{background:var(--ar-d)}
+.ntab[data-t="concepts"].on{background:var(--kc-d)}
+.ntab[data-t="diagrams"].on{background:var(--dg-d)}
+.ntab[data-t="quiz"].on{background:var(--qz-d)}
+.wrap{max-width:1080px;margin:0 auto;padding:36px 20px 72px}
+.panel{display:none;animation:rise .3s ease both}
+.panel.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.sh{border-radius:var(--r);padding:28px 32px;margin-bottom:28px}
+.sh h2{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;margin-bottom:6px}
+.sh p{font-size:.95rem;opacity:.8;max-width:620px}
+.sh-ov{background:var(--ov-l);border:1px solid #d8ccf9}.sh-ov h2{color:var(--ov-d)}
+.sh-pp{background:var(--pp-l);border:1px solid #b3d9f7}.sh-pp h2{color:var(--pp-d)}
+.sh-cm{background:var(--cm-l);border:1px solid #f5c5a3}.sh-cm h2{color:var(--cm-d)}
+.sh-ar{background:var(--ar-l);border:1px solid #9de8bc}.sh-ar h2{color:var(--ar-d)}
+.sh-kc{background:var(--kc-l);border:1px solid #fad97c}.sh-kc h2{color:var(--kc-d)}
+.sh-dg{background:var(--dg-l);border:1px solid #f5b3cc}.sh-dg h2{color:var(--dg-d)}
+.sh-qz{background:var(--qz-l);border:1px solid #b3bff7}.sh-qz h2{color:var(--qz-d)}
+.card{background:var(--white);border-radius:var(--r);padding:24px 28px;box-shadow:var(--shadow);margin-bottom:20px}
+.card h3{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:20px}
+.tbl{overflow-x:auto;border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:22px}
+table{width:100%;border-collapse:collapse;background:var(--white);font-size:.875rem}
+th{padding:12px 16px;text-align:left;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+td{padding:11px 16px;border-top:1px solid var(--border)}
+tr:hover td{background:#faf8f4}
+.th-ov th{background:var(--ov-l);color:var(--ov-d)}
+.th-pp th{background:var(--pp-l);color:var(--pp-d)}
+.th-ar th{background:var(--ar-l);color:var(--ar-d)}
+.th-kc th{background:var(--kc-l);color:var(--kc-d)}
+.tag{display:inline-block;border-radius:999px;padding:3px 11px;font-size:.76rem;font-weight:600}
+.tg{background:#d8f5e8;color:#166534}.tw{background:#fef3c7;color:#92400e}.tr{background:#fce4ec;color:#9d1b4e}.ti{background:var(--qz-l);color:var(--qz-d)}
+.glos{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px;margin-bottom:24px}
+.gc{border-radius:10px;padding:15px 17px;border:1px solid}
+.gc h4{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:500;margin-bottom:4px}
+.gc p{font-size:.8rem;line-height:1.45;opacity:.85}
+.gc-ov{background:var(--ov-l);border-color:#d1c0f8;color:var(--ov-d)}
+.gc-pp{background:var(--pp-l);border-color:#9dd0f5;color:var(--pp-d)}
+.gc-cm{background:var(--cm-l);border-color:#f5b89a;color:var(--cm-d)}
+.gc-ar{background:var(--ar-l);border-color:#7ddba8;color:var(--ar-d)}
+.gc-kc{background:var(--kc-l);border-color:#f5cc60;color:var(--kc-d)}
+.stepper{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.step{border-radius:var(--r);border:1px solid var(--border);background:var(--white);overflow:hidden;box-shadow:var(--shadow)}
+.step-hd{display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer;transition:var(--trans);user-select:none}
+.step-hd:hover{background:#faf8f4}
+.snum{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;flex-shrink:0;color:#fff}
+.stitle{font-weight:600;font-size:.95rem}
+.schev{margin-left:auto;transition:transform .28s;color:var(--muted);font-size:.85rem}
+.step.open .schev{transform:rotate(180deg)}
+.step-bd{display:none;padding:0 20px 20px 74px;font-size:.875rem;line-height:1.7}
+.step.open .step-bd{display:block}
+.step-bd ul{margin:8px 0 0 16px}
+.step-bd li{margin-bottom:6px}
+.step-bd code{background:#f0ede6;border-radius:4px;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+.cb{background:#1c1914;color:#e8dcc8;border-radius:10px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.75;overflow-x:auto;margin-bottom:20px}
+.cb .kw{color:#c4a8f5}.cb .fn{color:#7dd3fc}.cb .st{color:#86efac}.cb .cm{color:#78716c}.cb .nm{color:#fda4af}
+.demo-wrap{background:var(--white);border-radius:var(--r);padding:26px 28px;box-shadow:var(--shadow);margin-bottom:22px}
+.demo-wrap h3{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px;color:var(--cm-d)}
+.demo-btns{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px}
+.dbtn{padding:8px 20px;border-radius:999px;border:2px solid var(--cm);background:#fff;color:var(--cm-d);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.83rem;cursor:pointer;transition:var(--trans)}
+.dbtn.on,.dbtn:hover{background:var(--cm-d);border-color:var(--cm-d);color:#fff}
+.demo-out{background:linear-gradient(135deg,#fff9f6,#fff3ee);border:1px solid #f5c5a3;border-radius:10px;padding:20px;font-size:.875rem;line-height:1.75;min-height:170px}
+.demo-out strong{color:var(--cm-d)}
+.hl{background:var(--cm-l);border-radius:4px;padding:1px 6px}
+.rnn-viz{background:var(--white);border-radius:var(--r);padding:24px;box-shadow:var(--shadow);margin-bottom:22px;overflow-x:auto}
+.rnn-track{display:flex;align-items:center;min-width:560px;padding:16px 0}
+.rcell{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:var(--trans);flex-shrink:0}
+.rcell:hover .rbox{transform:scale(1.1);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.rbox{width:68px;height:68px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1.25rem;color:#fff;transition:var(--trans);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.rlabel{font-size:.72rem;font-weight:600;color:var(--muted);text-align:center}
+.rarrow{width:46px;height:4px;background:linear-gradient(90deg,var(--cm),var(--cm-d));flex-shrink:0;border-radius:2px;position:relative;margin:0 4px}
+.rarrow::after{content:'&#9658;';position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:var(--cm-d);font-size:.75rem}
+.rio{display:flex;flex-direction:column;align-items:center;gap:5px}
+.rio span{font-size:.7rem;font-family:'JetBrains Mono',monospace;background:var(--cm-l);border:1px solid #f5c5a3;border-radius:5px;padding:3px 8px;color:var(--cm-d)}
+.cell-tip{margin-top:14px;padding:14px 16px;background:var(--cm-l);border-radius:8px;font-size:.85rem;display:none;border-left:3px solid var(--cm)}
+.cell-tip.on{display:block}
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-bottom:22px}
+.acard{border-radius:var(--r);padding:22px 24px;border:1px solid;cursor:pointer;transition:var(--trans);position:relative;overflow:hidden}
+.acard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.acard.ac-s{background:linear-gradient(135deg,#fff1e6,#fde8d0);border-color:#f5c5a3;color:#7a3200}
+.acard.ac-l{background:linear-gradient(135deg,#e8f4ff,#cce5ff);border-color:#80c4f5;color:#0d3d72}
+.acard.ac-g{background:linear-gradient(135deg,#e6fff2,#ccf5e0);border-color:#80dcaf;color:#0a4a28}
+.acard h3{font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:8px}
+.abadge{position:absolute;top:15px;right:15px;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.08)}
+.adetail{font-size:.86rem;line-height:1.6}
+.adetail ul{margin:8px 0 0 16px}
+.adetail li{margin-bottom:4px}
+.aexpand{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,0,0,.1);font-size:.84rem;line-height:1.6}
+.acard.open .aexpand{display:block}
+.mono-box{font-family:'JetBrains Mono',monospace;font-size:.76rem;padding:10px;border-radius:7px;margin-top:8px;line-height:1.8}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:15px;margin-bottom:22px}
+.pcard{background:var(--white);border-radius:var(--r);padding:19px 20px;box-shadow:var(--shadow);border-left:4px solid;position:relative}
+.pcard h4{font-weight:700;font-size:.92rem;margin-bottom:5px}
+.prange{font-family:'JetBrains Mono',monospace;font-size:.76rem;background:var(--bg);border-radius:5px;padding:3px 8px;display:inline-block;margin-bottom:8px;border:1px solid var(--border)}
+.pcard p{font-size:.82rem;line-height:1.5;color:var(--muted)}
+.pnum{position:absolute;top:14px;right:16px;font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;opacity:.1}
+.exam{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fad97c;border-radius:var(--r);padding:20px 24px;margin-bottom:20px}
+.exam h4{color:var(--kc-d);font-weight:700;margin-bottom:10px}
+.exam ul{margin-left:18px}
+.exam li{margin-bottom:6px;font-size:.875rem}
+.dgcard{background:var(--white);border-radius:var(--r);padding:24px;box-shadow:var(--shadow);margin-bottom:24px}
+.dgcard h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--dg-d);margin-bottom:10px}
+.dgcard img{width:100%;border-radius:8px;border:1px solid var(--dg-l);margin-bottom:14px;display:block}
+.dgcap{background:var(--dg-l);border-left:3px solid var(--dg-d);padding:14px 16px;border-radius:0 8px 8px 0;font-size:.86rem;line-height:1.65;color:#555}
+.dgcap strong{color:var(--dg-d)}
+.qbox{background:var(--white);border-radius:var(--r);padding:30px;box-shadow:var(--shadow)}
+.qprog{background:var(--border);border-radius:999px;height:7px;margin-bottom:22px;overflow:hidden}
+.qbar{height:100%;background:linear-gradient(90deg,var(--qz-d),#818cf8);border-radius:999px;transition:.4s ease}
+.qmeta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:18px}
+.qtext{font-family:'Playfair Display',serif;font-size:1.1rem;line-height:1.45;margin-bottom:20px}
+.qopts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.qopt{padding:13px 18px;border-radius:10px;border:2px solid var(--border);background:var(--white);cursor:pointer;font-size:.9rem;text-align:left;font-family:'DM Sans',sans-serif;transition:var(--trans);line-height:1.4}
+.qopt:hover:not(:disabled){border-color:var(--qz-d);background:var(--qz-l)}
+.qopt.ok{border-color:var(--ar-d);background:var(--ar-l);color:var(--ar-d);font-weight:600}
+.qopt.ng{border-color:var(--dg-d);background:var(--dg-l);color:var(--dg-d)}
+.qopt:disabled{cursor:default}
+.qfb{padding:14px 16px;border-radius:10px;font-size:.86rem;line-height:1.6;display:none;margin-bottom:16px}
+.qfb.on{display:block}
+.qfb.ok{background:var(--ar-l);border:1px solid #9de8bc;color:#14532d}
+.qfb.ng{background:var(--dg-l);border:1px solid #f5b3cc;color:#7f1d3f}
+.qnext{padding:11px 28px;border-radius:999px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.875rem;background:var(--qz-d);color:#fff;transition:var(--trans);display:none}
+.qnext:hover{background:#312e81}
+.qresult{text-align:center;padding:18px 0;display:none}
+.qresult h3{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:6px}
+.qscore-num{font-size:3.5rem;font-weight:900;font-family:'Playfair Display',serif;margin:14px 0}
+.qgrade{display:inline-block;padding:8px 24px;border-radius:999px;font-weight:700;font-size:1rem;margin-bottom:18px}
+.gp{background:var(--ar-l);color:var(--ar-d)}.gf{background:var(--dg-l);color:var(--dg-d)}
+.qretry{padding:11px 28px;border-radius:999px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.875rem;background:var(--cm-d);color:#fff;transition:var(--trans);margin-top:10px}
+.qretry:hover{background:#7a3200}
+.info-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.info-chip{background:var(--pp-l);color:var(--pp-d);border-radius:999px;padding:5px 14px;font-size:.8rem;font-weight:600;border:1px solid #9dd0f5}
+footer{text-align:center;padding:22px;font-size:.78rem;color:#aaa;border-top:1px solid var(--border)}
+footer a{color:var(--ov-d);text-decoration:none}
+@media(max-width:600px){
+  .hero{padding:36px 14px 30px}.sh{padding:20px 18px}.card{padding:18px 16px}
+  .step-bd{padding-left:14px}.arch-grid{grid-template-columns:1fr}.qbox{padding:20px 14px}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-badge">&#128220; CGAI Certification &middot; charteredcertifications.com</div>
+  <h1>Recurrent Neural<br/><em>Networks (RNN)</em></h1>
+  <p class="hero-sub">Complete interactive exam prep covering architecture, hyperparameter tuning, gradient mechanics, and CGAI-style practice questions.</p>
+  <div class="hero-pills">
+    <span class="hpill">Sequence Modeling</span><span class="hpill">LSTM &amp; GRU</span>
+    <span class="hpill">Vanishing Gradient</span><span class="hpill">BPTT</span>
+    <span class="hpill">Hyperparameter Tuning</span><span class="hpill">Time Series &amp; NLP</span>
+  </div>
+</header>
+<nav class="nav-sticky" role="tablist">
+  <div class="nav-inner">
+    <button class="ntab on" data-t="overview">&#128301; Overview</button>
+    <button class="ntab" data-t="pipeline">&#9881;&#65039; Pipeline</button>
+    <button class="ntab" data-t="mechanism">&#128300; Core Mechanism</button>
+    <button class="ntab" data-t="architecture">&#127959;&#65039; Architecture</button>
+    <button class="ntab" data-t="concepts">&#128204; Key Concepts</button>
+    <button class="ntab" data-t="diagrams">&#128444;&#65039; Diagrams</button>
+    <button class="ntab" data-t="quiz">&#129504; Quiz</button>
+  </div>
+</nav>
+<main class="wrap">
+
+<!-- OVERVIEW -->
+<div class="panel on" id="p-overview">
+  <div class="sh sh-ov"><h2>What is an RNN?</h2><p>A Recurrent Neural Network (RNN) is built for <strong>sequential, ordered data</strong>. Unlike feedforward networks, it maintains a hidden state that carries information across time steps, giving it a form of memory.</p></div>
+  <div class="grid2">
+    <div class="card"><h3 style="color:var(--ov-d)">Core Idea</h3>
+      <p>At each time step <em>t</em>, the RNN processes current input <strong>x<sub>t</sub></strong> and previous hidden state <strong>h<sub>t-1</sub></strong>, producing new state <strong>h<sub>t</sub></strong>.</p><br/>
+      <p style="font-size:.875rem"><strong>Formula:</strong> h<sub>t</sub> = tanh(W<sub>hh</sub> &middot; h<sub>t-1</sub> + W<sub>xh</sub> &middot; x<sub>t</sub> + b<sub>h</sub>)</p><br/>
+      <p style="font-size:.875rem">The same weights reuse at every step &mdash; <strong>weight sharing</strong> makes RNNs parameter-efficient and able to handle any sequence length.</p>
+    </div>
+    <div class="card"><h3 style="color:var(--ov-d)">Why RNNs Matter</h3>
+      <ul style="margin-left:16px;font-size:.875rem;line-height:1.9">
+        <li>Handle <strong>variable-length sequences</strong> natively</li>
+        <li>Capture <strong>temporal dependencies</strong> in ordered data</li>
+        <li>Parameter-efficient via weight sharing across time</li>
+        <li>Foundation for LSTM, GRU, and Seq2Seq models</li>
+        <li>Powers NLP, speech recognition, and time-series forecasting</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card"><h3 style="color:var(--ov-d)">Worked Example &mdash; Sentiment Analysis</h3>
+    <p style="font-size:.875rem;margin-bottom:12px">Input: <em>"The film was surprisingly brilliant."</em></p>
+    <div class="info-row">
+      <span class="info-chip">t=1: The &rarr; h&#8321;</span><span class="info-chip">t=2: film &rarr; h&#8322;</span>
+      <span class="info-chip">t=3: was &rarr; h&#8323;</span><span class="info-chip">t=4: surprisingly &rarr; h&#8324;</span>
+      <span class="info-chip">t=5: brilliant &rarr; h&#8325;</span>
+    </div>
+    <p style="font-size:.86rem">The final hidden state <strong>h&#8325;</strong> encodes the full sentence context. A Dense+Sigmoid layer maps it to <strong>Positive (0.91)</strong>. "Surprisingly" modifies "brilliant" &mdash; the RNN must carry context from step 4 to handle this. This long-range dependency is exactly what LSTM and GRU are designed to preserve.</p>
+  </div>
+  <div class="tbl th-ov"><table>
+    <thead><tr><th>Model</th><th>Memory</th><th>Long-term Deps</th><th>Speed</th><th>Best For</th><th>Key Limitation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SimpleRNN</strong></td><td>Hidden state only</td><td><span class="tag tr">Poor</span></td><td><span class="tag tg">Fast</span></td><td>Short seqs, demos</td><td>Vanishing gradient</td></tr>
+      <tr><td><strong>LSTM</strong></td><td>Cell state + h</td><td><span class="tag tg">Excellent</span></td><td><span class="tag tw">Moderate</span></td><td>NLP, speech, long seqs</td><td>More parameters</td></tr>
+      <tr><td><strong>GRU</strong></td><td>Gated hidden state</td><td><span class="tag tg">Good</span></td><td><span class="tag tg">Faster than LSTM</span></td><td>Time series, NLP</td><td>Slightly less expressive</td></tr>
+      <tr><td><strong>Transformer</strong></td><td>Global attention</td><td><span class="tag tg">Best</span></td><td><span class="tag tw">Heavy training</span></td><td>Large-scale NLP, LLMs</td><td>O(n&sup2;) attention cost</td></tr>
+      <tr><td><strong>1D CNN</strong></td><td>Local window</td><td><span class="tag tr">Limited</span></td><td><span class="tag tg">Very Fast</span></td><td>Fixed-length signals</td><td>No ordering awareness</td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px">Glossary</h3>
+  <div class="glos">
+    <div class="gc gc-ov"><h4>Hidden State (h)</h4><p>The "memory" vector passed between steps, encoding what the network has seen.</p></div>
+    <div class="gc gc-ov"><h4>Time Step (t)</h4><p>One position in the sequence &mdash; one word, data point, or audio frame.</p></div>
+    <div class="gc gc-ov"><h4>Weight Sharing</h4><p>The same W matrices applied at every step &mdash; the core efficiency of RNNs.</p></div>
+    <div class="gc gc-ov"><h4>Unrolling</h4><p>Visualising the RNN as a chain of repeated cells, one per time step, for computing gradients.</p></div>
+    <div class="gc gc-ov"><h4>Many-to-One</h4><p>Sequence input &rarr; single output (e.g. sentiment). Most common RNN topology.</p></div>
+    <div class="gc gc-ov"><h4>Seq2Seq</h4><p>Encoder compresses a sequence; decoder generates output sequence (e.g. translation).</p></div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div class="panel" id="p-pipeline">
+  <div class="sh sh-pp"><h2>RNN Processing Pipeline</h2><p>Click each step to expand full detail. Follow the flow from raw data to a deployed, tuned RNN model.</p></div>
+  <div class="stepper">
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">1</div><span class="stitle">Data Preparation &amp; Tokenisation</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>Convert raw sequential data into numerical tensors.</p><ul>
+        <li><strong>NLP:</strong> tokenise &rarr; integer indices &rarr; embedding lookup</li>
+        <li><strong>Time series:</strong> normalise values; create sliding windows of length T</li>
+        <li><strong>Padding:</strong> <code>pad_sequences(maxlen=50, padding='post')</code></li>
+        <li><strong>Split:</strong> typically 70/15/15 train / val / test</li>
+      </ul><p style="margin-top:10px"><strong>Output tensor shape:</strong> <code>(batch_size, sequence_length, n_features)</code></p></div>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">2</div><span class="stitle">Choose RNN Variant &amp; Topology</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>Select the right variant based on sequence length and task:</p><ul>
+        <li><strong>SimpleRNN</strong> &mdash; very short sequences (&lt;20 steps), demos only</li>
+        <li><strong>LSTM</strong> &mdash; long sequences, NLP, speech recognition</li>
+        <li><strong>GRU</strong> &mdash; similar to LSTM but faster; excellent default for time series</li>
+        <li><strong>Bidirectional</strong> &mdash; sees future context; best for NLP classification</li>
+        <li><strong>Stacked layers</strong> &mdash; 2&ndash;4 layers; set <code>return_sequences=True</code> on all except last</li>
+      </ul><p style="margin-top:8px"><strong>Topologies:</strong> Many-to-one (sentiment), many-to-many sync (NER), one-to-many (captioning), async many-to-many (translation)</p></div>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">3</div><span class="stitle">Initialise Hyperparameters</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>CGAI recommended starting defaults:</p><ul>
+        <li>Hidden units: <strong>64</strong> | Layers: <strong>1</strong> | Learning rate: <strong>0.001</strong> (Adam)</li>
+        <li>Batch size: <strong>32</strong> | Dropout: <strong>0.2</strong></li>
+        <li>Epochs: <strong>100 + EarlyStopping(patience=5)</strong></li>
+      </ul><p style="margin-top:8px">Tuning order: <strong>LR &rarr; Hidden Units &rarr; Batch Size &rarr; Dropout &rarr; Layers</strong>. One at a time.</p></div>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">4</div><span class="stitle">Forward Pass &mdash; Sequence Processing</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>At each time step <em>t</em>:</p><ul>
+        <li><code>h_t = tanh(W_hh &middot; h_{t-1} + W_xh &middot; x_t + b_h)</code></li>
+        <li>Optional: <code>y_t = W_hy &middot; h_t + b_y</code></li>
+        <li>Pass h_t to the next step</li>
+      </ul><p style="margin-top:8px">For many-to-one, only the final h<sub>T</sub> feeds the output Dense layer.</p></div>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">5</div><span class="stitle">Loss Computation</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>Choose loss function to match output type:</p><ul>
+        <li>Binary classification &rarr; <code>binary_crossentropy</code> + sigmoid</li>
+        <li>Multi-class &rarr; <code>categorical_crossentropy</code> + softmax</li>
+        <li>Regression / forecasting &rarr; <code>mae</code> or <code>mse</code></li>
+        <li>Language modelling &rarr; <code>sparse_categorical_crossentropy</code></li>
+      </ul><p style="margin-top:8px"><strong>Monitor:</strong> Training Loss, Validation Loss, Accuracy (clf), MAE/RMSE (regression).</p></div>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">6</div><span class="stitle">Backpropagation Through Time (BPTT)</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>Gradients computed by "unrolling" the network and applying chain rule backwards through all steps.</p><ul>
+        <li>Product of many small W multiplications &rarr; <strong>vanishing gradient</strong></li>
+        <li>Product of large W multiplications &rarr; <strong>exploding gradient</strong> (NaN loss)</li>
+        <li><strong>Truncated BPTT:</strong> limit backprop to k steps for very long sequences</li>
+        <li><strong>Gradient clipping:</strong> <code>Adam(clipvalue=0.5)</code> prevents explosion</li>
+      </ul></div>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-hd"><div class="snum" style="background:var(--pp-d)">7</div><span class="stitle">Evaluate, Diagnose &amp; Iterate</span><span class="schev">&#9660;</span></div>
+      <div class="step-bd"><p>Read learning curves and diagnose:</p><ul>
+        <li><strong>Both losses high:</strong> underfitting &rarr; more capacity or training time</li>
+        <li><strong>Train &lt;&lt; Val loss:</strong> overfitting &rarr; dropout, less capacity, early stopping</li>
+        <li><strong>Unstable / NaN:</strong> exploding gradients &rarr; clip gradients, lower LR</li>
+        <li><strong>Plateau early:</strong> vanishing gradient &rarr; switch to LSTM / GRU</li>
+      </ul><p style="margin-top:8px">Use <strong>Bayesian Optimisation</strong> (Optuna / Ray Tune) for systematic search.</p></div>
+    </div>
+  </div>
+  <div class="card"><h3 style="color:var(--pp-d)">Keras Example &mdash; Stock Price Forecasting (GRU)</h3>
+    <div class="cb"><span class="kw">from</span> tensorflow.keras.models <span class="kw">import</span> Sequential
+<span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> GRU, Dense, Dropout
+<span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> EarlyStopping
+
+<span class="cm"># Input: 50 time steps, 1 feature (normalised close price)</span>
+model = Sequential([
+    GRU(<span class="nm">128</span>, input_shape=(<span class="nm">50</span>, <span class="nm">1</span>), return_sequences=<span class="kw">True</span>),
+    Dropout(<span class="nm">0.2</span>),
+    GRU(<span class="nm">64</span>),
+    Dropout(<span class="nm">0.2</span>),
+    Dense(<span class="nm">1</span>)  <span class="cm"># predict next day price</span>
+])
+model.<span class="fn">compile</span>(optimizer=<span class="st">'adam'</span>, loss=<span class="st">'mae'</span>)
+es = EarlyStopping(monitor=<span class="st">'val_loss'</span>, patience=<span class="nm">5</span>, restore_best_weights=<span class="kw">True</span>)
+history = model.<span class="fn">fit</span>(X_train, y_train, epochs=<span class="nm">100</span>, batch_size=<span class="nm">32</span>,
+                   validation_data=(X_val, y_val), callbacks=[es])</div>
+  </div>
+  <div class="tbl th-pp"><table>
+    <thead><tr><th>Topology</th><th>Input</th><th>Output</th><th>Example Use Case</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Many-to-One</strong></td><td>Sequence</td><td>Single value</td><td>Sentiment analysis, Stock prediction</td></tr>
+      <tr><td><strong>One-to-Many</strong></td><td>Single value</td><td>Sequence</td><td>Image captioning, Music generation</td></tr>
+      <tr><td><strong>Many-to-Many (sync)</strong></td><td>Sequence</td><td>Same-length seq</td><td>POS tagging, Named Entity Recognition</td></tr>
+      <tr><td><strong>Many-to-Many (async)</strong></td><td>Sequence</td><td>Diff-length seq</td><td>Machine translation (Seq2Seq)</td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px">Glossary</h3>
+  <div class="glos">
+    <div class="gc gc-pp"><h4>BPTT</h4><p>Backpropagation Through Time &mdash; computing gradients by unrolling the RNN across all time steps.</p></div>
+    <div class="gc gc-pp"><h4>return_sequences</h4><p>Keras flag: True returns h at every step (needed for stacking); False returns only the final h.</p></div>
+    <div class="gc gc-pp"><h4>Truncated BPTT</h4><p>Limits backprop to k steps to save memory and compute on very long sequences.</p></div>
+    <div class="gc gc-pp"><h4>Early Stopping</h4><p>Halts training when val_loss stops improving; restore_best_weights reverts to the optimal checkpoint.</p></div>
+  </div>
+</div>
+
+<!-- MECHANISM -->
+<div class="panel" id="p-mechanism">
+  <div class="sh sh-cm"><h2>Core Mechanism: Gradient Problems &amp; Solutions</h2><p>The central challenge of training RNNs &mdash; and the reason LSTM &amp; GRU were invented. Select a scenario to explore.</p></div>
+  <div class="demo-wrap">
+    <h3>&#9889; Interactive: Gradient Scenarios</h3>
+    <div class="demo-btns">
+      <button class="dbtn on" onclick="showDemo(this,'normal')">&#10003; Healthy Training</button>
+      <button class="dbtn" onclick="showDemo(this,'vanish')">Vanishing Gradient</button>
+      <button class="dbtn" onclick="showDemo(this,'explode')">Exploding Gradient</button>
+      <button class="dbtn" onclick="showDemo(this,'clip')">Gradient Clipping</button>
+      <button class="dbtn" onclick="showDemo(this,'lstm')">LSTM Fix</button>
+    </div>
+    <div class="demo-out" id="demoOut">
+      <strong>Healthy Training</strong><br/><br/>
+      Gradients flow cleanly from the loss back through all time steps. Each weight receives a proportional update &mdash; the network learns from both recent and distant sequence elements.<br/><br/>
+      <strong>Signs of healthy training:</strong><br/>
+      &bull; Validation loss decreases steadily each epoch<br/>
+      &bull; Train and val loss remain close together<br/>
+      &bull; Model continues improving on long-range tasks<br/><br/>
+      <em>Typical stable gradient magnitude: 0.01 &ndash; 1.0</em>
+    </div>
+  </div>
+  <div class="rnn-viz">
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cm-d);margin-bottom:6px">Click a cell to inspect its computation</h3>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px">4-step unrolled SimpleRNN &mdash; Sentiment Analysis example</p>
+    <div class="rnn-track">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:5px;margin-right:2px">
+        <span style="font-size:.68rem;color:#aaa">h&#8320;=0</span>
+        <div class="rarrow"></div>
+      </div>
+      <div class="rcell" onclick="pickCell(this,0)">
+        <div class="rio"><span>x&#8321;="The"</span></div>
+        <div class="rbox" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">h&#8321;</div>
+        <div class="rlabel">Step 1</div>
+      </div>
+      <div class="rarrow"></div>
+      <div class="rcell" onclick="pickCell(this,1)">
+        <div class="rio"><span>x&#8322;="film"</span></div>
+        <div class="rbox" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">h&#8322;</div>
+        <div class="rlabel">Step 2</div>
+      </div>
+      <div class="rarrow"></div>
+      <div class="rcell" onclick="pickCell(this,2)">
+        <div class="rio"><span>x&#8323;="was"</span></div>
+        <div class="rbox" style="background:linear-gradient(135deg,#34d399,#059669)">h&#8323;</div>
+        <div class="rlabel">Step 3</div>
+      </div>
+      <div class="rarrow"></div>
+      <div class="rcell" onclick="pickCell(this,3)">
+        <div class="rio"><span>x&#8324;="brilliant"</span></div>
+        <div class="rbox" style="background:linear-gradient(135deg,#fb7185,#e11d48)">h&#8324;</div>
+        <div class="rlabel">Step 4</div>
+      </div>
+      <div style="margin-left:6px;display:flex;flex-direction:column;align-items:center;gap:5px">
+        <div class="rarrow"></div>
+        <span style="font-size:.68rem;color:#aaa">y&#770;=Positive</span>
+      </div>
+    </div>
+    <div class="cell-tip" id="cellTip"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3 style="color:var(--cm-d)">Vanishing Gradient</h3>
+      <p style="font-size:.875rem;margin-bottom:10px">Gradients shrink exponentially as they travel backwards through time steps.</p>
+      <p style="font-size:.875rem"><strong>Root cause:</strong> With tanh and W eigenvalues &lt;1, each backward step multiplies the gradient by a fraction. After 10&ndash;20 steps, the product approaches zero.</p><br/>
+      <p style="font-size:.84rem;color:var(--muted)"><strong>Effect:</strong> Early inputs stop influencing learning. The model forgets long-range context. Loss plateaus.</p>
+    </div>
+    <div class="card"><h3 style="color:var(--cm-d)">Exploding Gradient</h3>
+      <p style="font-size:.875rem;margin-bottom:10px">Gradients grow exponentially &mdash; weights update in massive destabilising leaps.</p>
+      <p style="font-size:.875rem"><strong>Symptom:</strong> Loss spikes to NaN after a few batches. Weights become &plusmn;&infin;.</p><br/>
+      <p style="font-size:.84rem;color:var(--muted)"><strong>Fix:</strong> Gradient clipping caps the gradient norm before the update:<br/><code>Adam(clipvalue=0.5)</code> or <code>clipnorm=1.0</code></p>
+    </div>
+  </div>
+  <div class="tbl th-pp"><table>
+    <thead><tr><th>Solution</th><th>How It Works</th><th>Fixes</th><th>Keras Syntax</th></tr></thead>
+    <tbody>
+      <tr><td><strong>LSTM</strong></td><td>Cell state + 3 gates allow additive gradient flow</td><td>Vanishing</td><td><code>LSTM(128)</code></td></tr>
+      <tr><td><strong>GRU</strong></td><td>2 gates (reset + update) &mdash; simplified LSTM</td><td>Vanishing</td><td><code>GRU(128)</code></td></tr>
+      <tr><td><strong>Gradient Clipping</strong></td><td>Caps gradient magnitude before weight update</td><td>Exploding</td><td><code>Adam(clipvalue=0.5)</code></td></tr>
+      <tr><td><strong>Orthogonal Init</strong></td><td>Keeps W eigenvalues near 1 at initialisation</td><td>Both</td><td><code>kernel_initializer='orthogonal'</code></td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px">Glossary</h3>
+  <div class="glos">
+    <div class="gc gc-cm"><h4>BPTT</h4><p>Backpropagation Through Time &mdash; chain rule applied across all unrolled time steps.</p></div>
+    <div class="gc gc-cm"><h4>Vanishing Gradient</h4><p>Gradient &rarr; 0 over many steps; early inputs stop contributing to weight updates.</p></div>
+    <div class="gc gc-cm"><h4>Exploding Gradient</h4><p>Gradient &rarr; &infin;; training collapses with NaN loss and erratic weights.</p></div>
+    <div class="gc gc-cm"><h4>Gradient Clipping</h4><p>Clamps gradient magnitude before the optimiser update. Cheap fix for explosion.</p></div>
+    <div class="gc gc-cm"><h4>Cell State (C)</h4><p>LSTM's long-range memory highway &mdash; flows with near-linear, gated interactions.</p></div>
+    <div class="gc gc-cm"><h4>Truncated BPTT</h4><p>Backpropagate only k steps rather than the full sequence to manage compute cost.</p></div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="panel" id="p-architecture">
+  <div class="sh sh-ar"><h2>RNN Architecture Deep Dive</h2><p>Click each card to expand gate equations, use-case guidance, and Keras syntax for each variant.</p></div>
+  <div class="arch-grid">
+    <div class="acard ac-s" onclick="this.classList.toggle('open')">
+      <span class="abadge">Simple</span><h3>SimpleRNN</h3>
+      <div class="adetail"><p>Single hidden state. One weight matrix. Minimal overhead.</p>
+        <ul><li>Formula: <strong>h<sub>t</sub> = tanh(W&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b)</strong></li>
+          <li>Memory: <span class="tag tr">Low</span> &mdash; vanishes beyond ~10 steps</li>
+          <li>Tuning: &#9733;&#9734;&#9734; Easy</li></ul>
+      </div>
+      <div class="aexpand">
+        <p><strong>When to use:</strong> Demos and toy problems only. Rarely used in production.</p>
+        <p style="margin-top:8px"><strong>Failure mode:</strong> Vanishing gradient prevents learning dependencies &gt;10 steps.</p>
+        <div class="mono-box" style="background:#fff1e6">SimpleRNN(64, activation='tanh', input_shape=(T, F))</div>
+      </div>
+    </div>
+    <div class="acard ac-l" onclick="this.classList.toggle('open')">
+      <span class="abadge">Recommended</span><h3>LSTM</h3>
+      <div class="adetail"><p>Long Short-Term Memory &mdash; 3 gates + dedicated cell state highway.</p>
+        <ul><li><strong>Forget gate f<sub>t</sub></strong> &mdash; erases irrelevant cell state entries</li>
+          <li><strong>Input gate i<sub>t</sub></strong> &mdash; writes new info into cell state</li>
+          <li><strong>Output gate o<sub>t</sub></strong> &mdash; exposes relevant part as hidden state</li></ul>
+      </div>
+      <div class="aexpand">
+        <div class="mono-box" style="background:#e8f4ff;font-size:.73rem">
+          f_t = &sigma;(W_f&middot;[h_{t-1},x_t] + b_f) &larr; forget<br/>
+          i_t = &sigma;(W_i&middot;[h_{t-1},x_t] + b_i) &larr; input<br/>
+          C_t = f_t&#8857;C_{t-1} + i_t&#8857;tanh(W_C&middot;[h_{t-1},x_t]+b_C) &larr; cell<br/>
+          o_t = &sigma;(W_o&middot;[h_{t-1},x_t] + b_o) &larr; output<br/>
+          h_t = o_t &#8857; tanh(C_t)
+        </div>
+        <p><strong>Best for:</strong> NLP, speech, long-sequence classification, language modelling.</p>
+        <div class="mono-box" style="background:#e8f4ff">LSTM(128, return_sequences=True)&nbsp;&nbsp;# stacked<br/>LSTM(64)&nbsp;&nbsp;# final layer</div>
+      </div>
+    </div>
+    <div class="acard ac-g" onclick="this.classList.toggle('open')">
+      <span class="abadge">Efficient</span><h3>GRU</h3>
+      <div class="adetail"><p>Gated Recurrent Unit &mdash; 2 gates, no separate cell state. ~25% fewer parameters than LSTM.</p>
+        <ul><li><strong>Reset gate r<sub>t</sub></strong> &mdash; how much past state to forget</li>
+          <li><strong>Update gate z<sub>t</sub></strong> &mdash; blend old h and new candidate</li></ul>
+      </div>
+      <div class="aexpand">
+        <div class="mono-box" style="background:#e6fff2;font-size:.73rem">
+          z_t = &sigma;(W_z&middot;[h_{t-1},x_t]) &larr; update gate<br/>
+          r_t = &sigma;(W_r&middot;[h_{t-1},x_t]) &larr; reset gate<br/>
+          h_t = (1-z_t)&#8857;h_{t-1} + z_t&#8857;tanh(W&middot;[r_t&#8857;h_{t-1},x_t])
+        </div>
+        <p><strong>When GRU beats LSTM:</strong> Smaller datasets, time series, when training speed matters.</p>
+        <div class="mono-box" style="background:#e6fff2">GRU(128)&nbsp;&nbsp;# recommended default for time series</div>
+      </div>
+    </div>
+  </div>
+  <div class="tbl th-ar"><table>
+    <thead><tr><th>Feature</th><th>SimpleRNN</th><th>LSTM</th><th>GRU</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Gates</strong></td><td>None</td><td>3 (forget, input, output)</td><td>2 (reset, update)</td></tr>
+      <tr><td><strong>Memory</strong></td><td>h only</td><td>h + cell state C</td><td>h only (gated)</td></tr>
+      <tr><td><strong>Parameters</strong></td><td>Fewest</td><td>~4&times; SimpleRNN</td><td>~3&times; SimpleRNN</td></tr>
+      <tr><td><strong>Training Speed</strong></td><td>Fastest</td><td>Slowest</td><td>Moderate</td></tr>
+      <tr><td><strong>Long-term Deps</strong></td><td><span class="tag tr">Poor</span></td><td><span class="tag tg">Excellent</span></td><td><span class="tag tg">Good</span></td></tr>
+      <tr><td><strong>Tuning Difficulty</strong></td><td>&#9733;&#9734;&#9734;</td><td>&#9733;&#9733;&#9734;</td><td>&#9733;&#9733;&#9734;</td></tr>
+      <tr><td><strong>Recommended For</strong></td><td>Demos only</td><td>NLP, Speech, LM</td><td>Time series, NLP</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card"><h3 style="color:var(--ar-d)">Stacked (Deep) RNNs</h3>
+      <p style="font-size:.875rem">Multiple RNN layers stacked vertically. Each extracts higher-level sequence abstractions. All intermediate layers need <code>return_sequences=True</code>.</p>
+      <p style="font-size:.84rem;margin-top:10px;color:var(--muted)">Risk: deeper stacks amplify vanishing gradients. Use LSTM/GRU, keep to &le;4 layers. Two stacked LSTMs is a common production baseline.</p>
+    </div>
+    <div class="card"><h3 style="color:var(--ar-d)">Bidirectional RNNs</h3>
+      <p style="font-size:.875rem">Two RNNs run in parallel &mdash; forward (1&rarr;T) and backward (T&rarr;1). Outputs concatenated or summed, giving each position access to past and future context.</p>
+      <p style="font-size:.84rem;margin-top:10px;color:var(--muted)">Best for NLP classification. Cannot be used for autoregressive generation where future tokens are unknown at inference.</p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.76rem;background:var(--ar-l);border-radius:6px;padding:8px 12px;margin-top:10px">Bidirectional(LSTM(64))</div>
+    </div>
+  </div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px">Glossary</h3>
+  <div class="glos">
+    <div class="gc gc-ar"><h4>Forget Gate</h4><p>LSTM gate deciding how much of C_{t-1} to discard at each step.</p></div>
+    <div class="gc gc-ar"><h4>Cell State (C)</h4><p>LSTM's long-term memory lane &mdash; flows through time with minimal modification.</p></div>
+    <div class="gc gc-ar"><h4>Update Gate</h4><p>GRU gate blending old hidden state with new candidate state at each step.</p></div>
+    <div class="gc gc-ar"><h4>return_sequences</h4><p>True = h at every step (needed for stacking). False = only final h.</p></div>
+    <div class="gc gc-ar"><h4>Bidirectional</h4><p>Keras wrapper running the cell forwards AND backwards, doubling context.</p></div>
+  </div>
+</div>
+
+<!-- KEY CONCEPTS -->
+<div class="panel" id="p-concepts">
+  <div class="sh sh-kc"><h2>Key Concepts &amp; Exam Must-Knows</h2><p>Hyperparameters, tuning strategies, best practices, and high-frequency CGAI exam topics from the reference infographic.</p></div>
+  <div class="exam">
+    <h4>&#127919; CGAI Exam High-Frequency Topics</h4>
+    <ul>
+      <li>Differences between SimpleRNN, LSTM, GRU &mdash; know <em>when</em> to use each and why</li>
+      <li>Vanishing vs Exploding gradient &mdash; causes, symptoms, and all four solutions</li>
+      <li>Correct HP tuning order: LR &rarr; Hidden Units &rarr; Batch Size &rarr; Dropout &rarr; Layers</li>
+      <li>Early Stopping: monitor='val_loss', patience=5, restore_best_weights=True</li>
+      <li>Grid Search vs Random Search vs Bayesian Optimisation &mdash; trade-offs</li>
+      <li>Common hyperparameter ranges (Panel 4 of diagram) &mdash; likely multiple-choice options</li>
+      <li>Learning curve diagnosis: overfitting, underfitting, instability patterns</li>
+    </ul>
+  </div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;margin-bottom:16px">The 10 Core Hyperparameters (A&ndash;J)</h3>
+  <div class="pgrid">
+    <div class="pcard" style="border-color:var(--ov-d)"><span class="pnum">A</span><h4>Learning Rate</h4><div class="prange">0.0001 &rarr; 0.1</div><p>Controls weight update size. Adam default: 0.001. Too high = instability. Too low = very slow convergence.</p></div>
+    <div class="pcard" style="border-color:var(--pp-d)"><span class="pnum">B</span><h4>Hidden Units</h4><div class="prange">32 &rarr; 512</div><p>Memory capacity per RNN cell. Start with 64. Large values risk overfitting on small datasets.</p></div>
+    <div class="pcard" style="border-color:var(--cm-d)"><span class="pnum">C</span><h4>Number of Layers</h4><div class="prange">1 &rarr; 4</div><p>Depth captures hierarchical patterns but adds vanishing gradient risk. Two stacked LSTMs is a common baseline.</p></div>
+    <div class="pcard" style="border-color:var(--ar-d)"><span class="pnum">D</span><h4>Sequence Length</h4><div class="prange">Task-dependent</div><p>How many past steps the model sees. Longer = more context but more memory and compute. Tune carefully.</p></div>
+    <div class="pcard" style="border-color:var(--kc-d)"><span class="pnum">E</span><h4>Batch Size</h4><div class="prange">16 &rarr; 256</div><p>Samples per gradient step. Small = noisier but better generalisation. Large = faster but rougher updates.</p></div>
+    <div class="pcard" style="border-color:var(--dg-d)"><span class="pnum">F</span><h4>Epochs</h4><div class="prange">10 &rarr; 200</div><p>Full dataset passes. Use Early Stopping with patience=5 in practice rather than a fixed epoch count.</p></div>
+    <div class="pcard" style="border-color:var(--qz-d)"><span class="pnum">G</span><h4>Optimizer</h4><div class="prange">Adam / RMSprop</div><p>Adam and RMSprop are best for RNNs. Adam adapts per-parameter learning rates automatically.</p></div>
+    <div class="pcard" style="border-color:var(--ov-d)"><span class="pnum">H</span><h4>Dropout Rate</h4><div class="prange">0.1 &rarr; 0.5</div><p>Randomly zeroes neurons to prevent overfitting. Too high = underfitting. 0.2 is a safe start.</p></div>
+    <div class="pcard" style="border-color:var(--pp-d)"><span class="pnum">I</span><h4>Activation</h4><div class="prange">tanh (default)</div><p>tanh is standard for RNN hidden states (outputs -1 to 1). LSTM gates use sigmoid. Output layer varies by task.</p></div>
+    <div class="pcard" style="border-color:var(--cm-d)"><span class="pnum">J</span><h4>Gradient Clipping</h4><div class="prange">clipnorm=1.0</div><p>Caps gradient magnitude to prevent explosion. Use for SimpleRNN and deep LSTM/GRU stacks.</p></div>
+  </div>
+  <div class="tbl th-kc"><table>
+    <thead><tr><th>Method</th><th>How It Works</th><th>Combinations</th><th>Best For</th><th>Drawback</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Manual</strong></td><td>Trial &amp; error by intuition</td><td>&mdash;</td><td>Beginners, simple models</td><td>Slow, subjective</td></tr>
+      <tr><td><strong>Grid Search</strong></td><td>Tests every combination exhaustively</td><td>Exponential</td><td>Tiny HP spaces</td><td>Computationally very expensive</td></tr>
+      <tr><td><strong>Random Search</strong></td><td>Samples random combinations</td><td>User-defined n</td><td>Not all HPs equally important</td><td>May miss the optimal point</td></tr>
+      <tr><td><strong>Bayesian Optimisation</strong></td><td>Surrogate model guides next trial</td><td>Efficient</td><td>Deep learning, large HP spaces</td><td>More complex to implement</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card"><h3 style="color:var(--kc-d)">Best Practices Checklist</h3>
+      <ul style="font-size:.875rem;margin-left:16px;line-height:1.9">
+        <li>Start simple: 1 layer, 64 units, Adam 0.001</li>
+        <li>Tune one hyperparameter at a time in recommended order</li>
+        <li>Always use Early Stopping on val_loss</li>
+        <li>Use LSTM/GRU for any sequence &gt;20 steps</li>
+        <li>Never tune on the test set &mdash; use validation only</li>
+        <li>Analyse learning curves after every experiment</li>
+        <li>Normalise all numerical inputs (especially time series)</li>
+        <li>Use Bayesian Optimisation for systematic large-scale search</li>
+      </ul>
+    </div>
+    <div class="card"><h3 style="color:var(--kc-d)">Task-Based Recommendations</h3>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:.875rem">
+        <div style="background:var(--ov-l);border-radius:8px;padding:10px 14px"><strong style="color:var(--ov-d)">Small Dataset</strong> &mdash; smaller network, higher dropout, aggressive early stopping</div>
+        <div style="background:var(--pp-l);border-radius:8px;padding:10px 14px"><strong style="color:var(--pp-d)">Large Dataset</strong> &mdash; deeper model, larger hidden states, lower regularisation</div>
+        <div style="background:var(--ar-l);border-radius:8px;padding:10px 14px"><strong style="color:var(--ar-d)">NLP Tasks</strong> &mdash; LSTM/GRU preferred, longer sequence windows, word embeddings</div>
+        <div style="background:var(--kc-l);border-radius:8px;padding:10px 14px"><strong style="color:var(--kc-d)">Time Series</strong> &mdash; GRU often best; tune sequence length carefully; normalise inputs</div>
+      </div>
+    </div>
+  </div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px">Glossary</h3>
+  <div class="glos">
+    <div class="gc gc-kc"><h4>Early Stopping</h4><p>Stops training when val_loss stops improving; restore_best_weights reverts to optimal epoch.</p></div>
+    <div class="gc gc-kc"><h4>Overfitting</h4><p>Train loss &lt;&lt; val loss &mdash; model memorised training data, fails to generalise.</p></div>
+    <div class="gc gc-kc"><h4>Underfitting</h4><p>Both train and val loss high &mdash; model too simple or insufficiently trained.</p></div>
+    <div class="gc gc-kc"><h4>Bayesian Optimisation</h4><p>Builds a probabilistic surrogate model to efficiently select the next HP trial point.</p></div>
+    <div class="gc gc-kc"><h4>Optuna / Ray Tune</h4><p>Leading libraries for automated HP search using Bayesian and other advanced strategies.</p></div>
+    <div class="gc gc-kc"><h4>Learning Curve</h4><p>Plot of train and val loss per epoch &mdash; the primary diagnostic for all tuning decisions.</p></div>
+  </div>
+</div>
+
+<!-- DIAGRAMS -->
+<div class="panel" id="p-diagrams">
+  <div class="sh sh-dg"><h2>Reference Diagrams</h2><p>Annotated study material from your course. Read each caption carefully &mdash; these panels map directly to CGAI exam questions.</p></div>
+  <div class="dgcard">
+    <h3>Hyperparameter Tuning of RNN &mdash; Complete Reference Infographic</h3>
+    <img src="RNN.png" alt="Full RNN hyperparameter tuning infographic with 12 panels covering hyperparameters A-J, vanishing and exploding gradient problems, search methods, common ranges, Keras code, evaluation metrics, early stopping, RNN vs LSTM vs GRU comparison, typical workflow, best practices, most important HPs, and practical recommendations."/>
+    <div class="dgcap">
+      <strong>What this diagram shows:</strong> A comprehensive 12-panel reference covering every major RNN tuning concept in the CGAI exam. The top-left block (Panel 1, items A&ndash;J) is the most exam-critical &mdash; each letter maps to a specific hyperparameter with typical value ranges and the effects of setting it too high or too low. <strong>Where to focus:</strong> Panel 2 (vanishing and exploding gradients &mdash; the theoretical core of RNN limitations), Panel 4 (common hyperparameter ranges &mdash; memorise for multiple-choice), Panel 9 (RNN vs LSTM vs GRU comparison &mdash; most frequently tested), and Panel 5 (Keras code template &mdash; appears in coding-style questions). Panel 12 (bottom-right) gives task-specific recommendations that feature in CGAI scenario questions.
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="color:var(--dg-d)">Panel-by-Panel Study Notes</h3>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+      <div style="background:var(--ov-l);border-radius:9px;padding:14px 16px;font-size:.86rem"><strong style="color:var(--ov-d)">Panel 1 &mdash; Hyperparameters A&ndash;J:</strong> For each of the 10 parameters know: (1) what it controls, (2) a typical value, (3) effect if too high, (4) effect if too low. Learning Rate and Dropout appear most often in exam questions.</div>
+      <div style="background:var(--cm-l);border-radius:9px;padding:14px 16px;font-size:.86rem"><strong style="color:var(--cm-d)">Panel 2 &mdash; Gradient Problems:</strong> Vanishing = information disappears, long-term dependencies not learned, loss plateaus. Exploding = extremely large updates, NaN loss. Solutions: LSTM, GRU, gradient clipping, proper weight initialisation.</div>
+      <div style="background:var(--pp-l);border-radius:9px;padding:14px 16px;font-size:.86rem"><strong style="color:var(--pp-d)">Panel 3 &mdash; Search Methods:</strong> Manual (beginners), Grid (exhaustive but expensive), Random (efficient when not all HPs are equally important), Bayesian (most efficient for deep learning &mdash; Optuna, HyperOpt, Ray Tune). Know which is "most efficient for deep learning."</div>
+      <div style="background:var(--kc-l);border-radius:9px;padding:14px 16px;font-size:.86rem"><strong style="color:var(--kc-d)">Panel 5 &mdash; Keras Code:</strong> SimpleRNN(128, activation='tanh', input_shape=(50,1)), Dropout(0.2), Dense(1), Adam(lr=0.001), loss='mae', batch_size=32. Know this exact template &mdash; coding-variant questions are common.</div>
+      <div style="background:var(--ar-l);border-radius:9px;padding:14px 16px;font-size:.86rem"><strong style="color:var(--ar-d)">Panel 9 &mdash; Model Comparison:</strong> RNN = Low memory, &#9733;&#9734;&#9734; tuning. LSTM = High memory, &#9733;&#9733;&#9734; tuning. GRU = High memory, &#9733;&#9733;&#9734; tuning. LSTM and GRU are always preferred over SimpleRNN for non-trivial tasks.</div>
+      <div style="background:var(--qz-l);border-radius:9px;padding:14px 16px;font-size:.86rem"><strong style="color:var(--qz-d)">Panel 10 &mdash; Typical Workflow:</strong> Data Preparation &rarr; Choose RNN Architecture &rarr; Select HPs &rarr; Train &rarr; Evaluate Val Metrics &rarr; Adjust HPs &rarr; Repeat. This 7-step loop is the canonical CGAI tuning process.</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="panel" id="p-quiz">
+  <div class="sh sh-qz"><h2>Practice Quiz</h2><p>10 CGAI-style questions with instant feedback and explanation. Score &ge;7/10 to pass. Hit Retry to practice again.</p></div>
+  <div class="qbox">
+    <div class="qmeta"><span id="qlabel">Question 1 of 10</span><span id="qscore">Score: 0</span></div>
+    <div class="qprog"><div class="qbar" id="qbar" style="width:10%"></div></div>
+    <div id="qbody">
+      <div class="qtext" id="qtext"></div>
+      <div class="qopts" id="qopts"></div>
+      <div class="qfb" id="qfb"></div>
+      <button class="qnext" id="qnext" onclick="nextQ()">Next Question &rarr;</button>
+    </div>
+    <div class="qresult" id="qresult">
+      <h3>Quiz Complete!</h3>
+      <div class="qscore-num" id="qscorenum"></div>
+      <div class="qgrade" id="qgrade"></div>
+      <p style="font-size:.875rem;color:var(--muted);margin-bottom:20px" id="qmsg"></p>
+      <button class="qretry" onclick="startQuiz()">&#128260; Retry Quiz</button>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>CGAI Exam Prep &middot; Recurrent Neural Networks &middot; <a href="https://charteredcertifications.com/learning/courses/cgai" target="_blank">charteredcertifications.com/learning/courses/cgai</a></footer>
+
+<script>
+// TAB NAVIGATION
+document.querySelectorAll('.ntab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.ntab').forEach(function(b){b.classList.remove('on');});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+    this.classList.add('on');
+    document.getElementById('p-'+this.dataset.t).classList.add('on');
+    window.scrollTo({top:document.querySelector('.nav-sticky').offsetTop,behavior:'smooth'});
+  });
+});
+
+// STEPPER
+function toggleStep(el){el.classList.toggle('open');}
+
+// DEMO
+var demos={
+  normal:'<strong>Healthy Training</strong><br/><br/>Gradients flow cleanly from the loss back through all time steps. Each weight receives a proportional update, enabling the network to learn from both recent and distant sequence elements.<br/><br/><strong>Signs of healthy training:</strong><br/>&bull; Validation loss decreases steadily each epoch<br/>&bull; Train and val loss remain close together<br/>&bull; Model continues improving with more data or epochs<br/><br/><em>Typical stable gradient magnitude: 0.01 &ndash; 1.0</em>',
+  vanish:'<strong>Vanishing Gradient</strong><br/><br/>With tanh and weight eigenvalues &lt;1, each backward step multiplies the gradient by a fraction. After 10&ndash;20 steps, the product approaches zero &mdash; early inputs stop contributing to learning.<br/><br/><strong>Observable effects:</strong><br/>&bull; Model ignores long-range context; forgets early tokens<br/>&bull; Loss plateaus despite more training epochs<br/>&bull; Gradients near zero at early layers &mdash; no effective learning<br/><br/><strong>Fix:</strong> Switch to LSTM or GRU &mdash; their additive cell-state update bypasses the multiplicative vanishing pathway.',
+  explode:'<strong>Exploding Gradient</strong><br/><br/>When weight eigenvalues &gt;1, repeated matrix multiplication causes gradient products to grow exponentially with sequence length.<br/><br/><strong>Observable effects:</strong><br/>&bull; Loss spikes to NaN after just a few batches<br/>&bull; Weights become &plusmn;&infin; &mdash; model completely fails<br/>&bull; Completely unstable training with no convergence<br/><br/><strong>Fix:</strong> Gradient clipping caps the norm before applying the update:<br/><code style="background:#f5e8d0;padding:2px 6px;border-radius:4px">Adam(learning_rate=0.001, clipvalue=0.5)</code>',
+  clip:'<strong>Gradient Clipping</strong><br/><br/>Clips gradient magnitude before applying to weights, preventing explosion without stopping training.<br/><br/><strong>Two variants:</strong><br/>1. <strong>clipvalue</strong> &mdash; clips each element: |g_i| &le; threshold<br/>&nbsp;&nbsp;<code style="background:#f5e8d0;padding:2px 5px;border-radius:3px">Adam(clipvalue=0.5)</code><br/><br/>2. <strong>clipnorm</strong> &mdash; clips the L2 norm of the entire gradient vector:<br/>&nbsp;&nbsp;<code style="background:#f5e8d0;padding:2px 5px;border-radius:3px">Adam(clipnorm=1.0)</code><br/><br/><strong>Cost:</strong> Negligible. Always enable for SimpleRNN and deep LSTM/GRU stacks as a safety net.',
+  lstm:'<strong>LSTM Fix for Vanishing Gradient</strong><br/><br/>The LSTM cell state C_t flows through time via <em>additive</em> interactions:<br/><span class="hl">C_t = f_t &odot; C_{t-1} + i_t &odot; candidate</span><br/><br/>The gradient of C_t with respect to C_{t-1} is simply f_t (the forget gate, 0&ndash;1) &mdash; a linear relationship, not a multiplicative cascade through W. Gradients can therefore flow for hundreds of steps without vanishing.<br/><br/><strong>Result:</strong> LSTM can learn dependencies spanning 100&ndash;1000+ time steps &mdash; impossible for SimpleRNN. This is why LSTM dominated NLP benchmarks 2015&ndash;2017 before Transformers arrived.'
+};
+function showDemo(btn,key){
+  document.querySelectorAll('.dbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.getElementById('demoOut').innerHTML=demos[key];
+}
+
+// CELL VISUALISER
+var cellData=[
+  {c:'#7c3aed',t:'<strong style="color:#7c3aed">Step 1 &mdash; First Impression</strong><br/>Receives x&#8321;="The" and h&#8320;=0 (zero-initialised). Computes h&#8321; = tanh(W_hh&middot;0 + W_xh&middot;x&#8321; + b). Minimal context so far &mdash; h&#8321; mainly encodes the embedding of the first word.'},
+  {c:'#2563eb',t:'<strong style="color:#2563eb">Step 2 &mdash; Building Context</strong><br/>Takes x&#8322;="film" and h&#8321;. h&#8322; now encodes context from both steps. The hidden state begins forming a representation of "The film&hellip;" as a noun phrase.'},
+  {c:'#059669',t:'<strong style="color:#059669">Step 3 &mdash; Structural Priming</strong><br/>x&#8323;="was" signals a predicate is coming. h&#8323; encodes "The film was&hellip;" &mdash; the model is primed for an adjective. In SimpleRNN, x&#8321; influence is already fading due to repeated weight multiplication.'},
+  {c:'#e11d48',t:'<strong style="color:#e11d48">Step 4 &mdash; Final State (Output)</strong><br/>x&#8324;="brilliant" carries strong positive sentiment. h&#8324; summarises the entire sequence. A Dense+Sigmoid layer maps h&#8324; &rarr; y&#770; = 0.93 (Positive). In LSTM, the forget gate would have preserved early sentiment signals; in SimpleRNN these may already be heavily diluted.'}
+];
+var activeCell=null;
+function pickCell(el,idx){
+  if(activeCell===el){el.querySelector('.rbox').style.outline='';document.getElementById('cellTip').classList.remove('on');activeCell=null;return;}
+  if(activeCell)activeCell.querySelector('.rbox').style.outline='';
+  el.querySelector('.rbox').style.outline='3px solid '+cellData[idx].c;
+  var tip=document.getElementById('cellTip');
+  tip.innerHTML=cellData[idx].t;
+  tip.classList.add('on');
+  activeCell=el;
+}
+
+// QUIZ
+var Qs=[
+  {q:"Which RNN variant is BEST suited for sequences with 200+ time steps requiring long-range dependency modelling?",opts:["SimpleRNN","LSTM","1D Convolutional Network","Standard Feedforward Network"],ans:1,exp:"LSTM uses a cell state and three gates that allow gradients to flow via additive updates rather than multiplicative chains, enabling it to capture dependencies across hundreds of steps. SimpleRNN suffers from vanishing gradients and cannot effectively learn beyond ~10\u201320 steps."},
+  {q:"During training, a model's training loss is 0.07 but validation loss is 0.52. What problem does this most likely indicate?",opts:["Underfitting \u2014 the model is too simple","Vanishing gradient \u2014 gradients are too small","Overfitting \u2014 the model has memorised training data","Exploding gradient \u2014 the loss is growing too fast"],ans:2,exp:"When training loss is much lower than validation loss, the model has memorised training data but fails to generalise \u2014 this is overfitting. Solutions include adding Dropout, reducing model size, using more data, or applying Early Stopping."},
+  {q:"What does the Forget Gate in an LSTM do?",opts:["Randomly drops neurons during training to prevent overfitting","Decides how much of the previous cell state C_{t-1} to discard at each time step","Clips the gradient to a maximum magnitude before the weight update","Controls the learning rate schedule during training"],ans:1,exp:"The forget gate f_t = \u03c3(W_f\u00b7[h_{t-1}, x_t] + b_f) outputs values between 0 and 1. Multiplied element-wise with C_{t-1}, values near 0 erase information and near 1 preserve it \u2014 allowing LSTM to selectively forget irrelevant past context."},
+  {q:"A training run produces NaN loss after 3 epochs on a deep SimpleRNN. What is the most likely cause and fix?",opts:["Underfitting \u2014 increase the number of hidden layers","Overfitting \u2014 add more Dropout regularisation","Exploding gradients \u2014 apply gradient clipping (clipvalue=0.5)","Vanishing gradients \u2014 switch to sigmoid activation function"],ans:2,exp:"NaN loss after a few epochs is a classic symptom of exploding gradients \u2014 updates become so large that weights reach \u00b1Infinity. The immediate fix is gradient clipping: Adam(clipvalue=0.5) or clipnorm=1.0. Switching to LSTM/GRU also addresses the underlying architectural instability."},
+  {q:"Which hyperparameter tuning method builds a probabilistic surrogate model from previous trial results to select the next hyperparameter configuration?",opts:["Grid Search","Manual Search","Random Search","Bayesian Optimisation"],ans:3,exp:"Bayesian Optimisation (Optuna, Ray Tune, HyperOpt) fits a surrogate model to previous (HP configuration, validation loss) pairs and uses it to select the next trial most likely to improve performance. Far more efficient than Grid or Random Search for expensive deep learning runs."},
+  {q:"What is the PRIMARY advantage of GRU over LSTM for time-series forecasting?",opts:["GRU can learn longer dependencies than LSTM","GRU has fewer parameters and trains faster while achieving comparable performance","GRU completely eliminates the vanishing gradient problem","GRU supports bidirectional processing while LSTM does not"],ans:1,exp:"GRU has 2 gates vs LSTM\u2019s 3 gates and no separate cell state, giving approximately 25% fewer parameters. Training is faster and performance is comparable, especially on time series and smaller datasets. Both architectures address vanishing gradients and both support bidirectional wrappers."},
+  {q:"For a stock price forecasting task, which starting configuration best follows CGAI recommended defaults?",opts:["SimpleRNN(256, activation='relu'), SGD(lr=0.5), no regularisation","GRU(64, activation='tanh'), Adam(lr=0.001), Dropout(0.2), EarlyStopping on val_loss","Dense(128), Dense(64), Dense(1) \u2014 no recurrent layers needed","LSTM(512, activation='sigmoid'), Adam(lr=0.1), no dropout"],ans:1,exp:"GRU is recommended for time series. 64 units and tanh are CGAI starting defaults. Adam(0.001) is the default optimiser. Dropout(0.2) provides light regularisation. EarlyStopping prevents overfitting. Options A, C, and D each violate one or more CGAI best practices."},
+  {q:"Which Keras code correctly implements Early Stopping that also restores the best model weights?",opts:["EarlyStopping(monitor='loss', patience=5)","EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)","Dropout(0.5, patience=5, monitor='val_loss')","model.stop_training = True  # called manually inside a loop"],ans:1,exp:"EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True) is the correct CGAI pattern. It monitors validation loss, waits 5 epochs of no improvement, and restore_best_weights=True reverts to the optimal checkpoint rather than the final (possibly overfitted) epoch."},
+  {q:"Why does a bidirectional LSTM outperform a unidirectional LSTM for Named Entity Recognition (NER)?",opts:["It doubles training speed by processing both directions on separate GPUs","It allows the model to use both past AND future context when labelling each token","It prevents overfitting by processing the sequence twice with different weight matrices","It removes the need for Dropout in NER classification tasks"],ans:1,exp:"NER benefits from context in both directions \u2014 'Bank of England' uses the future word 'England' to confirm 'Bank' is an ORG entity. Bidirectional LSTM runs one RNN forward (1\u2192T) and one backward (T\u21921), concatenating both hidden states. Note: bidirectional RNNs cannot be used for autoregressive generation where future tokens are unknown."},
+  {q:"What does 'weight sharing across time steps' mean in the context of RNNs?",opts:["The same hidden units are reused across all network layers (depth-wise)","Weights are copied from a pre-trained feedforward model at initialisation","The same weight matrices W_hh and W_xh are applied at every time step in the sequence","Dropout is applied with equal probability to all time steps during training"],ans:2,exp:"Unlike feedforward networks where each layer has unique weights, an RNN reuses the exact same weight matrices (W_hh, W_xh, b) at every time step. This makes RNNs parameter-efficient and allows them to generalise temporal patterns regardless of position. It is also the reason BPTT involves multiplying by the same W matrix repeatedly \u2014 the root cause of gradient instability."}
+];
+var curQ=0,score=0,answered=false;
+function startQuiz(){curQ=0;score=0;answered=false;document.getElementById('qresult').style.display='none';document.getElementById('qbody').style.display='block';renderQ();}
+function renderQ(){
+  answered=false;
+  var q=Qs[curQ];
+  document.getElementById('qlabel').textContent='Question '+(curQ+1)+' of '+Qs.length;
+  document.getElementById('qscore').textContent='Score: '+score;
+  document.getElementById('qbar').style.width=((curQ+1)/Qs.length*100)+'%';
+  document.getElementById('qtext').textContent=q.q;
+  var opts=document.getElementById('qopts');opts.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var btn=document.createElement('button');btn.className='qopt';
+    btn.textContent=String.fromCharCode(65+i)+'. '+opt;
+    btn.addEventListener('click',function(){handleA(i,btn);});
+    opts.appendChild(btn);
+  });
+  var fb=document.getElementById('qfb');fb.className='qfb';fb.innerHTML='';
+  document.getElementById('qnext').style.display='none';
+}
+function handleA(i,btn){
+  if(answered)return;answered=true;
+  var q=Qs[curQ];
+  var allBtns=document.querySelectorAll('.qopt');
+  allBtns.forEach(function(b){b.disabled=true;});
+  var fb=document.getElementById('qfb');
+  if(i===q.ans){btn.classList.add('ok');score++;fb.className='qfb ok on';fb.innerHTML='\u2714 <strong>Correct!</strong> '+q.exp;}
+  else{btn.classList.add('ng');allBtns[q.ans].classList.add('ok');fb.className='qfb ng on';fb.innerHTML='\u2718 <strong>Incorrect.</strong> The correct answer is <strong>'+String.fromCharCode(65+q.ans)+'</strong>. '+q.exp;}
+  document.getElementById('qscore').textContent='Score: '+score;
+  var nxt=document.getElementById('qnext');nxt.style.display='inline-block';
+  nxt.textContent=(curQ<Qs.length-1)?'Next Question \u2192':'See Final Results';
+}
+function nextQ(){curQ++;if(curQ>=Qs.length){showResult();return;}renderQ();}
+function showResult(){
+  document.getElementById('qbody').style.display='none';
+  var r=document.getElementById('qresult');r.style.display='block';
+  document.getElementById('qscorenum').textContent=score+' / '+Qs.length;
+  var pct=score/Qs.length;
+  var gEl=document.getElementById('qgrade'),mEl=document.getElementById('qmsg');
+  if(pct>=0.7){gEl.className='qgrade gp';gEl.textContent='\u2705 PASS';mEl.textContent=(pct===1)?'Perfect score! Outstanding CGAI preparation.':'Well done! Review any missed questions before your exam.';}
+  else{gEl.className='qgrade gf';gEl.textContent='\u274C NEEDS REVIEW';mEl.textContent='Score below 70%. Revisit the Key Concepts, Architecture, and Diagrams tabs, then retry.';}
+  document.getElementById('qbar').style.width='100%';
+}
+startQuiz();
+</script>
+</body>
+</html>

@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundamentals of Generative AI Models — CGAI Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --hue-overview: #e8d5f5;
+  --hue-pipeline: #cff0e2;
+  --hue-mechanism: #fde8d0;
+  --hue-architecture: #cce4f7;
+  --hue-concepts: #fcd5d5;
+  --hue-diagrams: #fef3c7;
+  --hue-quiz: #d5f0fb;
+
+  --accent-overview: #8b5cf6;
+  --accent-pipeline: #10b981;
+  --accent-mechanism: #f59e0b;
+  --accent-architecture: #3b82f6;
+  --accent-concepts: #ef4444;
+  --accent-diagrams: #d97706;
+  --accent-quiz: #06b6d4;
+
+  --dark: #1a1a2e;
+  --mid: #2d2d44;
+  --text: #2c2c3e;
+  --text-light: #6b6b80;
+  --white: #ffffff;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.16);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #f4f2ee;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ─── HERO ─── */
+.hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  padding: 64px 24px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(139,92,246,0.25) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 30%, rgba(6,182,212,0.2) 0%, transparent 50%);
+  pointer-events:none;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(8px);
+  color: #a5f3fc;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 40%, #a5f3fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  max-width: 600px;
+  margin: 0 auto 28px;
+  line-height: 1.7;
+}
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.pill {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #e0f2fe;
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+/* ─── NAV ─── */
+.nav-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(244,242,238,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.nav-tabs {
+  display: flex;
+  overflow-x: auto;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex: 0 0 auto;
+  padding: 14px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-light);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  transition: color .2s, border-color .2s, background .2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.nav-tab:hover { color: var(--text); background: rgba(0,0,0,0.03); }
+.nav-tab.active { color: var(--text); border-bottom-color: var(--tab-accent, #8b5cf6); }
+.nav-tab .tab-icon { font-size: 16px; }
+
+/* ─── CONTENT ─── */
+.content-area {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+.section { display: none; animation: fadeIn .35s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── SECTION HEADER ─── */
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 36px;
+  padding: 32px;
+  border-radius: var(--radius);
+  border-left: 5px solid var(--section-accent, #8b5cf6);
+  background: var(--section-bg, #e8d5f5);
+}
+.section-header-icon { font-size: 42px; flex-shrink: 0; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; margin-bottom: 8px; }
+.section-desc { color: var(--text-light); font-size: 0.95rem; line-height: 1.7; max-width: 680px; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--section-accent, #8b5cf6);
+  flex-shrink: 0;
+}
+
+/* ─── TABLE ─── */
+.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e5e5e5; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th { background: var(--section-accent, #8b5cf6); color: #fff; padding: 12px 16px; text-align: left; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; }
+td { padding: 11px 16px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) td { background: #fafafa; }
+td strong { color: var(--section-accent, #8b5cf6); }
+
+/* ─── GLOSSARY ─── */
+.glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.gloss-card {
+  background: linear-gradient(135deg, var(--section-bg,#e8d5f5) 0%, #fff 100%);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 18px;
+  transition: transform .2s, box-shadow .2s;
+}
+.gloss-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.gloss-term { font-weight: 700; color: var(--section-accent, #8b5cf6); font-size: 0.95rem; margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+.gloss-def { font-size: 0.88rem; color: var(--text-light); line-height: 1.6; }
+
+/* ─── PIPELINE STEPPER ─── */
+.stepper { display: flex; flex-direction: column; gap: 0; }
+.step-item {
+  display: flex;
+  gap: 0;
+  cursor: pointer;
+  position: relative;
+}
+.step-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 52px;
+}
+.step-dot {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #e5e5e5;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+  color: var(--text-light);
+  transition: all .3s;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.step-line {
+  width: 2px; flex: 1; background: #e5e5e5; min-height: 20px;
+  transition: background .3s;
+}
+.step-item:last-child .step-line { display: none; }
+.step-body { padding: 4px 0 24px 16px; flex: 1; }
+.step-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0 10px;
+}
+.step-label { font-weight: 600; font-size: 1rem; }
+.step-badge {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  padding: 3px 10px; border-radius: 100px;
+  background: #e5e5e5; color: var(--text-light);
+  text-transform: uppercase;
+  transition: all .3s;
+}
+.step-detail {
+  display: none;
+  background: #f9f9fb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 4px;
+  border-left: 3px solid var(--section-accent, #8b5cf6);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+.step-detail .example-box {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  border: 1px solid #e5e5e5;
+}
+.step-item.open .step-dot {
+  background: var(--section-accent, #8b5cf6);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(139,92,246,0.15);
+}
+.step-item.open .step-line { background: var(--section-accent, #8b5cf6); }
+.step-item.open .step-badge { background: var(--section-accent, #8b5cf6); color: #fff; }
+.step-item.open .step-detail { display: block; }
+
+/* ─── ATTENTION DEMO ─── */
+.attn-demo {
+  background: #f9f9fb;
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 16px;
+}
+.attn-sentence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+.attn-word {
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px solid #e5e5e5;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+}
+.attn-word:hover { border-color: var(--accent-mechanism); transform: translateY(-2px); }
+.attn-word.selected { background: var(--accent-mechanism); color: #fff; border-color: var(--accent-mechanism); }
+.attn-word .attn-score {
+  position: absolute;
+  top: -22px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; font-weight: 700;
+  color: var(--accent-mechanism);
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.attn-word.lit .attn-score { opacity: 1; }
+.attn-word.lit { border-color: var(--accent-mechanism); }
+.attn-heat-bar {
+  height: 8px; border-radius: 4px;
+  background: linear-gradient(to right, #fde8d0, var(--accent-mechanism));
+  transition: width .4s ease;
+  margin-top: 4px;
+}
+.attn-labels { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; }
+.attn-label-card {
+  background: #fff; border-radius: 10px; padding: 14px;
+  border: 2px solid #e5e5e5;
+  transition: border-color .3s, box-shadow .3s;
+}
+.attn-label-card.active { border-color: var(--accent-mechanism); box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
+.attn-word-name { font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; }
+.attn-desc { font-size: 0.8rem; color: var(--text-light); line-height: 1.5; }
+.attn-hint { text-align: center; color: var(--text-light); font-size: 0.9rem; margin-bottom: 16px; }
+.formula-box {
+  background: var(--dark);
+  color: #a5f3fc;
+  border-radius: 12px;
+  padding: 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+
+/* ─── ARCH COMPONENTS ─── */
+.arch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 16px 0; }
+.arch-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px;
+  border-top: 4px solid var(--section-accent, #3b82f6);
+  box-shadow: var(--shadow);
+  transition: transform .2s;
+  cursor: default;
+}
+.arch-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.arch-icon { font-size: 28px; margin-bottom: 10px; }
+.arch-name { font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+.arch-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
+
+/* ─── MODEL TYPE CARDS ─── */
+.model-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.model-card {
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+.model-badge {
+  display: inline-block;
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 12px;
+}
+.model-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+.model-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; margin-bottom: 12px; }
+.model-examples { font-size: 0.8rem; font-family: 'DM Mono', monospace; color: var(--text-light); }
+
+/* ─── KEY CONCEPTS ─── */
+.concept-accordion { display: flex; flex-direction: column; gap: 10px; }
+.acc-item {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.acc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.97rem;
+  transition: background .2s;
+}
+.acc-head:hover { background: #fafafa; }
+.acc-head .acc-icon { font-size: 18px; }
+.acc-head .acc-arrow { font-size: 13px; transition: transform .3s; color: var(--text-light); }
+.acc-item.open .acc-arrow { transform: rotate(180deg); }
+.acc-body {
+  display: none;
+  padding: 0 22px 20px;
+  font-size: 0.91rem;
+  line-height: 1.75;
+  color: var(--text);
+  border-top: 1px solid #f0f0f0;
+  padding-top: 16px;
+}
+.acc-item.open .acc-body { display: block; }
+
+/* ─── DIAGRAM ─── */
+.diagram-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: #fff;
+  margin: 0 0 32px;
+}
+.diagram-img { width: 100%; display: block; }
+.diagram-caption {
+  padding: 20px 24px;
+  background: var(--hue-diagrams);
+  border-top: 3px solid var(--accent-diagrams);
+}
+.diagram-caption strong { font-size: 1rem; color: var(--text); display: block; margin-bottom: 6px; }
+.diagram-caption p { font-size: 0.88rem; color: var(--text-light); line-height: 1.7; }
+
+/* ─── EXAM TIPS ─── */
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.tip-card {
+  background: linear-gradient(135deg, #fff 0%, #fcd5d5 100%);
+  border: 1px solid #f9a8a8;
+  border-radius: 12px;
+  padding: 18px;
+}
+.tip-icon { font-size: 24px; margin-bottom: 8px; }
+.tip-label { font-weight: 700; font-size: 0.92rem; margin-bottom: 6px; color: var(--accent-concepts); }
+.tip-text { font-size: 0.87rem; color: var(--text-light); line-height: 1.6; }
+
+/* ─── QUIZ ─── */
+.quiz-progress { background: #e5e5e5; border-radius: 100px; height: 8px; margin-bottom: 24px; overflow: hidden; }
+.quiz-progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-quiz), #3b82f6);
+  border-radius: 100px;
+  transition: width .4s ease;
+}
+.quiz-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.88rem; color: var(--text-light); font-weight: 500; }
+.quiz-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.quiz-q-num { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-quiz); margin-bottom: 12px; }
+.quiz-question { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; line-height: 1.5; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-opt {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 15px 18px;
+  border-radius: 10px;
+  border: 2px solid #e5e5e5;
+  cursor: pointer;
+  font-size: 0.93rem;
+  transition: all .2s;
+  background: #fff;
+  text-align: left;
+  width: 100%;
+  line-height: 1.5;
+}
+.quiz-opt:hover:not(:disabled) { border-color: var(--accent-quiz); background: #f0faff; }
+.quiz-opt .opt-letter {
+  font-weight: 700; font-family: 'DM Mono', monospace;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #e5e5e5; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0; margin-top: 1px;
+  transition: all .2s;
+}
+.quiz-opt.correct { border-color: #10b981; background: #ecfdf5; }
+.quiz-opt.correct .opt-letter { background: #10b981; color: #fff; }
+.quiz-opt.wrong { border-color: #ef4444; background: #fef2f2; }
+.quiz-opt.wrong .opt-letter { background: #ef4444; color: #fff; }
+.quiz-feedback {
+  margin-top: 16px; padding: 16px;
+  border-radius: 10px;
+  font-size: 0.9rem; line-height: 1.6;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+.quiz-feedback.wrong-fb { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 10px;
+  font-size: 0.93rem; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s;
+}
+.btn-primary {
+  background: var(--accent-quiz); color: #fff;
+  box-shadow: 0 4px 14px rgba(6,182,212,0.35);
+}
+.btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-secondary { background: #e5e5e5; color: var(--text); }
+.btn-secondary:hover { background: #d5d5d5; }
+.quiz-nav { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.quiz-result {
+  text-align: center;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 48px 32px;
+  box-shadow: var(--shadow-lg);
+}
+.result-score { font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 8px; }
+.result-label { font-size: 1.1rem; color: var(--text-light); margin-bottom: 24px; }
+.result-badge-large {
+  display: inline-block; padding: 10px 28px; border-radius: 100px;
+  font-size: 1rem; font-weight: 700; margin-bottom: 32px;
+}
+.pass { color: #065f46; background: #d1fae5; }
+.fail { color: #991b1b; background: #fee2e2; }
+.result-breakdown { text-align: left; max-width: 400px; margin: 0 auto 32px; }
+.result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.93rem; }
+
+/* ─── CALLOUT ─── */
+.callout {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 18px 20px;
+  border-radius: 12px;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.callout.info { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+.callout.warning { background: #fffbeb; border-left: 4px solid #f59e0b; color: #78350f; }
+.callout.tip { background: #f0fdf4; border-left: 4px solid #10b981; color: #064e3b; }
+.callout-icon { font-size: 20px; flex-shrink: 0; }
+
+/* ─── MISC ─── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+ul.styled { padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+ul.styled li { padding-left: 22px; position: relative; font-size: 0.92rem; line-height: 1.65; }
+ul.styled li::before { content:'▸'; position: absolute; left: 0; color: var(--section-accent, #8b5cf6); font-size: 12px; top: 3px; }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; background: #e5e5e5; color: var(--text-light); margin: 2px; }
+.section-divider { border: none; border-top: 1px solid #e5e5e5; margin: 32px 0; }
+.score-badge { display: inline-block; background: var(--section-accent, #8b5cf6); color: #fff; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 100px; }
+
+/* Section-specific accent overrides */
+#sec-overview  { --section-accent: var(--accent-overview);  --section-bg: var(--hue-overview); }
+#sec-pipeline  { --section-accent: var(--accent-pipeline);  --section-bg: var(--hue-pipeline); }
+#sec-mechanism { --section-accent: var(--accent-mechanism); --section-bg: var(--hue-mechanism); }
+#sec-arch      { --section-accent: var(--accent-architecture); --section-bg: var(--hue-architecture); }
+#sec-concepts  { --section-accent: var(--accent-concepts);  --section-bg: var(--hue-concepts); }
+#sec-diagrams  { --section-accent: var(--accent-diagrams);  --section-bg: var(--hue-diagrams); }
+#sec-quiz      { --section-accent: var(--accent-quiz);      --section-bg: var(--hue-quiz); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🎓 CGAI Exam Prep · charteredcertifications.com</div>
+  <h1>Fundamentals of Generative AI Models</h1>
+  <p class="hero-sub">A comprehensive, interactive study guide covering all core concepts you need to master for the CGAI certification.</p>
+  <div class="hero-pills">
+    <span class="pill">Transformers</span>
+    <span class="pill">Attention Mechanism</span>
+    <span class="pill">GANs</span>
+    <span class="pill">VAEs</span>
+    <span class="pill">Diffusion Models</span>
+    <span class="pill">RAG</span>
+    <span class="pill">Fine-Tuning</span>
+    <span class="pill">LLMs</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrapper">
+  <div class="nav-tabs" role="tablist">
+    <button class="nav-tab active" onclick="showTab('overview')" style="--tab-accent:#8b5cf6"><span class="tab-icon">🌐</span>Overview</button>
+    <button class="nav-tab" onclick="showTab('pipeline')"  style="--tab-accent:#10b981"><span class="tab-icon">⚙️</span>Pipeline</button>
+    <button class="nav-tab" onclick="showTab('mechanism')" style="--tab-accent:#f59e0b"><span class="tab-icon">🧠</span>Core Mechanism</button>
+    <button class="nav-tab" onclick="showTab('arch')"      style="--tab-accent:#3b82f6"><span class="tab-icon">🏗️</span>Architecture</button>
+    <button class="nav-tab" onclick="showTab('concepts')"  style="--tab-accent:#ef4444"><span class="tab-icon">🔑</span>Key Concepts</button>
+    <button class="nav-tab" onclick="showTab('diagrams')"  style="--tab-accent:#d97706"><span class="tab-icon">🖼️</span>Diagrams</button>
+    <button class="nav-tab" onclick="showTab('quiz')"      style="--tab-accent:#06b6d4"><span class="tab-icon">✏️</span>Quiz</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content-area">
+
+<!-- ═══════════════════ 1. OVERVIEW ═══════════════════ -->
+<div id="sec-overview" class="section active">
+  <div class="section-header">
+    <div class="section-header-icon">🌐</div>
+    <div>
+      <div class="section-title">What is Generative AI?</div>
+      <div class="section-desc">Generative AI models learn the statistical patterns in data and use that knowledge to create entirely new, original content — text, images, code, audio, and beyond.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Traditional AI vs Generative AI</div>
+    <div class="two-col" style="margin-bottom:20px;">
+      <div style="background:#f9f9fb;border-radius:12px;padding:20px;border-left:4px solid #8b5cf6;">
+        <div style="font-weight:700;margin-bottom:10px;font-size:0.95rem;">🔍 Traditional AI</div>
+        <ul class="styled">
+          <li>Classification (spam vs. not spam)</li>
+          <li>Prediction (house prices, churn rates)</li>
+          <li>Detection (object recognition, fraud)</li>
+          <li>Discriminative: maps input → label</li>
+          <li>Requires labelled training data</li>
+        </ul>
+      </div>
+      <div style="background:#f9f9fb;border-radius:12px;padding:20px;border-left:4px solid #10b981;">
+        <div style="font-weight:700;margin-bottom:10px;font-size:0.95rem;">✨ Generative AI</div>
+        <ul class="styled" style="--section-accent:#10b981;">
+          <li>Content creation (text, images, code)</li>
+          <li>Data generation & augmentation</li>
+          <li>Simulation & synthetic data</li>
+          <li>Creative synthesis across modalities</li>
+          <li>Learns probability distributions P(X)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <span><strong>Core Idea:</strong> A generative model learns the probability distribution of data — <code>P(X)</code> or <code>P(X|Y)</code> — and can <em>sample</em> new instances from that distribution. The model doesn't just categorise; it creates.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Model Types Comparison</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Model Type</th><th>Core Mechanism</th><th>Best For</th><th>Key Strength</th><th>Examples</th></tr>
+        <tr><td><strong>Autoregressive</strong></td><td>Predict next token, one at a time</td><td>Sequential prediction</td><td>Long-form coherent text</td><td>GPT-4, Llama, Claude</td></tr>
+        <tr><td><strong>VAE</strong></td><td>Encode → latent space → decode</td><td>Compression & generation</td><td>Structured latent space</td><td>β-VAE, VQ-VAE</td></tr>
+        <tr><td><strong>GAN</strong></td><td>Generator vs. Discriminator game</td><td>Realistic image synthesis</td><td>Sharp, photorealistic outputs</td><td>StyleGAN, CycleGAN</td></tr>
+        <tr><td><strong>Diffusion</strong></td><td>Add noise then denoise iteratively</td><td>High-quality media generation</td><td>Stability & photorealism</td><td>DALL-E, Stable Diffusion</td></tr>
+        <tr><td><strong>Transformer</strong></td><td>Self-attention over all positions</td><td>Language understanding</td><td>Long-context learning</td><td>GPT-4, BERT, T5</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Popular Applications & Examples</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+      <div style="text-align:center;background:#f9f9fb;border-radius:12px;padding:20px;">
+        <div style="font-size:32px;margin-bottom:8px;">💬</div>
+        <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px;">Chatbots</div>
+        <div style="font-size:0.82rem;color:#6b6b80;">ChatGPT, Claude, Gemini</div>
+      </div>
+      <div style="text-align:center;background:#f9f9fb;border-radius:12px;padding:20px;">
+        <div style="font-size:32px;margin-bottom:8px;">🎨</div>
+        <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px;">AI Image Generators</div>
+        <div style="font-size:0.82rem;color:#6b6b80;">DALL-E, Midjourney, SD</div>
+      </div>
+      <div style="text-align:center;background:#f9f9fb;border-radius:12px;padding:20px;">
+        <div style="font-size:32px;margin-bottom:8px;">🎵</div>
+        <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px;">Music Generators</div>
+        <div style="font-size:0.82rem;color:#6b6b80;">Suno, Udio, MusicLM</div>
+      </div>
+      <div style="text-align:center;background:#f9f9fb;border-radius:12px;padding:20px;">
+        <div style="font-size:32px;margin-bottom:8px;">💻</div>
+        <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px;">Code Assistants</div>
+        <div style="font-size:0.82rem;color:#6b6b80;">GitHub Copilot, Cursor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Glossary — Overview Terms</div>
+    <div class="glossary-grid">
+      <div class="gloss-card">
+        <div class="gloss-term">P(X)</div>
+        <div class="gloss-def">Unconditional probability distribution over data X. The model learns what X looks like across the entire dataset.</div>
+      </div>
+      <div class="gloss-card">
+        <div class="gloss-term">P(X|Y)</div>
+        <div class="gloss-def">Conditional probability: the distribution of X given context or condition Y. Used in text-to-image models.</div>
+      </div>
+      <div class="gloss-card">
+        <div class="gloss-term">Latent Space</div>
+        <div class="gloss-def">A compressed, lower-dimensional representation of data learned by the model (VAEs, diffusion models).</div>
+      </div>
+      <div class="gloss-card">
+        <div class="gloss-term">Discriminative Model</div>
+        <div class="gloss-def">Learns P(Y|X) — the boundary between classes. Traditional classifiers like logistic regression.</div>
+      </div>
+      <div class="gloss-card">
+        <div class="gloss-term">Generative Model</div>
+        <div class="gloss-def">Learns P(X) — the full distribution of data, enabling new sample generation.</div>
+      </div>
+      <div class="gloss-card">
+        <div class="gloss-term">Sampling</div>
+        <div class="gloss-def">Drawing a new data point from the learned distribution — the act of "generating" content.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ 2. PIPELINE ═══════════════════ -->
+<div id="sec-pipeline" class="section">
+  <div class="section-header">
+    <div class="section-header-icon">⚙️</div>
+    <div>
+      <div class="section-title">Training Pipeline</div>
+      <div class="section-desc">How a generative AI model goes from raw data to a deployed system — click each step to expand the full explanation.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Step-by-Step Training Process</div>
+    <p style="font-size:0.9rem;color:#6b6b80;margin-bottom:24px;">👆 Click any step to expand its details and worked example.</p>
+    <div class="stepper">
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Collect Massive Datasets</span><span class="step-badge">Data</span></div>
+          <div class="step-detail">
+            <p>The foundation of any generative model is data. Models like GPT-4 are trained on hundreds of billions of tokens sourced from web crawls (Common Crawl), books, Wikipedia, code repositories, and curated datasets. Data quality is as important as quantity — noise and biases in data directly affect model behaviour.</p>
+            <div class="example-box">
+              Example: GPT-3 trained on ~300B tokens<br>
+              Sources: CommonCrawl (60%), WebText2 (22%), Books (16%), Wikipedia (3%)<br>
+              Pre-processing: deduplication, quality filtering, toxic content removal
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Tokenize Data</span><span class="step-badge">Pre-process</span></div>
+          <div class="step-detail">
+            <p>Raw text is split into <em>tokens</em> — subword units using algorithms like Byte-Pair Encoding (BPE) or WordPiece. Each token maps to a unique integer ID in the model's vocabulary. Images are "tokenised" as patches; audio as spectrograms.</p>
+            <div class="example-box">
+              "Generative AI is powerful" →<br>
+              ["Generate", "ive", "▁AI", "▁is", "▁powerful"]<br>
+              → [12543, 851, 9468, 318, 4505]<br><br>
+              Typical vocabulary size: 32,000 – 100,000 tokens
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Train Neural Network</span><span class="step-badge">Training</span></div>
+          <div class="step-detail">
+            <p>The model (typically a Transformer) processes token sequences through multiple layers of self-attention and feed-forward networks. For language models, the objective is <em>next-token prediction</em>: given tokens 1…n, predict token n+1. Gradients are computed via backpropagation.</p>
+            <div class="example-box">
+              Input:  "The cat sat on the"<br>
+              Target: "mat"<br>
+              Model output: probability distribution over vocabulary<br>
+              P("mat") = 0.62 | P("floor") = 0.18 | P("roof") = 0.04 …
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">4</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Compute Loss</span><span class="step-badge">Evaluation</span></div>
+          <div class="step-detail">
+            <p>The <strong>Cross-Entropy Loss</strong> measures how wrong the model's predictions are compared to the true labels. Lower loss = better predictions. The formula is:</p>
+            <div class="example-box">L = −Σ y · log(ŷ)<br><br>Where y = true label (1-hot), ŷ = predicted probability<br>If true token is "mat" and model assigns P=0.62:<br>L = −log(0.62) ≈ 0.478</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">5</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Backpropagation</span><span class="step-badge">Optimise</span></div>
+          <div class="step-detail">
+            <p>The loss is propagated backwards through the network using the chain rule of calculus. Each parameter (weight) receives a gradient telling it which direction to move to reduce loss. Optimisers like Adam use these gradients with momentum and adaptive learning rates.</p>
+            <div class="example-box">
+              ∂L/∂W = gradient of loss with respect to weight W<br>
+              Adam update: W ← W − α · m̂ / (√v̂ + ε)<br>
+              Where m̂, v̂ = bias-corrected first/second moment estimates
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">6</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Update Weights</span><span class="step-badge">Iterate</span></div>
+          <div class="step-detail">
+            <p>Billions of parameters are nudged slightly in the direction that reduces loss. A single forward + backward pass over a mini-batch constitutes one <em>iteration</em>. One full pass through the dataset is an <em>epoch</em>. Pre-training runs for hundreds of thousands of steps across thousands of GPUs.</p>
+            <div class="example-box">
+              GPT-3: 175B parameters, ~300B tokens, ~1000 A100 GPUs<br>
+              Estimated training cost: $4–12M USD<br>
+              Training time: weeks to months
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" onclick="toggleStep(this)">
+        <div class="step-left"><div class="step-dot">7</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-head"><span class="step-label">Repeat for Billions of Iterations</span><span class="step-badge">Scale</span></div>
+          <div class="step-detail">
+            <p>The cycle of forward pass → compute loss → backprop → update is repeated billions of times. Convergence is tracked via validation loss. Techniques like learning rate schedules, gradient clipping, and mixed-precision training keep the process stable at scale.</p>
+            <div class="example-box">
+              Autoregressive objective: P(x) = Π P(xₜ | x&lt;t)<br>
+              Each step conditions on ALL previous tokens<br>
+              Context window: 4K → 32K → 128K+ tokens over generations
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Autoregressive Generation Process</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Step</th><th>Action</th><th>Example</th></tr>
+        <tr><td>1. Input Prompt</td><td>Provide starting context</td><td>"The cat sat on"</td></tr>
+        <tr><td>2. Predict Next Token</td><td>Model outputs probability over vocab</td><td>P("the")=0.45, P("a")=0.22…</td></tr>
+        <tr><td>3. Append Token</td><td>Sample or argmax the top prediction</td><td>"the" appended → "The cat sat on the"</td></tr>
+        <tr><td>4. Repeat</td><td>Feed extended sequence back in</td><td>"mat" → "The cat sat on the mat"</td></tr>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <span><strong>Temperature & Sampling:</strong> Temperature controls randomness — low temperature (0.1) = deterministic/repetitive; high temperature (1.5) = creative/unpredictable. Top-k and nucleus (top-p) sampling restrict the candidate pool for quality.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ 3. CORE MECHANISM ═══════════════════ -->
+<div id="sec-mechanism" class="section">
+  <div class="section-header">
+    <div class="section-header-icon">🧠</div>
+    <div>
+      <div class="section-title">Attention Mechanism</div>
+      <div class="section-desc">Attention is the engine of modern AI. It lets the model focus on the most relevant parts of its context when processing any token — the key innovation in the landmark "Attention Is All You Need" (2017) paper.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Interactive Attention Demo</div>
+    <p class="attn-hint">Click any word below to see what the model "attends to" when processing it:</p>
+    <div class="attn-demo">
+      <div class="attn-sentence" id="attn-sentence"></div>
+      <div id="attn-output">
+        <div id="attn-labels" class="attn-labels"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Self-Attention Formula</div>
+    <div class="formula-box">
+Attention(Q, K, V) = softmax( QKᵀ / √dₖ ) · V
+
+Where:
+  Q = Query matrix  (what am I looking for?)
+  K = Key matrix    (what do I offer?)
+  V = Value matrix  (what information do I carry?)
+  dₖ = dimension of key vectors (scaling factor)
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <span><strong>Exam Note:</strong> The √dₖ denominator prevents the dot-products from growing too large (which would push softmax into regions with very small gradients). This is called <em>scaled</em> dot-product attention.</span>
+    </div>
+    <div class="two-col" style="margin-top:16px;">
+      <div>
+        <div style="font-weight:700;margin-bottom:10px;font-size:0.93rem;">Q, K, V Intuition</div>
+        <ul class="styled">
+          <li><strong>Query:</strong> Current word asking "who should I pay attention to?"</li>
+          <li><strong>Key:</strong> Each word saying "here's what I represent"</li>
+          <li><strong>Value:</strong> The actual information to pass if selected</li>
+          <li>Attention score = how well Q matches each K</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:700;margin-bottom:10px;font-size:0.93rem;">Multi-Head Attention</div>
+        <ul class="styled">
+          <li>Run h=8 (or 16, 32…) attention heads in parallel</li>
+          <li>Each head learns different relationship patterns</li>
+          <li>Concatenate outputs → linear projection</li>
+          <li>Captures syntax, semantics, coreference simultaneously</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Attention Types Comparison</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Type</th><th>What it Attends Over</th><th>Used In</th><th>Example</th></tr>
+        <tr><td><strong>Self-Attention</strong></td><td>All positions in the same sequence</td><td>Encoder, Decoder</td><td>Word → word relationships</td></tr>
+        <tr><td><strong>Cross-Attention</strong></td><td>Encoder output from decoder position</td><td>Seq2Seq decoders</td><td>Translation: source ↔ target</td></tr>
+        <tr><td><strong>Causal/Masked</strong></td><td>Only previous positions (no future)</td><td>GPT-style autoregressive</td><td>Next-token prediction</td></tr>
+        <tr><td><strong>Flash Attention</strong></td><td>Same as self-attention (optimised)</td><td>Modern LLMs</td><td>Memory-efficient long contexts</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Glossary — Attention Terms</div>
+    <div class="glossary-grid">
+      <div class="gloss-card" style="--section-bg:#fde8d0;--section-accent:#f59e0b;">
+        <div class="gloss-term" style="color:#f59e0b;">Softmax</div>
+        <div class="gloss-def">Converts raw attention scores to probabilities that sum to 1. Amplifies high scores, suppresses low ones.</div>
+      </div>
+      <div class="gloss-card" style="--section-bg:#fde8d0;--section-accent:#f59e0b;">
+        <div class="gloss-term" style="color:#f59e0b;">Dot-Product</div>
+        <div class="gloss-def">Q·Kᵀ — measures similarity between query and key vectors. High dot-product = high relevance.</div>
+      </div>
+      <div class="gloss-card" style="--section-bg:#fde8d0;--section-accent:#f59e0b;">
+        <div class="gloss-term" style="color:#f59e0b;">Head</div>
+        <div class="gloss-def">One parallel attention computation. Multi-head attention runs several simultaneously.</div>
+      </div>
+      <div class="gloss-card" style="--section-bg:#fde8d0;--section-accent:#f59e0b;">
+        <div class="gloss-term" style="color:#f59e0b;">Positional Encoding</div>
+        <div class="gloss-def">Sinusoidal or learned vectors added to embeddings so the model knows token order (attention itself is permutation-invariant).</div>
+      </div>
+      <div class="gloss-card" style="--section-bg:#fde8d0;--section-accent:#f59e0b;">
+        <div class="gloss-term" style="color:#f59e0b;">Context Window</div>
+        <div class="gloss-def">Maximum sequence length the model can attend over. Quadratic memory complexity (O(n²)) limits this.</div>
+      </div>
+      <div class="gloss-card" style="--section-bg:#fde8d0;--section-accent:#f59e0b;">
+        <div class="gloss-term" style="color:#f59e0b;">KV Cache</div>
+        <div class="gloss-def">Cached Key and Value matrices from previous tokens, enabling fast autoregressive inference.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ 4. ARCHITECTURE ═══════════════════ -->
+<div id="sec-arch" class="section">
+  <div class="section-header">
+    <div class="section-header-icon">🏗️</div>
+    <div>
+      <div class="section-title">Transformer Architecture</div>
+      <div class="section-desc">The Transformer (Vaswani et al., 2017) revolutionised AI by replacing recurrence with self-attention. It remains the dominant foundation for nearly all modern generative models.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Core Transformer Components</div>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="arch-icon">🔤</div>
+        <div class="arch-name">Tokenisation</div>
+        <div class="arch-desc">Text → integer token IDs using BPE or WordPiece. First stage of all processing.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">📐</div>
+        <div class="arch-name">Embeddings</div>
+        <div class="arch-desc">Token IDs → dense vectors (e.g. 768 or 4096-dim). Similar concepts cluster together in this space.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">🎯</div>
+        <div class="arch-name">Attention Mechanism</div>
+        <div class="arch-desc">Multi-head self-attention lets each token gather context from all other positions in parallel.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">🔁</div>
+        <div class="arch-name">Feed-Forward Networks</div>
+        <div class="arch-desc">Two linear transformations with a ReLU/GELU activation applied position-by-position after attention.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">📍</div>
+        <div class="arch-name">Positional Encoding</div>
+        <div class="arch-desc">Injects position information (sinusoidal or learned RoPE) — attention itself has no built-in order.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">⚖️</div>
+        <div class="arch-name">Layer Normalisation</div>
+        <div class="arch-desc">Stabilises training by normalising activations. Applied before (Pre-LN) or after (Post-LN) sub-layers.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">🚀</div>
+        <div class="arch-name">Residual Connections</div>
+        <div class="arch-desc">Skip connections (x + sublayer(x)) allow gradients to flow through deep networks without vanishing.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-icon">📤</div>
+        <div class="arch-name">Output Head</div>
+        <div class="arch-desc">Linear layer + softmax projects hidden states to vocabulary probabilities for generation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Four Generative Model Architectures</div>
+    <div class="model-types">
+      <div class="model-card">
+        <span class="model-badge" style="background:#e0e7ff;color:#4338ca;">Autoregressive</span>
+        <div class="model-name">Language Models</div>
+        <div class="model-desc">Generate tokens sequentially left-to-right. Each token conditions on all previous ones. Mathematical objective: P(x) = Π P(xₜ | x&lt;t)</div>
+        <div class="model-examples">GPT-4 · Claude · Llama · Gemini</div>
+      </div>
+      <div class="model-card">
+        <span class="model-badge" style="background:#ecfdf5;color:#065f46;">VAE</span>
+        <div class="model-name">Variational Autoencoders</div>
+        <div class="model-desc">Encoder compresses input x to latent z ~ qφ(z|x). Decoder reconstructs x' ~ pθ(x|z). Enables controlled generation via latent interpolation.</div>
+        <div class="model-examples">β-VAE · VQ-VAE · VQGAN</div>
+      </div>
+      <div class="model-card">
+        <span class="model-badge" style="background:#fef3c7;color:#92400e;">GAN</span>
+        <div class="model-name">Generative Adversarial Nets</div>
+        <div class="model-desc">Generator G creates fake samples from noise z. Discriminator D distinguishes real from fake. Trained via minimax game: min_G max_D E[log D(x)] + E[log(1−D(G(z)))]</div>
+        <div class="model-examples">StyleGAN · CycleGAN · DCGAN</div>
+      </div>
+      <div class="model-card">
+        <span class="model-badge" style="background:#fdf2f8;color:#9d174d;">Diffusion</span>
+        <div class="model-name">Diffusion Models</div>
+        <div class="model-desc">Forward: gradually add Gaussian noise to data over T steps. Reverse: train model to denoise step-by-step. xₜ = √(1−βₜ)xₜ₋₁ + √βₜ ε</div>
+        <div class="model-examples">DALL-E · Stable Diffusion · Midjourney</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Encoder vs Decoder vs Encoder-Decoder</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Architecture</th><th>Attention</th><th>Best For</th><th>Examples</th></tr>
+        <tr><td><strong>Encoder-only</strong></td><td>Bidirectional (sees all tokens)</td><td>Classification, NLU</td><td>BERT, RoBERTa</td></tr>
+        <tr><td><strong>Decoder-only</strong></td><td>Causal/masked (left-to-right)</td><td>Generation, completion</td><td>GPT-4, Claude, Llama</td></tr>
+        <tr><td><strong>Encoder-Decoder</strong></td><td>Both + cross-attention</td><td>Translation, summarisation</td><td>T5, BART, Whisper</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ 5. KEY CONCEPTS ═══════════════════ -->
+<div id="sec-concepts" class="section">
+  <div class="section-header">
+    <div class="section-header-icon">🔑</div>
+    <div>
+      <div class="section-title">Key Concepts & Exam Must-Knows</div>
+      <div class="section-desc">Critical concepts from the CGAI syllabus — expand each topic for detailed explanations, worked examples, and exam tips.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Core Concept Deep-Dives</div>
+    <div class="concept-accordion">
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">🔢</span> &nbsp;Tokens & Embeddings</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p><strong>Tokens</strong> are the fundamental units of text for a language model — subwords, words, or characters depending on the tokeniser. The vocabulary maps each token to an integer ID.</p>
+          <p style="margin-top:12px;"><strong>Embeddings</strong> convert token IDs into dense real-valued vectors. The famous example: <em>"king" − "man" + "woman" ≈ "queen"</em> — vectors encode semantic relationships. Embedding dimensions range from 512 (small models) to 12,288 (GPT-4).</p>
+          <div class="callout tip"><span class="callout-icon">✅</span><span><strong>Exam:</strong> Tokens ≠ words. "unbelievable" may be 3 tokens: ["un", "believ", "able"]. 1 token ≈ 4 characters on average in English.</span></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">📉</span> &nbsp;Loss Functions (Cross-Entropy)</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p><strong>Cross-Entropy Loss:</strong> L = −Σ y · log(ŷ). Measures the difference between the model's predicted probability distribution and the true distribution (one-hot). Lower loss = better calibrated predictions.</p>
+          <p style="margin-top:12px;"><strong>Perplexity</strong> = exp(cross-entropy loss). A perplexity of 10 means the model is as "confused" as if choosing uniformly between 10 options. Lower perplexity = better language model.</p>
+          <div class="callout tip"><span class="callout-icon">✅</span><span><strong>Exam:</strong> For GANs, the loss is different — the discriminator minimises classification loss, while the generator minimises log(1 − D(G(z))) or maximises log(D(G(z))).</span></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">🎛️</span> &nbsp;Fine-Tuning & Alignment (RLHF / SFT)</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>After pre-training on massive datasets, models are adapted to specific tasks and human preferences:</p>
+          <ul class="styled" style="margin-top:10px;">
+            <li><strong>Supervised Fine-Tuning (SFT):</strong> Train on curated (prompt, ideal response) pairs. Teaches the model the desired format and behaviour.</li>
+            <li><strong>RLHF:</strong> Human raters compare model outputs → train a reward model → use PPO reinforcement learning to maximise reward. Used by ChatGPT, Claude.</li>
+            <li><strong>DPO:</strong> Direct Preference Optimisation — simpler alternative to RLHF without a separate reward model.</li>
+          </ul>
+          <div class="callout tip"><span class="callout-icon">✅</span><span><strong>Exam:</strong> SFT = teaches WHAT to say. RLHF = teaches HOW to say it (helpfully, harmlessly, honestly). Used heavily by OpenAI and Anthropic.</span></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">👻</span> &nbsp;Hallucination in Generative AI</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>Hallucination occurs when the model generates factually incorrect or fabricated information with apparent confidence. Root causes:</p>
+          <ul class="styled" style="margin-top:10px;">
+            <li><strong>Probabilistic prediction:</strong> Models sample from distributions — the most probable token ≠ the true token</li>
+            <li><strong>Imperfect training data:</strong> Misinformation in web data gets absorbed</li>
+            <li><strong>Lack of grounding:</strong> No real-time access to verified facts</li>
+          </ul>
+          <p style="margin-top:12px;"><strong>Mitigations:</strong> RAG (retrieval-augmented generation), tool use, chain-of-thought, fine-tuning on factual datasets, human-in-the-loop verification.</p>
+          <div class="callout tip"><span class="callout-icon">✅</span><span><strong>Exam:</strong> Hallucination is a key challenge and ethical concern. Know both causes AND solutions for the exam.</span></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">📚</span> &nbsp;RAG — Retrieval-Augmented Generation</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>RAG combines a <strong>retrieval system</strong> (vector database + semantic search) with a <strong>generative LLM</strong>. When a query arrives, relevant documents are fetched and injected into the prompt — grounding the LLM in current, verified information.</p>
+          <div class="example-box" style="background:#f9f9fb;border-radius:8px;padding:14px;margin:12px 0;font-size:0.85rem;">
+            User → "What is Anthropic's latest model?"<br>
+            Retriever → [fetches docs from vector DB about recent Anthropic releases]<br>
+            LLM → generates answer grounded in retrieved documents
+          </div>
+          <ul class="styled">
+            <li>Reduces hallucination by providing context</li>
+            <li>Enables knowledge updates without retraining</li>
+            <li>Used in: enterprise AI, search assistants, document QA</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">🌐</span> &nbsp;Multimodal Generative AI</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>Modern systems can process and generate across multiple modalities — text, images, audio, video, documents — in a unified framework. This is achieved by:</p>
+          <ul class="styled" style="margin-top:10px;">
+            <li>Encoding each modality into a shared embedding space</li>
+            <li>Cross-modal attention bridges modalities</li>
+            <li>Separate decoders for each output modality</li>
+          </ul>
+          <p style="margin-top:12px;"><strong>Applications:</strong> Image captioning, speech-to-text, text-to-video (Sora), vision-language models (GPT-4V, Gemini).</p>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <span><span class="acc-icon">⚠️</span> &nbsp;Challenges: Technical & Ethical</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="two-col">
+            <div>
+              <strong style="font-size:0.93rem;color:#ef4444;">Technical Challenges</strong>
+              <ul class="styled" style="--section-accent:#ef4444;margin-top:8px;">
+                <li>Hallucinations & factual errors</li>
+                <li>Bias inherited from training data</li>
+                <li>Extremely high compute costs</li>
+                <li>Data quality & provenance issues</li>
+                <li>Context window limitations</li>
+              </ul>
+            </div>
+            <div>
+              <strong style="font-size:0.93rem;color:#ef4444;">Ethical Challenges</strong>
+              <ul class="styled" style="--section-accent:#ef4444;margin-top:8px;">
+                <li>Deepfakes & synthetic media abuse</li>
+                <li>Copyright infringement of training data</li>
+                <li>Misinformation at scale</li>
+                <li>Privacy risks from data memorisation</li>
+                <li>Bias amplification & fairness concerns</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚨 Exam Must-Know Tips</div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-label">Know the 4 Model Types</div>
+        <div class="tip-text">Autoregressive, VAE, GAN, Diffusion — know each one's mechanism, strengths, and a real-world example.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧮</div>
+        <div class="tip-label">Attention Formula</div>
+        <div class="tip-text">Memorise Attention(Q,K,V) = softmax(QKᵀ/√dₖ)V. Know what Q, K, V stand for and why we scale by √dₖ.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📊</div>
+        <div class="tip-label">Transformers vs RNNs</div>
+        <div class="tip-text">Transformers use parallel processing (attention) vs RNNs which process sequentially. Transformers handle long-range dependencies better.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔄</div>
+        <div class="tip-label">Training vs Inference</div>
+        <div class="tip-text">Training: forward + backward + weight update. Inference: forward pass only. RLHF adds a reward model and RL loop on top.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📝</div>
+        <div class="tip-label">RLHF Steps</div>
+        <div class="tip-text">1) SFT → 2) Collect preference data → 3) Train reward model → 4) Fine-tune LLM with PPO. OpenAI and Anthropic both use this.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🌍</div>
+        <div class="tip-label">Future Trends</div>
+        <div class="tip-text">Autonomous AI agents, real-time multimodal, personalised AI assistants, scientific discovery, AI-powered robotics.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Glossary — Advanced Terms</div>
+    <div class="glossary-grid">
+      <div class="gloss-card" style="--section-accent:#ef4444;--section-bg:#fcd5d5;">
+        <div class="gloss-term" style="color:#ef4444;">RLHF</div>
+        <div class="gloss-def">Reinforcement Learning from Human Feedback. Aligns model behaviour with human preferences using PPO optimization.</div>
+      </div>
+      <div class="gloss-card" style="--section-accent:#ef4444;--section-bg:#fcd5d5;">
+        <div class="gloss-term" style="color:#ef4444;">Perplexity</div>
+        <div class="gloss-def">exp(cross-entropy). Measures model uncertainty — lower = better. GPT-2 had ~29; GPT-3 achieved ~20 on Penn Treebank.</div>
+      </div>
+      <div class="gloss-card" style="--section-accent:#ef4444;--section-bg:#fcd5d5;">
+        <div class="gloss-term" style="color:#ef4444;">Temperature</div>
+        <div class="gloss-def">Scales logits before softmax. T→0: deterministic. T=1: default. T>1: random/creative.</div>
+      </div>
+      <div class="gloss-card" style="--section-accent:#ef4444;--section-bg:#fcd5d5;">
+        <div class="gloss-term" style="color:#ef4444;">KL Divergence</div>
+        <div class="gloss-def">Measures difference between two probability distributions. Used in VAE loss and RLHF penalty term.</div>
+      </div>
+      <div class="gloss-card" style="--section-accent:#ef4444;--section-bg:#fcd5d5;">
+        <div class="gloss-term" style="color:#ef4444;">Mode Collapse</div>
+        <div class="gloss-def">GAN failure where generator produces limited variety — maps all inputs to few outputs. Training instability issue.</div>
+      </div>
+      <div class="gloss-card" style="--section-accent:#ef4444;--section-bg:#fcd5d5;">
+        <div class="gloss-term" style="color:#ef4444;">Zero-Shot / Few-Shot</div>
+        <div class="gloss-def">Zero-shot: no examples given. Few-shot: 1–5 examples in context. Both leverage in-context learning.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ 6. DIAGRAMS ═══════════════════ -->
+<div id="sec-diagrams" class="section">
+  <div class="section-header">
+    <div class="section-header-icon">🖼️</div>
+    <div>
+      <div class="section-title">Reference Diagrams</div>
+      <div class="section-desc">Annotated visual references from the CGAI curriculum. Study the highlighted areas and their captions — these visuals commonly appear as reference material in exams.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Fundamentals of Generative AI Models — Complete Infographic</div>
+    <p style="font-size:0.9rem;color:#6b6b80;margin-bottom:20px;">The canonical reference diagram for the CGAI Fundamentals module. Each numbered section corresponds to a major topic area.</p>
+    <div class="diagram-wrap">
+      <img src="FUNDAMENTALS_GENAI_MODEL.png" alt="Fundamentals of Generative AI Models infographic" class="diagram-img">
+      <div class="diagram-caption">
+        <strong>📊 Fundamentals of Generative AI Models — Full Reference Infographic</strong>
+        <p>This infographic consolidates all 15 major topic areas of the CGAI Fundamentals module in a single visual: from the basic definition of generative AI (Section 1) through to the quick comparison table of model types (Section 15). When studying, pay particular attention to: <strong>Section 3</strong> (the four model types A–D and their mathematical formulations), <strong>Section 5</strong> (the self-attention formula with Q, K, V labels), and <strong>Section 11</strong> (the RAG pipeline diagram showing how retrieval connects to the LLM). These are the most frequently tested sections. Note how each model type (Autoregressive, VAE, GAN, Diffusion) has a distinct architecture diagram — being able to identify these visually is an exam skill.</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:24px;">
+      <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#c2410c;margin-bottom:8px;font-size:0.93rem;">🔍 Section 3A — Autoregressive</div>
+        <p style="font-size:0.85rem;color:#6b6b80;line-height:1.6;">Look for the token-by-token prediction chain and the product notation formula P(x) = Π P(xₜ|x&lt;t). Each output becomes input to the next step.</p>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#15803d;margin-bottom:8px;font-size:0.93rem;">🔍 Section 3B — VAE</div>
+        <p style="font-size:0.85rem;color:#6b6b80;line-height:1.6;">Note the Encoder → Latent Vector → Decoder flow. The key equation z ~ qφ(z|x) shows latent sampling. Reconstructed output is x'.</p>
+      </div>
+      <div style="background:#faf5ff;border:1px solid #d8b4fe;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#7e22ce;margin-bottom:8px;font-size:0.93rem;">🔍 Section 3C — GAN</div>
+        <p style="font-size:0.85rem;color:#6b6b80;line-height:1.6;">The adversarial minimax objective is shown. Generator G maps Noise z → Fake Data. Discriminator D classifies Real vs Fake.</p>
+      </div>
+      <div style="background:#fdf4ff;border:1px solid #f0abfc;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#a21caf;margin-bottom:8px;font-size:0.93rem;">🔍 Section 3D — Diffusion</div>
+        <p style="font-size:0.85rem;color:#6b6b80;line-height:1.6;">The cat-image sequence shows the forward (noise) and reverse (denoise) processes. The diffusion principle formula xₜ = √(1−βₜ)xₜ₋₁ + √βₜ ε is key.</p>
+      </div>
+      <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#1d4ed8;margin-bottom:8px;font-size:0.93rem;">🔍 Section 5 — Attention</div>
+        <p style="font-size:0.85rem;color:#6b6b80;line-height:1.6;">The sentence example "it refers to animal" illustrates coreference resolution. The formula Attention(Q,K,V) = softmax(QKᵀ/√dₖ)V is shown with all variables labelled.</p>
+      </div>
+      <div style="background:#fff1f2;border:1px solid #fda4af;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#be123c;margin-bottom:8px;font-size:0.93rem;">🔍 Section 11 — RAG</div>
+        <p style="font-size:0.85rem;color:#6b6b80;line-height:1.6;">The RAG flow: User → Relevant Documents Retrieved → LLM generates grounded response. Used in enterprise AI and document QA systems.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ 7. QUIZ ═══════════════════ -->
+<div id="sec-quiz" class="section">
+  <div class="section-header">
+    <div class="section-header-icon">✏️</div>
+    <div>
+      <div class="section-title">Practice Quiz</div>
+      <div class="section-desc">10 CGAI-style questions covering all module topics. Instant feedback with explanations. Pass mark: 70%.</div>
+    </div>
+  </div>
+
+  <div id="quiz-container"></div>
+  <div id="quiz-result" style="display:none;" class="quiz-result"></div>
+</div>
+
+</div><!-- end content-area -->
+
+<script>
+// ─── TAB NAVIGATION ───
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const names = ['overview','pipeline','mechanism','arch','concepts','diagrams','quiz'];
+  tabs[names.indexOf(name)].classList.add('active');
+}
+
+// ─── STEPPER ───
+function toggleStep(el) {
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.step-item').forEach(s => s.classList.remove('open'));
+  if (!wasOpen) el.classList.add('open');
+}
+
+// ─── ACCORDION ───
+function toggleAcc(head) {
+  const item = head.closest('.acc-item');
+  item.classList.toggle('open');
+}
+
+// ─── ATTENTION DEMO ───
+const sentences = {
+  "The": { scores: {"The":1.0,"animal":0.1,"didn't":0.05,"cross":0.05,"the":0.2,"road":0.05,"because":0.1,"it":0.1,"was":0.1,"tired":0.1}, info: "Definite article — attends primarily to itself and nearby 'animal' it introduces." },
+  "animal": { scores: {"The":0.3,"animal":1.0,"didn't":0.2,"cross":0.3,"the":0.1,"road":0.15,"because":0.25,"it":0.8,"was":0.2,"tired":0.4}, info: "Key noun — strongly coreferenced with 'it' later in the sentence." },
+  "didn't": { scores: {"The":0.1,"animal":0.4,"didn't":1.0,"cross":0.6,"the":0.1,"road":0.1,"because":0.2,"it":0.2,"was":0.1,"tired":0.1}, info: "Negation — closely tied to the verb 'cross' it negates." },
+  "cross": { scores: {"The":0.1,"animal":0.5,"didn't":0.7,"cross":1.0,"the":0.15,"road":0.5,"because":0.2,"it":0.2,"was":0.1,"tired":0.3}, info: "Main verb — attends to subject 'animal', negation 'didn't', and object 'road'." },
+  "the": { scores: {"The":0.3,"animal":0.1,"didn't":0.05,"cross":0.1,"the":1.0,"road":0.7,"because":0.05,"it":0.05,"was":0.05,"tired":0.05}, info: "Second article — co-attends with 'road' it precedes." },
+  "road": { scores: {"The":0.1,"animal":0.3,"didn't":0.2,"cross":0.8,"the":0.3,"road":1.0,"because":0.15,"it":0.15,"was":0.1,"tired":0.1}, info: "Object noun — tightly coupled with verb 'cross'." },
+  "because": { scores: {"The":0.1,"animal":0.3,"didn't":0.3,"cross":0.3,"the":0.1,"road":0.15,"because":1.0,"it":0.2,"was":0.4,"tired":0.5}, info: "Causal connector — bridges first clause to 'it was tired'." },
+  "it": { scores: {"The":0.2,"animal":0.9,"didn't":0.1,"cross":0.15,"the":0.1,"road":0.1,"because":0.2,"it":1.0,"was":0.4,"tired":0.5}, info: "Pronoun — highest attention to 'animal' (coreference resolution)!" },
+  "was": { scores: {"The":0.05,"animal":0.2,"didn't":0.1,"cross":0.1,"the":0.05,"road":0.1,"because":0.2,"it":0.6,"was":1.0,"tired":0.7}, info: "Auxiliary verb — primarily attends to 'it' (subject) and 'tired' (predicate)." },
+  "tired": { scores: {"The":0.05,"animal":0.5,"didn't":0.15,"cross":0.3,"the":0.05,"road":0.1,"because":0.4,"it":0.5,"was":0.4,"tired":1.0}, info: "Key explanation — attends to both 'it'/'animal' and causal 'because'." }
+};
+
+const words = Object.keys(sentences);
+
+function buildAttnDemo() {
+  const sent = document.getElementById('attn-sentence');
+  words.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'attn-word';
+    el.innerHTML = `<span class="attn-score" id="score-${w}"></span>${w}`;
+    el.onclick = () => selectWord(w);
+    sent.appendChild(el);
+  });
+
+  const labels = document.getElementById('attn-labels');
+  words.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'attn-label-card';
+    card.id = 'lcard-' + w;
+    card.innerHTML = `<div class="attn-word-name">${w}</div><div class="attn-heat-bar" id="bar-${w}" style="width:0%"></div><div class="attn-desc" id="ldesc-${w}">Click a word above</div>`;
+    labels.appendChild(card);
+  });
+}
+
+function selectWord(selected) {
+  document.querySelectorAll('.attn-word').forEach(el => {
+    el.classList.remove('selected','lit');
+    el.querySelector('.attn-score').style.opacity = 0;
+  });
+
+  const wordEls = document.querySelectorAll('.attn-word');
+  words.forEach((w, i) => {
+    if (w === selected) {
+      wordEls[i].classList.add('selected');
+    }
+  });
+
+  const data = sentences[selected];
+  words.forEach((w, i) => {
+    const score = data.scores[w] || 0;
+    const scoreEl = wordEls[i].querySelector('.attn-score');
+    scoreEl.textContent = score.toFixed(2);
+    if (score > 0.3 && w !== selected) {
+      wordEls[i].classList.add('lit');
+      scoreEl.style.opacity = 1;
+    }
+
+    const bar = document.getElementById('bar-' + w);
+    bar.style.width = (score * 100) + '%';
+    bar.style.opacity = 0.4 + score * 0.6;
+
+    const lcard = document.getElementById('lcard-' + w);
+    const ldesc = document.getElementById('ldesc-' + w);
+    lcard.classList.toggle('active', score > 0.5 || w === selected);
+    ldesc.textContent = `Attention weight: ${(score * 100).toFixed(0)}%`;
+  });
+
+  // Show info
+  const hint = document.querySelector('.attn-hint');
+  hint.innerHTML = `<strong>"${selected}"</strong> → ${data.info}`;
+  hint.style.color = '#78350f';
+}
+
+buildAttnDemo();
+
+// ─── QUIZ ───
+const questions = [
+  {
+    q: "Which formula best describes the objective of an autoregressive language model?",
+    opts: ["P(X) = Σ P(xₜ | xₜ₊₁)", "P(x) = Π P(xₜ | x<t)", "Attention(Q,K,V) = softmax(QKᵀ/√dₖ)V", "L = −Σ y·log(ŷ)"],
+    ans: 1,
+    exp: "Autoregressive models learn P(x) = Π P(xₜ | x<t) — the joint probability as a product of conditional probabilities, each token conditioned on all previous tokens."
+  },
+  {
+    q: "In the Self-Attention formula Attention(Q,K,V) = softmax(QKᵀ/√dₖ)V, why do we divide by √dₖ?",
+    opts: ["To normalise the output to sum to 1", "To prevent dot-products from growing too large and pushing softmax into low-gradient regions", "To reduce the number of parameters", "To encode positional information"],
+    ans: 1,
+    exp: "Dividing by √dₖ (square root of key dimension) scales the dot-products down, preventing large values from pushing the softmax into regions with tiny gradients — a common training stability issue."
+  },
+  {
+    q: "A Variational Autoencoder (VAE) compresses input x into a latent vector z. Which expression describes this encoding step?",
+    opts: ["z ~ pθ(x|z)", "z ~ qφ(z|x)", "z = G(noise)", "z = softmax(QKᵀ)"],
+    ans: 1,
+    exp: "The encoder in a VAE is the approximate posterior qφ(z|x) — it maps input x to a distribution over latent variables z, parameterised by φ."
+  },
+  {
+    q: "In a GAN, what is the role of the Discriminator?",
+    opts: ["Generate realistic images from noise", "Compress data into a latent space", "Classify samples as real or fake, providing training signal to the Generator", "Predict the next token in a sequence"],
+    ans: 2,
+    exp: "The Discriminator D tries to distinguish real data from the Generator's fakes. Its feedback drives the Generator to produce increasingly realistic outputs through the adversarial game."
+  },
+  {
+    q: "Which of the following is NOT a mitigation strategy for hallucination in generative AI?",
+    opts: ["Retrieval-Augmented Generation (RAG)", "Human verification", "Increasing model temperature to 2.0", "Fine-tuning on factual datasets"],
+    ans: 2,
+    exp: "Increasing temperature increases randomness, making hallucinations MORE likely, not less. RAG, human verification, and factual fine-tuning are all valid mitigation strategies."
+  },
+  {
+    q: "The landmark paper that introduced the Transformer architecture was:",
+    opts: ["'ImageNet Classification with Deep CNNs' (2012)", "'Attention Is All You Need' (2017)", "'Generative Adversarial Nets' (2014)", "'Auto-Encoding Variational Bayes' (2013)"],
+    ans: 1,
+    exp: "'Attention Is All You Need' by Vaswani et al. (2017) introduced the Transformer — replacing recurrence with self-attention and positional encoding, revolutionising AI."
+  },
+  {
+    q: "RAG (Retrieval-Augmented Generation) is primarily used to address which challenge?",
+    opts: ["High training compute costs", "Mode collapse in GANs", "Hallucination and outdated knowledge in LLMs", "Vanishing gradients in deep networks"],
+    ans: 2,
+    exp: "RAG grounds the LLM's responses in retrieved documents, reducing hallucination and enabling access to current information without retraining the model."
+  },
+  {
+    q: "In the RLHF pipeline, what is the correct order of steps?",
+    opts: ["Reward Model Training → SFT → PPO fine-tuning", "SFT → Preference data collection → Reward Model → PPO fine-tuning", "PPO → SFT → Human feedback", "Pre-training → RAG → Deployment"],
+    ans: 1,
+    exp: "RLHF order: 1) Supervised Fine-Tuning (SFT) on demonstrations, 2) Collect human preference comparisons, 3) Train reward model, 4) Fine-tune LLM with PPO to maximise reward."
+  },
+  {
+    q: "Which generative model architecture works by iteratively DENOISING data from pure Gaussian noise?",
+    opts: ["Autoregressive Models (e.g. GPT)", "Variational Autoencoders", "Generative Adversarial Networks", "Diffusion Models (e.g. Stable Diffusion)"],
+    ans: 3,
+    exp: "Diffusion models (DALL-E, Stable Diffusion) add noise forward and learn the reverse denoising process. The principle is: xₜ = √(1−βₜ)xₜ₋₁ + √βₜ ε."
+  },
+  {
+    q: "The Cross-Entropy Loss function is defined as L = −Σ y·log(ŷ). What does 'lower loss' indicate?",
+    opts: ["The model is producing more random outputs", "The model's predicted probabilities are further from the true distribution", "The model's predictions are better calibrated to the true labels", "The learning rate is too high"],
+    ans: 2,
+    exp: "Cross-Entropy Loss measures divergence between predicted and true distributions. Lower loss means the model assigns higher probability to the correct token — i.e., better predictions."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = [];
+
+function buildQuiz() {
+  current = 0; score = 0;
+  answered = new Array(questions.length).fill(null);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const cont = document.getElementById('quiz-container');
+  const result = document.getElementById('quiz-result');
+  result.style.display = 'none';
+  cont.style.display = 'block';
+
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  const letters = ['A','B','C','D'];
+
+  let optsHTML = q.opts.map((opt, i) => {
+    let cls = '';
+    if (answered[current] !== null) {
+      if (i === q.ans) cls = 'correct';
+      else if (i === answered[current]) cls = 'wrong';
+    }
+    return `<button class="quiz-opt ${cls}" onclick="selectOpt(${i})" ${answered[current] !== null ? 'disabled' : ''}>
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${opt}</span>
+    </button>`;
+  }).join('');
+
+  let feedbackHTML = '';
+  if (answered[current] !== null) {
+    const correct = answered[current] === q.ans;
+    feedbackHTML = `<div class="quiz-feedback show ${correct ? 'correct-fb' : 'wrong-fb'}">
+      ${correct ? '✅ Correct!' : '❌ Incorrect.'} ${q.exp}
+    </div>`;
+  }
+
+  cont.innerHTML = `
+    <div class="quiz-info">
+      <span>Question ${current + 1} of ${questions.length}</span>
+      <span class="score-badge">Score: ${score}/${current + (answered[current] !== null ? 1 : 0)}</span>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${pct}%"></div></div>
+    <div class="quiz-card">
+      <div class="quiz-q-num">Question ${current + 1}</div>
+      <div class="quiz-question">${q.q}</div>
+      <div class="quiz-options">${optsHTML}</div>
+      ${feedbackHTML}
+      <div class="quiz-nav">
+        ${current > 0 ? `<button class="btn btn-secondary" onclick="navQ(-1)">← Previous</button>` : ''}
+        ${answered[current] !== null && current < questions.length - 1 ? `<button class="btn btn-primary" onclick="navQ(1)">Next →</button>` : ''}
+        ${answered[current] !== null && current === questions.length - 1 ? `<button class="btn btn-primary" onclick="showResult()">See Results 🎉</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function selectOpt(idx) {
+  if (answered[current] !== null) return;
+  answered[current] = idx;
+  if (idx === questions[current].ans) score++;
+  renderQuestion();
+}
+
+function navQ(dir) {
+  current = Math.max(0, Math.min(questions.length - 1, current + dir));
+  renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quiz-container').style.display = 'none';
+  const pct = Math.round((score / questions.length) * 100);
+  const pass = pct >= 70;
+  const resultDiv = document.getElementById('quiz-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `
+    <div class="result-score" style="color:${pass ? '#10b981' : '#ef4444'}">${pct}%</div>
+    <div class="result-label">${score} of ${questions.length} correct</div>
+    <div class="result-badge-large ${pass ? 'pass' : 'fail'}">${pass ? '🎉 PASS — Well Done!' : '📚 FAIL — Keep Studying'}</div>
+    <div class="result-breakdown">
+      <div class="result-row"><span>Score</span><span><strong>${score} / ${questions.length}</strong></span></div>
+      <div class="result-row"><span>Percentage</span><span><strong>${pct}%</strong></span></div>
+      <div class="result-row"><span>Pass Mark</span><span>70%</span></div>
+      <div class="result-row"><span>Status</span><span style="color:${pass?'#10b981':'#ef4444'};font-weight:700">${pass ? 'PASS' : 'FAIL'}</span></div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="buildQuiz()">🔄 Retry Quiz</button>
+      <button class="btn btn-secondary" onclick="reviewQuiz()">📖 Review Answers</button>
+    </div>
+  `;
+}
+
+function reviewQuiz() {
+  current = 0;
+  renderQuestion();
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('quiz-container').style.display = 'block';
+}
+
+buildQuiz();
+</script>
+</body>
+</html>

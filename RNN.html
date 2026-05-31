@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNN Hyperparameters – Complete Guide</title>
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -60px; right: -80px; width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: -50px; left: -60px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .header .badge {
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+        }
+        .header h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .header h1 span {
+            background: linear-gradient(135deg, #5eead4, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header .tagline { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.75rem; font-weight: 400; letter-spacing: 0.01em; }
+        .header .intro { font-size: 0.95rem; opacity: 0.75; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .infographic-area {
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: -1.5rem auto 2rem;
+            max-width: 900px; padding: 1.5rem; text-align: center; position: relative; z-index: 2; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .infographic-area img { max-width: 100%; height: auto; border-radius: var(--radius); display: block; margin: 0 auto; }
+        .infographic-fallback {
+            display: none; background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); border-radius: var(--radius); padding: 2rem 1.5rem;
+            color: #e2e8f0; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.8; text-align: left; overflow-x: auto;
+        }
+        .infographic-fallback .gru-diagram { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .infographic-fallback .gate-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: center; min-width: 120px;
+        }
+        .infographic-fallback .gate-box strong { display: block; color: #5eead4; font-size: 1rem; margin-bottom: 0.4rem; }
+        .infographic-fallback .gate-box code { color: #fbbf24; font-size: 0.8rem; }
+        .infographic-fallback .arrow-sym { font-size: 1.8rem; color: #94a3b8; }
+        .infographic-area .caption { margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .tab-nav {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 0.5rem;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); position: sticky; top: 12px; z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 auto; min-width: 110px; padding: 0.7rem 1rem; border: none; background: transparent; border-radius: var(--radius);
+            cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); transition: var(--transition); white-space: nowrap; letter-spacing: 0.01em; position: relative;
+        }
+        .tab-btn:hover { color: var(--blue-mid); background: #eff6ff; }
+        .tab-btn.active { background: var(--blue-mid); color: #fff; box-shadow: var(--shadow); }
+        .tab-btn .tab-icon { margin-right: 0.35rem; }
+        .tab-panel { display: none; animation: fadeSlideIn 0.4s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-xl); transform: translateY(-2px); border-color: #cbd5e1; }
+        .card .card-icon { font-size: 2rem; margin-bottom: 0.5rem; display: inline-block; background: #f1f5f9; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0 0.35rem; color: var(--deep-blue); }
+        .card .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; line-height: 1.55; }
+        .code-snippet {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-family: var(--font-mono);
+            font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-snippet .kw { color: #c084fc; } .code-snippet .fn { color: #60a5fa; } .code-snippet .str { color: #fbbf24; } .code-snippet .num { color: #fb923c; } .code-snippet .cm { color: #6b7280; font-style: italic; }
+        .tip-box, .warn-box, .good-box {
+            margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .tip-box { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .warn-box { background: var(--warning-bg); border-left: 4px solid var(--warning-border); color: #92400e; }
+        .good-box { background: #eff6ff; border-left: 4px solid var(--blue-mid); color: #1e40af; }
+        .tip-box .box-icon, .warn-box .box-icon, .good-box .box-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .arch-visual {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 2rem; color: #e2e8f0; text-align: center; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .arch-visual .eq-block {
+            display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+        }
+        .arch-visual .eq-block .hl { color: #5eead4; font-weight: 700; }
+        .arch-visual .eq-block .hl2 { color: #fbbf24; font-weight: 700; }
+        .full-code-block {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow-lg); max-height: 70vh; overflow-y: auto;
+        }
+        .full-code-block .kw { color: #c084fc; } .full-code-block .fn { color: #60a5fa; } .full-code-block .str { color: #a3e635; } .full-code-block .num { color: #fb923c; } .full-code-block .cm { color: #6b7280; font-style: italic; } .full-code-block .anno { color: #f472b6; font-weight: 700; }
+        .summary-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .summary-table { width: 100%; border-collapse: collapse; background: var(--bg-card); font-size: 0.9rem; }
+        .summary-table thead { background: var(--deep-blue); color: #fff; }
+        .summary-table thead th { padding: 0.85rem 1rem; text-align: left; font-weight: 600; letter-spacing: 0.02em; }
+        .summary-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        .summary-table tbody tr:hover { background: #f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .comparison-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+        .comparison-card.params { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #93c5fd; }
+        .comparison-card.hyperparams { background: linear-gradient(135deg, #f0fdf4, #ccfbf1); border: 2px solid #5eead4; }
+        .comparison-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comparison-card ul { list-style: none; padding: 0; text-align: left; display: inline-block; }
+        .comparison-card li { padding: 0.2rem 0; font-size: 0.88rem; }
+        .baseline-card {
+            background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); color: #fff; border-radius: var(--radius-xl); padding: 2rem; text-align: center; box-shadow: var(--shadow-xl);
+        }
+        .baseline-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #5eead4; }
+        .baseline-card .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .baseline-card .config-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.75rem; }
+        .baseline-card .config-item strong { display: block; color: #fbbf24; font-size: 1rem; }
+        .baseline-card .config-item span { font-size: 0.78rem; opacity: 0.8; }
+        .back-to-top {
+            position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue-mid); color: #fff; border: none;
+            cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition); z-index: 99; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--deep-blue); transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        .eq-explanation-card {
+            background: #f8fafc; border-radius: var(--radius-lg); padding: 1.8rem; margin-top: 1.5rem; border: 1px solid #cbd5e1;
+        }
+        .eq-explanation-card h4 { font-size: 1.2rem; color: var(--deep-blue); margin-bottom: 1rem; }
+        .eq-term-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.8rem;
+        }
+        .eq-term-item {
+            background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--teal-light);
+        }
+        .eq-term-item .symbol { font-family: var(--font-mono); font-weight: 700; color: var(--blue-mid); font-size: 1.15rem; }
+        .eq-term-item .meaning { font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem; }
+        .eq-term-item .dims { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-style: italic; }
+        .highlight-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .highlight-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+        .highlight-table tr:last-child td { border-bottom: none; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; } .comparison-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 0.76rem; padding: 0.5rem 0.6rem; min-width: auto; flex: 1 1 calc(33% - 0.3rem); }
+            .header { padding: 2rem 1rem 1.5rem; } .header h1 { font-size: 1.6rem; }
+            .eq-term-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- HEADER -->
+    <!-- ═══════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">🧠 Deep Learning · RNN Family</div>
+            <h1>Recurrent Neural Network – <span>Hyperparameters</span></h1>
+            <p class="tagline">Tune the core settings that shape vanilla RNN performance and stability.</p>
+            <p class="intro">
+                A classic RNN processes sequential data by reusing hidden state across time steps.
+                This guide covers the 10 most important hyperparameters for vanilla RNNs, from hidden units to gradient clipping,
+                with practical Keras examples and a runnable sequence prediction demo.
+            </p>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- INFOGRAPHIC IMAGE AREA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <div class="infographic-area" id="infographicArea">
+            <img id="infographicImg" src="RNN.png" alt="RNN Nutshell Infographic" loading="lazy" onerror="handleImageFallback()">
+            <div class="infographic-fallback" id="infographicFallback">
+                <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🔬 RNN Core Flow</div>
+                <div class="gru-diagram">
+                    <div class="gate-box"><strong>Input</strong><code>x<sub>t</sub></code><br><small style="color:#94a3b8;">Sequence step input</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Hidden State</strong><code>h<sub>t</sub> = tanh(Wx<sub>t</sub> + Uh<sub>t-1</sub> + b)</code><br><small style="color:#94a3b8;">Recurrent state update</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Output</strong><code>y<sub>t</sub> = Vh<sub>t</sub> + c</code><br><small style="color:#94a3b8;">Prediction or next-step signal</small></div>
+                </div>
+                <div style="text-align:center;color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">
+                    tanh = activation &nbsp;|&nbsp; W/U/V = weight matrices &nbsp;|&nbsp; b/c = biases
+                </div>
+            </div>
+            <p class="caption">📊 Vanilla RNN overview — input, recurrent state, and output flow</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB NAVIGATION -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <nav class="tab-nav" id="tabNav">
+            <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Hyperparameters</button>
+            <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+            <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+            <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+            <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+            <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+        </nav>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: All Hyperparameters (1–10) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel active" id="tab-all-concepts">
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🧩</div><h3>① Number of RNN Units (Hidden Units)</h3><p class="card-desc">Defines the size of the hidden state vector. More units increase capacity but also computational cost and overfitting risk.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> SimpleRNN<br>SimpleRNN(<span class="num">128</span>)  <span class="cm"># 128 hidden units</span></div><div class="tip-box"><span class="box-icon">💡</span>Start with <strong>64 or 128</strong>. Increase only if underfitting persists.</div></div>
+                <div class="card"><div class="card-icon">🏢</div><h3>② Number of Layers</h3><p class="card-desc">Stack RNN layers for deeper sequence representations. Use <code>return_sequences=True</code> on intermediate layers.</p><div class="code-snippet">model.add(SimpleRNN(<span class="num">128</span>, <span class="fn">return_sequences</span>=<span class="kw">True</span>))<br>model.add(SimpleRNN(<span class="num">64</span>))</div><div class="good-box"><span class="box-icon">✅</span>1–2 layers usually work well for vanilla RNNs. More layers may increase training difficulty.</div></div>
+                <div class="card"><div class="card-icon">🎯</div><h3>③ Learning Rate</h3><p class="card-desc">Controls the step size for gradient descent. It is the most important training hyperparameter.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.optimizers <span class="kw">import</span> Adam<br>optimizer = Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use <strong>0.001</strong> as a safe default and adjust from there.</div><div class="warn-box"><span class="box-icon">⚠️</span>Too high can blow up gradients; too low slows learning dramatically.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>④ Batch Size</h3><p class="card-desc">Number of samples processed before updating weights. Smaller batches improve gradient stability for sequence data.</p><div class="code-snippet">model.fit(X_train, y_train, <span class="fn">batch_size</span>=<span class="num">32</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use 16–64 for time series tasks. Larger batches can hurt generalization.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>⑤ Number of Epochs</h3><p class="card-desc">How many full passes over the dataset. Monitor validation metrics and stop before overfitting.</p><div class="code-snippet">model.fit(X_train, y_train, <span class="fn">epochs</span>=<span class="num">50</span>)</div><div class="good-box"><span class="box-icon">✅</span>Combine with EarlyStopping so training ends when performance plateaus.</div></div>
+                <div class="card"><div class="card-icon">🎲</div><h3>⑥ Dropout &amp; Recurrent Dropout</h3><p class="card-desc">Dropout regularizes the input and recurrent connections to discourage overfitting.</p><div class="code-snippet">SimpleRNN(<span class="num">128</span>, <span class="fn">dropout</span>=<span class="num">0.2</span>, <span class="fn">recurrent_dropout</span>=<span class="num">0.2</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Typical range: 0.1–0.3 for vanilla RNNs.</div><div class="warn-box"><span class="box-icon">⚠️</span>Large recurrent dropout may prevent the model from learning long dependencies.</div></div>
+                <div class="card"><div class="card-icon">📏</div><h3>⑦ Sequence Length (Time Steps)</h3><p class="card-desc">Number of past inputs fed to the network in each sample. It determines how far back the model can look.</p><div class="code-snippet"><span class="cm"># Use the last 20 time steps</span><br><span class="fn">input_shape</span>=(<span class="num">20</span>, <span class="num">1</span>)</div><div class="warn-box"><span class="box-icon">⚠️</span>Too long sequences make training slow and unstable; too short loses context.</div></div>
+                <div class="card"><div class="card-icon">⚡</div><h3>⑧ Activation Function</h3><p class="card-desc">Defines the nonlinearity in hidden state updates. RNNs commonly use <strong>tanh</strong> or <strong>ReLU</strong>.</p><div class="code-snippet">SimpleRNN(<span class="num">128</span>, <span class="fn">activation</span>=<span class="str">'tanh'</span>)</div><div class="good-box"><span class="box-icon">✅</span>Use <strong>tanh</strong> for stable sequence learning; use <strong>ReLU</strong> only with careful gradient control.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>⑨ Optimizer</h3><p class="card-desc">Chooses how weights update each step. Adam is a strong default for RNNs.</p><div class="code-snippet">model.compile(<span class="fn">optimizer</span>=<span class="str">'adam'</span>, loss=<span class="str">'mse'</span>)</div><div class="tip-box"><span class="box-icon">💡</span><strong>Adam</strong> is typically best, but try RMSprop for long sequences.</div></div>
+                <div class="card"><div class="card-icon">📉</div><h3>⑩ Loss Function</h3><p class="card-desc">Measures training error. Choose based on whether your task is regression or classification.</p><div class="code-snippet"><span class="cm"># Regression</span><br>model.compile(loss=<span class="str">'mse'</span>)<br><span class="cm"># Classification</span><br>model.compile(loss=<span class="str">'categorical_crossentropy'</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use MSE for numeric forecasting and crossentropy for sequence classification.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Architecture / Structure (NOW WITH FULL EQUATION BREAKDOWN) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-architecture">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ RNN Architecture &amp; Structure</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">
+                A vanilla RNN updates its hidden state by combining the current input with the previous hidden state.
+                This recurrence is what gives RNNs the power to process ordered sequences, but also what makes them sensitive to gradients over time.
+            </p>
+            <div class="arch-visual">
+                <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🔬 RNN Core Equations</div>
+                <div class="eq-block"><span class="hl">Hidden State Update:</span><br>h<sub>t</sub> = tanh(<span class="hl2">W</span>x<sub>t</sub> + <span class="hl2">U</span>h<sub>t−1</sub> + b)</div>
+                <div class="eq-block"><span class="hl">Output Layer:</span><br>y<sub>t</sub> = <span class="hl2">V</span>h<sub>t</sub> + c</div>
+                <div class="eq-block"><span class="hl">Gradient Flow:</span><br>∂L/∂h<sub>t−1</sub> = <span class="hl2">U</span><sup>T</sup>·diag(1−h<sub>t</sub><sup>2</sup>)·∂L/∂h<sub>t</sub></div>
+                <div class="eq-block"><span class="hl">Sequence Input:</span><br>X = [x<sub>1</sub>, x<sub>2</sub>, …, x<sub>T</sub>]</div>
+            </div>
+
+            <div class="eq-explanation-card">
+                <h4>📖 Equation Element Breakdown – What every symbol means</h4>
+                <p style="margin-bottom:1.2rem; font-size:0.9rem; color:var(--text-light);">
+                    Understanding the recurrent update is key to tuning RNN performance. Each component plays a role in how the network remembers or updates sequence context.
+                </p>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Hidden State Update</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">tanh</div><div class="meaning">Squashes the hidden state output to the range (-1, 1). Helps stabilize the recurrent update.</div><div class="dims">Output: (-1, 1)</div></div>
+                    <div class="eq-term-item"><div class="symbol">W</div><div class="meaning">Input-to-hidden weight matrix. Determines how the current input x<sub>t</sub> influences the new state.</div><div class="dims">Shape: (hidden_units, input_features)</div></div>
+                    <div class="eq-term-item"><div class="symbol">x<sub>t</sub></div><div class="meaning">The input vector at time step t. Can be a scalar feature, embedding, or multivariate time step.</div><div class="dims">Shape: (batch_size, input_features)</div></div>
+                    <div class="eq-term-item"><div class="symbol">U</div><div class="meaning">Hidden-to-hidden weight matrix. Controls how much previous state h<sub>t−1</sub> is reused.</div><div class="dims">Shape: (hidden_units, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">h<sub>t-1</sub></div><div class="meaning">Previous hidden state. Carries sequence memory forward one step.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">b</div><div class="meaning">Bias vector added to the hidden update. Helps the model learn offsets and baseline activity.</div><div class="dims">Shape: (hidden_units,)</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Output Layer</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">V</div><div class="meaning">Hidden-to-output weight matrix. Maps the recurrent state to the prediction space.</div><div class="dims">Shape: (output_dim, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">c</div><div class="meaning">Output bias. Offsets the final prediction before any output activation.</div><div class="dims">Shape: (output_dim,)</div></div>
+                    <div class="eq-term-item"><div class="symbol">y<sub>t</sub></div><div class="meaning">The predicted output at time t. Can be used directly or passed through an activation for classification.</div><div class="dims">Shape: (batch_size, output_dim)</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Gradient Flow</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">U<sup>T</sup></div><div class="meaning">The transpose of the recurrent weight. When repeated over many steps, its eigenvalues influence gradient growth or decay.</div><div class="dims">Shape: (hidden_units, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">diag(1−h<sub>t</sub><sup>2</sup>)</div><div class="meaning">Derivative of tanh. If hidden values saturate, gradients vanish; if they stay near zero, gradients are preserved better.</div><div class="dims">Shape: (hidden_units, hidden_units)</div></div>
+                    <div class="eq-term-item"><div class="symbol">∂L/∂h<sub>t</sub></div><div class="meaning">Gradient signal at the current time step. It must pass through the recurrent path to update earlier states.</div><div class="dims">Shape: (batch_size, hidden_units)</div></div>
+                </div>
+
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted); background: #e0f2fe; padding:0.8rem; border-radius: var(--radius-sm);">
+                    💡 <strong>Key insight:</strong> Vanilla RNNs learn by carrying gradients through the same hidden-to-hidden matrix repeatedly, so tuning hidden size, activation, and gradient clipping is essential for stability.
+                </div>
+            </div>
+
+            <div class="card-grid" style="margin-top:1rem;">
+                <div class="card"><div class="card-icon">🔍</div><h3>RNN Update Function</h3><p class="card-desc">A single hidden state update blends current input and previous hidden state using a nonlinear activation.</p><div class="tip-box"><span class="box-icon">💡</span>Because the same weights are reused across time, RNNs can model sequence dynamics with a compact parameter set.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Recurrent Connection</h3><p class="card-desc">The recurrent weight matrix uses h<sub>t-1</sub> to carry information forward. It is the source of temporal memory.</p><div class="tip-box"><span class="box-icon">💡</span>Maintain moderate hidden sizes to avoid exploding or vanishing gradients over long sequences.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Training / Process -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-training">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Process Hyperparameters</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">These settings govern how the RNN learns across time and how quickly it adapts to sequence patterns.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎯</div><h3>Learning Rate</h3><p class="card-desc">Determines how large each weight update is. Too high destabilizes training; too low stalls learning.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.optimizers <span class="kw">import</span> Adam<br>optimizer = Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>)</div><div class="good-box"><span class="box-icon">✅</span>Adam with 0.001 is a strong default for vanilla RNNs.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>Batch Size</h3><p class="card-desc">Controls gradient estimation noise. Smaller batches often help generalization for sequence tasks.</p><div class="code-snippet">model.fit(X, y, <span class="fn">batch_size</span>=<span class="num">32</span>)</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Epochs</h3><p class="card-desc">Number of full passes over the dataset. Monitor validation to stop before overfitting.</p><div class="code-snippet">model.fit(X, y, <span class="fn">epochs</span>=<span class="num">100</span>)</div><div class="warn-box"><span class="box-icon">⚠️</span>Vanilla RNNs can memorize quickly; use validation metrics to stop early.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>Optimizer Choice</h3><p class="card-desc">Adam is the default for most RNNs, while RMSprop can help with nonstationary sequence data.</p><div class="code-snippet"><span class="cm"># Adam: default</span><br>model.compile(<span class="fn">optimizer</span>=<span class="str">'adam'</span>)<br><span class="cm"># RMSprop: good for sequential learning</span><br>model.compile(<span class="fn">optimizer</span>=<span class="str">'rmsprop'</span>)</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Regularization / Tuning -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-regularization">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">Use these techniques to improve generalization and stabilize recurrent gradient flow.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎲</div><h3>Dropout (Input)</h3><p class="card-desc">Drops inputs during training to prevent over-reliance on any single feature.</p><div class="code-snippet">SimpleRNN(<span class="num">128</span>, <span class="fn">dropout</span>=<span class="num">0.2</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Apply 0.1–0.3 input dropout to reduce overfitting while preserving signal.</div></div>
+                <div class="card"><div class="card-icon">🔁</div><h3>Recurrent Dropout</h3><p class="card-desc">Drops the recurrent state updates, which is more aggressive but can help with overfitting across time.</p><div class="code-snippet">SimpleRNN(<span class="num">128</span>, <span class="fn">recurrent_dropout</span>=<span class="num">0.2</span>)</div><div class="warn-box"><span class="box-icon">⚠️</span>Use cautiously — too much recurrent dropout can wash out long-term dependencies.</div></div>
+                <div class="card"><div class="card-icon">⏳</div><h3>Gradient Clipping</h3><p class="card-desc">Limits gradient magnitude to prevent exploding gradients in long sequences.</p><div class="code-snippet">optimizer = Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>, <span class="fn">clipnorm</span>=<span class="num">1.0</span>)</div></div>
+                <div class="card"><div class="card-icon">📉</div><h3>Early Stopping</h3><p class="card-desc">Halts training once validation metrics stop improving, preventing overfitting.</p><div class="code-snippet"><span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> EarlyStopping<br>EarlyStopping(<span class="fn">monitor</span>=<span class="str">'val_loss'</span>, <span class="fn">patience</span>=<span class="num">8</span>, <span class="fn">restore_best_weights</span>=<span class="kw">True</span>)</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Full Code Example -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-full-code">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">💻 Full Code – Synthetic Sequence Forecasting with RNN</h2>
+            <p style="color:var(--text-light);margin-bottom:1rem;">A runnable example using a vanilla SimpleRNN model. Key hyperparameters are annotated with numbers matching the cards above.</p>
+            <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Vanilla RNN sequence forecasting – all hyperparameters labeled."""</span>
+
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> MinMaxScaler
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> tensorflow.keras.models <span class="kw">import</span> Sequential
+<span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> SimpleRNN, Dense
+<span class="kw">from</span> tensorflow.keras.optimizers <span class="kw">import</span> Adam
+<span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> EarlyStopping
+
+<span class="cm"># ── Generate synthetic time-series data ──</span>
+np.random.seed(<span class="num">42</span>)
+t = np.arange(<span class="num">1500</span>)
+series = np.sin(0.04 * t) + 0.3 * np.sin(0.12 * t) + np.random.normal(<span class="num">0</span>, <span class="num">0.15</span>, t.shape)
+
+<span class="cm"># ── ⑦ Sequence length / time steps ──</span>
+<span class="anno">TIME_STEPS</span> = <span class="num">30</span>
+
+<span class="kw">def</span> <span class="fn">create_sequences</span>(data, time_steps=TIME_STEPS):
+    X, y = [], []
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(data) - time_steps):
+        X.append(data[i:i+time_steps])
+        y.append(data[i+time_steps])
+    <span class="kw">return</span> np.array(X)[..., <span class="num">np.newaxis</span>], np.array(y)
+
+X, y = create_sequences(series)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="num">0.2</span>, shuffle=<span class="kw">False</span>)
+
+<span class="cm"># ── Build RNN model ──</span>
+model = Sequential()
+model.add(SimpleRNN(
+    <span class="anno">units</span>=<span class="num">128</span>,                        <span class="cm"># ① Hidden units</span>
+    <span class="anno">activation</span>=<span class="str">'tanh'</span>,                     <span class="cm"># ⑧ Activation function</span>
+    <span class="anno">dropout</span>=<span class="num">0.2</span>,                       <span class="cm"># ⑥ Input dropout</span>
+    <span class="anno">recurrent_dropout</span>=<span class="num">0.2</span>,               <span class="cm"># ⑥ Recurrent dropout</span>
+    <span class="anno">input_shape</span>=(TIME_STEPS, <span class="num">1</span>)            <span class="cm"># ⑦ Sequence length</span>
+))
+model.add(Dense(<span class="num">1</span>))  <span class="cm"># output prediction</span>
+
+<span class="cm"># ── Optimizer, learning rate, loss ──</span>
+<span class="anno">optimizer</span> = Adam(<span class="fn">learning_rate</span>=<span class="num">0.001</span>, <span class="fn">clipnorm</span>=<span class="num">1.0</span>)  <span class="cm"># ③ LR and gradient clipping</span>
+model.compile(<span class="anno">optimizer</span>=optimizer, <span class="anno">loss</span>=<span class="str">'mse'</span>)
+
+<span class="cm"># ── Callbacks ──</span>
+early_stop = EarlyStopping(<span class="fn">monitor</span>=<span class="str">'val_loss'</span>, <span class="fn">patience</span>=<span class="num">10</span>, <span class="fn">restore_best_weights</span>=<span class="kw">True</span>)
+
+<span class="cm"># ── Train ──</span>
+history = model.fit(
+    X_train, y_train,
+    <span class="anno">batch_size</span>=<span class="num">32</span>,                        <span class="cm"># ④ Batch size</span>
+    <span class="anno">epochs</span>=<span class="num">80</span>,                          <span class="cm"># ⑤ Epochs</span>
+    <span class="anno">validation_split</span>=<span class="num">0.15</span>,
+    <span class="anno">callbacks</span>=[early_stop],
+    <span class="anno">verbose</span>=<span class="num">1</span>
+)
+
+<span class="cm"># ── Evaluate ──</span>
+test_loss = model.evaluate(X_test, y_test, verbose=<span class="num">0</span>)
+<span class="kw">print</span>(<span class="str">f"📊 Test MSE: {test_loss:.6f}"</span>)
+            </div>
+            <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);text-align:center;">⬆️ Copy &amp; paste into a <code>.py</code> file or Jupyter notebook. All ⑩ hyperparameters are labeled.</p>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Summary & Comparison -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-summary">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead><tr><th>#</th><th>Hyperparameter</th><th>Purpose</th><th>Typical Range / Values</th></tr></thead>
+                    <tbody>
+                        <tr><td>①</td><td><strong>RNN Units</strong></td><td>Model capacity and temporal memory size</td><td>32, 64, 128, 256</td></tr>
+                        <tr><td>②</td><td><strong>Number of Layers</strong></td><td>Depth of sequence modeling</td><td>1–2 for vanilla RNNs</td></tr>
+                        <tr><td>③</td><td><strong>Learning Rate</strong></td><td>Step size for optimization</td><td>1e-4 to 1e-2</td></tr>
+                        <tr><td>④</td><td><strong>Batch Size</strong></td><td>Gradient stability vs speed</td><td>16, 32, 64</td></tr>
+                        <tr><td>⑤</td><td><strong>Epochs</strong></td><td>Amount of training time</td><td>20–100</td></tr>
+                        <tr><td>⑥</td><td><strong>Dropout</strong></td><td>Regularize input or recurrent updates</td><td>0.1–0.3</td></tr>
+                        <tr><td>⑦</td><td><strong>Sequence Length</strong></td><td>Temporal context window</td><td>10–50</td></tr>
+                        <tr><td>⑧</td><td><strong>Activation</strong></td><td>Hidden state nonlinearity</td><td>tanh, relu</td></tr>
+                        <tr><td>⑨</td><td><strong>Optimizer</strong></td><td>Weight update strategy</td><td>Adam, RMSprop, SGD</td></tr>
+                        <tr><td>⑩</td><td><strong>Loss Function</strong></td><td>What the model optimizes</td><td>MSE, Crossentropy</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card params"><h4>🧠 Learned Parameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Discovered automatically during training</p><ul><li>✅ Weight matrices (W, U, V)</li><li>✅ Bias vectors</li><li>✅ Output layer parameters</li><li>📌 <em>Set by backpropagation</em></li></ul></div>
+                <div class="comparison-card hyperparams"><h4>⚙️ Hyperparameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Set manually before training begins</p><ul><li>🔧 Learning rate, batch size, epochs</li><li>🔧 Hidden units, layers, dropout</li><li>🔧 Optimizer, activation, sequence length</li><li>📌 <em>Chosen by the practitioner</em></li></ul></div>
+            </div>
+            <div class="baseline-card">
+                <h3>🚀 Common Starting Configuration</h3><p style="opacity:0.85;margin-bottom:1rem;">Use these defaults as your first experiment baseline:</p>
+                <div class="config-grid">
+                    <div class="config-item"><strong>128</strong><span>① RNN Units</span></div><div class="config-item"><strong>1</strong><span>② Layers</span></div><div class="config-item"><strong>0.001</strong><span>③ Learning Rate</span></div><div class="config-item"><strong>32</strong><span>④ Batch Size</span></div><div class="config-item"><strong>50</strong><span>⑤ Epochs (max)</span></div><div class="config-item"><strong>0.2</strong><span>⑥ Dropout</span></div><div class="config-item"><strong>30</strong><span>⑦ Time Steps</span></div><div class="config-item"><strong>tanh</strong><span>⑧ Activation</span></div><div class="config-item"><strong>Adam</strong><span>⑨ Optimizer</span></div><div class="config-item"><strong>MSE</strong><span>⑩ Loss (regression)</span></div>
+                </div>
+                <p style="margin-top:1rem;font-size:0.82rem;opacity:0.7;">🔬 Tune from here: first adjust learning rate, then hidden size and sequence length, then dropout.</p>
+            </div>
+            <div class="summary-table-wrap" style="margin-top:1.5rem;">
+                <table class="summary-table">
+                    <thead><tr><th>Feature</th><th>RNN</th><th>LSTM</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gates</td><td>1 (implicit via tanh)</td><td>3 (forget, input, output)</td></tr>
+                        <tr><td>Parameters</td><td>Fewer</td><td>More</td></tr>
+                        <tr><td>Training Speed</td><td>⚡ Faster</td><td>🐢 Slower</td></tr>
+                        <tr><td>Memory Usage</td><td>Lower</td><td>Higher</td></tr>
+                        <tr><td>Best For</td><td>Short sequences, lightweight tasks</td><td>Long sequences, complex dependencies</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+    <script>
+        function handleImageFallback() {
+            const img = document.getElementById('infographicImg');
+            const fallback = document.getElementById('infographicFallback');
+            if (img && fallback) { img.style.display = 'none'; fallback.style.display = 'block'; }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const img = document.getElementById('infographicImg');
+            if (img && !img.complete) {
+                setTimeout(() => { if (!img.complete || img.naturalWidth === 0) handleImageFallback(); }, 3000);
+            } else if (img && img.naturalWidth === 0) { handleImageFallback(); }
+        });
+        const tabNav = document.getElementById('tabNav');
+        const tabBtns = tabNav.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const targetPanel = document.getElementById('tab-' + targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.style.animation = 'none';
+                    targetPanel.offsetHeight;
+                    targetPanel.style.animation = 'fadeSlideIn 0.4s ease';
+                }
+                if (window.innerWidth < 768) { targetPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+        const backToTopBtn = document.getElementById('backToTop');
+        function toggleBackToTop() { if (window.scrollY > 500) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible'); }
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        toggleBackToTop();
+        const infographicImg = document.getElementById('infographicImg');
+        if (infographicImg) {
+            infographicImg.addEventListener('load', () => { const fallback = document.getElementById('infographicFallback'); if (fallback) fallback.style.display = 'none'; infographicImg.style.display = 'block'; });
+            infographicImg.addEventListener('error', handleImageFallback);
+        }
+        console.log('✅ RNN Hyperparameters Interactive Guide ready!');
+    </script>
+</body>
+</html>

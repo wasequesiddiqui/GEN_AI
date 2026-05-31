@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generative vs Discriminative Models – Study Guide</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8f6f3;
+      color: #2d2d2d;
+      line-height: 1.7;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      background: linear-gradient(135deg, #d4e4f7 0%, #e8dff5 50%, #fce4d6 100%);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: 0;
+      width: 100%; height: 60px;
+      background: #f8f6f3;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: #1a1a2e;
+      margin-bottom: 0.4rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #6c5ce7;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .hero-tags span {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      padding: 0.25rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    /* ── TABBED NAV (sticky) ── */
+    .tab-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      flex-wrap: wrap;
+      background: #fff;
+      border-bottom: 2px solid #e2dcd3;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 0.85rem 1.3rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #666;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #333; background: #f5f2ed; }
+    .tab-btn.active {
+      color: #6c5ce7;
+      border-bottom-color: #6c5ce7;
+      font-weight: 600;
+    }
+
+    /* ── TAB CONTENT ── */
+    .tab-content {
+      display: none;
+      padding: 2.5rem 1.5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      animation: fadeSlide 0.4s ease;
+    }
+    .tab-content.active { display: block; }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-content h2 {
+      font-size: 1.7rem;
+      margin-bottom: 1.2rem;
+      color: #2d1b69;
+    }
+    .tab-content h3 {
+      font-size: 1.2rem;
+      margin: 1.5rem 0 0.6rem;
+      color: #3d2a7a;
+    }
+    .tab-content p { margin-bottom: 0.9rem; color: #444; }
+    .tab-content ul, .tab-content ol { margin: 0.5rem 0 1rem 1.5rem; color: #444; }
+    .tab-content li { margin-bottom: 0.3rem; }
+
+    /* ── COMPARISON TABLE ── */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.9rem;
+    }
+    .comp-table th, .comp-table td {
+      padding: 0.7rem 1rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    .comp-table th {
+      background: #6c5ce7;
+      color: #fff;
+      font-weight: 600;
+    }
+    .comp-table tr:nth-child(even) { background: #f9f7ff; }
+
+    /* ── GLOSSARY CARDS ── */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.9rem;
+      margin: 1.2rem 0;
+    }
+    .glossary-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid #a29bfe;
+      transition: transform 0.2s;
+    }
+    .glossary-card:hover { transform: translateY(-2px); }
+    .glossary-card strong {
+      display: block;
+      font-size: 0.9rem;
+      color: #2d1b69;
+      margin-bottom: 0.25rem;
+    }
+    .glossary-card span {
+      font-size: 0.82rem;
+      color: #555;
+    }
+
+    /* ── PIPELINE STEPPER ── */
+    .stepper { margin: 1.5rem 0; }
+    .step {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 0.7rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.3rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #2d1b69;
+      transition: background 0.2s;
+    }
+    .step-header:hover { background: #f5f0ff; }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #a29bfe;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step-icon { font-size: 1.2rem; }
+    .step-arrow {
+      margin-left: auto;
+      transition: transform 0.3s;
+      font-size: 0.8rem;
+      color: #999;
+    }
+    .step.open .step-arrow { transform: rotate(180deg); }
+    .step-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      padding: 0 1.3rem;
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .step.open .step-body {
+      max-height: 600px;
+      padding: 0 1.3rem 1.2rem;
+    }
+
+    /* ── INTERACTIVE DEMO ── */
+    .demo-container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.8rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      margin: 1.5rem 0;
+    }
+    .demo-container h3 { margin-top: 0; }
+    .demo-canvas-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+    }
+    .demo-canvas {
+      background: #fafafa;
+      border-radius: 12px;
+      border: 1px solid #e8e0d6;
+      position: relative;
+    }
+    .demo-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-width: 200px;
+    }
+    .demo-controls label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #444;
+    }
+    .demo-controls input[type="range"] {
+      width: 100%;
+      accent-color: #6c5ce7;
+    }
+    .demo-controls select, .demo-controls button {
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      cursor: pointer;
+    }
+    .demo-controls button {
+      background: #6c5ce7;
+      color: #fff;
+      border: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .demo-controls button:hover { background: #5a4bd1; }
+    .demo-output {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      background: #f5f0ff;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #333;
+      font-family: monospace;
+      text-align: center;
+    }
+
+    /* ── QUIZ ── */
+    .quiz-container { margin: 1.5rem 0; }
+    .quiz-progress {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 1.2rem;
+    }
+    .quiz-prog-dot {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: #e0d8cf;
+      transition: background 0.3s;
+    }
+    .quiz-prog-dot.correct { background: #00b894; }
+    .quiz-prog-dot.wrong { background: #e17055; }
+    .quiz-prog-dot.active { background: #6c5ce7; }
+
+    .quiz-question {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+    .quiz-q-text {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: #2d1b69;
+    }
+    .quiz-option {
+      display: block;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      border: 1.5px solid #e0d8cf;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    .quiz-option:hover { border-color: #a29bfe; background: #f9f7ff; }
+    .quiz-option.selected { border-color: #6c5ce7; background: #edeaff; }
+    .quiz-option.correct-answer { border-color: #00b894; background: #e6f9f4; }
+    .quiz-option.wrong-answer { border-color: #e17055; background: #fde8e4; }
+
+    .quiz-feedback {
+      margin-top: 0.8rem;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct { background: #e6f9f4; color: #006b54; }
+    .quiz-feedback.wrong { background: #fde8e4; color: #a04030; }
+
+    .quiz-nav {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      margin-top: 1.2rem;
+    }
+    .quiz-nav button {
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .quiz-nav button:disabled { opacity: 0.4; cursor: default; }
+    .btn-prev { background: #e0d8cf; color: #444; }
+    .btn-prev:hover:not(:disabled) { background: #d0c8bf; }
+    .btn-next { background: #6c5ce7; color: #fff; }
+    .btn-next:hover:not(:disabled) { background: #5a4bd1; }
+
+    .quiz-results {
+      text-align: center;
+      padding: 2rem;
+      display: none;
+    }
+    .quiz-results.show { display: block; }
+    .quiz-score {
+      font-size: 3rem;
+      font-family: 'Playfair Display', serif;
+      color: #2d1b69;
+    }
+    .quiz-grade {
+      font-size: 1.2rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .quiz-grade.pass { color: #00b894; }
+    .quiz-grade.fail { color: #e17055; }
+    .btn-retry {
+      padding: 0.7rem 2rem;
+      background: #6c5ce7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .btn-retry:hover { background: #5a4bd1; }
+
+    /* ── DIAGRAMS TAB ── */
+    .diagram-figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .diagram-figure img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #e8e0d6;
+    }
+    .diagram-figure figcaption {
+      margin-top: 0.7rem;
+      font-size: 0.9rem;
+      color: #555;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .diagram-figure h4 {
+      font-size: 1rem;
+      color: #2d1b69;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { padding: 2rem 1rem 1.8rem; }
+      .tab-btn { padding: 0.7rem 0.9rem; font-size: 0.78rem; }
+      .tab-content { padding: 1.5rem 1rem 2rem; }
+      .demo-canvas-wrap { flex-direction: column; }
+      .glossary-grid { grid-template-columns: 1fr; }
+      .comp-table { font-size: 0.78rem; }
+      .comp-table th, .comp-table td { padding: 0.4rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <span class="hero-badge">CGAI Exam Prep</span>
+  <h1>Generative vs Discriminative Models</h1>
+  <p style="color:#555;max-width:600px;margin:0 auto;font-size:1rem;">
+    A complete study guide comparing two fundamental paradigms in machine learning.
+  </p>
+  <div class="hero-tags">
+    <span>Generative Models</span>
+    <span>Discriminative Models</span>
+    <span>P(X,Y) vs P(Y|X)</span>
+    <span>Bayes' Rule</span>
+    <span>Classification</span>
+    <span>CGAI</span>
+  </div>
+</header>
+
+<!-- ═══ TABBED NAV ═══ -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn" data-tab="pipeline">Pipeline / Process</button>
+  <button class="tab-btn" data-tab="mechanism">Core Mechanism</button>
+  <button class="tab-btn" data-tab="architecture">Architecture</button>
+  <button class="tab-btn" data-tab="concepts">Key Concepts</button>
+  <button class="tab-btn" data-tab="diagrams">Diagrams</button>
+  <button class="tab-btn" data-tab="quiz">Quiz</button>
+</nav>
+
+<!-- ═══ OVERVIEW ═══ -->
+<section class="tab-content active" id="tab-overview">
+  <h2>📖 Overview</h2>
+  <p>
+    In machine learning, models can be broadly categorised into two families based on how they
+    approach the problem of learning from data: <strong>generative models</strong> and
+    <strong>discriminative models</strong>. They differ fundamentally in what probability
+    distribution they learn.
+  </p>
+
+  <h3>What Is a Generative Model?</h3>
+  <p>
+    A <strong>generative model</strong> learns the <em>joint probability distribution</em>
+    \( P(X, Y) \) — or \( P(X) \) in the unsupervised case. By modelling how data is actually
+    <em>generated</em>, it can <strong>produce new samples</strong> that resemble the training
+    data. Examples: Naive Bayes, Gaussian Mixture Models, GANs, VAEs, Autoregressive models.
+  </p>
+
+  <h3>What Is a Discriminative Model?</h3>
+  <p>
+    A <strong>discriminative model</strong> learns the <em>conditional probability distribution</em>
+    \( P(Y \mid X) \) — i.e., the decision boundary that separates classes. It directly models
+    how to <strong>discriminate</strong> between classes given the input. It cannot generate new
+    data. Examples: Logistic Regression, SVMs, Random Forests, Neural Network classifiers.
+  </p>
+
+  <h3>Comparison Table</h3>
+  <table class="comp-table">
+    <thead>
+      <tr><th>Property</th><th>Generative Model</th><th>Discriminative Model</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Learns</td><td>\( P(X, Y) \) or \( P(X) \)</td><td>\( P(Y \mid X) \)</td></tr>
+      <tr><td>Decision boundary</td><td>Implicit (via Bayes' rule)</td><td>Explicit</td></tr>
+      <tr><td>Can generate data?</td><td>✅ Yes</td><td>❌ No</td></tr>
+      <tr><td>Handles missing data?</td><td>✅ Naturally</td><td>❌ Requires imputation</td></tr>
+      <tr><td>Computational cost</td><td>Higher (models full distribution)</td><td>Lower (models boundary only)</td></tr>
+      <tr><td>Data efficiency</td><td>Good with less data (stronger assumptions)</td><td>Often needs more data</td></tr>
+      <tr><td>Typical accuracy (given enough data)</td><td>Slightly lower (asymptotically)</td><td>Often higher</td></tr>
+      <tr><td>Example models</td><td>Naive Bayes, GAN, VAE, HMM</td><td>Logistic Regression, SVM, NN</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Worked Example: Spam Classification</h3>
+  <p>
+    <strong>Generative approach:</strong> Model \( P(\text{email}, \text{spam}) \) — learn the
+    distribution of words in spam emails and in legitimate emails. To classify a new email,
+    use Bayes' rule to compute \( P(\text{spam} \mid \text{email}) \).
+  </p>
+  <p>
+    <strong>Discriminative approach:</strong> Directly model \( P(\text{spam} \mid \text{email}) \) —
+    learn the boundary that separates spam from non-spam based on word features, without modelling
+    how each class generates emails.
+  </p>
+</section>
+
+<!-- ═══ PIPELINE / PROCESS ═══ -->
+<section class="tab-content" id="tab-pipeline">
+  <h2>⚙️ Pipeline &amp; Process</h2>
+  <p>
+    Both generative and discriminative models follow a similar high-level pipeline, but the
+    internal steps differ significantly. Below is a side-by-side comparison.
+  </p>
+
+  <div class="stepper">
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-num">1</span>
+        <span class="step-icon">📊</span>
+        <span>Data Collection &amp; Preprocessing</span>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step-body">
+        <p><strong>Both:</strong> Collect labelled (or unlabelled) data. Clean, normalise, split into train/validation/test sets.</p>
+        <p><em>Generative nuance:</em> Can leverage unlabelled data more easily (semi-supervised learning).</p>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-num">2</span>
+        <span class="step-icon">🧮</span>
+        <span>Modelling Approach</span>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step-body">
+        <p><strong>Generative:</strong> Choose a family of distributions for \( P(X|Y) \) and a prior \( P(Y) \). E.g., Gaussian for features + Categorical for labels.</p>
+        <p><strong>Discriminative:</strong> Choose a functional form for the decision boundary. E.g., logistic function, decision tree, kernel function.</p>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-num">3</span>
+        <span class="step-icon">🏋️</span>
+        <span>Training (Parameter Estimation)</span>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step-body">
+        <p><strong>Generative:</strong> Maximise joint likelihood — fit \( P(X|Y) \) and \( P(Y) \) to the training data using MLE or MAP.</p>
+        <p><strong>Discriminative:</strong> Maximise conditional likelihood — fit \( P(Y|X) \) directly using methods like gradient descent, hinge loss, or cross-entropy.</p>
+      </div>
+    </div>
+    <!-- Step 4 -->
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-num">4</span>
+        <span class="step-icon">🔮</span>
+        <span>Inference / Prediction</span>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step-body">
+        <p><strong>Generative:</strong> Use Bayes' rule to compute \( P(Y|X) = \frac{P(X|Y)P(Y)}{P(X)} \). Predict the class with highest posterior.</p>
+        <p><strong>Discriminative:</strong> Directly evaluate \( P(Y|X) \) from the learned function. No need for Bayes' rule.</p>
+      </div>
+    </div>
+    <!-- Step 5 -->
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-num">5</span>
+        <span class="step-icon">🎨</span>
+        <span>Generation (Generative Only)</span>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step-body">
+        <p><strong>Generative only:</strong> Sample from \( P(X|Y) \) (or \( P(X) \) directly) to create entirely new data points — images, text, audio, etc.</p>
+        <p><strong>Discriminative:</strong> Cannot generate new data — it has no model of \( P(X) \).</p>
+      </div>
+    </div>
+    <!-- Step 6 -->
+    <div class="step">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-num">6</span>
+        <span class="step-icon">✅</span>
+        <span>Evaluation</span>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step-body">
+        <p><strong>Both:</strong> Evaluate on held-out test set using accuracy, precision, recall, F1, ROC-AUC.</p>
+        <p><em>Generative extra:</em> Also evaluate sample quality (FID, Inception Score, perplexity, log-likelihood on test data).</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Worked Example: Digit Classification (MNIST)</h3>
+  <p>
+    <strong>Generative (Naive Bayes):</strong> For each digit 0–9, learn a distribution over pixel
+    intensities \( P(\text{pixels} \mid \text{digit}) \). To classify, compute which digit's
+    distribution best explains the observed pixels. Also, sample new "digit-like" images from
+    each distribution.
+  </p>
+  <p>
+    <strong>Discriminative (Softmax Regression):</strong> Directly learn the decision boundaries
+    between the 10 digit classes using a softmax output. Given a new image, output the most
+    probable digit — but you cannot generate new digit images.
+  </p>
+</section>
+
+<!-- ═══ CORE MECHANISM ═══ -->
+<section class="tab-content" id="tab-mechanism">
+  <h2>🧪 Core Mechanism: Decision Boundaries &amp; Data Distributions</h2>
+  <p>
+    The fundamental difference lies in <strong>what probability is modelled</strong>. Use the
+    interactive demo below to see how generative and discriminative approaches learn differently
+    on a 2D toy dataset.
+  </p>
+
+  <div class="demo-container">
+    <h3>🎛️ Interactive Demo: Generative vs Discriminative Classification</h3>
+    <p style="font-size:0.85rem;color:#666;margin-bottom:1rem;">
+      Click points or adjust the slider to add noise — watch how each model's decision boundary changes.
+    </p>
+    <div class="demo-canvas-wrap">
+      <canvas id="demoCanvas" class="demo-canvas" width="400" height="400"></canvas>
+      <div class="demo-controls">
+        <label>🔀 Noise level: <span id="noiseVal">0.2</span>
+          <input type="range" id="noiseSlider" min="0.05" max="0.6" step="0.05" value="0.2">
+        </label>
+        <label>🎯 Model:
+          <select id="modelSelect">
+            <option value="generative">Generative (Gaussian NB)</option>
+            <option value="discriminative">Discriminative (Logistic Regression)</option>
+          </select>
+        </label>
+        <button onclick="resetDemo()">🔄 Regenerate Data</button>
+        <div class="demo-output" id="demoOutput">
+          Click the "Regenerate Data" button to start.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Mathematical Foundation</h3>
+  <p><strong>Generative:</strong> Models \( P(X, Y) = P(X \mid Y) P(Y) \). Prediction:</p>
+  <p style="text-align:center;font-size:1.1rem;margin:0.8rem 0;">
+    \( \hat{y} = \arg\max_y P(y \mid x) = \arg\max_y P(x \mid y) P(y) \)
+  </p>
+  <p><strong>Discriminative:</strong> Models \( P(Y \mid X) \) directly. Prediction:</p>
+  <p style="text-align:center;font-size:1.1rem;margin:0.8rem 0;">
+    \( \hat{y} = \arg\max_y P(y \mid x) \)
+  </p>
+
+  <h3>Key Insight</h3>
+  <p>
+    Generative models make <strong>stronger assumptions</strong> about the data distribution
+    (e.g., features are independent given the class — Naive Bayes assumption). This can be a
+    disadvantage when assumptions are wrong, but an advantage when <strong>data is scarce</strong>.
+    Discriminative models make <strong>fewer assumptions</strong> and often perform better with
+    abundant data.
+  </p>
+</section>
+
+<!-- ═══ ARCHITECTURE ═══ -->
+<section class="tab-content" id="tab-architecture">
+  <h2>🏗️ Architecture &amp; Components</h2>
+  <p>
+    The internal components of generative and discriminative models differ in structure and purpose.
+  </p>
+
+  <h3>Generative Model Architecture</h3>
+  <ul>
+    <li><strong>Prior \( P(Y) \):</strong> Probability distribution over classes (e.g., uniform, class-frequency based).</li>
+    <li><strong>Likelihood \( P(X|Y) \):</strong> Class-conditional distribution — often factorised (Naive Bayes) or parametric (Gaussian).</li>
+    <li><strong>Evidence \( P(X) \):</strong> Marginal likelihood — sum over all classes of \( P(X|Y)P(Y) \). Used for normalisation.</li>
+    <li><strong>Inference:</strong> Bayes' rule combines the above to compute the posterior.</li>
+    <li><strong>Sampler:</strong> For generation, sample from \( P(X|Y) \) (or the unconditional \( P(X) \)) to create new data.</li>
+  </ul>
+
+  <h3>Discriminative Model Architecture</h3>
+  <ul>
+    <li><strong>Feature extractor:</strong> Transforms raw input into a representation (e.g., hidden layers in a neural network).</li>
+    <li><strong>Decision function:</strong> Maps features to class scores or probabilities (e.g., linear + softmax, SVM hinge).</li>
+    <li><strong>Loss function:</strong> Measures prediction error (e.g., cross-entropy, hinge loss).</li>
+    <li><strong>Optimiser:</strong> Updates parameters to minimise the loss (e.g., SGD, Adam).</li>
+    <li><strong>No generative path:</strong> There is no sampler — the model cannot produce new inputs.</li>
+  </ul>
+
+  <h3>Comparison: Naive Bayes vs Logistic Regression</h3>
+  <table class="comp-table">
+    <thead>
+      <tr><th>Component</th><th>Naive Bayes (Generative)</th><th>Logistic Regression (Discriminative)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Learns</td><td>\( P(X|Y) \) and \( P(Y) \)</td><td>\( P(Y|X) \) directly</td></tr>
+      <tr><td>Parameters</td><td>Class means, variances, priors</td><td>Weight vector \( w \), bias \( b \)</td></tr>
+      <tr><td>Optimisation</td><td>Closed-form MLE</td><td>Iterative (gradient descent)</td></tr>
+      <tr><td>Assumption</td><td>Features independent given class</td><td>Linear decision boundary</td></tr>
+      <tr><td>Convergence</td><td>\( O(\log n) \) — very fast</td><td>\( O(n) \) per epoch</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Worked Example: Text Classification</h3>
+  <p>
+    <strong>Generative (Naive Bayes):</strong> Learns \( P(\text{word} \mid \text{class}) \) for
+    every word — e.g., 90% of "free" appears in spam. Stores these probabilities in a lookup table.
+  </p>
+  <p>
+    <strong>Discriminative (Logistic Regression):</strong> Learns a weight for each word —
+    positive weight pushes toward spam, negative toward non-spam. The sum of weighted word counts
+    gives the log-odds of spam.
+  </p>
+</section>
+
+<!-- ═══ KEY CONCEPTS ═══ -->
+<section class="tab-content" id="tab-concepts">
+  <h2>🔑 Key Concepts &amp; Exam Must-Knows</h2>
+
+  <h3>Core Concepts</h3>
+  <ul>
+    <li><strong>Joint vs Conditional Probability:</strong> Generative = \( P(X,Y) \); Discriminative = \( P(Y|X) \).</li>
+    <li><strong>Bayes' Rule:</strong> \( P(Y|X) = \frac{P(X|Y)P(Y)}{P(X)} \) — the bridge between generative and discriminative.</li>
+    <li><strong>Decision Boundary:</strong> Discriminative models learn it explicitly; generative models induce it implicitly.</li>
+    <li><strong>MLE (Maximum Likelihood Estimation):</strong> Used by both to find parameters that best explain the data.</li>
+    <li><strong>Overfitting &amp; Regularisation:</strong> Generative models can overfit less with small data (stronger inductive bias).</li>
+    <li><strong>Asymptotic Accuracy:</strong> Given infinite data, discriminative models often (but not always) achieve lower error.</li>
+  </ul>
+
+  <h3>Challenges &amp; Trade-offs</h3>
+  <ul>
+    <li><strong>Computational cost:</strong> Generative models are more expensive — they model the full joint distribution.</li>
+    <li><strong>Missing data:</strong> Generative models handle it naturally (marginalise over missing features); discriminative models typically don't.</li>
+    <li><strong>Semi-supervised learning:</strong> Generative models can use unlabelled data to improve the estimate of \( P(X) \).</li>
+    <li><strong>Outlier detection:</strong> Generative models can flag outliers (low \( P(X) \)); discriminative models cannot easily do this.</li>
+  </ul>
+
+  <h3>Exam Must-Knows (CGAI)</h3>
+  <ul>
+    <li>Be able to <strong>compare and contrast</strong> generative vs discriminative models across multiple dimensions.</li>
+    <li>Know the <strong>mathematical formulations</strong>: \( P(X,Y) \) vs \( P(Y|X) \).</li>
+    <li>Memorise <strong>example model types</strong> for each category.</li>
+    <li>Understand <strong>when to use each</strong>: generation tasks → generative; pure classification with abundant data → discriminative.</li>
+    <li>Know the <strong>Naive Bayes assumption</strong> and why it's "naive".</li>
+    <li>Understand how <strong>Bayes' rule connects</strong> the two paradigms.</li>
+    <li>Be aware of <strong>modern generative models</strong>: GANs, VAEs, autoregressive models, diffusion models.</li>
+  </ul>
+
+  <h3>Glossary / Key-Term Cards</h3>
+  <div class="glossary-grid">
+    <div class="glossary-card"><strong>Joint Distribution</strong><span>\( P(X,Y) \) — probability of both input and output occurring together.</span></div>
+    <div class="glossary-card"><strong>Conditional Distribution</strong><span>\( P(Y|X) \) — probability of output given input.</span></div>
+    <div class="glossary-card"><strong>Bayes' Rule</strong><span>Formula relating joint and conditional probabilities: \( P(Y|X) \propto P(X|Y)P(Y) \).</span></div>
+    <div class="glossary-card"><strong>MLE</strong><span>Find parameters that maximise the likelihood of observed data.</span></div>
+    <div class="glossary-card"><strong>Naive Bayes</strong><span>Generative classifier assuming feature independence given class.</span></div>
+    <div class="glossary-card"><strong>Logistic Regression</strong><span>Discriminative linear model for binary classification.</span></div>
+    <div class="glossary-card"><strong>GAN</strong><span>Generative Adversarial Network — two networks compete to generate realistic data.</span></div>
+    <div class="glossary-card"><strong>VAE</strong><span>Variational Autoencoder — learns latent representation for generation.</span></div>
+    <div class="glossary-card"><strong>Decision Boundary</strong><span>The surface separating different classes in input space.</span></div>
+    <div class="glossary-card"><strong>Posterior</strong><span>\( P(Y|X) \) — the probability of a class after seeing the data.</span></div>
+  </div>
+</section>
+
+<!-- ═══ DIAGRAMS ═══ -->
+<section class="tab-content" id="tab-diagrams">
+  <h2>📊 Diagrams &amp; Reference Images</h2>
+
+  <figure class="diagram-figure">
+    <h4>Figure 1: Generative vs Discriminative — Conceptual Comparison</h4>
+    <img src="Generative_Discriminative.png" alt="Generative vs Discriminative Models Comparison Diagram">
+    <figcaption>
+      This diagram illustrates the fundamental difference between generative models (which learn
+      the joint distribution \( P(X,Y) \) and can generate new data points) and discriminative
+      models (which learn the conditional distribution \( P(Y|X) \) and draw decision boundaries
+      between classes). The left side shows how generative models capture the shape of each
+      class's distribution, while the right side shows discriminative models focusing solely on
+      the boundary that separates classes. <strong>Look for:</strong> the contrast between
+      density modelling (generative) vs boundary fitting (discriminative), and the list of
+      example models for each category.
+    </figcaption>
+  </figure>
+
+  <figure class="diagram-figure">
+    <h4>Figure 2: Decision Boundary Visualisation on 2D Data</h4>
+    <img src="decision_boundary_comparison.svg" alt="Decision Boundary Comparison - Generative vs Discriminative">
+    <figcaption>
+      This infographic shows two classifiers trained on the same 2D dataset. The generative
+      classifier (left) models each class as a Gaussian distribution, producing elliptical
+      decision boundaries. The discriminative classifier (right) directly learns a linear
+      decision boundary without modelling the underlying class distributions.
+      <strong>Look for:</strong> how the generative model's boundary is influenced by the
+      variance of each class, whereas the discriminative model's boundary only cares about
+      the separation between classes.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ═══ QUIZ ═══ -->
+<section class="tab-content" id="tab-quiz">
+  <h2>🧠 Practice Quiz</h2>
+  <p>Test your understanding of generative vs discriminative models. 10 questions with instant feedback.</p>
+
+  <div class="quiz-container" id="quizContainer">
+    <div class="quiz-progress" id="quizProgress"></div>
+
+    <div class="quiz-question" id="quizQuestionArea">
+      <div class="quiz-q-text" id="quizQText"></div>
+      <div id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn-prev" id="quizPrev" onclick="prevQuestion()" disabled>← Previous</button>
+      <button class="btn-next" id="quizNext" onclick="nextQuestion()">Next →</button>
+    </div>
+
+    <div class="quiz-results" id="quizResults">
+      <div class="quiz-score" id="quizScore">0/10</div>
+      <div class="quiz-grade" id="quizGrade"></div>
+      <p style="color:#666;margin-bottom:1rem;" id="quizResultMsg"></p>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 Retry Quiz</button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ JAVASCRIPT ════════════════════ -->
+<script>
+  // ─── TAB SWITCHING ───
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ─── STEPPER TOGGLE ───
+  function toggleStep(header) {
+    const step = header.parentElement;
+    step.classList.toggle('open');
+  }
+
+  // ─── INTERACTIVE DEMO ───
+  const canvas = document.getElementById('demoCanvas');
+  const ctx = canvas.getContext('2d');
+  let demoData = null;
+  let decisionBoundary = null;
+
+  function generateData(noiseLevel) {
+    const points = [];
+    const class0Center = [150, 150];
+    const class1Center = [250, 250];
+    const spread = 60 + noiseLevel * 300;
+
+    for (let i = 0; i < 40; i++) {
+      let x, y, label;
+      // Class 0
+      x = class0Center[0] + (Math.random() - 0.5) * spread;
+      y = class0Center[1] + (Math.random() - 0.5) * spread;
+      points.push({ x, y, label: 0 });
+      // Class 1
+      x = class1Center[0] + (Math.random() - 0.5) * spread;
+      y = class1Center[1] + (Math.random() - 0.5) * spread;
+      points.push({ x, y, label: 1 });
+    }
+    return points;
+  }
+
+  function computeDecisionBoundary(points, modelType) {
+    // Simple generative: Gaussian Naive Bayes
+    if (modelType === 'generative') {
+      const c0 = points.filter(p => p.label === 0);
+      const c1 = points.filter(p => p.label === 1);
+      const mu0 = [c0.reduce((s,p) => s+p.x,0)/c0.length, c0.reduce((s,p) => s+p.y,0)/c0.length];
+      const mu1 = [c1.reduce((s,p) => s+p.x,0)/c1.length, c1.reduce((s,p) => s+p.y,0)/c1.length];
+      const var0 = c0.reduce((s,p) => s + (p.x-mu0[0])**2 + (p.y-mu0[1])**2, 0) / c0.length;
+      const var1 = c1.reduce((s,p) => s + (p.x-mu1[0])**2 + (p.y-mu1[1])**2, 0) / c1.length;
+      const sharedVar = (var0 + var1) / 2;
+      return { type: 'generative', mu0, mu1, var: sharedVar };
+    }
+    // Simple discriminative: approximates logistic regression (linear boundary via least squares)
+    if (modelType === 'discriminative') {
+      let sumX=0, sumY=0, sumXy=0, sumYy=0, sumXX=0, sumYY=0, n=points.length;
+      points.forEach(p => {
+        const x = p.x, y = p.y, t = p.label;
+        sumX += x; sumY += y; sumXy += x*t; sumYy += y*t; sumXX += x*x; sumYY += y*y;
+      });
+      const mx = sumX/n, my = sumY/n;
+      const sx = Math.sqrt(sumXX/n - mx*mx) || 1;
+      const sy = Math.sqrt(sumYY/n - my*my) || 1;
+      const c = (sumXy/n - mx*0.5) / (sx*sx);
+      const d = (sumYy/n - my*0.5) / (sy*sy);
+      return { type: 'discriminative', slope: -c/(d||0.001), intercept: (0.5 - c*mx - d*my)/(d||0.001) * sy + my };
+    }
+    return null;
+  }
+
+  function drawDemo() {
+    const modelType = document.getElementById('modelSelect').value;
+    ctx.clearRect(0, 0, 400, 400);
+
+    // Background grid
+    ctx.strokeStyle = '#f0ece6';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i <= 400; i += 40) {
+      ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,400); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(400,i); ctx.stroke();
+    }
+
+    if (!demoData) { demoData = generateData(0.2); }
+
+    const boundary = computeDecisionBoundary(demoData, modelType);
+
+    // Draw decision boundary
+    ctx.save();
+    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = modelType === 'generative' ? '#00b894' : '#e17055';
+
+    if (boundary.type === 'generative') {
+      // Elliptical boundary: contour where P(x|y=0)P(y=0) = P(x|y=1)P(y=1)
+      const { mu0, mu1, var: v } = boundary;
+      ctx.beginPath();
+      for (let i = 0; i <= 360; i++) {
+        const a = Math.atan2(mu1[1]-mu0[1], mu1[0]-mu0[0]);
+        const dist = Math.sqrt((mu1[0]-mu0[0])**2 + (mu1[1]-mu0[1])**2)/2;
+        const cx = (mu0[0]+mu1[0])/2, cy = (mu0[1]+mu1[1])/2;
+        const r = Math.sqrt(v * 4 + dist*dist);
+        const angle = i * Math.PI / 180;
+        // Draw ellipse
+        const ex = cx + r * Math.cos(angle);
+        const ey = cy + r * Math.sin(angle);
+        i === 0 ? ctx.moveTo(ex, ey) : ctx.lineTo(ex, ey);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      // Fill generative region lightly
+      ctx.fillStyle = 'rgba(0, 184, 148, 0.04)';
+      ctx.fill();
+      // Draw class distribution ellipses
+      ctx.setLineDash([3, 6]);
+      ctx.strokeStyle = '#74b9ff';
+      ctx.lineWidth = 1;
+      [mu0, mu1].forEach((mu, idx) => {
+        ctx.beginPath();
+        for (let i = 0; i <= 360; i++) {
+          const a = i * Math.PI / 180;
+          const rx = Math.sqrt(v), ry = Math.sqrt(v);
+          const ex = mu[0] + rx * Math.cos(a);
+          const ey = mu[1] + ry * Math.sin(a);
+          i === 0 ? ctx.moveTo(ex, ey) : ctx.lineTo(ex, ey);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = idx === 0 ? '#74b9ff' : '#fd79a8';
+        ctx.stroke();
+      });
+    } else {
+      // Linear boundary
+      const { slope, intercept } = boundary;
+      ctx.beginPath();
+      ctx.moveTo(0, slope * 0 + intercept);
+      ctx.lineTo(400, slope * 400 + intercept);
+      ctx.stroke();
+      // Fill regions
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(225, 112, 85, 0.04)';
+      ctx.fillRect(0, 0, 400, intercept);
+      ctx.fillStyle = 'rgba(0, 184, 148, 0.04)';
+      ctx.fillRect(0, intercept, 400, 400-intercept);
+    }
+    ctx.restore();
+
+    // Draw data points
+    demoData.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = p.label === 0 ? '#74b9ff' : '#fd79a8';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
+
+    // Legend
+    ctx.fillStyle = '#74b9ff';
+    ctx.fillRect(16, 16, 12, 12);
+    ctx.fillStyle = '#333';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText('Class A', 32, 27);
+    ctx.fillStyle = '#fd79a8';
+    ctx.fillRect(100, 16, 12, 12);
+    ctx.fillStyle = '#333';
+    ctx.fillText('Class B', 116, 27);
+
+    // Model label
+    ctx.fillStyle = '#666';
+    ctx.font = 'italic 11px Inter, sans-serif';
+    ctx.fillText(modelType === 'generative' ? 'Generative (elliptical boundary)' : 'Discriminative (linear boundary)', 200, 27);
+
+    // Update output
+    const correct = demoData.filter(p => {
+      if (boundary.type === 'generative') {
+        const d0 = ((p.x-boundary.mu0[0])**2 + (p.y-boundary.mu0[1])**2) / boundary.var;
+        const d1 = ((p.x-boundary.mu1[0])**2 + (p.y-boundary.mu1[1])**2) / boundary.var;
+        return (d0 < d1 && p.label === 0) || (d1 <= d0 && p.label === 1);
+      } else {
+        const pred = p.y > boundary.slope * p.x + boundary.intercept ? 1 : 0;
+        return pred === p.label;
+      }
+    }).length;
+    const acc = (correct / demoData.length * 100).toFixed(1);
+    document.getElementById('demoOutput').textContent =
+      `📊 Accuracy: ${acc}% (${correct}/${demoData.length}) | Model: ${modelType === 'generative' ? 'Gaussian Naive Bayes' : 'Logistic Regression'}`;
+  }
+
+  function resetDemo() {
+    const noise = parseFloat(document.getElementById('noiseSlider').value);
+    demoData = generateData(noise);
+    drawDemo();
+  }
+
+  document.getElementById('noiseSlider').addEventListener('input', function() {
+    document.getElementById('noiseVal').textContent = this.value;
+    resetDemo();
+  });
+  document.getElementById('modelSelect').addEventListener('change', drawDemo);
+
+  // Initial demo render
+  resetDemo();
+
+  // ─── QUIZ ───
+  const quizData = [
+    {
+      q: 'What probability distribution does a generative model learn?',
+      opts: ['P(Y|X) — conditional distribution', 'P(X,Y) — joint distribution', 'P(Y) — prior only', 'P(X) — marginal only'],
+      ans: 1,
+      exp: 'Generative models learn the joint distribution P(X,Y) (or P(X) in the unsupervised case), which allows them to generate new data points.'
+    },
+    {
+      q: 'What probability distribution does a discriminative model learn?',
+      opts: ['P(X,Y) — joint distribution', 'P(X) — marginal distribution', 'P(Y|X) — conditional distribution', 'P(Y) — prior distribution'],
+      ans: 2,
+      exp: 'Discriminative models directly learn the conditional distribution P(Y|X), modelling the decision boundary between classes.'
+    },
+    {
+      q: 'Which of the following is a generative model?',
+      opts: ['Logistic Regression', 'Support Vector Machine', 'Naive Bayes', 'Random Forest'],
+      ans: 2,
+      exp: 'Naive Bayes is a generative model — it models P(X|Y) and P(Y), then uses Bayes\' rule to compute P(Y|X).'
+    },
+    {
+      q: 'Which of the following can generate new data samples?',
+      opts: ['Discriminative models only', 'Generative models only', 'Both', 'Neither'],
+      ans: 1,
+      exp: 'Only generative models can generate new data because they model the distribution P(X) or P(X|Y), which can be sampled from.'
+    },
+    {
+      q: 'According to the asymptotic analysis (Ng & Jordan, 2002), which model converges faster to its asymptotic error?',
+      opts: ['Generative models', 'Discriminative models', 'Both converge at the same rate', 'Neither converges'],
+      ans: 0,
+      exp: 'Generative models converge faster (O(log n)) to their asymptotic error, while discriminative models converge slower (O(n)) but can achieve lower asymptotic error.'
+    },
+    {
+      q: 'Which type of model typically handles missing data more naturally?',
+      opts: ['Discriminative models', 'Generative models', 'Neither', 'Both handle it equally'],
+      ans: 1,
+      exp: 'Generative models handle missing data naturally by marginalising over missing features. Discriminative models typically require imputation first.'
+    },
+    {
+      q: 'What mathematical formula connects generative and discriminative approaches?',
+      opts: ['Chain rule', 'Bayes\' rule', 'Law of total probability', 'Central limit theorem'],
+      ans: 1,
+      exp: 'Bayes\' rule (P(Y|X) = P(X|Y)P(Y)/P(X)) connects generative models (which model the right side) to discriminative models (which model the left side).'
+    },
+    {
+      q: 'What is the key assumption of Naive Bayes?',
+      opts: ['Features are linearly separable', 'Features are independent given the class', 'The data is normally distributed', 'Classes have equal prior probability'],
+      ans: 1,
+      exp: 'Naive Bayes assumes that features are conditionally independent given the class label — the "naive" assumption that rarely holds in practice.'
+    },
+    {
+      q: 'Given abundant labelled data, which type of model often achieves better classification accuracy?',
+      opts: ['Generative models', 'Discriminative models', 'They are always equal', 'It depends only on the dataset size'],
+      ans: 1,
+      exp: 'With abundant data, discriminative models often achieve better accuracy because they focus directly on the classification boundary without modelling the full data distribution.'
+    },
+    {
+      q: 'Which scenario is a generative model uniquely suited for?',
+      opts: ['Classifying spam emails', 'Detecting fraudulent transactions', 'Generating synthetic training data', 'Regression with many features'],
+      ans: 2,
+      exp: 'Generative models are uniquely suited for generating synthetic data because they model the underlying data distribution and can sample from it.'
+    }
+  ];
+
+  let currentQ = 0;
+  let quizAnswers = new Array(quizData.length).fill(null);
+  let quizSubmitted = new Array(quizData.length).fill(false);
+
+  function renderQuiz() {
+    const prog = document.getElementById('quizProgress');
+    prog.innerHTML = '';
+    for (let i = 0; i < quizData.length; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'quiz-prog-dot';
+      if (quizSubmitted[i] && quizAnswers[i] === quizData[i].ans) dot.classList.add('correct');
+      else if (quizSubmitted[i]) dot.classList.add('wrong');
+      if (i === currentQ) dot.classList.add('active');
+      prog.appendChild(dot);
+    }
+
+    const data = quizData[currentQ];
+    document.getElementById('quizQText').textContent = `${currentQ+1}. ${data.q}`;
+
+    const optsDiv = document.getElementById('quizOptions');
+    optsDiv.innerHTML = '';
+    data.opts.forEach((opt, idx) => {
+      const el = document.createElement('div');
+      el.className = 'quiz-option';
+      if (quizAnswers[currentQ] === idx && quizSubmitted[currentQ]) {
+        el.classList.add(idx === data.ans ? 'correct-answer' : 'wrong-answer');
+      } else if (quizSubmitted[currentQ] && idx === data.ans) {
+        el.classList.add('correct-answer');
+      } else if (quizAnswers[currentQ] === idx) {
+        el.classList.add('selected');
+      }
+      el.textContent = opt;
+      el.onclick = () => selectOption(idx);
+      optsDiv.appendChild(el);
+    });
+
+    const fb = document.getElementById('quizFeedback');
+    if (quizSubmitted[currentQ]) {
+      fb.className = `quiz-feedback show ${quizAnswers[currentQ] === data.ans ? 'correct' : 'wrong'}`;
+      fb.textContent = quizAnswers[currentQ] === data.ans
+        ? `✅ Correct! ${data.exp}`
+        : `❌ Incorrect. ${data.exp}`;
+    } else {
+      fb.className = 'quiz-feedback';
+      fb.textContent = '';
+    }
+
+    document.getElementById('quizPrev').disabled = currentQ === 0;
+    document.getElementById('quizNext').textContent = currentQ === quizData.length - 1 ? 'Finish' : 'Next →';
+  }
+
+  function selectOption(idx) {
+    if (quizSubmitted[currentQ]) return;
+    quizAnswers[currentQ] = idx;
+    renderQuiz();
+  }
+
+  function nextQuestion() {
+    if (quizAnswers[currentQ] === null) {
+      alert('Please select an answer first.');
+      return;
+    }
+    if (!quizSubmitted[currentQ]) {
+      quizSubmitted[currentQ] = true;
+      renderQuiz();
+      // Auto-advance after 1.5s for correct answers
+      if (quizAnswers[currentQ] === quizData[currentQ].ans && currentQ < quizData.length - 1) {
+        setTimeout(() => { currentQ++; renderQuiz(); }, 1200);
+        return;
+      }
+    }
+    if (currentQ < quizData.length - 1) {
+      currentQ++;
+      renderQuiz();
+    } else {
+      showResults();
+    }
+  }
+
+  function prevQuestion() {
+    if (currentQ > 0) { currentQ--; renderQuiz(); }
+  }
+
+  function showResults() {
+    document.getElementById('quizQuestionArea').style.display = 'none';
+    document.getElementById('quizPrev').style.display = 'none';
+    document.getElementById('quizNext').style.display = 'none';
+    const correct = quizAnswers.reduce((sum, ans, i) => sum + (ans === quizData[i].ans ? 1 : 0), 0);
+    const total = quizData.length;
+    const pct = (correct / total) * 100;
+    document.getElementById('quizScore').textContent = `${correct}/${total}`;
+    const grade = document.getElementById('quizGrade');
+    const msg = document.getElementById('quizResultMsg');
+    if (pct >= 70) {
+      grade.className = 'quiz-grade pass';
+      grade.textContent = '✅ PASS';
+      msg.textContent = 'Great job! You have a solid understanding of Generative vs Discriminative models.';
+    } else {
+      grade.className = 'quiz-grade fail';
+      grade.textContent = '❌ FAIL';
+      msg.textContent = 'Keep reviewing the material above and try again to improve your score.';
+    }
+    document.getElementById('quizResults').classList.add('show');
+  }
+
+  function resetQuiz() {
+    currentQ = 0;
+    quizAnswers = new Array(quizData.length).fill(null);
+    quizSubmitted = new Array(quizData.length).fill(false);
+    document.getElementById('quizQuestionArea').style.display = 'block';
+    document.getElementById('quizPrev').style.display = 'inline-block';
+    document.getElementById('quizNext').style.display = 'inline-block';
+    document.getElementById('quizResults').classList.remove('show');
+    renderQuiz();
+  }
+
+  // Initial quiz render
+  renderQuiz();
+</script>
+
+</body>
+</html>

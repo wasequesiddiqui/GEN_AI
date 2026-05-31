@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MLE Study Guide | CGAI Exam Prep</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-page: #fef9f0;
+      --surface: #ffffff;
+      --text-dark: #1e2a2f;
+      --text-muted: #5c6b73;
+      --border-light: #e6dfd3;
+      --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.03);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --primary-teal: #1b7b6e;
+      --secondary-amber: #d68b2c;
+      --accent-coral: #e05a2a;
+      --tab-overview: #cde8e2;
+      --tab-pipeline: #ffe3c9;
+      --tab-core: #f9dfd6;
+      --tab-arch: #dceaf5;
+      --tab-concepts: #fef0cd;
+      --tab-diagrams: #d5e7f0;
+      --tab-quiz: #e8def0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1b7b6e 0%, #0f5c52 100%);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      border-radius: 0 0 2rem 2rem;
+      color: white;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      padding: 6px 16px;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 span {
+      color: #f9d56e;
+    }
+    .hero-sub {
+      max-width: 680px;
+      margin: 0 auto;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+    .pill {
+      background: rgba(255,255,240,0.2);
+      border-radius: 40px;
+      padding: 0.25rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    /* sticky tabs */
+    .tabs-sticky {
+      position: sticky;
+      top: 0.8rem;
+      z-index: 100;
+      background: rgba(255, 250, 240, 0.94);
+      backdrop-filter: blur(12px);
+      border-radius: 60px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 0.5rem 1rem;
+      margin: 1rem 0 2rem;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+      color: var(--text-muted);
+    }
+    .tab-btn.active {
+      background: var(--primary-teal);
+      color: white;
+    }
+    .tab-pane {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px);}
+      to { opacity: 1; transform: none;}
+    }
+
+    /* cards */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--primary-teal);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 720px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .comparison-table th {
+      background: #f3f2ef;
+      font-weight: 700;
+    }
+    .glossary-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .term-card {
+      background: #fefaf5;
+      border-left: 4px solid var(--primary-teal);
+      padding: 0.8rem;
+      flex: 1 1 180px;
+      border-radius: 12px;
+    }
+    .term-card strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+    }
+
+    /* stepper */
+    .stepper {
+      margin: 1.5rem 0;
+    }
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-teal);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .step-title {
+      font-weight: 700;
+      flex: 1;
+    }
+    .step-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+    }
+    .step.open .step-arrow {
+      transform: rotate(180deg);
+    }
+    .step-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      padding: 0 1.5rem;
+    }
+    .step.open .step-body {
+      max-height: 400px;
+      padding: 0 1.5rem 1.2rem;
+    }
+
+    /* interactive demo */
+    .demo-panel {
+      background: #fffcf7;
+      border-radius: 24px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-light);
+      margin: 1rem 0;
+    }
+    .slider-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+    canvas {
+      background: #fefaf5;
+      border-radius: 20px;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .exam-tip {
+      background: #fef3c7;
+      border-left: 6px solid var(--secondary-amber);
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .formula {
+      background: #0f172a;
+      color: #facc15;
+      font-family: monospace;
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+
+    /* diagrams */
+    .diagram-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border-light);
+      margin-bottom: 1.8rem;
+      overflow: hidden;
+    }
+    .diagram-img {
+      width: 100%;
+      display: block;
+    }
+    .caption {
+      padding: 1rem 1.5rem;
+      background: #fefbf7;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* quiz */
+    .quiz-progress {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    .quiz-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--primary-teal);
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+    .question-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-light);
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1.2rem 0;
+    }
+    .opt {
+      border: 2px solid var(--border-light);
+      border-radius: 60px;
+      padding: 0.75rem 1.2rem;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .opt.correct {
+      background: #e0f2e9;
+      border-color: var(--primary-teal);
+    }
+    .opt.wrong {
+      background: #fee2e2;
+      border-color: #e11d48;
+    }
+    .feedback {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 0.8rem;
+      margin-top: 1rem;
+    }
+    button {
+      background: var(--primary-teal);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.3rem;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+    .score-card {
+      text-align: center;
+      background: white;
+      border-radius: 32px;
+      padding: 2rem;
+      margin-top: 1rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #8b7a66;
+    }
+  </style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">📘 CGAI · Certified Generative AI Specialist</div>
+  <h1>Maximum Likelihood Estimation <span>(MLE)</span></h1>
+  <div class="hero-sub">The fundamental principle that powers training of LLMs, VAEs, Diffusion Models — making data most probable under your model.</div>
+  <div class="pills">
+    <span class="pill">📐 Likelihood Maximisation</span>
+    <span class="pill">🧠 Log‑Likelihood</span>
+    <span class="pill">🎲 Coin‑toss MLE</span>
+    <span class="pill">🤖 Generative AI</span>
+    <span class="pill">📉 KL Divergence</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs-sticky">
+    <button class="tab-btn active" data-tab="overview">📖 Overview</button>
+    <button class="tab-btn" data-tab="pipeline">⚙️ Pipeline</button>
+    <button class="tab-btn" data-tab="core">🧪 Core Mechanism</button>
+    <button class="tab-btn" data-tab="arch">🏛️ Architecture</button>
+    <button class="tab-btn" data-tab="concepts">💡 Key Concepts</button>
+    <button class="tab-btn" data-tab="diagrams">🖼️ Diagrams</button>
+    <button class="tab-btn" data-tab="quiz">✅ Quiz</button>
+  </div>
+
+  <!-- ================= OVERVIEW ================= -->
+  <div id="overview" class="tab-pane active">
+    <div class="card">
+      <h3>📌 What is Maximum Likelihood Estimation?</h3>
+      <p>MLE is a method for estimating the parameters <strong>θ</strong> of a statistical model by maximising the <strong>likelihood function</strong> — the probability of observing the given data under those parameters. It is the statistical engine behind almost all modern generative AI training.</p>
+      <div class="exam-tip">🎯 Core objective: <strong>θ* = argmax<sub>θ</sub> P(D | θ)</strong></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>⚖️ MLE vs Alternatives</h3>
+        <table class="comparison-table">
+          <tr><th>Method</th><th>Objective</th><th>Prior</th><th>Use Case</th></tr>
+          <tr><td><strong>MLE</strong></td><td>Max P(D|θ)</td><td>No</td><td>Generative AI, classic stats</td></tr>
+          <tr><td><strong>MAP</strong></td><td>Max P(θ|D) ∝ P(D|θ)P(θ)</td><td>Yes</td><td>Bayesian regularisation</td></tr>
+          <tr><td><strong>MoM</strong></td><td>Match sample moments</td><td>No</td><td>Simple closed forms</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>💡 Worked Example: Gaussian</h3>
+        <p>Data: [2, 4, 6] from N(μ, σ²). MLE for μ = sample mean = <strong>4</strong>. MLE for σ² = 1/n Σ (xᵢ−μ)² = 8/3 ≈ 2.667.</p>
+        <div class="formula">μ̂ = (2+4+6)/3 = 4,  σ̂² = ( (4+0+4) )/3 = 8/3</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🔑 Glossary</h3>
+      <div class="glossary-grid">
+        <div class="term-card"><strong>Likelihood L(θ)</strong><br>∏ p(xᵢ|θ) — probability of data given θ</div>
+        <div class="term-card"><strong>Log‑Likelihood ℓ(θ)</strong><br>∑ log p(xᵢ|θ) — stable, turns product into sum</div>
+        <div class="term-card"><strong>Score Function</strong><br>∇ℓ(θ) — gradient, set to zero for MLE</div>
+        <div class="term-card"><strong>Fisher Information</strong><br>Variance of score, measures curvature</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PIPELINE (Stepper) ================= -->
+  <div id="pipeline" class="tab-pane">
+    <div class="card"><h3>🔁 MLE Pipeline — step by step</h3><p>Click each step to expand details.</p></div>
+    <div class="stepper" id="stepperContainer">
+      <div class="step"><div class="step-header" data-step="0"><div class="step-num">1</div><div class="step-title">Model + Data</div><span class="step-arrow">▼</span></div><div class="step-body"><p>Assume i.i.d observations D = {x₁,…,xₙ} from a parametric family p(x|θ). Example: coin toss (Bernoulli) with unknown p.</p></div></div>
+      <div class="step"><div class="step-header" data-step="1"><div class="step-num">2</div><div class="step-title">Write Likelihood</div><span class="step-arrow">▼</span></div><div class="step-body"><p>L(θ) = ∏ p(xᵢ|θ). For coin with heads count H, L(p) = pᴴ(1-p)ⁿ⁻ᴴ.</p></div></div>
+      <div class="step"><div class="step-header" data-step="2"><div class="step-num">3</div><div class="step-title">Log‑Likelihood</div><span class="step-arrow">▼</span></div><div class="step-body"><p>ℓ(θ)=∑ log p(xᵢ|θ). For coin: ℓ(p)= H log p + (n−H) log(1−p).</p></div></div>
+      <div class="step"><div class="step-header" data-step="3"><div class="step-num">4</div><div class="step-title">Optimise (Score = 0)</div><span class="step-arrow">▼</span></div><div class="step-body"><p>∂ℓ/∂p = H/p − (n−H)/(1−p)=0 → p̂ = H/n. For neural networks, use gradient ascent.</p></div></div>
+      <div class="step"><div class="step-header" data-step="4"><div class="step-num">5</div><div class="step-title">MLE Estimate & Generation</div><span class="step-arrow">▼</span></div><div class="step-body"><p>θ̂_MLE maximises data probability. In generative AI, sample from p<sub>θ̂</sub>(x) to create new realistic outputs.</p></div></div>
+    </div>
+    <div class="exam-tip">✨ Concrete: 3 coin tosses: H,H,T → p̂ = 2/3. That's the MLE.</div>
+  </div>
+
+  <!-- ================= CORE MECHANISM (interactive demo) ================= -->
+  <div id="core" class="tab-pane">
+    <div class="card"><h3>🧬 Core Mechanism: Likelihood Maximisation</h3><p>Adjust θ until the observed data becomes most probable. Below: interactive coin‑toss MLE — drag sliders to see how the likelihood curve peaks at p̂ = Heads/n.</p></div>
+    <div class="demo-panel">
+      <div class="slider-group">
+        <label>🎲 Total tosses (n): <input type="range" id="nSlider" min="1" max="30" value="15"></label>
+        <label>🪙 Heads (H): <input type="range" id="hSlider" min="0" max="30" value="9"></label>
+        <span id="demoStats" style="background:#f0ede8; padding:0.2rem 1rem; border-radius:40px;">Heads: 9/15</span>
+      </div>
+      <div style="text-align:center;">
+        <canvas id="mleCanvas" width="600" height="260" style="max-width:100%; height:auto; background:#fefaf5; border-radius:20px;"></canvas>
+      </div>
+      <div id="mleResult" style="margin-top:1rem; text-align:center; font-weight:600;"></div>
+      <div class="formula" style="margin-top:0.8rem;">MLE for Bernoulli: p̂ = H/n</div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>📈 Why MLE powers Generative AI</h3><ul><li><strong>LLMs:</strong> maximise ∑ log P(wₜ | context)</li><li><strong>VAEs:</strong> maximise ELBO (a lower bound to likelihood)</li><li><strong>Diffusion:</strong> denoising objective = MLE of reverse process</li></ul></div>
+      <div class="card"><h3>📐 Gaussian MLE (closed form)</h3><p>For N(μ,σ²): μ̂ = sample mean, σ̂² = (1/n)∑(xᵢ−μ̂)². Works because log‑likelihood is quadratic.</p></div>
+    </div>
+  </div>
+
+  <!-- ================= ARCHITECTURE ================= -->
+  <div id="arch" class="tab-pane">
+    <div class="card"><h3>🏛️ MLE in Generative Model Architectures</h3><div class="grid-2"><div><strong>Autoregressive (LLMs)</strong><br>p(x) = ∏ p(xₜ|x<ₜ) → maximise cross‑entropy loss.<br><span class="formula">ℒ = -∑ log p<sub>θ</sub>(xₜ|x<ₜ)</span></div><div><strong>VAE</strong><br>ELBO = 𝔼[log p(x|z)] - D_KL(q(z|x)‖p(z)) → lower bound of log‑likelihood.</div><div><strong>Diffusion</strong><br>Denoising objective = variational bound on negative log‑likelihood. Equivalent to predicting added Gaussian noise.</div><div><strong>GAN</strong><br>Implicit MLE: generator indirectly maximises likelihood via adversarial training.</div></div></div>
+    <div class="card"><h3>🔧 Component Breakdown</h3><ul><li>Data + parametric model family</li><li>Likelihood / log‑likelihood construction</li><li>Optimiser (SGD, Adam) maximises ℓ(θ)</li><li>MLE estimate → used for sampling / inference</li></ul></div>
+  </div>
+
+  <!-- ================= KEY CONCEPTS ================= -->
+  <div id="concepts" class="tab-pane">
+    <div class="card"><h3>📘 Key Formulas & Relationships</h3><div class="formula">θ̂_MLE = argmax Σ log p(xᵢ|θ) &nbsp;&nbsp; D_KL(P_data ‖ P_model) = 𝔼[log(P_data/P_model)]</div><p>Minimising KL divergence between data distribution and model distribution is <strong>equivalent to MLE</strong>.</p></div>
+    <div class="grid-2">
+      <div class="card"><h3>✅ Advantages</h3><ul><li>Statistically consistent (converges to true θ as n→∞)</li><li>Asymptotically efficient (lowest variance)</li><li>Invariance: g(θ̂_MLE) = MLE of g(θ)</li></ul></div>
+      <div class="card"><h3>⚠️ Limitations</h3><ul><li>Overfits small datasets (MAP can help)</li><li>Local optima in deep models</li><li>Requires correct model specification</li></ul></div>
+    </div>
+    <div class="card"><h3>📊 MLE vs MAP (from attached diagram)</h3><table class="comparison-table"><tr><th></th><th>MLE</th><th>MAP</th></tr><tr><td>Objective</td><td>max P(D|θ)</td><td>max P(θ|D) ∝ P(D|θ)P(θ)</td></tr><tr><td>Prior</td><td>None</td><td>Required</td></tr><tr><td>Bias</td><td>Asymptotically unbiased</td><td>Biased but lower variance</td></tr></table></div>
+    <div class="exam-tip">⚡ Exam must‑know: MLE = Minimise KL(P_data ‖ P_model). For LLMs, training = maximise log‑likelihood of next token.</div>
+  </div>
+
+  <!-- ================= DIAGRAMS ================= -->
+  <div id="diagrams" class="tab-pane">
+    <div class="diagram-card">
+      <img class="diagram-img" src="MLE.png" alt="MLE infographic" onerror="this.onerror=null; this.alt='Place MLE.png in same folder'; this.style.opacity='0.6';">
+      <div class="caption"><strong>Figure 1: Maximum Likelihood Estimation – Complete Infographic</strong><br>This diagram summarises the core principle (θ* = argmax P(D|θ)), coin‑toss intuition, likelihood vs log‑likelihood, Gaussian example, and how MLE powers generative AI (LLMs, VAEs, Diffusion). Pay attention to the MLE vs MAP comparison and the KL divergence relationship — frequent exam topics.</div>
+    </div>
+    <div class="card"><h3>🗺️ Walkthrough of the infographic</h3><p>Top section: definition and objective. Middle left: coin‑toss curve shows maximum at p=Heads/n. Middle right: math of likelihood and log‑likelihood. Bottom: MLE in modern generative models and the summary formulas. Use this as your final revision cheat sheet.</p></div>
+  </div>
+
+  <!-- ================= QUIZ ================= -->
+  <div id="quiz" class="tab-pane">
+    <div class="quiz-progress"><div class="quiz-fill" id="quizFill"></div></div>
+    <div id="quizArea"></div>
+    <div id="scorePanel" style="display:none;" class="score-card"></div>
+  </div>
+  <footer>© CGAI Prep · Maximum Likelihood Estimation — study resource for https://charteredcertifications.com/learning/courses/cgai</footer>
+</div>
+
+<script>
+  (function() {
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = document.querySelectorAll('.tab-pane');
+    function activateTab(tabId) {
+      panes.forEach(p => p.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      tabs.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
+      });
+    }
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => activateTab(btn.getAttribute('data-tab')));
+    });
+
+    // Stepper toggle
+    const stepHeaders = document.querySelectorAll('.step-header');
+    stepHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const step = header.closest('.step');
+        if (step) step.classList.toggle('open');
+      });
+    });
+
+    // ---------- Interactive MLE Demo (Canvas) ----------
+    const canvas = document.getElementById('mleCanvas');
+    const ctx = canvas.getContext('2d');
+    const nSlider = document.getElementById('nSlider');
+    const hSlider = document.getElementById('hSlider');
+    const demoStats = document.getElementById('demoStats');
+    const mleResultSpan = document.getElementById('mleResult');
+
+    function updateDemo() {
+      let n = parseInt(nSlider.value);
+      let heads = parseInt(hSlider.value);
+      if (heads > n) heads = n;
+      hSlider.max = n;
+      hSlider.value = heads;
+      demoStats.innerText = `Heads: ${heads} / ${n}`;
+      let mleP = (heads / n);
+      mleResultSpan.innerHTML = `⚡ MLE estimate p̂ = ${mleP.toFixed(4)} (Heads / n)`;
+
+      const w = canvas.clientWidth, h = canvas.height;
+      canvas.width = w; canvas.height = h;
+      ctx.clearRect(0, 0, w, h);
+      // draw likelihood curve L(p) = p^heads * (1-p)^(n-heads)
+      let points = [];
+      let maxL = 0;
+      for (let i = 0; i <= 200; i++) {
+        let p = i / 200;
+        let L = Math.pow(p, heads) * Math.pow(1-p, n-heads);
+        if (L > maxL) maxL = L;
+        points.push({p, L});
+      }
+      if (maxL === 0) maxL = 1;
+      ctx.beginPath();
+      for (let i=0; i<points.length; i++) {
+        let x = 20 + (points[i].p)*(w-40);
+        let y = h-20 - (points[i].L / maxL)*(h-50);
+        if (i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle = '#1b7b6e';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      // mark MLE point
+      let mleX = 20 + (mleP)*(w-40);
+      let mleY = h-20 - ( (Math.pow(mleP, heads)*Math.pow(1-mleP, n-heads))/maxL )*(h-50);
+      ctx.fillStyle = '#e05a2a';
+      ctx.beginPath();
+      ctx.arc(mleX, mleY, 6, 0, 2*Math.PI);
+      ctx.fill();
+      ctx.fillStyle = '#1e2a2f';
+      ctx.font = '12px Inter';
+      ctx.fillText(`MLE p̂ = ${mleP.toFixed(3)}`, mleX+8, mleY-4);
+      ctx.fillStyle = '#5c6b73';
+      ctx.fillText("p (probability)", w/2-35, h-6);
+      ctx.fillText("Likelihood", 15, 30);
+    }
+    nSlider.addEventListener('input', () => { let n=parseInt(nSlider.value); if(parseInt(hSlider.value)>n) hSlider.value=n; updateDemo();});
+    hSlider.addEventListener('input', updateDemo);
+    updateDemo();
+
+    // ---------- QUIZ (10 questions) ----------
+    const questions = [
+      { text: "What does MLE stand for?", options: ["Maximum Log Expectation", "Maximum Likelihood Estimation", "Mean Likelihood Estimator", "Marginal Likelihood Estimate"], correct: 1, explanation: "Maximum Likelihood Estimation finds parameters that maximise probability of observed data." },
+      { text: "MLE for Bernoulli(p) with H heads in n tosses is:", options: ["H/n", "(H+1)/(n+2)", "n/H", "log(H/n)"], correct: 0, explanation: "p̂ = H/n from solving score equation." },
+      { text: "Why use log‑likelihood instead of likelihood?", options: ["Avoids derivatives", "Turns product into sum, improves numerical stability", "Makes estimate unbiased", "Faster convergence"], correct: 1, explanation: "Log converts product to sum and prevents underflow." },
+      { text: "In MLE for Gaussian N(μ,σ²), μ̂ equals:", options: ["Sample median", "Sample mean", "Sample variance", "Sample mode"], correct: 1, explanation: "μ̂ = (1/n)Σ xᵢ, the sample mean." },
+      { text: "Which generative model directly uses autoregressive MLE?", options: ["VAE", "GAN", "GPT/LLM", "Diffusion"], correct: 2, explanation: "LLMs maximise log P(wₜ | context)." },
+      { text: "MLE is equivalent to minimising:", options: ["Mean squared error", "KL Divergence D_KL(P_data ‖ P_model)", "Total variation distance", "Wasserstein distance"], correct: 1, explanation: "Maximising likelihood = minimising KL(P_data‖P_model)." },
+      { text: "Which is a limitation of MLE?", options: ["Always unbiased", "Requires prior", "Can overfit with small data", "Not consistent"], correct: 2, explanation: "MLE can overfit limited data; regularisation (MAP) helps." },
+      { text: "MLE estimate for Gaussian variance σ² (known μ) is:", options: ["(1/(n-1))Σ(xᵢ-μ)²", "(1/n)Σ(xᵢ-μ)²", "median of squared errors", "sample standard deviation"], correct: 1, explanation: "MLE uses denominator n (biased but consistent)." },
+      { text: "Score function in MLE is:", options: ["Hessian of likelihood", "Gradient of log‑likelihood", "Fisher information", "Expected likelihood"], correct: 1, explanation: "Score = ∂ℓ/∂θ; setting to zero gives MLE." },
+      { text: "In diffusion models, the training loss is equivalent to:", options: ["Variational lower bound of MLE", "Discriminator loss", "Wasserstein distance", "Contrastive loss"], correct: 0, explanation: "Diffusion models optimise a variational bound that approximates the negative log‑likelihood." }
+    ];
+    let userAnswers = new Array(10).fill(null);
+    let currentIdx = 0;
+    let quizSubmitted = false;
+
+    function updateQuizProgress() {
+      let answered = userAnswers.filter(a => a !== null).length;
+      document.getElementById('quizFill').style.width = `${(answered/10)*100}%`;
+    }
+
+    function renderQuiz() {
+      const q = questions[currentIdx];
+      const optionsHtml = q.options.map((opt, i) => {
+        const isSelected = (userAnswers[currentIdx] === i);
+        return `<div class="opt" data-opt="${i}" style="${isSelected ? 'border-color:#1b7b6e;' : ''}"><span style="font-weight:700;margin-right:8px;">${String.fromCharCode(65+i)}.</span> ${opt}</div>`;
+      }).join('');
+      const feedbackHtml = (userAnswers[currentIdx] !== undefined) ? 
+        `<div class="feedback" style="background:${userAnswers[currentIdx] === q.correct ? '#e0f2e9' : '#fee2e2'};padding:10px;border-radius:12px">${userAnswers[currentIdx] === q.correct ? '✅ Correct!' : '❌ Incorrect. Correct answer: ' + q.options[q.correct]}<br>${q.explanation}</div>` : '';
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      const html = `<div class="question-card">
+        <div style="font-weight:600;margin-bottom:6px;">Question ${currentIdx+1} of 10</div>
+        <div style="font-size:1.05rem;font-weight:600;margin-bottom:1rem;">${q.text}</div>
+        <div class="options" id="quizOptions">${optionsHtml}</div>
+        ${feedbackHtml}
+        <div style="display:flex;justify-content:space-between;margin-top:1rem;">
+          <button id="prevBtn" ${currentIdx===0 ? 'disabled style="opacity:0.5"' : ''}>← Previous</button>
+          <span>Answered: ${answeredCount}/10</span>
+          <button id="nextBtn">${currentIdx===9 ? 'Submit Quiz' : 'Next →'}</button>
+        </div>
+      </div>`;
+      document.getElementById('quizArea').innerHTML = html;
+      document.querySelectorAll('#quizOptions .opt').forEach(optDiv => {
+        optDiv.addEventListener('click', () => {
+          if (quizSubmitted) return;
+          const selected = parseInt(optDiv.getAttribute('data-opt'));
+          userAnswers[currentIdx] = selected;
+          renderQuiz();
+          updateQuizProgress();
+        });
+      });
+      document.getElementById('prevBtn')?.addEventListener('click', () => { if (currentIdx > 0 && !quizSubmitted) { currentIdx--; renderQuiz(); updateQuizProgress(); } });
+      document.getElementById('nextBtn')?.addEventListener('click', () => { if (quizSubmitted) return; if (currentIdx === 9) finalizeQuiz(); else { currentIdx++; renderQuiz(); updateQuizProgress(); } });
+    }
+
+    function finalizeQuiz() {
+      quizSubmitted = true;
+      let score = 0;
+      for (let i=0; i<10; i++) if (userAnswers[i] === questions[i].correct) score++;
+      const percent = Math.round(score/10*100);
+      const pass = percent >= 70;
+      document.getElementById('scorePanel').style.display = 'block';
+      document.getElementById('scorePanel').innerHTML = `<h2>🎯 Your Score: ${score}/10 (${percent}%)</h2>
+        <div style="font-size:1.5rem;margin:1rem 0;">${pass ? 'PASS ✅' : 'FAIL ❌'}</div>
+        <p>${pass ? 'Excellent! You understand MLE fundamentals.' : 'Review the tabs and retry to strengthen your knowledge.'}</p>
+        <button id="retryQuizBtn">🔄 Retry Quiz</button>`;
+      document.getElementById('quizArea').innerHTML = '';
+      document.getElementById('retryQuizBtn').addEventListener('click', () => {
+        userAnswers.fill(null);
+        currentIdx = 0;
+        quizSubmitted = false;
+        document.getElementById('scorePanel').style.display = 'none';
+        renderQuiz();
+        updateQuizProgress();
+      });
+    }
+    renderQuiz();
+    updateQuizProgress();
+  })();
+</script>
+</body>
+</html>

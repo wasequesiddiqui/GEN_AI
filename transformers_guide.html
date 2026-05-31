@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transformers – CGAI Exam Prep | CharteredCertifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:    #ffd6d6;
+    --peach:   #ffe5cc;
+    --lemon:   #fff8cc;
+    --mint:    #ccf0e5;
+    --sky:     #cce8ff;
+    --lavender:#e5d6ff;
+    --lilac:   #f5d6ff;
+
+    --rose-d:  #c0565a;
+    --peach-d: #c07a40;
+    --lemon-d: #9a8700;
+    --mint-d:  #2a8a65;
+    --sky-d:   #2460a0;
+    --lavender-d:#6035b0;
+    --lilac-d: #8a35a0;
+
+    --ink:     #1a1a2e;
+    --ink2:    #3d3d5c;
+    --paper:   #fafaf8;
+    --card-bg: #ffffff;
+    --border:  #e8e4f0;
+    --shadow:  0 4px 24px rgba(60,40,120,.08);
+    --radius:  18px;
+    --font-h:  'Fraunces', Georgia, serif;
+    --font-b:  'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    font-family: var(--font-b);
+    color: var(--ink);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #fce4f7 0%, #dde9ff 50%, #d4f5ea 100%);
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23c0b0e0' fill-opacity='.25'/%3E%3C/svg%3E") repeat;
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--lavender);
+    color: var(--lavender-d);
+    font-size: .75rem; font-weight: 600; letter-spacing: .08em;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--font-h);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 900; line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--lavender-d); }
+  .hero p {
+    max-width: 620px; margin: 0 auto 28px;
+    color: var(--ink2); font-size: 1.05rem;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .pill {
+    background: white; border: 1.5px solid var(--border);
+    border-radius: 30px; padding: 6px 16px;
+    font-size: .85rem; font-weight: 500; color: var(--ink2);
+    cursor: pointer; transition: all .2s;
+  }
+  .pill:hover { background: var(--lavender); color: var(--lavender-d); border-color: var(--lavender-d); transform: translateY(-2px); }
+
+  /* ── NAV TABS ── */
+  .tab-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,250,248,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1.5px solid var(--border);
+    display: flex; gap: 0; overflow-x: auto;
+    padding: 0 16px;
+  }
+  .tab-btn {
+    flex-shrink: 0;
+    background: none; border: none; cursor: pointer;
+    padding: 16px 22px;
+    font-family: var(--font-b); font-size: .88rem; font-weight: 600;
+    color: var(--ink2);
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--lavender-d); }
+  .tab-btn.active { color: var(--lavender-d); border-bottom-color: var(--lavender-d); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .content-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 20px 80px; }
+
+  /* ── SECTION HEADER ── */
+  .sec-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 36px;
+  }
+  .sec-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+  .sec-header h2 {
+    font-family: var(--font-h);
+    font-size: 1.8rem; font-weight: 700; color: var(--ink);
+  }
+  .sec-header p { color: var(--ink2); font-size: .95rem; margin-top: 2px; }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; margin-bottom: 36px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(60,40,120,.14); }
+  .card-label {
+    font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; margin-bottom: 10px;
+    display: inline-block; padding: 3px 10px; border-radius: 10px;
+  }
+  .card h3 { font-family: var(--font-h); font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+  .card p, .card li { font-size: .92rem; color: var(--ink2); }
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 4px; }
+
+  /* color variants */
+  .c-rose   { background: var(--rose);    border-color: #f0b0b0; }
+  .c-peach  { background: var(--peach);   border-color: #e8c090; }
+  .c-lemon  { background: var(--lemon);   border-color: #e0d070; }
+  .c-mint   { background: var(--mint);    border-color: #90d8be; }
+  .c-sky    { background: var(--sky);     border-color: #90c0f0; }
+  .c-lav    { background: var(--lavender);border-color: #c0a0e8; }
+  .c-lilac  { background: var(--lilac);   border-color: #d090e8; }
+
+  .lbl-rose   { background: #ffc0c0; color: var(--rose-d); }
+  .lbl-peach  { background: #f5c880; color: var(--peach-d); }
+  .lbl-lemon  { background: #eed870; color: var(--lemon-d); }
+  .lbl-mint   { background: #80d8b8; color: var(--mint-d); }
+  .lbl-sky    { background: #80c0f0; color: var(--sky-d); }
+  .lbl-lav    { background: #c0a0e8; color: var(--lavender-d); }
+  .lbl-lilac  { background: #d090e8; color: var(--lilac-d); }
+
+  /* ── FULL-WIDTH CARD ── */
+  .card-wide {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+  }
+  .card-wide h3 {
+    font-family: var(--font-h); font-size: 1.25rem; font-weight: 700;
+    margin-bottom: 14px; color: var(--ink);
+  }
+
+  /* ── PIPELINE STEPPER ── */
+  .stepper {
+    display: flex; gap: 0; overflow-x: auto;
+    padding-bottom: 8px; margin-bottom: 36px;
+    align-items: stretch;
+  }
+  .step {
+    flex-shrink: 0; min-width: 140px; max-width: 160px;
+    background: white; border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 18px 14px; text-align: center;
+    position: relative; cursor: pointer;
+    transition: all .2s;
+  }
+  .step:hover, .step.active { transform: translateY(-4px); }
+  .step + .step { margin-left: 10px; }
+  .step-arrow {
+    flex-shrink: 0; display: flex; align-items: center;
+    color: var(--ink2); font-size: 1.3rem; padding: 0 2px;
+    align-self: center;
+  }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem; font-weight: 700; margin: 0 auto 10px;
+  }
+  .step-title { font-size: .82rem; font-weight: 600; margin-bottom: 4px; }
+  .step-sub { font-size: .74rem; color: var(--ink2); }
+  .step-detail {
+    background: white; border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 28px 32px;
+    box-shadow: var(--shadow); margin-bottom: 32px;
+    display: none;
+  }
+  .step-detail.active { display: block; animation: fadeIn .3s ease; }
+  .step-detail h3 { font-family: var(--font-h); font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+  .step-detail p { color: var(--ink2); font-size: .95rem; margin-bottom: 10px; }
+
+  /* ── ATTENTION VIZ ── */
+  .attn-demo { margin: 24px 0; }
+  .attn-sentence {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+  }
+  .attn-word {
+    padding: 8px 16px; border-radius: 30px;
+    font-weight: 600; font-size: .95rem;
+    cursor: pointer; transition: all .25s;
+    border: 2px solid transparent;
+    user-select: none;
+  }
+  .attn-word:hover { transform: scale(1.08); }
+  .attn-word.selected { border-color: var(--lavender-d); transform: scale(1.1); }
+
+  .attn-map {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+  }
+  .attn-chip {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: .85rem; font-weight: 500;
+    transition: all .3s;
+  }
+
+  /* ── FORMULA BOX ── */
+  .formula {
+    background: linear-gradient(135deg, var(--lavender), var(--sky));
+    border-radius: 16px; padding: 24px 28px; margin: 20px 0;
+    font-family: 'Courier New', monospace; font-size: 1.05rem;
+    color: var(--ink); text-align: center; font-weight: 600;
+    border: 1.5px solid var(--border);
+  }
+  .formula .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px; }
+  .formula .frac-top { border-bottom: 2px solid var(--ink); padding-bottom: 2px; }
+
+  /* ── QUIZ ── */
+  .quiz-q {
+    background: var(--card-bg); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 24px 28px;
+    margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .quiz-q p { font-weight: 600; font-size: 1rem; margin-bottom: 16px; color: var(--ink); }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 12px 16px;
+    cursor: pointer; font-size: .92rem; color: var(--ink2);
+    transition: all .2s; text-align: left;
+  }
+  .quiz-opt:hover { background: var(--lavender); color: var(--lavender-d); border-color: var(--lavender-d); }
+  .quiz-opt.correct { background: var(--mint); color: var(--mint-d); border-color: var(--mint-d); font-weight: 600; }
+  .quiz-opt.wrong   { background: var(--rose); color: var(--rose-d); border-color: var(--rose-d); }
+  .quiz-feedback {
+    margin-top: 10px; font-size: .88rem; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px; display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-score {
+    background: var(--lav); border-radius: var(--radius); padding: 20px 24px;
+    text-align: center; margin-top: 24px; display: none;
+  }
+  .quiz-score h3 { font-family: var(--font-h); font-size: 1.5rem; margin-bottom: 6px; }
+
+  /* ── IMAGES SECTION ── */
+  .img-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 1.5px solid var(--border); box-shadow: var(--shadow);
+    margin-bottom: 32px; background: white;
+  }
+  .img-card img { width: 100%; display: block; }
+  .img-card-body { padding: 20px 24px; }
+  .img-card-body h3 { font-family: var(--font-h); font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+  .img-card-body p { font-size: .9rem; color: var(--ink2); }
+
+  /* ── COMPARISON TABLE ── */
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .cmp-table th {
+    background: var(--lavender); color: var(--lavender-d);
+    padding: 12px 16px; text-align: left; font-weight: 700;
+    font-size: .8rem; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .cmp-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--ink2); }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table tr:hover td { background: #f4f0ff; }
+  .yes { color: var(--mint-d); font-weight: 600; }
+  .no  { color: var(--rose-d); font-weight: 600; }
+
+  /* ── CHALLENGE CHIPS ── */
+  .challenge-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:20px 0; }
+  .challenge-chip {
+    border-radius: 14px; padding: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .challenge-chip .icon { font-size: 1.6rem; }
+  .challenge-chip h4 { font-size: .95rem; font-weight: 700; }
+  .challenge-chip p { font-size: .85rem; }
+
+  /* ── KEY TERM ── */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-bottom: 32px; }
+  .term-card {
+    border-radius: 14px; padding: 18px 20px;
+    border: 1.5px solid transparent;
+  }
+  .term-card .term-name { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+  .term-card p { font-size: .85rem; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ink); color: #b0a8c8;
+    text-align: center; padding: 28px 20px;
+    font-size: .85rem;
+  }
+  .footer a { color: #c0b0e8; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  .content-wrap { animation: fadeIn .4s ease; }
+
+  /* ── PROGRESS BAR ── */
+  .prog-bar-wrap { background: var(--border); border-radius: 8px; height: 8px; margin: 8px 0 16px; }
+  .prog-bar { height: 8px; border-radius: 8px; background: linear-gradient(90deg, var(--lavender-d), var(--sky-d)); transition: width .5s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .tab-btn { padding: 12px 14px; font-size: .8rem; }
+    .stepper { flex-direction: column; }
+    .step { max-width: 100%; }
+    .step-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">📚 CGAI Exam Prep · CharteredCertifications</div>
+  <h1>Understanding<br><span>Transformers</span></h1>
+  <p>An interactive deep-dive into the architecture powering today's most advanced AI models — built for your CGAI certification exam.</p>
+  <div class="hero-pills">
+    <span class="pill">🔢 Tokenization</span>
+    <span class="pill">🌀 Self-Attention</span>
+    <span class="pill">📐 Positional Encoding</span>
+    <span class="pill">🏗️ Encoder–Decoder</span>
+    <span class="pill">🧠 Multi-Head Attention</span>
+    <span class="pill">⚡ Parallel Processing</span>
+    <span class="pill">📏 Context Window</span>
+    <span class="pill">🎯 Practice Quiz</span>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="overview">🗺️ Overview</button>
+  <button class="tab-btn" data-tab="pipeline">⚙️ Pipeline</button>
+  <button class="tab-btn" data-tab="attention">🌀 Attention</button>
+  <button class="tab-btn" data-tab="architecture">🏗️ Architecture</button>
+  <button class="tab-btn" data-tab="concepts">💡 Key Concepts</button>
+  <button class="tab-btn" data-tab="visuals">🖼️ Diagrams</button>
+  <button class="tab-btn" data-tab="quiz">🎯 Quiz</button>
+</nav>
+
+<!-- ══════════ SECTION: OVERVIEW ══════════ -->
+<div id="tab-overview" class="section active">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-lav">🗺️</div>
+    <div>
+      <h2>What is a Transformer?</h2>
+      <p>The architecture that replaced RNNs and became the backbone of GPT, BERT, LLaMA and more.</p>
+    </div>
+  </div>
+
+  <div class="card-wide" style="background:linear-gradient(135deg,#f0ecff,#e8f4ff);border-color:#c8b8f8;">
+    <h3>💡 The Big Idea</h3>
+    <p>Transformers are neural network architectures introduced in the 2017 paper <em>"Attention Is All You Need"</em>. Instead of processing words one-by-one (like RNNs), they process <strong>all tokens in parallel</strong> and use a mechanism called <strong>self-attention</strong> to understand how words relate to each other — regardless of their distance in the sentence.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card c-mint">
+      <div class="card-label lbl-mint">Why it matters</div>
+      <h3>🚀 Revolutionary Shift</h3>
+      <p>Transformers replaced RNNs/LSTMs because they capture long-range dependencies better, train faster with parallelism, and scale efficiently to billions of parameters.</p>
+    </div>
+    <div class="card c-sky">
+      <div class="card-label lbl-sky">Applications</div>
+      <h3>🌍 Everywhere in AI</h3>
+      <ul>
+        <li>Chatbots & LLMs (GPT, Claude)</li>
+        <li>Search engines (BERT)</li>
+        <li>Code generation (Copilot)</li>
+        <li>Image generation (DALL·E)</li>
+        <li>Speech recognition</li>
+      </ul>
+    </div>
+    <div class="card c-lav">
+      <div class="card-label lbl-lav">Key families</div>
+      <h3>🏛️ Major Models</h3>
+      <ul>
+        <li><strong>GPT</strong> – decoder-only (text generation)</li>
+        <li><strong>BERT</strong> – encoder-only (understanding)</li>
+        <li><strong>T5, BART</strong> – encoder-decoder</li>
+        <li><strong>LLaMA, Mistral</strong> – open-weights LLMs</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card-wide">
+    <h3>🆚 Transformer vs RNN vs LSTM</h3>
+    <div style="overflow-x:auto; margin-top:12px;">
+    <table class="cmp-table">
+      <thead><tr><th>Feature</th><th>RNN</th><th>LSTM</th><th>Transformer</th></tr></thead>
+      <tbody>
+        <tr><td>Parallel Processing</td><td class="no">✗ Sequential</td><td class="no">✗ Sequential</td><td class="yes">✓ Fully Parallel</td></tr>
+        <tr><td>Long-Range Dependencies</td><td class="no">✗ Weak</td><td class="no">⚠ Limited</td><td class="yes">✓ Excellent</td></tr>
+        <tr><td>Scalability</td><td class="no">✗ Poor</td><td class="no">✗ Poor</td><td class="yes">✓ Highly Scalable</td></tr>
+        <tr><td>Training Speed</td><td class="no">Slow</td><td class="no">Slow</td><td class="yes">Fast (GPU-friendly)</td></tr>
+        <tr><td>Memory Usage</td><td>Low</td><td>Medium</td><td class="no">High (O(n²) attention)</td></tr>
+        <tr><td>Position Awareness</td><td>Implicit</td><td>Implicit</td><td>Positional Encoding needed</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="term-grid">
+    <div class="term-card c-rose" style="border-color:#f0b0b0;">
+      <div class="term-name">📌 Token</div>
+      <p>A chunk of text (word, subword, or character) that the model processes. "unhappy" → ["un", "happy"]</p>
+    </div>
+    <div class="term-card c-peach" style="border-color:#e8c090;">
+      <div class="term-name">📌 Embedding</div>
+      <p>A dense vector that represents a token in high-dimensional space, capturing semantic meaning.</p>
+    </div>
+    <div class="term-card c-lemon" style="border-color:#e0d070;">
+      <div class="term-name">📌 Attention</div>
+      <p>A mechanism to weigh how much each token should "pay attention" to every other token.</p>
+    </div>
+    <div class="term-card c-mint" style="border-color:#90d8be;">
+      <div class="term-name">📌 Context Window</div>
+      <p>The maximum number of tokens a model can process at once (e.g., 128K for Claude).</p>
+    </div>
+    <div class="term-card c-sky" style="border-color:#90c0f0;">
+      <div class="term-name">📌 Pre-training</div>
+      <p>Training on massive corpora to learn language patterns before task-specific fine-tuning.</p>
+    </div>
+    <div class="term-card c-lav" style="border-color:#c0a0e8;">
+      <div class="term-name">📌 Fine-tuning</div>
+      <p>Adapting a pre-trained model to a specific task (sentiment, QA, code) with labeled data.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ SECTION: PIPELINE ══════════ -->
+<div id="tab-pipeline" class="section">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-peach">⚙️</div>
+    <div>
+      <h2>The Transformer Pipeline</h2>
+      <p>From raw text to output — click each step to explore.</p>
+    </div>
+  </div>
+
+  <div class="stepper" id="stepper">
+    <div class="step c-rose" data-step="0" onclick="showStep(0)">
+      <div class="step-num" style="background:#f0b0b0;color:#c0565a;">1</div>
+      <div class="step-title">Input Text</div>
+      <div class="step-sub">Raw text string</div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step c-peach" data-step="1" onclick="showStep(1)">
+      <div class="step-num" style="background:#f5c880;color:#c07a40;">2</div>
+      <div class="step-title">Tokenization</div>
+      <div class="step-sub">Split into tokens</div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step c-lemon" data-step="2" onclick="showStep(2)">
+      <div class="step-num" style="background:#eed870;color:#9a8700;">3</div>
+      <div class="step-title">Embeddings</div>
+      <div class="step-sub">Tokens → vectors</div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step c-mint" data-step="3" onclick="showStep(3)">
+      <div class="step-num" style="background:#80d8b8;color:#2a8a65;">4</div>
+      <div class="step-title">Positional Enc.</div>
+      <div class="step-sub">Add order info</div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step c-sky" data-step="4" onclick="showStep(4)">
+      <div class="step-num" style="background:#80c0f0;color:#2460a0;">5</div>
+      <div class="step-title">Transformer</div>
+      <div class="step-sub">Enc–Dec model</div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step c-lav" data-step="5" onclick="showStep(5)">
+      <div class="step-num" style="background:#c0a0e8;color:#6035b0;">6</div>
+      <div class="step-title">Output</div>
+      <div class="step-sub">Tokens generated</div>
+    </div>
+  </div>
+
+  <!-- Step details -->
+  <div id="step-0" class="step-detail active" style="border-color:#f0b0b0;">
+    <h3 style="color:#c0565a;">Step 1 · Input Text</h3>
+    <p>Everything starts with raw text. The model receives a string like: <strong>"The cat sat on the mat."</strong></p>
+    <p>The model doesn't understand text — it needs to convert it into numbers. That's the job of the next steps.</p>
+    <div class="card-wide" style="background:var(--rose);border-color:#f0b0b0;margin-top:16px;">
+      <strong>Example:</strong> Input → <code style="background:white;padding:2px 8px;border-radius:6px;">"Translate English to French: The cat sat on the mat."</code>
+    </div>
+  </div>
+
+  <div id="step-1" class="step-detail" style="border-color:#f5c880;">
+    <h3 style="color:#c07a40;">Step 2 · Tokenization</h3>
+    <p>Text is split into <strong>tokens</strong> — sub-word units — using algorithms like <strong>Byte-Pair Encoding (BPE)</strong> or <strong>WordPiece</strong>.</p>
+    <p>Each unique token has an ID from a fixed vocabulary (e.g., 50,000 tokens).</p>
+    <div class="card-wide" style="background:var(--peach);border-color:#e8c090;margin-top:16px;">
+      <strong>"unhappily"</strong> might tokenize as: <code>["un", "happy", "ily"]</code><br><br>
+      <strong>"The cat sat on the mat."</strong> → <code>["The", "cat", "sat", "on", "the", "mat", "."]</code> → IDs: <code>[464, 3797, 3332, 319, 262, 2603, 13]</code>
+    </div>
+    <p style="margin-top:14px;"><strong>Why sub-words?</strong> Handles unseen words ("photosynthesis" = ["photo","synthesis"]) while keeping vocabulary manageable.</p>
+  </div>
+
+  <div id="step-2" class="step-detail" style="border-color:#eed870;">
+    <h3 style="color:#9a8700;">Step 3 · Embeddings</h3>
+    <p>Each token ID is mapped to a <strong>dense vector</strong> of size d_model (e.g., 512 or 768 dimensions) via a learned embedding matrix.</p>
+    <p>Similar meanings → similar vectors. The embedding captures semantic relationships.</p>
+    <div class="card-wide" style="background:var(--lemon);border-color:#e0d070;margin-top:16px;">
+      <strong>Famous analogy:</strong> <code>king − man + woman ≈ queen</code><br><br>
+      Token "cat" → <code>[0.23, -0.47, 0.81, 0.12, ..., 0.55]</code> (512 dimensions)<br>
+      Token "dog" → <code>[0.21, -0.44, 0.79, 0.15, ..., 0.52]</code> ← very similar!
+    </div>
+    <p style="margin-top:14px;">These vectors are the initial "understanding" of each word before any context is applied.</p>
+  </div>
+
+  <div id="step-3" class="step-detail" style="border-color:#80d8b8;">
+    <h3 style="color:#2a8a65;">Step 4 · Positional Encoding</h3>
+    <p>Transformers process all tokens at once (parallel), so they lose the notion of order. <strong>Positional Encoding</strong> injects position information into the embeddings.</p>
+    <p>The original paper uses <strong>sine and cosine functions</strong> of different frequencies:</p>
+    <div class="formula">
+      PE(pos, 2i) = sin(pos / 10000<sup>2i/d_model</sup>)<br>
+      PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d_model</sup>)
+    </div>
+    <div class="card-wide" style="background:var(--mint);border-color:#90d8be;margin-top:16px;">
+      <strong>Why it matters:</strong> Without positional encoding, "Dog bites man" and "Man bites dog" would produce identical representations — catastrophic for meaning!<br><br>
+      Final input = Token Embedding <strong>+</strong> Positional Encoding
+    </div>
+  </div>
+
+  <div id="step-4" class="step-detail" style="border-color:#80c0f0;">
+    <h3 style="color:#2460a0;">Step 5 · Transformer Model (Encoder–Decoder)</h3>
+    <p>The encoded vectors pass through stacked layers. Each layer has two core sub-modules:</p>
+    <div class="card-grid" style="margin-top:16px;">
+      <div class="card c-sky">
+        <h3>Multi-Head Self-Attention</h3>
+        <p>Every token attends to every other token, computing relevance scores. Multiple "heads" look for different patterns simultaneously.</p>
+      </div>
+      <div class="card c-lav">
+        <h3>Feed-Forward Network</h3>
+        <p>A position-wise fully-connected network (2 linear layers + ReLU) applied independently to each token after attention.</p>
+      </div>
+    </div>
+    <p style="margin-top:12px;">Both sub-modules use <strong>Residual Connections</strong> (Add) and <strong>Layer Normalization</strong> (Norm) to stabilize training. The whole block repeats <strong>N times</strong> (e.g., 6 or 96 layers).</p>
+  </div>
+
+  <div id="step-5" class="step-detail" style="border-color:#c0a0e8;">
+    <h3 style="color:#6035b0;">Step 6 · Output Predictions</h3>
+    <p>The decoder's final hidden state passes through a <strong>Linear layer</strong> and then <strong>Softmax</strong> to produce a probability distribution over the vocabulary.</p>
+    <div class="card-wide" style="background:var(--lavender);border-color:#c0a0e8;margin-top:16px;">
+      <strong>Example:</strong> The model sees ["The", "cat", "is"] and assigns probabilities:<br><br>
+      "sleeping" → 68% &nbsp;|&nbsp; "running" → 14% &nbsp;|&nbsp; "happy" → 9% &nbsp;|&nbsp; others → 9%<br><br>
+      → Selects "sleeping" (greedy) → appends it → repeats until &lt;eos&gt; token.
+    </div>
+    <p style="margin-top:14px;">This <strong>autoregressive</strong> generation (one token at a time) is how GPT and similar models produce text.</p>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ SECTION: ATTENTION ══════════ -->
+<div id="tab-attention" class="section">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-lav">🌀</div>
+    <div>
+      <h2>Self-Attention Mechanism</h2>
+      <p>The engine of Transformers — click a word to see how it attends to others.</p>
+    </div>
+  </div>
+
+  <div class="card-wide" style="background:linear-gradient(135deg,#f0ecff,#e8f4ff);border-color:#c8b8f8;">
+    <h3>🎯 Interactive Attention Demo</h3>
+    <p style="margin-bottom:16px;color:var(--ink2);">Click any word to visualize which other words it "attends to" most strongly in context:</p>
+    <p style="margin-bottom:8px;font-style:italic;color:var(--ink2);">Sentence: "The animal didn't cross the street because <strong>it</strong> was too tired."</p>
+    <div class="attn-demo">
+      <div class="attn-sentence" id="attn-sentence">
+        <span class="attn-word" style="background:#ffe5cc;" data-word="The">The</span>
+        <span class="attn-word" style="background:#ffd6d6;" data-word="animal">animal</span>
+        <span class="attn-word" style="background:#fff8cc;" data-word="didn't">didn't</span>
+        <span class="attn-word" style="background:#cce8ff;" data-word="cross">cross</span>
+        <span class="attn-word" style="background:#e5d6ff;" data-word="the">the</span>
+        <span class="attn-word" style="background:#ccf0e5;" data-word="street">street</span>
+        <span class="attn-word" style="background:#ffd6d6;" data-word="because">because</span>
+        <span class="attn-word" style="background:#f5d6ff;" onclick="attnClick(this)" style="background:#c0a0e8;border-color:#6035b0;" data-word="it">it</span>
+        <span class="attn-word" style="background:#fff8cc;" data-word="was">was</span>
+        <span class="attn-word" style="background:#cce8ff;" data-word="too">too</span>
+        <span class="attn-word" style="background:#ccf0e5;" data-word="tired">tired</span>
+      </div>
+      <div id="attn-result" style="margin-top:16px;padding:16px;background:white;border-radius:12px;border:1.5px solid var(--border);display:none;">
+        <p style="font-weight:600;margin-bottom:10px;font-size:.9rem;">Attention weights for <span id="attn-word-label"></span>:</p>
+        <div class="attn-map" id="attn-map"></div>
+        <p id="attn-explain" style="margin-top:12px;font-size:.88rem;color:var(--ink2);font-style:italic;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wide" style="margin-top:28px;">
+    <h3>📐 The Self-Attention Formula</h3>
+    <p style="margin-bottom:16px;color:var(--ink2);">For each token, we compute Query (Q), Key (K), and Value (V) vectors from learned weight matrices:</p>
+    <div class="formula">
+      Attention(Q, K, V) = softmax<span style="font-size:1.2em;">(</span>
+      <span style="vertical-align:middle;">
+        QK<sup>T</sup> / √d<sub>k</sub>
+      </span>
+      <span style="font-size:1.2em;">)</span> · V
+    </div>
+    <div class="card-grid" style="margin-top:20px;">
+      <div class="card c-rose">
+        <div class="card-label lbl-rose">Q – Query</div>
+        <h3>"What am I looking for?"</h3>
+        <p>The current token's "search query" — what it wants to find in other tokens.</p>
+      </div>
+      <div class="card c-mint">
+        <div class="card-label lbl-mint">K – Key</div>
+        <h3>"What do I contain?"</h3>
+        <p>Each token's "index" — a description of the information it holds.</p>
+      </div>
+      <div class="card c-sky">
+        <div class="card-label lbl-sky">V – Value</div>
+        <h3>"What do I give out?"</h3>
+        <p>The actual information to be passed forward, weighted by attention scores.</p>
+      </div>
+    </div>
+    <div class="card-wide" style="background:var(--lemon);border-color:#e0d070;margin-top:8px;">
+      <strong>√d_k scaling:</strong> Without dividing by √d_k, dot products grow large as d_k increases, causing softmax to produce extremely small gradients — the "vanishing gradient" problem. Scaling stabilizes training.
+    </div>
+  </div>
+
+  <div class="card-wide" style="margin-top:28px;">
+    <h3>🔀 Multi-Head Attention</h3>
+    <p style="color:var(--ink2);margin-bottom:16px;">Instead of one attention mechanism, Transformers run <strong>h parallel attention heads</strong> on projected sub-spaces, then concatenate results.</p>
+    <div class="card-grid">
+      <div class="card c-lav">
+        <div class="card-label lbl-lav">Head 1</div>
+        <h3>👁️ Grammar & Syntax</h3>
+        <p>Focuses on subject-verb agreement, sentence structure, and grammatical relationships.</p>
+      </div>
+      <div class="card c-peach">
+        <div class="card-label lbl-peach">Head 2</div>
+        <h3>🔗 Coreference</h3>
+        <p>Links pronouns to their antecedents — e.g., "it" → "animal" in our example above.</p>
+      </div>
+      <div class="card c-mint">
+        <div class="card-label lbl-mint">Head 3</div>
+        <h3>💬 Semantic Meaning</h3>
+        <p>Captures thematic and semantic relationships between concepts across the sentence.</p>
+      </div>
+      <div class="card c-rose">
+        <div class="card-label lbl-rose">Head N</div>
+        <h3>🎯 Task-Specific</h3>
+        <p>Later layers learn task-specific patterns (entity types, sentiment, factual associations).</p>
+      </div>
+    </div>
+    <div class="formula" style="margin-top:8px;">
+      MultiHead(Q,K,V) = Concat(head<sub>1</sub>,...,head<sub>h</sub>) · W<sup>O</sup>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ SECTION: ARCHITECTURE ══════════ -->
+<div id="tab-architecture" class="section">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-sky">🏗️</div>
+    <div>
+      <h2>Encoder–Decoder Architecture</h2>
+      <p>How the two halves of the Transformer work together.</p>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-bottom:32px;">
+    <div class="card c-sky" style="border-color:#90c0f0;">
+      <div class="card-label lbl-sky">ENCODER</div>
+      <h3>🔍 Understands the Input</h3>
+      <ul>
+        <li>Reads the <strong>entire</strong> input at once</li>
+        <li>Creates <strong>contextual representations</strong> (each token vector now encodes the full context)</li>
+        <li>Uses <strong>bidirectional</strong> self-attention (every token sees all others)</li>
+        <li>Used in: BERT, sentence transformers</li>
+      </ul>
+    </div>
+    <div class="card c-lavender" style="background:var(--lavender);border-color:#c0a0e8;">
+      <div class="card-label lbl-lav">DECODER</div>
+      <h3>✏️ Generates the Output</h3>
+      <ul>
+        <li>Generates tokens <strong>one at a time</strong></li>
+        <li><strong>Masked</strong> self-attention (can't look at future tokens)</li>
+        <li><strong>Cross-attention</strong> — attends to encoder outputs</li>
+        <li>Used in: GPT, text generation models</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card-wide">
+    <h3>🔄 How They Work Together (Translation Example)</h3>
+    <p style="color:var(--ink2);margin-bottom:18px;">Translating "The cat is sleeping." (English → French):</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:var(--sky);border-radius:12px;padding:16px 20px;border:1.5px solid #90c0f0;">
+        <strong style="color:var(--sky-d);">① Encoder</strong> reads "The cat is sleeping." and creates 5 context-rich vectors (one per token).
+      </div>
+      <div style="text-align:center;font-size:1.3rem;">↓</div>
+      <div style="background:var(--lavender);border-radius:12px;padding:16px 20px;border:1.5px solid #c0a0e8;">
+        <strong style="color:var(--lavender-d);">② Decoder</strong> starts with &lt;start&gt; token and cross-attends to encoder output → predicts "Le"
+      </div>
+      <div style="text-align:center;font-size:1.3rem;">↓</div>
+      <div style="background:var(--lavender);border-radius:12px;padding:16px 20px;border:1.5px solid #c0a0e8;">
+        <strong style="color:var(--lavender-d);">③ Decoder</strong> takes "Le" + cross-attends → predicts "chat"
+      </div>
+      <div style="text-align:center;font-size:1.3rem;">↓</div>
+      <div style="background:var(--mint);border-radius:12px;padding:16px 20px;border:1.5px solid #90d8be;">
+        <strong style="color:var(--mint-d);">④ Continues</strong> → "dort." → &lt;eos&gt; → Output: <strong>"Le chat dort."</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wide" style="margin-top:28px;">
+    <h3>📋 Three Attention Types Compared</h3>
+    <div style="overflow-x:auto;margin-top:14px;">
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>Attention Type</th>
+          <th>Where Used</th>
+          <th>Query from</th>
+          <th>Keys/Values from</th>
+          <th>Can See Future?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Self-Attention</strong></td>
+          <td>Encoder</td>
+          <td>Encoder input</td>
+          <td>Encoder input</td>
+          <td class="yes">✓ Yes (bidirectional)</td>
+        </tr>
+        <tr>
+          <td><strong>Masked Self-Attention</strong></td>
+          <td>Decoder</td>
+          <td>Decoder input</td>
+          <td>Decoder input</td>
+          <td class="no">✗ No (causal mask)</td>
+        </tr>
+        <tr>
+          <td><strong>Cross-Attention</strong></td>
+          <td>Decoder</td>
+          <td>Decoder state</td>
+          <td>Encoder output</td>
+          <td>N/A</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-top:28px;">
+    <div class="card c-mint">
+      <div class="card-label lbl-mint">Residual Connections</div>
+      <h3>➕ Add & Norm</h3>
+      <p>Each sub-layer output is added to its input (<em>residual/skip connection</em>) before normalization. This prevents vanishing gradients and allows training of very deep networks.</p>
+    </div>
+    <div class="card c-peach">
+      <div class="card-label lbl-peach">Layer Normalization</div>
+      <h3>📊 Stability</h3>
+      <p>Normalizes activations across the feature dimension for each token independently. Stabilizes and speeds up training compared to batch normalization.</p>
+    </div>
+    <div class="card c-lemon">
+      <div class="card-label lbl-lemon">Feed-Forward Network</div>
+      <h3>⚡ Non-linearity</h3>
+      <p>Two linear transformations with ReLU: FFN(x) = max(0, xW₁+b₁)W₂+b₂. Typically expands to 4× d_model internally (e.g., 512→2048→512).</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ SECTION: KEY CONCEPTS ══════════ -->
+<div id="tab-concepts" class="section">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-mint">💡</div>
+    <div>
+      <h2>Key Concepts for CGAI Exam</h2>
+      <p>Scaling, context windows, pre-training/fine-tuning, and challenges.</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card c-peach">
+      <div class="card-label lbl-peach">Concept 7</div>
+      <h3>📈 Scaling Laws</h3>
+      <p>Model performance improves predictably with more <strong>data</strong>, <strong>parameters</strong>, and <strong>compute</strong>. This enabled GPT-4, Claude, Gemini etc.</p>
+      <br>
+      <p><strong>Key formula:</strong> Loss ∝ N<sup>-α</sup> (where N = parameters)</p>
+    </div>
+    <div class="card c-lemon">
+      <div class="card-label lbl-lemon">Concept 8</div>
+      <h3>🎓 Pre-training + Fine-tuning</h3>
+      <ul>
+        <li><strong>Pre-training:</strong> Next-token prediction on trillions of tokens (unsupervised)</li>
+        <li><strong>Fine-tuning:</strong> Supervised task adaptation</li>
+        <li><strong>RLHF:</strong> Human feedback for alignment</li>
+        <li><strong>LoRA:</strong> Parameter-efficient fine-tuning</li>
+      </ul>
+    </div>
+    <div class="card c-sky">
+      <div class="card-label lbl-sky">Concept 9</div>
+      <h3>🪟 Context Window</h3>
+      <p>Maximum tokens processable at once. Larger = better long-document understanding but higher memory cost (O(n²) attention computation).</p>
+      <br>
+      <p>GPT-3: 4K | GPT-4: 128K | Claude: 200K | Gemini: 1M+</p>
+    </div>
+  </div>
+
+  <div class="card-wide" style="margin:28px 0 20px;">
+    <h3>⚠️ Major Challenges</h3>
+    <div class="challenge-grid">
+      <div class="challenge-chip c-rose" style="border:1.5px solid #f0b0b0;">
+        <div class="icon">💾</div>
+        <h4>High Memory Usage</h4>
+        <p>Attention matrix is O(n²) — 1M token context needs ~4TB RAM naively</p>
+      </div>
+      <div class="challenge-chip c-peach" style="border:1.5px solid #e8c090;">
+        <div class="icon">💰</div>
+        <h4>Training Cost</h4>
+        <p>GPT-4 training estimated at $100M+. Inference at scale costs millions/month.</p>
+      </div>
+      <div class="challenge-chip c-lemon" style="border:1.5px solid #e0d070;">
+        <div class="icon">👻</div>
+        <h4>Hallucinations</h4>
+        <p>Models confidently generate plausible but factually wrong content.</p>
+      </div>
+      <div class="challenge-chip c-lav" style="border:1.5px solid #c0a0e8;">
+        <div class="icon">⏳</div>
+        <h4>Latency</h4>
+        <p>Autoregressive decoding is sequential — each token requires a full forward pass.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-wide">
+    <h3>🔑 CGAI Exam Must-Know Facts</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px;">
+      <div style="background:var(--mint);border-radius:12px;padding:16px;border:1.5px solid #90d8be;">
+        <strong>✅ Transformers use self-attention, not recurrence</strong> — processes all tokens in parallel, not sequentially.
+      </div>
+      <div style="background:var(--sky);border-radius:12px;padding:16px;border:1.5px solid #90c0f0;">
+        <strong>✅ Positional encoding is additive</strong> — added to token embeddings, not concatenated.
+      </div>
+      <div style="background:var(--lavender);border-radius:12px;padding:16px;border:1.5px solid #c0a0e8;">
+        <strong>✅ Decoder uses causal masking</strong> — cannot attend to future tokens to prevent data leakage.
+      </div>
+      <div style="background:var(--peach);border-radius:12px;padding:16px;border:1.5px solid #e8c090;">
+        <strong>✅ Cross-attention</strong> — decoder queries encoder outputs; keys and values come from the encoder.
+      </div>
+      <div style="background:var(--lemon);border-radius:12px;padding:16px;border:1.5px solid #e0d070;">
+        <strong>✅ Scaling denominator √d_k</strong> — prevents softmax saturation and gradient vanishing.
+      </div>
+      <div style="background:var(--rose);border-radius:12px;padding:16px;border:1.5px solid #f0b0b0;">
+        <strong>✅ BERT = encoder-only</strong> (understanding). <strong>GPT = decoder-only</strong> (generation). <strong>T5 = both</strong>.
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ SECTION: VISUALS ══════════ -->
+<div id="tab-visuals" class="section">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-lilac">🖼️</div>
+    <div>
+      <h2>Reference Diagrams</h2>
+      <p>Visual reference materials for exam study.</p>
+    </div>
+  </div>
+
+  <div class="img-card">
+    <img src="transformer_workflow.png" alt="Transformer Workflow Diagram" />
+    <div class="img-card-body">
+      <h3>🔄 Transformer Workflow — From Input to Output</h3>
+      <p>This diagram shows the complete 6-step pipeline: Input Text → Tokenization → Embeddings → Positional Encoding → Encoder–Decoder → Output Predictions. The lower half details the internal architecture of both the Encoder (with Multi-Head Self-Attention and FFN) and the Decoder (with Masked Self-Attention, Cross-Attention, and FFN). Note the residual connections (Add & Norm) around each sub-layer.</p>
+    </div>
+  </div>
+
+  <div class="img-card">
+    <img src="transformer_nutshell.png" alt="Transformers in a Nutshell" />
+    <div class="img-card-body">
+      <h3>🥜 Transformers in a Nutshell — Key Concepts Overview</h3>
+      <p>A comprehensive overview covering: (1) Attention Mechanism with the coreference example, (2) Self-Attention Formula Q/K/V, (3) Multi-Head Attention, (4) Positional Encoding, (5) Encoder–Decoder Architecture, (6) Parallel Processing advantages, (7) Scaling Power, (8) Pre-training + Fine-tuning, (9) Context Window, and (10) Major Challenges. Also includes the Simple Transformer Flow and Why Transformers Became Revolutionary.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ SECTION: QUIZ ══════════ -->
+<div id="tab-quiz" class="section">
+<div class="content-wrap">
+
+  <div class="sec-header">
+    <div class="sec-icon c-rose">🎯</div>
+    <div>
+      <h2>CGAI Practice Quiz</h2>
+      <p>Test your Transformer knowledge — 10 exam-style questions.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--lavender);border-radius:16px;padding:16px 20px;margin-bottom:28px;border:1.5px solid #c0a0e8;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <strong style="color:var(--lavender-d);">Progress</strong>
+      <span id="score-display" style="color:var(--lavender-d);font-weight:700;">0 / 10</span>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div id="quiz-container"></div>
+
+  <button onclick="submitQuiz()" id="submit-btn" style="background:var(--lavender-d);color:white;border:none;border-radius:12px;padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:8px;font-family:var(--font-b);transition:opacity .2s;">
+    Submit Quiz
+  </button>
+
+  <div class="quiz-score" id="quiz-score">
+    <h3>🎉 Quiz Complete!</h3>
+    <p id="score-text"></p>
+    <p id="score-grade" style="font-size:1.2rem;font-weight:700;margin-top:8px;"></p>
+    <button onclick="resetQuiz()" style="margin-top:16px;background:var(--lavender-d);color:white;border:none;border-radius:10px;padding:10px 24px;cursor:pointer;font-family:var(--font-b);font-weight:600;">Retry Quiz</button>
+  </div>
+
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>📚 CGAI Certification Exam Prep &nbsp;·&nbsp; 
+    <a href="https://charteredcertifications.com/learning/courses/cgai" target="_blank">
+      charteredcertifications.com/learning/courses/cgai
+    </a>
+  </p>
+  <p style="margin-top:8px;opacity:.7;">Transformer concepts based on "Attention Is All You Need" (Vaswani et al., 2017)</p>
+</footer>
+
+<script>
+// ── TABS ──
+const tabBtns = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.section');
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    sections.forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + target).classList.add('active');
+  });
+});
+
+// ── PIPELINE STEPPER ──
+function showStep(n) {
+  document.querySelectorAll('.step-detail').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelectorAll('.step')[n].classList.add('active');
+}
+
+// ── ATTENTION DEMO ──
+const attnData = {
+  "The":     { weights: [0.4,0.1,0.05,0.05,0.2,0.05,0.05,0.05,0.02,0.02,0.01], explain: '"The" attends most to itself and the following noun "animal", establishing a noun phrase.' },
+  "animal":  { weights: [0.1,0.5,0.05,0.05,0.05,0.05,0.05,0.1,0.02,0.02,0.01], explain: '"animal" attends strongly to itself and to "it" — this is the coreference link transformers learn!' },
+  "didn't":  { weights: [0.05,0.1,0.4,0.2,0.05,0.1,0.05,0.02,0.02,0.02,0.01], explain: '"didn\'t" attends to "cross" to understand the negated action.' },
+  "cross":   { weights: [0.05,0.1,0.2,0.4,0.05,0.1,0.05,0.02,0.02,0.02,0.01], explain: '"cross" attends to the verb phrase components and the obstacle "street".' },
+  "the":     { weights: [0.3,0.05,0.05,0.05,0.35,0.1,0.02,0.02,0.02,0.02,0.02], explain: '"the" attends to itself and nearby "The" — both are articles.' },
+  "street":  { weights: [0.05,0.05,0.1,0.2,0.1,0.4,0.05,0.02,0.02,0.02,0.01], explain: '"street" attends to "cross" (the related verb) and itself.' },
+  "because": { weights: [0.05,0.05,0.05,0.1,0.05,0.05,0.4,0.1,0.05,0.05,0.05], explain: '"because" creates a causal link — it attends to both sides of the causal relationship.' },
+  "it":      { weights: [0.05,0.45,0.05,0.05,0.05,0.05,0.05,0.15,0.05,0.02,0.03], explain: '"it" strongly attends to "animal" — the pronoun coreference resolution that demonstrates transformer intelligence!' },
+  "was":     { weights: [0.03,0.05,0.03,0.05,0.03,0.05,0.1,0.15,0.35,0.1,0.06], explain: '"was" attends to "tired" (the predicate) and "it" (the subject).' },
+  "too":     { weights: [0.02,0.02,0.03,0.05,0.03,0.05,0.05,0.05,0.1,0.5,0.1], explain: '"too" attends to "tired" (modifying it) and contributes to the degree meaning.' },
+  "tired":   { weights: [0.02,0.1,0.03,0.05,0.03,0.05,0.05,0.15,0.1,0.1,0.32], explain: '"tired" attends to the subject "it"/"animal" and to "was" (copula), forming the predicate relationship.' }
+};
+const words = ["The","animal","didn't","cross","the","street","because","it","was","too","tired"];
+const colors = ['#ffd6d6','#f5c880','#fff8cc','#cce8ff','#e5d6ff','#ccf0e5','#ffd6d6','#f5d6ff','#fff8cc','#cce8ff','#ccf0e5'];
+
+document.querySelectorAll('.attn-word').forEach((el, i) => {
+  el.style.background = colors[i % colors.length];
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.attn-word').forEach(w => w.classList.remove('selected'));
+    el.classList.add('selected');
+    const word = el.dataset.word;
+    const data = attnData[word] || attnData["it"];
+    document.getElementById('attn-result').style.display = 'block';
+    document.getElementById('attn-word-label').textContent = '"' + word + '"';
+    const map = document.getElementById('attn-map');
+    map.innerHTML = '';
+    words.forEach((w, j) => {
+      const score = data.weights[j] || 0;
+      const pct = Math.round(score * 100);
+      const chip = document.createElement('span');
+      chip.className = 'attn-chip';
+      chip.textContent = w + ' ' + pct + '%';
+      const alpha = 0.2 + score * 0.8;
+      chip.style.background = `rgba(96,53,176,${alpha})`;
+      chip.style.color = score > 0.3 ? 'white' : '#3d3d5c';
+      chip.style.fontWeight = score > 0.25 ? '700' : '400';
+      map.appendChild(chip);
+    });
+    document.getElementById('attn-explain').textContent = data.explain;
+  });
+});
+
+// ── QUIZ ──
+const quizData = [
+  {
+    q: "What is the primary advantage of Transformers over RNNs for sequence modeling?",
+    options: ["They use fewer parameters", "They process tokens in parallel using self-attention", "They require less training data", "They don't need positional encoding"],
+    correct: 1,
+    explanation: "Transformers process all tokens simultaneously (in parallel) using self-attention, unlike RNNs which process sequentially — making them much faster to train and better at long-range dependencies."
+  },
+  {
+    q: "In the self-attention formula Attention(Q, K, V) = softmax(QKᵀ / √d_k) · V, why is √d_k used as a scaling factor?",
+    options: ["To increase the learning rate", "To prevent softmax saturation from large dot products", "To reduce the number of parameters", "To apply positional information"],
+    correct: 1,
+    explanation: "Without scaling, dot products grow large with d_k, pushing softmax into regions with tiny gradients. Dividing by √d_k keeps gradients stable during training."
+  },
+  {
+    q: "Which type of attention does the Decoder use to access information from the Encoder?",
+    options: ["Masked Self-Attention", "Bidirectional Attention", "Cross-Attention", "Full Self-Attention"],
+    correct: 2,
+    explanation: "Cross-attention allows the Decoder to 'look at' encoder outputs. The query comes from the decoder, but keys and values come from the encoder."
+  },
+  {
+    q: "Why is Masked Self-Attention used in the Decoder?",
+    options: ["To reduce computational cost", "To prevent the decoder from seeing future tokens during training", "To improve encoder accuracy", "To enable bidirectional understanding"],
+    correct: 1,
+    explanation: "Masking prevents information leakage — during training, the decoder cannot see future tokens, mimicking the autoregressive generation process at inference time."
+  },
+  {
+    q: "BERT is an example of which Transformer variant?",
+    options: ["Decoder-only", "Encoder-Decoder", "Encoder-only", "Attention-free"],
+    correct: 2,
+    explanation: "BERT uses only the encoder stack with bidirectional self-attention, making it ideal for understanding tasks (classification, QA). GPT is decoder-only; T5 is encoder-decoder."
+  },
+  {
+    q: "What problem does Positional Encoding solve in Transformers?",
+    options: ["Overfitting on training data", "Loss of word order information due to parallel processing", "Vocabulary size limitations", "Vanishing gradient problem"],
+    correct: 1,
+    explanation: "Since Transformers process all tokens simultaneously, they lose sequential order information. Positional Encoding injects position signals so the model knows token order."
+  },
+  {
+    q: "What is the computational complexity of the standard self-attention mechanism with respect to sequence length n?",
+    options: ["O(n)", "O(n log n)", "O(n²)", "O(n³)"],
+    correct: 2,
+    explanation: "Self-attention computes attention scores between every pair of tokens, resulting in O(n²) complexity in both time and memory — the main bottleneck for long sequences."
+  },
+  {
+    q: "Multi-Head Attention uses h parallel attention heads. What is the primary benefit?",
+    options: ["Reduces memory usage by h times", "Allows the model to attend to information from different representation subspaces simultaneously", "Eliminates the need for positional encoding", "Speeds up inference by h times"],
+    correct: 1,
+    explanation: "Different heads can learn different relationship types simultaneously — e.g., one head for syntax, another for coreference, another for semantics — giving richer representations."
+  },
+  {
+    q: "What does 'context window' refer to in Transformer models?",
+    options: ["The size of the training dataset", "The maximum number of tokens the model can process in a single forward pass", "The number of attention heads", "The dimension of embeddings"],
+    correct: 1,
+    explanation: "The context window is the max token count per inference. Larger windows improve long-document handling but increase memory requirements quadratically due to attention."
+  },
+  {
+    q: "In Byte-Pair Encoding (BPE) tokenization, how might 'unhappily' be split?",
+    options: ["['u','n','h','a','p','p','i','l','y']", "['unhappily']", "['un','happy','ily'] or similar sub-words", "['unhappy','ly']"],
+    correct: 2,
+    explanation: "BPE merges frequent character pairs iteratively. Common sub-words like 'un', 'happy', 'ily' would each be their own tokens, allowing the model to handle unseen words compositionally."
+  }
+];
+
+let answered = new Array(quizData.length).fill(false);
+let scores = new Array(quizData.length).fill(0);
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  quizData.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.id = 'qq-' + qi;
+    div.innerHTML = `
+      <p>Q${qi+1}. ${q.q}</p>
+      <div class="quiz-options">
+        ${q.options.map((o,oi) => `<button class="quiz-opt" onclick="answerQ(${qi},${oi})">${String.fromCharCode(65+oi)}. ${o}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="qf-${qi}"></div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function answerQ(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const q = quizData[qi];
+  const opts = document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  opts.forEach((o,i) => {
+    o.disabled = true;
+    if (i === q.correct) o.classList.add('correct');
+    else if (i === oi) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('qf-' + qi);
+  const isRight = oi === q.correct;
+  scores[qi] = isRight ? 1 : 0;
+  fb.style.background = isRight ? 'var(--mint)' : 'var(--rose)';
+  fb.style.color = isRight ? 'var(--mint-d)' : 'var(--rose-d)';
+  fb.textContent = (isRight ? '✅ Correct! ' : '❌ Incorrect. ') + q.explanation;
+  fb.classList.add('show');
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = answered.filter(Boolean).length;
+  document.getElementById('score-display').textContent = scores.reduce((a,b)=>a+b,0) + ' / ' + quizData.length;
+  document.getElementById('prog-bar').style.width = (done/quizData.length*100) + '%';
+}
+
+function submitQuiz() {
+  const total = scores.reduce((a,b)=>a+b,0);
+  const pct = Math.round(total/quizData.length*100);
+  const scoreDiv = document.getElementById('quiz-score');
+  scoreDiv.style.display = 'block';
+  document.getElementById('score-text').textContent = `You scored ${total} out of ${quizData.length} (${pct}%)`;
+  let grade = pct >= 90 ? '🏆 Excellent! Exam-ready!' : pct >= 70 ? '👍 Good — review the concepts you missed.' : '📖 Keep studying — revisit the Overview and Architecture tabs.';
+  document.getElementById('score-grade').textContent = grade;
+  scoreDiv.scrollIntoView({behavior:'smooth'});
+}
+
+function resetQuiz() {
+  answered = new Array(quizData.length).fill(false);
+  scores = new Array(quizData.length).fill(0);
+  document.getElementById('quiz-score').style.display = 'none';
+  document.getElementById('prog-bar').style.width = '0%';
+  document.getElementById('score-display').textContent = '0 / 10';
+  buildQuiz();
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
