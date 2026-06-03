@@ -2,7 +2,7 @@
 
 Use this prompt to generate a new topic page with the same structure, styling, and interactive behavior as `RNN.html`.
 
-**Purpose:** Each generated HTML page serves as a focused **study guide** for the [Chartered Certifications CGAI (Certified Generative AI)](https://charteredcertifications.com/learning/courses/cgai) exam. The guides distill a single topic into digestible concept cards, architecture equations, training & regularization tips, runnable code, and comparison tables — everything needed to review and retain exam-relevant material quickly.
+**Purpose:** Each generated HTML page serves as a focused **study guide** for the [Chartered Certifications CGAI (Certified Generative AI)](https://charteredcertifications.com/learning/courses/cgai) exam. The guides distill a single topic into digestible concept cards, architecture equations, training & regularization tips, runnable code, comparison tables, and a self-assessment quiz — everything needed to review and retain exam-relevant material quickly.
 
 ## Prompt
 
@@ -24,13 +24,14 @@ The page should include:
    - fallback diagram block for when the image is missing
    - caption text
 
-4. A sticky tab navigation with six tabs:
+4. A sticky tab navigation with seven tabs:
    - All Hyperparameters
    - Architecture
    - Training
    - Regularization
    - Full Code
    - Summary & Comparison
+   - Quiz
 
 5. A first tab panel with 10 concept cards:
    - each card has an icon, title, description, code snippet, and either a tip/warn/good note
@@ -66,6 +67,18 @@ The page should include:
     - smooth scrolling
     - a console-ready status message
 
+12. A Quiz tab panel with at least 20 multiple-choice questions:
+    - progress bar showing answered count out of total
+    - A/B/C/D option buttons with selected/correct/incorrect visual states
+    - previous and next navigation buttons
+    - submit button to score the quiz
+    - score display with a radial progress circle and grade message
+    - retake button to reset the quiz
+    - detailed explanations shown after submission for each question
+    - quiz CSS styles matching the page theme (option hover, selection, correct/incorrect feedback)
+    - quiz JavaScript: question data array, state management (currentIndex, answers[], submitted flag), render/select/navigate/submit/restart functions
+    - quiz auto-initializes when its tab is clicked
+
 Use the same visual styling, layout, and class names as `RNN.html`, but replace all RNN-specific content with content for the new topic.
 
 ## Fill-in fields
@@ -85,16 +98,18 @@ Use the same visual styling, layout, and class names as `RNN.html`, but replace 
 - summary table rows
 - comparison rows
 - baseline configuration items
+- 20+ quiz questions: question text, 4 options (A/B/C/D), correct answer index, explanation for each
 
 ## Example usage
 
-Create an HTML study guide for "Transformer Attention Hyperparameters" — a topic relevant to the **CGAI exam**. Follow the same structure as `RNN.html`. Use:
-- badge: "🔧 Transformer · Attention"
-- title: "Transformer Attention – Hyperparameters"
+Create an HTML study guide for "Training General Adversarial Network" — a topic relevant to the **CGAI exam**. Follow the same structure as `Training_GAN.html`. Use:
+- badge: "🔧 Training GAN"
+- title: "Training General Adversarial Network"
 - tagline: one concise sentence about tuning attention models
 - intro paragraph describing the topic and guide scope
-- infographic image filename: `Transformer_Attention_Nutshell.png`
+- infographic image filename: `TRAINING_GAN.png` in the images folder
 - 10 cards covering attention heads, model depth, embedding size, dropout, learning rate, batch size, warmup steps, optimizer, sequence length, loss
 - architecture section with attention equations and term breakdown
 - training and regularization sections with Transformer-specific advice
 - summary and comparison tables
+- 20+ quiz questions covering all hyperparameters, architecture concepts, and training best practices

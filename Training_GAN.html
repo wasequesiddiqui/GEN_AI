@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training GAN – Complete Hyperparameter Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -60px; right: -80px; width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: -50px; left: -60px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .header .badge {
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+        }
+        .header h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .header h1 span {
+            background: linear-gradient(135deg, #5eead4, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header .tagline { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.75rem; font-weight: 400; letter-spacing: 0.01em; }
+        .header .intro { font-size: 0.95rem; opacity: 0.75; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .infographic-area {
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: -1.5rem auto 2rem;
+            max-width: 900px; padding: 1.5rem; text-align: center; position: relative; z-index: 2; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .infographic-area img { max-width: 100%; height: auto; border-radius: var(--radius); display: block; margin: 0 auto; }
+        .infographic-fallback {
+            display: none; background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); border-radius: var(--radius); padding: 2rem 1.5rem;
+            color: #e2e8f0; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.8; text-align: left; overflow-x: auto;
+        }
+        .infographic-fallback .gan-diagram { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .infographic-fallback .gate-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: center; min-width: 120px;
+        }
+        .infographic-fallback .gate-box strong { display: block; color: #5eead4; font-size: 1rem; margin-bottom: 0.4rem; }
+        .infographic-fallback .gate-box code { color: #fbbf24; font-size: 0.8rem; }
+        .infographic-fallback .arrow-sym { font-size: 1.8rem; color: #94a3b8; }
+        .infographic-area .caption { margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .tab-nav {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 0.5rem;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); position: sticky; top: 12px; z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 auto; min-width: 110px; padding: 0.7rem 1rem; border: none; background: transparent; border-radius: var(--radius);
+            cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); transition: var(--transition); white-space: nowrap; letter-spacing: 0.01em; position: relative;
+        }
+        .tab-btn:hover { color: var(--blue-mid); background: #eff6ff; }
+        .tab-btn.active { background: var(--blue-mid); color: #fff; box-shadow: var(--shadow); }
+        .tab-btn .tab-icon { margin-right: 0.35rem; }
+        .tab-panel { display: none; animation: fadeSlideIn 0.4s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-xl); transform: translateY(-2px); border-color: #cbd5e1; }
+        .card .card-icon { font-size: 2rem; margin-bottom: 0.5rem; display: inline-block; background: #f1f5f9; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0 0.35rem; color: var(--deep-blue); }
+        .card .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; line-height: 1.55; }
+        .code-snippet {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-family: var(--font-mono);
+            font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-snippet .kw { color: #c084fc; } .code-snippet .fn { color: #60a5fa; } .code-snippet .str { color: #fbbf24; } .code-snippet .num { color: #fb923c; } .code-snippet .cm { color: #6b7280; font-style: italic; }
+        .tip-box, .warn-box, .good-box {
+            margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .tip-box { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .warn-box { background: var(--warning-bg); border-left: 4px solid var(--warning-border); color: #92400e; }
+        .good-box { background: #eff6ff; border-left: 4px solid var(--blue-mid); color: #1e40af; }
+        .tip-box .box-icon, .warn-box .box-icon, .good-box .box-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .arch-visual {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 2rem; color: #e2e8f0; text-align: center; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .arch-visual .eq-block {
+            display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+        }
+        .arch-visual .eq-block .hl { color: #5eead4; font-weight: 700; }
+        .arch-visual .eq-block .hl2 { color: #fbbf24; font-weight: 700; }
+        .full-code-block {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow-lg); max-height: 70vh; overflow-y: auto;
+        }
+        .full-code-block .kw { color: #c084fc; } .full-code-block .fn { color: #60a5fa; } .full-code-block .str { color: #a3e635; } .full-code-block .num { color: #fb923c; } .full-code-block .cm { color: #6b7280; font-style: italic; } .full-code-block .anno { color: #f472b6; font-weight: 700; }
+        .summary-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .summary-table { width: 100%; border-collapse: collapse; background: var(--bg-card); font-size: 0.9rem; }
+        .summary-table thead { background: var(--deep-blue); color: #fff; }
+        .summary-table thead th { padding: 0.85rem 1rem; text-align: left; font-weight: 600; letter-spacing: 0.02em; }
+        .summary-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        .summary-table tbody tr:hover { background: #f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .comparison-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+        .comparison-card.params { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #93c5fd; }
+        .comparison-card.hyperparams { background: linear-gradient(135deg, #f0fdf4, #ccfbf1); border: 2px solid #5eead4; }
+        .comparison-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comparison-card ul { list-style: none; padding: 0; text-align: left; display: inline-block; }
+        .comparison-card li { padding: 0.2rem 0; font-size: 0.88rem; }
+        .baseline-card {
+            background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); color: #fff; border-radius: var(--radius-xl); padding: 2rem; text-align: center; box-shadow: var(--shadow-xl);
+        }
+        .baseline-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #5eead4; }
+        .baseline-card .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .baseline-card .config-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.75rem; }
+        .baseline-card .config-item strong { display: block; color: #fbbf24; font-size: 1rem; }
+        .baseline-card .config-item span { font-size: 0.78rem; opacity: 0.8; }
+        .back-to-top {
+            position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue-mid); color: #fff; border: none;
+            cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition); z-index: 99; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--deep-blue); transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        .eq-explanation-card {
+            background: #f8fafc; border-radius: var(--radius-lg); padding: 1.8rem; margin-top: 1.5rem; border: 1px solid #cbd5e1;
+        }
+        .eq-explanation-card h4 { font-size: 1.2rem; color: var(--deep-blue); margin-bottom: 1rem; }
+        .eq-term-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.8rem;
+        }
+        .eq-term-item {
+            background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--teal-light);
+        }
+        .eq-term-item .symbol { font-family: var(--font-mono); font-weight: 700; color: var(--blue-mid); font-size: 1.15rem; }
+        .eq-term-item .meaning { font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem; }
+        .eq-term-item .dims { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-style: italic; }
+        .highlight-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .highlight-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+        .highlight-table tr:last-child td { border-bottom: none; }
+        /* ===== QUIZ STYLES ===== */
+        .quiz-container { max-width: 800px; margin: 0 auto; }
+        .quiz-progress {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem 1.25rem;
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+        .quiz-progress-bar {
+            flex: 1; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--teal-light), var(--blue-mid));
+            border-radius: 10px; transition: width 0.4s ease;
+        }
+        .quiz-progress-text { font-weight: 700; color: var(--deep-blue); font-size: 0.9rem; white-space: nowrap; }
+        .quiz-question-card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.75rem;
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border); margin-bottom: 1.25rem;
+            transition: var(--transition); animation: fadeSlideIn 0.35s ease;
+        }
+        .quiz-question-card .q-number {
+            display: inline-block; background: var(--deep-blue); color: #fff; width: 36px; height: 36px;
+            border-radius: 50%; text-align: center; line-height: 36px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem;
+        }
+        .quiz-question-card .q-text { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 1.25rem; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .quiz-option {
+            display: flex; align-items: center; gap: 0.65rem; padding: 0.8rem 1rem; border: 2px solid var(--border);
+            border-radius: var(--radius); cursor: pointer; transition: var(--transition); font-size: 0.92rem; background: #fafbfc;
+        }
+        .quiz-option:hover { border-color: var(--blue-mid); background: #eff6ff; }
+        .quiz-option.selected { border-color: var(--blue-mid); background: #dbeafe; font-weight: 600; }
+        .quiz-option.correct { border-color: var(--tip-border); background: var(--tip-bg); color: #166534; }
+        .quiz-option.incorrect { border-color: var(--danger-border); background: var(--danger-bg); color: #991b1b; }
+        .quiz-option .opt-letter {
+            width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; transition: var(--transition);
+        }
+        .quiz-option.selected .opt-letter { background: var(--blue-mid); color: #fff; }
+        .quiz-option.correct .opt-letter { background: var(--tip-border); color: #fff; }
+        .quiz-option.incorrect .opt-letter { background: var(--danger-border); color: #fff; }
+        .quiz-feedback {
+            margin-top: 1rem; padding: 0.8rem 1rem; border-radius: var(--radius-sm); font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct-fb { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .quiz-feedback.incorrect-fb { background: var(--danger-bg); border-left: 4px solid var(--danger-border); color: #991b1b; }
+        .quiz-nav-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+        .quiz-nav-btns button {
+            padding: 0.7rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;
+            font-size: 0.9rem; transition: var(--transition);
+        }
+        .quiz-prev-btn { background: #e2e8f0; color: var(--text); }
+        .quiz-prev-btn:hover { background: #cbd5e1; }
+        .quiz-next-btn { background: var(--blue-mid); color: #fff; }
+        .quiz-next-btn:hover { background: var(--deep-blue); }
+        .quiz-submit-btn { background: var(--teal); color: #fff; }
+        .quiz-submit-btn:hover { background: #0f766e; }
+        .quiz-restart-btn { background: #f59e0b; color: #fff; }
+        .quiz-restart-btn:hover { background: #d97706; }
+        .quiz-score-card {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #0d3b4e 100%); color: #fff;
+            border-radius: var(--radius-xl); padding: 2.5rem 2rem; text-align: center; box-shadow: var(--shadow-xl); display: none;
+        }
+        .quiz-score-card.show { display: block; animation: fadeSlideIn 0.5s ease; }
+        .quiz-score-card .score-circle {
+            width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#5eead4 0deg var(--score-deg), rgba(255,255,255,0.15) var(--score-deg) 360deg);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; position: relative;
+        }
+        .quiz-score-card .score-inner {
+            width: 90px; height: 90px; border-radius: 50%; background: var(--deep-blue);
+            display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800;
+        }
+        .quiz-score-card .score-grade { font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.9; }
+        .quiz-score-card .score-breakdown { font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; } .comparison-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 0.76rem; padding: 0.5rem 0.6rem; min-width: auto; flex: 1 1 calc(33% - 0.3rem); }
+            .header { padding: 2rem 1rem 1.5rem; } .header h1 { font-size: 1.6rem; }
+            .eq-term-grid { grid-template-columns: 1fr; }
+            .quiz-question-card { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- HEADER -->
+    <!-- ═══════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">🔧 Training GAN</div>
+            <h1>Training General Adversarial Network – <span>Hyperparameters</span></h1>
+            <p class="tagline">Master the delicate balance of generator and discriminator training for stable, high-quality image synthesis.</p>
+            <p class="intro">
+                Training a GAN involves a two-player minimax game where the generator learns to fool the discriminator and the
+                discriminator learns to tell real from fake. This guide covers the 10 most important hyperparameters for
+                stable GAN training, from latent dimension to gradient penalty, with practical PyTorch examples and a
+                runnable DCGAN demo.
+            </p>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- INFOGRAPHIC IMAGE AREA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <div class="infographic-area" id="infographicArea">
+            <img id="infographicImg" src="images/TRAINING_GAN.png" alt="Training GAN Nutshell Infographic" loading="lazy" onerror="handleImageFallback()">
+            <div class="infographic-fallback" id="infographicFallback">
+                <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">⚔️ GAN Training Flow</div>
+                <div class="gan-diagram">
+                    <div class="gate-box"><strong>Noise</strong><code>z ~ N(0, I)</code><br><small style="color:#94a3b8;">Latent vector input</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Generator G(z)</strong><code>G: z → x<sub>fake</sub></code><br><small style="color:#94a3b8;">Produces synthetic data</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Discriminator D(x)</strong><code>D: x → [0, 1]</code><br><small style="color:#94a3b8;">Real vs. fake classification</small></div>
+                </div>
+                <div style="text-align:center;color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">
+                    Minimax game &nbsp;|&nbsp; min<sub>G</sub> max<sub>D</sub> V(D,G) &nbsp;|&nbsp; Alternating gradient updates
+                </div>
+            </div>
+            <p class="caption">📊 GAN training overview — noise sampling, generator synthesis, and discriminator feedback loop</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB NAVIGATION -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <nav class="tab-nav" id="tabNav">
+            <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Hyperparameters</button>
+            <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+            <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+            <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+            <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+            <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+            <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+        </nav>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: All Hyperparameters (1–10) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel active" id="tab-all-concepts">
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎲</div><h3>① Latent Dimension (z-dim)</h3><p class="card-desc">Size of the noise vector fed into the generator. Larger dimensions allow richer diversity but increase training complexity.</p><div class="code-snippet"><span class="kw">import</span> torch<br>z = torch.randn(<span class="num">64</span>, <span class="num">100</span>)  <span class="cm"># batch=64, z_dim=100</span></div><div class="tip-box"><span class="box-icon">💡</span>Start with <strong>100</strong> (DCGAN default). For higher resolution, try 128–256.</div></div>
+                <div class="card"><div class="card-icon">🏗️</div><h3>② Generator Depth / Channels</h3><p class="card-desc">Number of transposed convolution layers in the generator. Deeper generators synthesize higher-resolution details but are harder to train.</p><div class="code-snippet"><span class="cm"># DCGAN-style generator: 4-5 layers</span><br>gen_channels = [<span class="num">512</span>, <span class="num">256</span>, <span class="num">128</span>, <span class="num">64</span>, <span class="num">3</span>]</div><div class="good-box"><span class="box-icon">✅</span>4–6 layers work well for 64×64 images. Add layers for higher resolutions.</div></div>
+                <div class="card"><div class="card-icon">🔍</div><h3>③ Discriminator Depth / Channels</h3><p class="card-desc">Number of convolutional layers in the discriminator. Must be balanced with the generator to avoid overpowering it.</p><div class="code-snippet"><span class="cm"># DCGAN-style discriminator: 4-5 layers</span><br>disc_channels = [<span class="num">64</span>, <span class="num">128</span>, <span class="num">256</span>, <span class="num">512</span>, <span class="num">1</span>]</div><div class="warn-box"><span class="box-icon">⚠️</span>A discriminator that is too strong can drive the generator loss to zero, halting learning.</div></div>
+                <div class="card"><div class="card-icon">🎯</div><h3>④ Learning Rate (G &amp; D)</h3><p class="card-desc">Separate learning rates for generator and discriminator. Asymmetric rates often stabilize training.</p><div class="code-snippet">g_optim = Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))<br>d_optim = Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))</div><div class="tip-box"><span class="box-icon">💡</span>Use <strong>0.0002</strong> with β1=0.5 as the DCGAN standard. Try D LR 2–5× higher than G LR.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>⑤ Batch Size</h3><p class="card-desc">Number of real and fake samples per iteration. Larger batches give more stable gradient estimates for both networks.</p><div class="code-snippet">dataloader = DataLoader(dataset, <span class="fn">batch_size</span>=<span class="num">64</span>, <span class="fn">shuffle</span>=<span class="kw">True</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use 32–128 for image GANs. Larger batches improve discriminator gradient quality.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>⑥ Number of Epochs / Iterations</h3><p class="card-desc">GANs typically require many iterations — often tens of thousands — because two networks train simultaneously.</p><div class="code-snippet"><span class="cm"># GAN training loop</span><br><span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="num">200</span>):<br>    <span class="kw">for</span> real <span class="kw">in</span> dataloader:<br>        <span class="cm"># train D, then G</span></div><div class="good-box"><span class="box-icon">✅</span>Start with 100–200 epochs for small datasets. Monitor FID or IS for convergence.</div></div>
+                <div class="card"><div class="card-icon">⚖️</div><h3>⑦ D/G Update Ratio (n_critic)</h3><p class="card-desc">How many discriminator updates per generator update. Training D more often can help it provide better gradient signals.</p><div class="code-snippet"><span class="cm"># WGAN-GP: 5 D updates per 1 G update</span><br>n_critic = <span class="num">5</span><br><span class="kw">for</span> _ <span class="kw">in</span> range(n_critic):<br>    <span class="cm"># train discriminator</span><br><span class="cm"># train generator once</span></div><div class="tip-box"><span class="box-icon">💡</span>n_critic=5 is the WGAN standard. For vanilla GANs, use 1:1 ratio.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>⑧ Optimizer Choice</h3><p class="card-desc">Adam is standard for GANs. The β1 momentum term strongly affects training dynamics.</p><div class="code-snippet"><span class="cm"># DCGAN standard</span><br>Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))<br><span class="cm"># WGAN: RMSprop avoids momentum issues</span><br>RMSprop(<span class="fn">lr</span>=<span class="num">0.00005</span>)</div><div class="good-box"><span class="box-icon">✅</span>Adam with β1=0.5 (not 0.9) for DCGAN. RMSprop for WGAN to avoid oscillation.</div></div>
+                <div class="card"><div class="card-icon">📉</div><h3>⑨ Loss Function</h3><p class="card-desc">The adversarial loss defines the minimax objective. Choices: minimax, non-saturating, Wasserstein, or hinge loss.</p><div class="code-snippet"><span class="cm"># Non-saturating GAN loss (recommended)</span><br>d_loss = -torch.mean(log(D(real)) + log(<span class="num">1</span>-D(fake)))<br>g_loss = -torch.mean(log(D(G(z))))</div><div class="tip-box"><span class="box-icon">💡</span>Use <strong>non-saturating loss</strong> for better generator gradients. WGAN loss for stability.</div></div>
+                <div class="card"><div class="card-icon">🛡️</div><h3>⑩ Gradient Penalty / Spectral Norm</h3><p class="card-desc">Enforces Lipschitz continuity on the discriminator. Crucial for WGAN-GP stability and mode collapse prevention.</p><div class="code-snippet"><span class="cm"># WGAN-GP gradient penalty</span><br>gp = lambda * ((grad.norm(<span class="num">2</span>) - <span class="num">1</span>) ** <span class="num">2</span>).mean()<br>d_loss = wasserstein_loss + <span class="num">10.0</span> * gp</div><div class="good-box"><span class="box-icon">✅</span>λ=10 is standard for WGAN-GP. Spectral norm is a lighter-weight alternative.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Architecture / Structure -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-architecture">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ GAN Architecture &amp; Training Structure</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">
+                A GAN is a two-player minimax game. The generator G maps a random noise vector z to a synthetic sample G(z),
+                while the discriminator D outputs the probability that a given sample is real. Both networks are trained
+                simultaneously through alternating gradient updates.
+            </p>
+            <div class="arch-visual">
+                <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">⚔️ GAN Core Equations</div>
+                <div class="eq-block"><span class="hl">Generator Mapping:</span><br>G(z) = <span class="hl2">x<sub>fake</sub></span> &nbsp; where &nbsp; z ~ p<sub>z</sub>(z)</div>
+                <div class="eq-block"><span class="hl">Discriminator Output:</span><br>D(x) = <span class="hl2">P(real | x)</span> &nbsp; ∈ [0, 1]</div>
+                <div class="eq-block"><span class="hl">Minimax Objective:</span><br>min<sub>G</sub> max<sub>D</sub> &nbsp; E<sub>x~p<sub>data</sub></sub>[log <span class="hl2">D(x)</span>] + E<sub>z~p<sub>z</sub></sub>[log(1−<span class="hl2">D(G(z))</span>)]</div>
+                <div class="eq-block"><span class="hl">Non-Saturating G Loss:</span><br>L<sub>G</sub> = −E<sub>z</sub>[log <span class="hl2">D(G(z))</span>]</div>
+            </div>
+
+            <div class="eq-explanation-card">
+                <h4>📖 Equation Element Breakdown – What every symbol means</h4>
+                <p style="margin-bottom:1.2rem; font-size:0.9rem; color:var(--text-light);">
+                    The minimax formulation is the heart of GAN training. Understanding each component helps diagnose
+                    instability, mode collapse, and convergence issues.
+                </p>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Generator &amp; Latent Space</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">z</div><div class="meaning">Noise vector sampled from a prior distribution (typically Gaussian or uniform).</div><div class="dims">Shape: (batch_size, z_dim) — typically z_dim=100</div></div>
+                    <div class="eq-term-item"><div class="symbol">p<sub>z</sub>(z)</div><div class="meaning">Prior distribution over the latent space. Usually N(0, I) or U(−1, 1).</div><div class="dims">Standard normal or uniform</div></div>
+                    <div class="eq-term-item"><div class="symbol">G(z)</div><div class="meaning">Generator function: maps latent vector z to a synthetic data sample in the image space.</div><div class="dims">Shape: (batch_size, C, H, W) for images</div></div>
+                    <div class="eq-term-item"><div class="symbol">x<sub>fake</sub></div><div class="meaning">Synthetic/fake sample produced by the generator. Should become indistinguishable from real data.</div><div class="dims">Same shape as real data</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Discriminator &amp; Objective</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">D(x)</div><div class="meaning">Discriminator: outputs a scalar score representing the probability that x comes from the real data distribution.</div><div class="dims">Output: scalar probability ∈ [0, 1]</div></div>
+                    <div class="eq-term-item"><div class="symbol">p<sub>data</sub></div><div class="meaning">True (unknown) data distribution from which the training set is sampled.</div><div class="dims">Empirical distribution of training images</div></div>
+                    <div class="eq-term-item"><div class="symbol">log D(x)</div><div class="meaning">The discriminator is rewarded for assigning high probability to real samples.</div><div class="dims">Maximized by D, minimized by G (indirectly)</div></div>
+                    <div class="eq-term-item"><div class="symbol">log(1−D(G(z)))</div><div class="meaning">Penalizes the discriminator for being fooled by fake samples. Drives the generator to improve.</div><div class="dims">D tries to make this term 0; G tries to make it −∞</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Training Dynamics</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">min<sub>G</sub> max<sub>D</sub></div><div class="meaning">Two-player zero-sum game. D maximizes its ability to detect fakes; G minimizes D's success rate.</div><div class="dims">Alternating optimization — no single loss curve</div></div>
+                    <div class="eq-term-item"><div class="symbol">L<sub>G</sub> (non-sat.)</div><div class="meaning">Non-saturating generator loss: stronger gradients when D is confident, weaker when G is doing well.</div><div class="dims">Preferred over minimax G loss in practice</div></div>
+                    <div class="eq-term-item"><div class="symbol">Nash Equilibrium</div><div class="meaning">Ideal state where p<sub>g</sub> = p<sub>data</sub> and D(x) = 0.5 everywhere. Rarely reached but guides tuning.</div><div class="dims">Theoretical optimum of the minimax game</div></div>
+                </div>
+
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted); background: #e0f2fe; padding:0.8rem; border-radius: var(--radius-sm);">
+                    💡 <strong>Key insight:</strong> GAN training succeeds when neither network dominates. If D loss → 0, the generator receives vanishing gradients. If G loss → 0, the discriminator is too weak. Balance is everything.
+                </div>
+            </div>
+
+            <div class="card-grid" style="margin-top:1rem;">
+                <div class="card"><div class="card-icon">🔍</div><h3>Generator Architecture</h3><p class="card-desc">Uses transposed convolutions (or upsampling + conv) to progressively increase spatial resolution from the latent vector.</p><div class="tip-box"><span class="box-icon">💡</span>Use BatchNorm in G (not D) and ReLU in intermediate layers, tanh at output for normalized images.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Discriminator Architecture</h3><p class="card-desc">Mirrors the generator but uses strided convolutions to downsample, outputting a single scalar probability.</p><div class="tip-box"><span class="box-icon">💡</span>Use LeakyReLU(0.2) instead of ReLU in D. Avoid BatchNorm in D's first and last layers.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Training / Process -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-training">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Process Hyperparameters</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">These settings govern how the adversarial game unfolds and how quickly each network learns.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎯</div><h3>Learning Rate (Dual)</h3><p class="card-desc">GANs use separate (often different) learning rates for G and D. Asymmetric rates can help when one network dominates.</p><div class="code-snippet">g_optim = Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))<br>d_optim = Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))</div><div class="good-box"><span class="box-icon">✅</span>Start both at 0.0002. If D converges too fast, lower D LR or raise G LR to 0.001.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>Batch Size</h3><p class="card-desc">Large batches give the discriminator better gradient estimates, improving training signal quality.</p><div class="code-snippet">dataloader = DataLoader(dataset, <span class="fn">batch_size</span>=<span class="num">64</span>)</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Epochs / Iterations</h3><p class="card-desc">GANs need many iterations. Track sample quality — loss values alone are unreliable for GAN convergence.</p><div class="code-snippet"><span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="num">200</span>):<br>    <span class="kw">for</span> i, real_imgs <span class="kw">in</span> enumerate(dataloader):<br>        <span class="cm"># Alternating update loop</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Loss values oscillate by design. Monitor generated image quality, not loss curves, to judge convergence.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>Optimizer &amp; Momentum</h3><p class="card-desc">Adam with reduced β1 (0.5 vs. default 0.9) reduces momentum, helping the generator adapt to shifting discriminator landscapes.</p><div class="code-snippet"><span class="cm"># DCGAN standard: Adam, β1=0.5</span><br>Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Regularization / Tuning -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-regularization">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Stabilization Techniques</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">GAN training is inherently unstable. These techniques prevent mode collapse and smooth the optimization landscape.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">📐</div><h3>Gradient Penalty (WGAN-GP)</h3><p class="card-desc">Penalizes the discriminator for having gradients with norms deviating from 1, enforcing 1-Lipschitz continuity.</p><div class="code-snippet"><span class="cm"># Gradient penalty term</span><br>grad = autograd.grad(d_out, interpolates,<br>    create_graph=<span class="kw">True</span>)[<span class="num">0</span>]<br>gp = ((grad.norm(<span class="num">2</span>) - <span class="num">1</span>) ** <span class="num">2</span>).mean()<br>d_loss += <span class="num">10.0</span> * gp</div><div class="tip-box"><span class="box-icon">💡</span>λ=10 is the standard GP weight. WGAN-GP is the go-to for stable GAN training.</div></div>
+                <div class="card"><div class="card-icon">🔗</div><h3>Spectral Normalization</h3><p class="card-desc">Normalizes each discriminator layer's weight matrix by its spectral norm, enforcing Lipschitz constraint without gradient penalty.</p><div class="code-snippet"><span class="kw">from</span> torch.nn.utils <span class="kw">import</span> spectral_norm<br>layer = spectral_norm(nn.Conv2d(<span class="num">64</span>, <span class="num">128</span>, <span class="num">4</span>))</div><div class="good-box"><span class="box-icon">✅</span>Lighter than WGAN-GP; pair with hinge loss for SNGAN. Standard in modern GAN architectures.</div></div>
+                <div class="card"><div class="card-icon">🏷️</div><h3>Label Smoothing</h3><p class="card-desc">Instead of using 1.0 for real and 0.0 for fake labels, use 0.9 and 0.1 to reduce discriminator overconfidence.</p><div class="code-snippet"><span class="cm"># One-sided label smoothing</span><br>real_labels = torch.ones(batch_size) * <span class="num">0.9</span><br>fake_labels = torch.zeros(batch_size)</div><div class="tip-box"><span class="box-icon">💡</span>Smooth only real labels (0.9). Smoothing fake labels can push generated distribution away from real.</div></div>
+                <div class="card"><div class="card-icon">🪞</div><h3>Feature Matching</h3><p class="card-desc">Instead of maximizing D output, train G to match the expected features at an intermediate D layer. Reduces mode collapse.</p><div class="code-snippet"><span class="cm"># Match intermediate D features</span><br>real_feats = D.intermediate(real_imgs)<br>fake_feats = D.intermediate(fake_imgs)<br>g_loss = F.mse_loss(fake_feats, real_feats.mean(<span class="num">0</span>))</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Full Code Example -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-full-code">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">💻 Full Code – DCGAN on CIFAR-10 with PyTorch</h2>
+            <p style="color:var(--text-light);margin-bottom:1rem;">A runnable DCGAN training script. Key hyperparameters are annotated with numbers matching the cards above.</p>
+            <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""DCGAN Training on CIFAR-10 – all hyperparameters labeled."""</span>
+
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+<span class="kw">import</span> torchvision
+<span class="kw">import</span> torchvision.transforms <span class="kw">as</span> transforms
+<span class="kw">from</span> torch.utils.data <span class="kw">import</span> DataLoader
+
+<span class="cm"># ── ① Latent dimension ──</span>
+<span class="anno">Z_DIM</span> = <span class="num">100</span>
+
+<span class="cm"># ── ② Generator channel progression ──</span>
+<span class="anno">GEN_CHANNELS</span> = [<span class="num">512</span>, <span class="num">256</span>, <span class="num">128</span>, <span class="num">64</span>, <span class="num">3</span>]
+
+<span class="cm"># ── ③ Discriminator channel progression ──</span>
+<span class="anno">DISC_CHANNELS</span> = [<span class="num">64</span>, <span class="num">128</span>, <span class="num">256</span>, <span class="num">512</span>]
+
+<span class="kw">class</span> <span class="fn">Generator</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.main = nn.Sequential(
+            nn.ConvTranspose2d(<span class="anno">Z_DIM</span>, <span class="anno">GEN_CHANNELS</span>[<span class="num">0</span>], <span class="num">4</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="fn">bias</span>=<span class="kw">False</span>),
+            nn.BatchNorm2d(<span class="anno">GEN_CHANNELS</span>[<span class="num">0</span>]), nn.ReLU(<span class="kw">True</span>),
+            <span class="cm"># ...additional transposed conv layers...</span>
+            nn.ConvTranspose2d(<span class="anno">GEN_CHANNELS</span>[-<span class="num">2</span>], <span class="anno">GEN_CHANNELS</span>[-<span class="num">1</span>], <span class="num">4</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="fn">bias</span>=<span class="kw">False</span>),
+            nn.Tanh()
+        )
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, z):
+        <span class="kw">return</span> <span class="fn">self</span>.main(z.view(z.size(<span class="num">0</span>), <span class="anno">Z_DIM</span>, <span class="num">1</span>, <span class="num">1</span>))
+
+<span class="kw">class</span> <span class="fn">Discriminator</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.main = nn.Sequential(
+            nn.Conv2d(<span class="num">3</span>, <span class="anno">DISC_CHANNELS</span>[<span class="num">0</span>], <span class="num">4</span>, <span class="num">2</span>, <span class="num">1</span>, <span class="fn">bias</span>=<span class="kw">False</span>),
+            nn.LeakyReLU(<span class="num">0.2</span>, <span class="fn">inplace</span>=<span class="kw">True</span>),
+            <span class="cm"># ...additional conv layers...</span>
+            nn.Conv2d(<span class="anno">DISC_CHANNELS</span>[-<span class="num">1</span>], <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="fn">bias</span>=<span class="kw">False</span>),
+            nn.Sigmoid()
+        )
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, x):
+        <span class="kw">return</span> <span class="fn">self</span>.main(x).view(-<span class="num">1</span>)
+
+<span class="cm"># ── Dataset ──</span>
+transform = transforms.Compose([
+    transforms.Resize(<span class="num">64</span>), transforms.ToTensor(),
+    transforms.Normalize([<span class="num">0.5</span>]*<span class="num">3</span>, [<span class="num">0.5</span>]*<span class="num">3</span>)
+])
+dataset = torchvision.datasets.CIFAR10(root=<span class="str">'./data'</span>, train=<span class="kw">True</span>, download=<span class="kw">True</span>, transform=transform)
+dataloader = DataLoader(dataset, <span class="anno">batch_size</span>=<span class="num">64</span>, <span class="fn">shuffle</span>=<span class="kw">True</span>)  <span class="cm"># ⑤ Batch size</span>
+
+G = Generator()
+D = Discriminator()
+
+<span class="cm"># ── ④ Learning rates &amp; ⑧ Optimizer ──</span>
+<span class="anno">g_optim</span> = optim.Adam(G.parameters(), <span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))
+<span class="anno">d_optim</span> = optim.Adam(D.parameters(), <span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))
+
+<span class="cm"># ── ⑨ Loss function (non-saturating) ──</span>
+criterion = nn.BCELoss()
+
+<span class="cm"># ── ⑥ Epochs ──</span>
+<span class="anno">EPOCHS</span> = <span class="num">200</span>
+
+<span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="anno">EPOCHS</span>):
+    <span class="kw">for</span> real_imgs, _ <span class="kw">in</span> dataloader:
+        batch_size = real_imgs.size(<span class="num">0</span>)
+        real_labels = torch.ones(batch_size) * <span class="num">0.9</span>  <span class="cm"># Label smoothing</span>
+        fake_labels = torch.zeros(batch_size)
+
+        <span class="cm"># ── Train Discriminator ──</span>
+        D.zero_grad()
+        d_real_loss = criterion(D(real_imgs), real_labels)
+        z = torch.randn(batch_size, <span class="anno">Z_DIM</span>)  <span class="cm"># ① Latent dim</span>
+        d_fake_loss = criterion(D(G(z).detach()), fake_labels)
+        d_loss = d_real_loss + d_fake_loss
+        d_loss.backward(); <span class="anno">d_optim</span>.step()
+
+        <span class="cm"># ── ⑦ D/G update ratio (1:1 for DCGAN) ──</span>
+        <span class="cm"># ── Train Generator ──</span>
+        G.zero_grad()
+        z = torch.randn(batch_size, <span class="anno">Z_DIM</span>)
+        g_loss = criterion(D(G(z)), real_labels)  <span class="cm"># Non-saturating</span>
+        g_loss.backward(); <span class="anno">g_optim</span>.step()
+
+    <span class="kw">print</span>(<span class="str">f"Epoch {epoch+1}/{EPOCHS} | D Loss: {d_loss:.4f} | G Loss: {g_loss:.4f}"</span>)
+            </div>
+            <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);text-align:center;">⬆️ Copy &amp; paste into a <code>.py</code> file or Jupyter notebook. All ⑩ hyperparameters are labeled.</p>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Summary & Comparison -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-summary">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead><tr><th>#</th><th>Hyperparameter</th><th>Purpose</th><th>Typical Range / Values</th></tr></thead>
+                    <tbody>
+                        <tr><td>①</td><td><strong>Latent Dimension (z-dim)</strong></td><td>Noise input size; controls generation diversity</td><td>100, 128, 256, 512</td></tr>
+                        <tr><td>②</td><td><strong>Generator Depth</strong></td><td>Number of upsampling layers for image synthesis</td><td>4–6 layers for 64×64</td></tr>
+                        <tr><td>③</td><td><strong>Discriminator Depth</strong></td><td>Number of downsampling layers for classification</td><td>4–6 layers (mirror G)</td></tr>
+                        <tr><td>④</td><td><strong>Learning Rate (G &amp; D)</strong></td><td>Step size for each network; asmmetry can help</td><td>1e-4 to 5e-4 (DCGAN: 2e-4)</td></tr>
+                        <tr><td>⑤</td><td><strong>Batch Size</strong></td><td>Gradient estimate quality for discriminator</td><td>32, 64, 128</td></tr>
+                        <tr><td>⑥</td><td><strong>Epochs / Iterations</strong></td><td>Total training duration; monitor sample quality</td><td>100–500 epochs</td></tr>
+                        <tr><td>⑦</td><td><strong>D/G Update Ratio</strong></td><td>How many D steps per G step</td><td>1:1 (vanilla), 5:1 (WGAN-GP)</td></tr>
+                        <tr><td>⑧</td><td><strong>Optimizer</strong></td><td>Weight update strategy and momentum</td><td>Adam (β1=0.5), RMSprop</td></tr>
+                        <tr><td>⑨</td><td><strong>Loss Function</strong></td><td>Adversarial objective driving the minimax game</td><td>Minimax, Non-saturating, WGAN, Hinge</td></tr>
+                        <tr><td>⑩</td><td><strong>Gradient Penalty / SN</strong></td><td>Enforces Lipschitz for stable discriminator</td><td>λ=10 (WGAN-GP), Spectral Norm</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card params"><h4>🧠 Learned Parameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Discovered automatically during adversarial training</p><ul><li>✅ Generator weights &amp; biases</li><li>✅ Discriminator weights &amp; biases</li><li>✅ BatchNorm running stats (if used)</li><li>📌 <em>Updated via alternating gradient descent</em></li></ul></div>
+                <div class="comparison-card hyperparams"><h4>⚙️ Hyperparameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Set manually before training begins</p><ul><li>🔧 Latent dim, G/D depth, channels</li><li>🔧 Learning rates, batch size, epochs</li><li>🔧 D/G ratio, optimizer, loss type</li><li>📌 <em>Chosen by the practitioner</em></li></ul></div>
+            </div>
+            <div class="baseline-card">
+                <h3>🚀 Common Starting Configuration (DCGAN)</h3><p style="opacity:0.85;margin-bottom:1rem;">Use these defaults as your first experiment baseline:</p>
+                <div class="config-grid">
+                    <div class="config-item"><strong>100</strong><span>① Latent Dim</span></div><div class="config-item"><strong>5 layers</strong><span>② Generator Depth</span></div><div class="config-item"><strong>5 layers</strong><span>③ Disc. Depth</span></div><div class="config-item"><strong>0.0002</strong><span>④ Learning Rate</span></div><div class="config-item"><strong>64</strong><span>⑤ Batch Size</span></div><div class="config-item"><strong>200</strong><span>⑥ Epochs</span></div><div class="config-item"><strong>1:1</strong><span>⑦ D/G Ratio</span></div><div class="config-item"><strong>Adam β1=0.5</strong><span>⑧ Optimizer</span></div><div class="config-item"><strong>Non-Saturating</strong><span>⑨ Loss</span></div><div class="config-item"><strong>None (DCGAN)</strong><span>⑩ GP / SN</span></div>
+                </div>
+                <p style="margin-top:1rem;font-size:0.82rem;opacity:0.7;">🔬 Tune from here: first adjust learning rates and D/G ratio, then add gradient penalty, then scale architecture depth.</p>
+            </div>
+            <div class="summary-table-wrap" style="margin-top:1.5rem;">
+                <table class="summary-table">
+                    <thead><tr><th>Feature</th><th>Vanilla GAN (DCGAN)</th><th>WGAN-GP</th></tr></thead>
+                    <tbody>
+                        <tr><td>Discriminator Role</td><td>Binary classifier (real/fake)</td><td>Critic (Wasserstein distance estimator)</td></tr>
+                        <tr><td>D Output</td><td>Sigmoid → [0, 1]</td><td>Linear → ℝ</td></tr>
+                        <tr><td>Gradient Stability</td><td>⚠️ Vanishing when D dominates</td><td>✅ Smooth gradients everywhere</td></tr>
+                        <tr><td>Lipschitz Enforcement</td><td>None (architecture only)</td><td>Gradient penalty λ=10</td></tr>
+                        <tr><td>Loss Monitoring</td><td>Oscillates; unreliable</td><td>Wasserstein distance tracks quality</td></tr>
+                        <tr><td>Best For</td><td>Simple datasets, quick prototyping</td><td>Complex datasets, production-quality generation</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Quiz (20+ Questions) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-quiz">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">🧠 GAN Training Hyperparameters – Quiz</h2>
+            <p style="color:var(--text-light);margin-bottom:1.5rem;">Test your knowledge with 20 questions covering GAN architecture, training dynamics, and hyperparameter selection.</p>
+            <div class="quiz-container" id="quizContainer">
+                <div class="quiz-progress">
+                    <span style="font-size:1.2rem;">📝</span>
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%;"></div></div>
+                    <span class="quiz-progress-text" id="quizProgressText">0 / 20</span>
+                </div>
+                <div id="quizQuestionArea"></div>
+                <div class="quiz-nav-btns" id="quizNavBtns">
+                    <button class="quiz-prev-btn" id="quizPrevBtn" style="display:none;">← Previous</button>
+                    <button class="quiz-next-btn" id="quizNextBtn">Next →</button>
+                    <button class="quiz-submit-btn" id="quizSubmitBtn" style="display:none;">Submit Quiz</button>
+                </div>
+                <div class="quiz-score-card" id="quizScoreCard">
+                    <h4 style="font-size:1.5rem;margin-bottom:0.5rem;color:#5eead4;">🏆 Quiz Complete!</h4>
+                    <div class="score-circle" id="scoreCircle" style="--score-deg:0deg;">
+                        <div class="score-inner" id="scoreInner">0%</div>
+                    </div>
+                    <p class="score-grade" id="scoreGrade"></p>
+                    <p class="score-breakdown" id="scoreBreakdown"></p>
+                    <button class="quiz-restart-btn" id="quizRestartBtn" style="margin-top:1.25rem;">🔄 Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+    <script>
+        // ═══════════════════════════════════════════
+        // QUIZ DATA – 20 Questions
+        // ═══════════════════════════════════════════
+        const quizQuestions = [
+            { q:"What is the standard latent dimension (z-dim) used in DCGAN?", opts:["50","100","256","512"], ans:1, exp:"DCGAN uses a 100-dimensional noise vector sampled from a standard normal distribution." },
+            { q:"Which activation function is recommended for the generator's output layer in DCGAN?", opts:["ReLU","Sigmoid","Tanh","LeakyReLU"], ans:2, exp:"Tanh is used at the generator output to produce pixel values in [-1, 1], matching normalized input data." },
+            { q:"What is the typical learning rate for both generator and discriminator in DCGAN?", opts:["0.01","0.001","0.0002","0.00001"], ans:2, exp:"DCGAN uses lr=0.0002 with Adam optimizer and β1=0.5 for stable training." },
+            { q:"Why is β1 set to 0.5 (instead of the default 0.9) in Adam for GAN training?", opts:["To increase momentum","To reduce momentum and help G adapt to a shifting D","To speed up convergence of D","To prevent overfitting"], ans:1, exp:"Lower β1 reduces momentum, allowing the generator to adapt more quickly as the discriminator's landscape shifts." },
+            { q:"What does the n_critic (D/G update ratio) hyperparameter control?", opts:["Batch size per GPU","Number of discriminator updates per generator update","Number of critics evaluating the model","Ratio of real to fake samples"], ans:1, exp:"n_critic determines how many times D is trained before G gets one update. WGAN-GP typically uses n_critic=5." },
+            { q:"Which GAN loss function provides the strongest gradients when the generator is performing poorly?", opts:["Minimax loss","Non-saturating loss","Wasserstein loss","Hinge loss"], ans:1, exp:"Non-saturating loss uses −log(D(G(z))) which gives strong gradients when D is confident that samples are fake." },
+            { q:"What happens to the generator if the discriminator becomes too strong (D loss → 0)?", opts:["G learns faster","G receives vanishing gradients and stops learning","G automatically improves","G starts overfitting"], ans:1, exp:"When D perfectly classifies real vs fake, the gradient signal to G vanishes, halting generator learning." },
+            { q:"In WGAN-GP, what is the standard gradient penalty coefficient λ?", opts:["0.1","1.0","10.0","100.0"], ans:2, exp:"λ=10 is the standard gradient penalty weight in WGAN-GP, enforcing the 1-Lipschitz constraint on the critic." },
+            { q:"Which normalization technique is a lighter alternative to gradient penalty for enforcing Lipschitz continuity?", opts:["Batch Normalization","Layer Normalization","Spectral Normalization","Instance Normalization"], ans:2, exp:"Spectral Normalization normalizes each weight matrix by its largest singular value, enforcing 1-Lipschitz without computing gradients." },
+            { q:"What is label smoothing in the context of GAN training?", opts:["Smoothing generated images with a Gaussian filter","Using soft labels (e.g., 0.9 instead of 1.0) for real samples","Averaging predictions across multiple discriminators","Smoothing the latent space distribution"], ans:1, exp:"One-sided label smoothing uses 0.9 for real labels to prevent D from becoming overconfident, improving training stability." },
+            { q:"What is mode collapse in GANs?", opts:["When D perfectly classifies all samples","When the generator produces only a limited variety of outputs","When training loss diverges to infinity","When the latent space becomes too large"], ans:1, exp:"Mode collapse occurs when G maps many different z values to the same or very similar outputs, losing generation diversity." },
+            { q:"Which optimizer is recommended for WGAN (without GP)?", opts:["Adam with β1=0.9","Adam with β1=0.5","RMSprop","SGD with momentum"], ans:2, exp:"WGAN uses RMSprop (or SGD) instead of momentum-based optimizers like Adam to avoid oscillation in the Wasserstein estimate." },
+            { q:"What is the purpose of the gradient penalty in WGAN-GP?", opts:["To speed up training","To enforce the 1-Lipschitz constraint on the critic","To penalize the generator for poor images","To add noise for regularization"], ans:1, exp:"The gradient penalty enforces ‖∇D(x̂)‖₂ = 1 on interpolated points, ensuring the critic is 1-Lipschitz for a valid Wasserstein distance." },
+            { q:"In the minimax GAN objective, what value should D(x) converge to at the Nash equilibrium?", opts:["0","0.5","1","It depends on the dataset"], ans:1, exp:"At Nash equilibrium, p_g = p_data, so D cannot distinguish real from fake and outputs 0.5 for all inputs." },
+            { q:"What is feature matching in GAN regularization?", opts:["Matching pixel values between real and fake images","Training G to match the expected intermediate features of D on real data","Matching G and D architectures exactly","Using the same features for both networks"], ans:1, exp:"Feature matching trains G to minimize the L2 distance between D's intermediate features on real vs. fake samples, reducing mode collapse." },
+            { q:"Which of the following is NOT a common GAN stabilization technique?", opts:["Gradient penalty","Spectral normalization","Label smoothing","Weight decay (L2 regularization)"], ans:3, exp:"Conventional weight decay is rarely used in GANs. Gradient penalty, spectral norm, and label smoothing are the standard stabilization methods." },
+            { q:"What is the typical batch size range for training image GANs?", opts:["2–8","16–32","32–128","256–512"], ans:2, exp:"Batch sizes of 32–128 are common. Larger batches give the discriminator better gradient estimates for more stable training." },
+            { q:"Why shouldn't you rely solely on loss curves to judge GAN convergence?", opts:["Loss values don't change during training","GAN loss values inherently oscillate due to the adversarial game","Loss curves are always flat for GANs","Loss values only measure discriminator performance"], ans:1, exp:"GAN losses oscillate by design — as one network improves, the other's loss changes. Visual inspection of generated samples is essential." },
+            { q:"Which GAN variant uses a linear output (no sigmoid) for the discriminator/critic?", opts:["DCGAN","Vanilla GAN","WGAN / WGAN-GP","CGAN"], ans:2, exp:"WGAN removes the sigmoid and uses a linear critic output, estimating the Wasserstein distance rather than classifying real vs fake." },
+            { q:"What is the role of BatchNorm in the generator architecture?", opts:["To regularize the discriminator","To stabilize training and prevent mode collapse in early layers","To increase the discriminator's capacity","To normalize the latent noise vector"], ans:1, exp:"BatchNorm in the generator helps stabilize feature distributions across layers, preventing early layers from collapsing during adversarial training." },
+            { q:"In DCGAN, which layers should NOT use BatchNorm in the discriminator?", opts:["All layers should use BatchNorm","The first and last layers","Only the middle layers","Only the first layer"], ans:1, exp:"BatchNorm should be avoided in D's first layer (to preserve input distribution) and last layer (to not distort the probability output)." },
+            { q:"What does FID (Fréchet Inception Distance) measure in GAN evaluation?", opts:["Image resolution","The distance between real and generated image distributions in feature space","Training time per epoch","Discriminator accuracy"], ans:1, exp:"FID measures the Fréchet distance between Inception features of real and generated images — lower FID indicates better quality and diversity." },
+            { q:"What is the effect of increasing the latent dimension (z-dim) beyond 100?", opts:["Always improves image quality","Increases generation diversity but also training complexity","Reduces the number of trainable parameters","Has no effect on training"], ans:1, exp:"Larger z-dim can increase output diversity but makes the generator's mapping more complex to learn and may require deeper architectures." },
+            { q:"What is the recommended activation for intermediate discriminator layers in DCGAN?", opts:["ReLU","Tanh","LeakyReLU(0.2)","Sigmoid"], ans:2, exp:"LeakyReLU with slope 0.2 is standard in DCGAN discriminators. It helps gradients flow even for negative inputs, unlike ReLU." },
+            { q:"Which loss function is used in SNGAN (Spectral Normalization GAN)?", opts:["Minimax loss","Wasserstein loss","Hinge loss","Non-saturating loss"], ans:2, exp:"SNGAN typically uses hinge loss: D loss = max(0, 1−D(real)) + max(0, 1+D(fake)); G loss = −D(G(z))." }
+        ];
+
+        // ═══════════════════════════════════════════
+        // QUIZ STATE
+        // ═══════════════════════════════════════════
+        let quizState = {
+            currentIndex: 0,
+            answers: new Array(quizQuestions.length).fill(null),
+            submitted: false
+        };
+
+        function initQuiz() {
+            quizState = { currentIndex: 0, answers: new Array(quizQuestions.length).fill(null), submitted: false };
+            document.getElementById('quizScoreCard').classList.remove('show');
+            document.getElementById('quizQuestionArea').style.display = 'block';
+            document.getElementById('quizNavBtns').style.display = 'flex';
+            renderQuizQuestion();
+            updateQuizUI();
+        }
+
+        function renderQuizQuestion() {
+            const idx = quizState.currentIndex;
+            const q = quizQuestions[idx];
+            const area = document.getElementById('quizQuestionArea');
+            const selected = quizState.answers[idx];
+            const disabled = quizState.submitted;
+
+            let optsHTML = q.opts.map((opt, i) => {
+                let cls = 'quiz-option';
+                if (quizState.submitted && selected === i) {
+                    cls += (i === q.ans) ? ' correct' : ' incorrect';
+                } else if (!quizState.submitted && selected === i) {
+                    cls += ' selected';
+                }
+                const letters = ['A','B','C','D'];
+                return `<div class="${cls}" data-opt="${i}" ${!disabled ? 'onclick="selectQuizOption(' + i + ')"' : ''}>
+                    <span class="opt-letter">${letters[i]}</span>${opt}
+                </div>`;
+            }).join('');
+
+            let feedbackHTML = '';
+            if (quizState.submitted) {
+                const fbClass = selected === q.ans ? 'correct-fb' : 'incorrect-fb';
+                const fbIcon = selected === q.ans ? '✅' : '❌';
+                feedbackHTML = `<div class="quiz-feedback show ${fbClass}">
+                    <strong>${fbIcon} ${selected === q.ans ? 'Correct!' : 'Incorrect'}</strong> — ${q.exp}
+                </div>`;
+            }
+
+            area.innerHTML = `<div class="quiz-question-card">
+                <div class="q-number">${idx + 1}</div>
+                <div class="q-text">${q.q}</div>
+                <div class="quiz-options">${optsHTML}</div>
+                ${feedbackHTML}
+            </div>`;
+        }
+
+        function selectQuizOption(optIdx) {
+            if (quizState.submitted) return;
+            quizState.answers[quizState.currentIndex] = optIdx;
+            renderQuizQuestion();
+        }
+
+        function updateQuizUI() {
+            const total = quizQuestions.length;
+            const answered = quizState.answers.filter(a => a !== null).length;
+            const pct = Math.round((answered / total) * 100);
+            document.getElementById('quizProgressFill').style.width = pct + '%';
+            document.getElementById('quizProgressText').textContent = answered + ' / ' + total;
+
+            const prevBtn = document.getElementById('quizPrevBtn');
+            const nextBtn = document.getElementById('quizNextBtn');
+            const submitBtn = document.getElementById('quizSubmitBtn');
+
+            prevBtn.style.display = quizState.currentIndex > 0 ? 'inline-block' : 'none';
+            if (quizState.currentIndex >= total - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        function goToPrevQuestion() {
+            if (quizState.currentIndex > 0) {
+                quizState.currentIndex--;
+                renderQuizQuestion();
+                updateQuizUI();
+                document.querySelector('.quiz-question-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
+            }
+        }
+
+        function goToNextQuestion() {
+            if (quizState.currentIndex < quizQuestions.length - 1) {
+                quizState.currentIndex++;
+                renderQuizQuestion();
+                updateQuizUI();
+                document.querySelector('.quiz-question-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
+            }
+        }
+
+        function submitQuiz() {
+            quizState.submitted = true;
+            quizState.currentIndex = 0;
+            renderQuizQuestion();
+            updateQuizUI();
+
+            const correct = quizState.answers.reduce((sum, a, i) => sum + (a === quizQuestions[i].ans ? 1 : 0), 0);
+            const total = quizQuestions.length;
+            const pct = Math.round((correct / total) * 100);
+
+            document.getElementById('quizQuestionArea').style.display = 'none';
+            document.getElementById('quizNavBtns').style.display = 'none';
+
+            const scoreCard = document.getElementById('quizScoreCard');
+            const deg = (correct / total) * 360;
+            document.getElementById('scoreCircle').style.setProperty('--score-deg', deg + 'deg');
+            document.getElementById('scoreInner').textContent = pct + '%';
+            document.getElementById('scoreBreakdown').textContent = `You scored ${correct} out of ${total} questions correctly.`;
+
+            let grade = '';
+            if (pct >= 90) grade = '🌟 Outstanding! You have mastered GAN training hyperparameters.';
+            else if (pct >= 70) grade = '👍 Great job! You have a solid understanding of GAN training.';
+            else if (pct >= 50) grade = '📚 Good effort! Review the cards above and try again.';
+            else grade = '📖 Keep studying! Review the hyperparameter cards and architecture breakdown.';
+            document.getElementById('scoreGrade').textContent = grade;
+
+            scoreCard.classList.add('show');
+            scoreCard.scrollIntoView({ behavior:'smooth', block:'center' });
+        }
+
+        document.getElementById('quizPrevBtn').addEventListener('click', goToPrevQuestion);
+        document.getElementById('quizNextBtn').addEventListener('click', goToNextQuestion);
+        document.getElementById('quizSubmitBtn').addEventListener('click', submitQuiz);
+        document.getElementById('quizRestartBtn').addEventListener('click', initQuiz);
+
+        // ═══════════════════════════════════════════
+        // IMAGE FALLBACK
+        // ═══════════════════════════════════════════
+        function handleImageFallback() {
+            const img = document.getElementById('infographicImg');
+            const fallback = document.getElementById('infographicFallback');
+            if (img && fallback) { img.style.display = 'none'; fallback.style.display = 'block'; }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const img = document.getElementById('infographicImg');
+            if (img && !img.complete) {
+                setTimeout(() => { if (!img.complete || img.naturalWidth === 0) handleImageFallback(); }, 3000);
+            } else if (img && img.naturalWidth === 0) { handleImageFallback(); }
+        });
+        const tabNav = document.getElementById('tabNav');
+        const tabBtns = tabNav.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const targetPanel = document.getElementById('tab-' + targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.style.animation = 'none';
+                    targetPanel.offsetHeight;
+                    targetPanel.style.animation = 'fadeSlideIn 0.4s ease';
+                }
+                if (targetId === 'quiz') { initQuiz(); }
+                if (window.innerWidth < 768) { targetPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+        const backToTopBtn = document.getElementById('backToTop');
+        function toggleBackToTop() { if (window.scrollY > 500) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible'); }
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        toggleBackToTop();
+        const infographicImg = document.getElementById('infographicImg');
+        if (infographicImg) {
+            infographicImg.addEventListener('load', () => { const fallback = document.getElementById('infographicFallback'); if (fallback) fallback.style.display = 'none'; infographicImg.style.display = 'block'; });
+            infographicImg.addEventListener('error', handleImageFallback);
+        }
+        console.log('✅ Training GAN Hyperparameters Interactive Guide ready!');
+    </script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
+</body>
+</html>
