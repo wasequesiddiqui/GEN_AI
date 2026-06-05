@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application of GAN – Complete Study Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -60px; right: -80px; width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: -50px; left: -60px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .header .badge {
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+        }
+        .header h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .header h1 span {
+            background: linear-gradient(135deg, #5eead4, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header .tagline { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.75rem; font-weight: 400; letter-spacing: 0.01em; }
+        .header .intro { font-size: 0.95rem; opacity: 0.75; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .infographic-area {
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: -1.5rem auto 2rem;
+            max-width: 900px; padding: 1.5rem; text-align: center; position: relative; z-index: 2; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .infographic-area img { max-width: 100%; height: auto; border-radius: var(--radius); display: block; margin: 0 auto; }
+        .infographic-fallback {
+            display: none; background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); border-radius: var(--radius); padding: 2rem 1.5rem;
+            color: #e2e8f0; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.8; text-align: left; overflow-x: auto;
+        }
+        .infographic-fallback .gan-diagram { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .infographic-fallback .gate-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: center; min-width: 120px;
+        }
+        .infographic-fallback .gate-box strong { display: block; color: #5eead4; font-size: 1rem; margin-bottom: 0.4rem; }
+        .infographic-fallback .gate-box code { color: #fbbf24; font-size: 0.8rem; }
+        .infographic-fallback .arrow-sym { font-size: 1.8rem; color: #94a3b8; }
+        .infographic-area .caption { margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .tab-nav {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 0.5rem;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); position: sticky; top: 12px; z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 auto; min-width: 110px; padding: 0.7rem 1rem; border: none; background: transparent; border-radius: var(--radius);
+            cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); transition: var(--transition); white-space: nowrap; letter-spacing: 0.01em; position: relative;
+        }
+        .tab-btn:hover { color: var(--blue-mid); background: #eff6ff; }
+        .tab-btn.active { background: var(--blue-mid); color: #fff; box-shadow: var(--shadow); }
+        .tab-btn .tab-icon { margin-right: 0.35rem; }
+        .tab-panel { display: none; animation: fadeSlideIn 0.4s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-xl); transform: translateY(-2px); border-color: #cbd5e1; }
+        .card .card-icon { font-size: 2rem; margin-bottom: 0.5rem; display: inline-block; background: #f1f5f9; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0 0.35rem; color: var(--deep-blue); }
+        .card .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; line-height: 1.55; }
+        .code-snippet {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-family: var(--font-mono);
+            font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-snippet .kw { color: #c084fc; } .code-snippet .fn { color: #60a5fa; } .code-snippet .str { color: #fbbf24; } .code-snippet .num { color: #fb923c; } .code-snippet .cm { color: #6b7280; font-style: italic; }
+        .tip-box, .warn-box, .good-box {
+            margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .tip-box { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .warn-box { background: var(--warning-bg); border-left: 4px solid var(--warning-border); color: #92400e; }
+        .good-box { background: #eff6ff; border-left: 4px solid var(--blue-mid); color: #1e40af; }
+        .tip-box .box-icon, .warn-box .box-icon, .good-box .box-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .arch-visual {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 2rem; color: #e2e8f0; text-align: center; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .arch-visual .eq-block {
+            display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+        }
+        .arch-visual .eq-block .hl { color: #5eead4; font-weight: 700; }
+        .arch-visual .eq-block .hl2 { color: #fbbf24; font-weight: 700; }
+        .full-code-block {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow-lg); max-height: 70vh; overflow-y: auto;
+        }
+        .full-code-block .kw { color: #c084fc; } .full-code-block .fn { color: #60a5fa; } .full-code-block .str { color: #a3e635; } .full-code-block .num { color: #fb923c; } .full-code-block .cm { color: #6b7280; font-style: italic; } .full-code-block .anno { color: #f472b6; font-weight: 700; }
+        .summary-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .summary-table { width: 100%; border-collapse: collapse; background: var(--bg-card); font-size: 0.9rem; }
+        .summary-table thead { background: var(--deep-blue); color: #fff; }
+        .summary-table thead th { padding: 0.85rem 1rem; text-align: left; font-weight: 600; letter-spacing: 0.02em; }
+        .summary-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        .summary-table tbody tr:hover { background: #f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .comparison-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+        .comparison-card.params { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #93c5fd; }
+        .comparison-card.hyperparams { background: linear-gradient(135deg, #f0fdf4, #ccfbf1); border: 2px solid #5eead4; }
+        .comparison-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comparison-card ul { list-style: none; padding: 0; text-align: left; display: inline-block; }
+        .comparison-card li { padding: 0.2rem 0; font-size: 0.88rem; }
+        .baseline-card {
+            background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); color: #fff; border-radius: var(--radius-xl); padding: 2rem; text-align: center; box-shadow: var(--shadow-xl);
+        }
+        .baseline-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #5eead4; }
+        .baseline-card .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .baseline-card .config-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.75rem; }
+        .baseline-card .config-item strong { display: block; color: #fbbf24; font-size: 1rem; }
+        .baseline-card .config-item span { font-size: 0.78rem; opacity: 0.8; }
+        .back-to-top {
+            position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue-mid); color: #fff; border: none;
+            cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition); z-index: 99; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--deep-blue); transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        .eq-explanation-card {
+            background: #f8fafc; border-radius: var(--radius-lg); padding: 1.8rem; margin-top: 1.5rem; border: 1px solid #cbd5e1;
+        }
+        .eq-explanation-card h4 { font-size: 1.2rem; color: var(--deep-blue); margin-bottom: 1rem; }
+        .eq-term-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.8rem;
+        }
+        .eq-term-item {
+            background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--teal-light);
+        }
+        .eq-term-item .symbol { font-family: var(--font-mono); font-weight: 700; color: var(--blue-mid); font-size: 1.15rem; }
+        .eq-term-item .meaning { font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem; }
+        .eq-term-item .dims { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-style: italic; }
+        .highlight-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .highlight-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+        .highlight-table tr:last-child td { border-bottom: none; }
+        /* ===== QUIZ STYLES ===== */
+        .quiz-container { max-width: 800px; margin: 0 auto; }
+        .quiz-progress {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem 1.25rem;
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+        .quiz-progress-bar {
+            flex: 1; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--teal-light), var(--blue-mid));
+            border-radius: 10px; transition: width 0.4s ease;
+        }
+        .quiz-progress-text { font-weight: 700; color: var(--deep-blue); font-size: 0.9rem; white-space: nowrap; }
+        .quiz-question-card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.75rem;
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border); margin-bottom: 1.25rem;
+            transition: var(--transition); animation: fadeSlideIn 0.35s ease;
+        }
+        .quiz-question-card .q-number {
+            display: inline-block; background: var(--deep-blue); color: #fff; width: 36px; height: 36px;
+            border-radius: 50%; text-align: center; line-height: 36px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem;
+        }
+        .quiz-question-card .q-text { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 1.25rem; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .quiz-option {
+            display: flex; align-items: center; gap: 0.65rem; padding: 0.8rem 1rem; border: 2px solid var(--border);
+            border-radius: var(--radius); cursor: pointer; transition: var(--transition); font-size: 0.92rem; background: #fafbfc;
+        }
+        .quiz-option:hover { border-color: var(--blue-mid); background: #eff6ff; }
+        .quiz-option.selected { border-color: var(--blue-mid); background: #dbeafe; font-weight: 600; }
+        .quiz-option.correct { border-color: var(--tip-border); background: var(--tip-bg); color: #166534; }
+        .quiz-option.incorrect { border-color: var(--danger-border); background: var(--danger-bg); color: #991b1b; }
+        .quiz-option .opt-letter {
+            width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; transition: var(--transition);
+        }
+        .quiz-option.selected .opt-letter { background: var(--blue-mid); color: #fff; }
+        .quiz-option.correct .opt-letter { background: var(--tip-border); color: #fff; }
+        .quiz-option.incorrect .opt-letter { background: var(--danger-border); color: #fff; }
+        .quiz-feedback {
+            margin-top: 1rem; padding: 0.8rem 1rem; border-radius: var(--radius-sm); font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct-fb { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .quiz-feedback.incorrect-fb { background: var(--danger-bg); border-left: 4px solid var(--danger-border); color: #991b1b; }
+        .quiz-nav-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+        .quiz-nav-btns button {
+            padding: 0.7rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;
+            font-size: 0.9rem; transition: var(--transition);
+        }
+        .quiz-prev-btn { background: #e2e8f0; color: var(--text); }
+        .quiz-prev-btn:hover { background: #cbd5e1; }
+        .quiz-next-btn { background: var(--blue-mid); color: #fff; }
+        .quiz-next-btn:hover { background: var(--deep-blue); }
+        .quiz-submit-btn { background: var(--teal); color: #fff; }
+        .quiz-submit-btn:hover { background: #0f766e; }
+        .quiz-restart-btn { background: #f59e0b; color: #fff; }
+        .quiz-restart-btn:hover { background: #d97706; }
+        .quiz-score-card {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #0d3b4e 100%); color: #fff;
+            border-radius: var(--radius-xl); padding: 2.5rem 2rem; text-align: center; box-shadow: var(--shadow-xl); display: none;
+        }
+        .quiz-score-card.show { display: block; animation: fadeSlideIn 0.5s ease; }
+        .quiz-score-card .score-circle {
+            width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#5eead4 0deg var(--score-deg), rgba(255,255,255,0.15) var(--score-deg) 360deg);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; position: relative;
+        }
+        .quiz-score-card .score-inner {
+            width: 90px; height: 90px; border-radius: 50%; background: var(--deep-blue);
+            display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800;
+        }
+        .quiz-score-card .score-grade { font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.9; }
+        .quiz-score-card .score-breakdown { font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; } .comparison-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 0.76rem; padding: 0.5rem 0.6rem; min-width: auto; flex: 1 1 calc(33% - 0.3rem); }
+            .header { padding: 2rem 1rem 1.5rem; } .header h1 { font-size: 1.6rem; }
+            .eq-term-grid { grid-template-columns: 1fr; }
+            .quiz-question-card { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- HEADER -->
+    <!-- ═══════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">🔧 Application of GAN</div>
+            <h1>Application of Generative Adversarial Network – <span>Complete Guide</span></h1>
+            <p class="tagline">From image synthesis to drug discovery — explore the transformative real-world applications of GANs.</p>
+            <p class="intro">
+                Generative Adversarial Networks (GANs) have revolutionized generative modeling across domains. This guide covers
+                10 key application areas — including image-to-image translation, super-resolution, text-to-image synthesis,
+                data augmentation, anomaly detection, and medical imaging — with practical code examples, architecture breakdowns,
+                and a comprehensive self-assessment quiz for the CGAI exam.
+            </p>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- INFOGRAPHIC IMAGE AREA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <div class="infographic-area" id="infographicArea">
+            <img id="infographicImg" src="images/APPLICATION_GAN.png" alt="Application of GAN Overview Infographic" loading="lazy" onerror="handleImageFallback()">
+            <div class="infographic-fallback" id="infographicFallback">
+                <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🌐 GAN Application Ecosystem</div>
+                <div class="gan-diagram">
+                    <div class="gate-box"><strong>🖼️ Image</strong><code>Generation, SR,</code><br><code>Translation, Inpainting</code><br><small style="color:#94a3b8;">Computer Vision</small></div>
+                    <span class="arrow-sym">|</span>
+                    <div class="gate-box"><strong>📝 Text/NLP</strong><code>Text-to-Image,</code><br><code>Style Transfer, TTS</code><br><small style="color:#94a3b8;">Multimodal AI</small></div>
+                    <span class="arrow-sym">|</span>
+                    <div class="gate-box"><strong>🔬 Science</strong><code>Drug Discovery,</code><br><code>Medical Imaging, Genomics</code><br><small style="color:#94a3b8;">Healthcare &amp; Biology</small></div>
+                </div>
+                <div style="text-align:center;color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">
+                    Pix2Pix &nbsp;|&nbsp; CycleGAN &nbsp;|&nbsp; SRGAN &nbsp;|&nbsp; StyleGAN &nbsp;|&nbsp; AnoGAN &nbsp;|&nbsp; MedGAN &nbsp;|&nbsp; StackGAN
+                </div>
+            </div>
+            <p class="caption">📊 GAN applications across computer vision, multimodal AI, and scientific domains</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB NAVIGATION -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <nav class="tab-nav" id="tabNav">
+            <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Applications</button>
+            <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+            <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+            <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+            <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+            <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+            <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+        </nav>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: All Applications (1–10) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel active" id="tab-all-concepts">
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🖼️</div><h3>① Image Generation (DCGAN / StyleGAN)</h3><p class="card-desc">GANs synthesize photorealistic images from random noise. StyleGAN generates high-resolution faces with disentangled latent controls over pose, hairstyle, and lighting.</p><div class="code-snippet"><span class="kw">import</span> torch<br>z = torch.randn(<span class="num">1</span>, <span class="num">512</span>)  <span class="cm"># StyleGAN latent code</span><br>img = stylegan_g(z)  <span class="cm"># 1024×1024 output</span></div><div class="tip-box"><span class="box-icon">💡</span>StyleGAN2/3 is the gold standard for unconditional image generation. FID scores as low as ~2.5 on FFHQ.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>② Image-to-Image Translation (Pix2Pix)</h3><p class="card-desc">Translates an input image from one domain to another using paired training data — e.g., sketches → photos, day → night, segmentation masks → scenes.</p><div class="code-snippet"><span class="cm"># Pix2Pix: U-Net generator + PatchGAN discriminator</span><br>fake_B = generator(real_A)  <span class="cm"># A → B translation</span><br>loss = L1(fake_B, real_B) + adversarial_loss</div><div class="good-box"><span class="box-icon">✅</span>Use paired datasets. L1 loss ensures low-frequency correctness; PatchGAN enforces high-frequency realism.</div></div>
+                <div class="card"><div class="card-icon">🌐</div><h3>③ Unpaired Translation (CycleGAN)</h3><p class="card-desc">Translates between domains without paired examples using cycle-consistency loss. Famous for horse↔zebra and photo↔painting style transfer.</p><div class="code-snippet"><span class="cm"># CycleGAN uses two generators: G:X→Y and F:Y→X</span><br>cycle_loss = |F(G(x)) - x| + |G(F(y)) - y|<br>identity_loss = |F(x) - x| + |G(y) - y|</div><div class="tip-box"><span class="box-icon">💡</span>Cycle-consistency is the key innovation — it preserves content while changing style without paired data.</div></div>
+                <div class="card"><div class="card-icon">🔍</div><h3>④ Super-Resolution (SRGAN / ESRGAN)</h3><p class="card-desc">Upscales low-resolution images to high resolution with perceptually convincing details. SRGAN uses perceptual loss based on VGG features.</p><div class="code-snippet"><span class="cm"># SRGAN: Generator upsamples 4×; discriminator scores realism</span><br>sr = generator(lr_img)<br>content_loss = MSE(sr, hr) + VGG_perceptual(sr, hr)<br>adv_loss = -log(D(sr))</div><div class="good-box"><span class="box-icon">✅</span>ESRGAN improves SRGAN with RRDB blocks and relativistic discriminator. Widely used for photo enhancement.</div></div>
+                <div class="card"><div class="card-icon">📝</div><h3>⑤ Text-to-Image Synthesis (StackGAN / DALL-E)</h3><p class="card-desc">Generates images conditioned on text descriptions. StackGAN uses a two-stage process: Stage-I produces low-res shapes, Stage-II refines details.</p><div class="code-snippet"><span class="cm"># StackGAN: text embedding → Stage-I (64×64) → Stage-II (256×256)</span><br>text_embed = encode_text(<span class="str">"a red bird with blue wings"</span>)<br>stage1_img = G1(z, text_embed)  <span class="cm"># 64×64</span><br>stage2_img = G2(stage1_img, text_embed)  <span class="cm"># 256×256</span></div><div class="tip-box"><span class="box-icon">💡</span>Conditioning augmentation in StackGAN smooths the text embedding manifold for better diversity.</div></div>
+                <div class="card"><div class="card-icon">📊</div><h3>⑥ Data Augmentation (GAN-based)</h3><p class="card-desc">GANs generate synthetic training samples to augment limited datasets — especially valuable in medical imaging, rare-class classification, and semi-supervised learning.</p><div class="code-snippet"><span class="cm"># Generate synthetic minority-class samples</span><br>synthetic_samples = generator(noise)<br>augmented_dataset = real_data + synthetic_samples<br>classifier.train(augmented_dataset)</div><div class="good-box"><span class="box-icon">✅</span>GAN-based augmentation often outperforms traditional augmentation (rotation/flip) for complex domains.</div></div>
+                <div class="card"><div class="card-icon">🔎</div><h3>⑦ Anomaly Detection (AnoGAN)</h3><p class="card-desc">Detects anomalies by learning the manifold of normal data. Anomalous samples map to regions far from the learned manifold, producing high reconstruction error.</p><div class="code-snippet"><span class="cm"># AnoGAN: find z* that best reconstructs the query image</span><br>z_star = argmin_z |G(z) - x_query| + λ·|D_features(G(z)) - D_features(x_query)|<br>anomaly_score = |G(z_star) - x_query|</div><div class="warn-box"><span class="box-icon">⚠️</span>AnoGAN inference requires iterative optimization to find z* — slower than feed-forward alternatives like f-AnoGAN.</div></div>
+                <div class="card"><div class="card-icon">🎬</div><h3>⑧ Video Generation &amp; Prediction</h3><p class="card-desc">GANs generate future video frames conditioned on past frames. Applications include video prediction, frame interpolation, and deepfake detection research.</p><div class="code-snippet"><span class="cm"># Video GAN: spatio-temporal generator + 3D discriminator</span><br>next_frames = video_G(past_frames, noise)<br>d_out = video_D(sequence)  <span class="cm"># 3D conv discriminator</span></div><div class="tip-box"><span class="box-icon">💡</span>MoCoGAN decomposes motion and content for better video generation. Use 3D convolutions in the discriminator.</div></div>
+                <div class="card"><div class="card-icon">🏥</div><h3>⑨ Medical Image Synthesis</h3><p class="card-desc">Generates synthetic medical images (CT, MRI, X-ray) for training, data sharing, and cross-modality translation. Preserves patient privacy while augmenting datasets.</p><div class="code-snippet"><span class="cm"># MedGAN: generates synthetic PET/CT scans</span><br>syn_ct = medgan_generator(noise, condition)<br><span class="cm"># Cross-modality: MRI → CT via CycleGAN variant</span><br>syn_ct = mri2ct_gan(mri_scan)</div><div class="good-box"><span class="box-icon">✅</span>GANs enable privacy-preserving data sharing. Combine with differential privacy for additional protection.</div></div>
+                <div class="card"><div class="card-icon">🧬</div><h3>⑩ Drug Discovery &amp; Molecular Generation</h3><p class="card-desc">GANs generate novel molecular structures with desired properties (drug-likeness, solubility, binding affinity). MolGAN and ORGAN generate valid SMILES strings or molecular graphs.</p><div class="code-snippet"><span class="cm"># MolGAN: generates molecular graphs with desired properties</span><br>mol_graph = molgan_generator(z)<br>reward = predict_property(mol_graph)  <span class="cm"># QED, logP, etc.</span><br>g_loss = -reward + adversarial_loss</div><div class="tip-box"><span class="box-icon">💡</span>Reinforcement learning + GAN (ORGAN) improves validity of generated molecules. Combine with docking simulations.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Architecture / Structure -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-architecture">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ GAN Application Architecture Patterns</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">
+                While all GANs share the generator-discriminator framework, application-specific architectures incorporate
+                conditioning mechanisms, domain-specific losses, and specialized network designs to achieve their goals.
+            </p>
+            <div class="arch-visual">
+                <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🔬 Key GAN Application Equations</div>
+                <div class="eq-block"><span class="hl">Conditional GAN (cGAN):</span><br>min<sub>G</sub> max<sub>D</sub> &nbsp; E[log <span class="hl2">D(x|y)</span>] + E[log(1−<span class="hl2">D(G(z|y))</span>)]</div>
+                <div class="eq-block"><span class="hl">Cycle-Consistency Loss:</span><br>L<sub>cycle</sub> = ‖<span class="hl2">F(G(x)) − x</span>‖<sub>1</sub> + ‖<span class="hl2">G(F(y)) − y</span>‖<sub>1</sub></div>
+                <div class="eq-block"><span class="hl">Perceptual Loss (SRGAN):</span><br>L<sub>percep</sub> = ‖<span class="hl2">φ(G(x)) − φ(y)</span>‖<sub>2</sub><sup>2</sup> &nbsp; (VGG features φ)</div>
+                <div class="eq-block"><span class="hl">Anomaly Score (AnoGAN):</span><br>A(x) = ‖x − <span class="hl2">G(z*)</span>‖ + λ·‖f<sub>D</sub>(x) − <span class="hl2">f<sub>D</sub>(G(z*))</span>‖</div>
+            </div>
+
+            <div class="eq-explanation-card">
+                <h4>📖 Architecture Element Breakdown – Application-Specific Designs</h4>
+                <p style="margin-bottom:1.2rem; font-size:0.9rem; color:var(--text-light);">
+                    Each GAN application introduces unique architectural components beyond the standard generator-discriminator pair.
+                </p>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Conditioning &amp; Input Mechanisms</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">Condition y</div><div class="meaning">Auxiliary input guiding generation — class labels, text embeddings, segmentation maps, or source images.</div><div class="dims">Varies: one-hot vector, BERT embeddings, image tensors</div></div>
+                    <div class="eq-term-item"><div class="symbol">U-Net Generator</div><div class="meaning">Encoder-decoder with skip connections, used in Pix2Pix. Preserves spatial structure across the bottleneck.</div><div class="dims">Symmetric encoder-decoder with concatenation skip connections</div></div>
+                    <div class="eq-term-item"><div class="symbol">PatchGAN (D)</div><div class="meaning">Discriminator that classifies local image patches instead of the whole image. Enforces high-frequency texture realism.</div><div class="dims">Output: N×N grid of real/fake scores (e.g., 30×30)</div></div>
+                    <div class="eq-term-item"><div class="symbol">Style Modulation</div><div class="meaning">StyleGAN's AdaIN layers inject style codes at multiple resolutions for hierarchical, disentangled control.</div><div class="dims">Learned affine transforms map w → (γ, β) per channel at each resolution</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Loss Functions by Application</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">L1 / L2 Loss</div><div class="meaning">Pixel-level reconstruction loss for structural accuracy. Essential in Pix2Pix and super-resolution to prevent hallucination.</div><div class="dims">‖G(x) − y‖<sub>1</sub> — L1 preferred for less blurring</div></div>
+                    <div class="eq-term-item"><div class="symbol">Perceptual Loss</div><div class="meaning">Feature-space distance using pretrained VGG network. Matches perceptual similarity rather than exact pixels.</div><div class="dims">VGG-19 conv layers: relu2_2, relu3_4, relu4_4, relu5_2</div></div>
+                    <div class="eq-term-item"><div class="symbol">Cycle-Consistency</div><div class="meaning">Ensures F(G(x)) ≈ x when translating between unpaired domains. Prevents mode collapse to a single output.</div><div class="dims">L<sub>cycle</sub> computed bidirectionally: X→Y→X and Y→X→Y</div></div>
+                    <div class="eq-term-item"><div class="symbol">Identity Loss</div><div class="meaning">Preserves color composition: feeding a Y-domain image into G:X→Y should leave it unchanged.</div><div class="dims">‖G(y) − y‖<sub>1</sub> — weighted by λ<sub>identity</sub> (e.g., 0.5)</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Generator Architectures by Domain</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">StyleGAN (Image)</div><div class="meaning">Mapping network f:z→w, then synthesis network with AdaIN. Enables style mixing and latent space disentanglement.</div><div class="dims">8-layer MLP mapping → 18-layer progressive synthesis</div></div>
+                    <div class="eq-term-item"><div class="symbol">StackGAN (Text→Image)</div><div class="meaning">Two-stage: Stage-I generates 64×64 structure; Stage-II refines to 256×256 using text embedding conditioning augmentation.</div><div class="dims">Conditioning augmentation: add Gaussian noise to text embedding</div></div>
+                    <div class="eq-term-item"><div class="symbol">MolGAN (Molecules)</div><div class="meaning">Generates molecular graphs (nodes=atoms, edges=bonds) using graph convolutions. RL reward guides property optimization.</div><div class="dims">Output: adjacency matrix + annotation matrix for molecular graph</div></div>
+                </div>
+
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted); background: #e0f2fe; padding:0.8rem; border-radius: var(--radius-sm);">
+                    💡 <strong>Key insight:</strong> The most impactful GAN applications introduce domain-specific inductive biases — U-Net skip connections for image translation, perceptual loss for super-resolution, and graph convolutions for molecular generation — rather than relying on the generic GAN framework alone.
+                </div>
+            </div>
+
+            <div class="card-grid" style="margin-top:1rem;">
+                <div class="card"><div class="card-icon">🏗️</div><h3>Conditional GAN Framework</h3><p class="card-desc">The cGAN extends the standard GAN by conditioning both G and D on auxiliary information y (class labels, images, text). Most application GANs are conditional GANs.</p><div class="tip-box"><span class="box-icon">💡</span>Concatenate condition y to the input of both G and D. For image conditions, use channel-wise concatenation.</div></div>
+                <div class="card"><div class="card-icon">🔬</div><h3>Multi-Stage / Progressive Architectures</h3><p class="card-desc">Complex generation tasks benefit from coarse-to-fine pipelines. StackGAN, Progressive GAN, and StyleGAN all use staged generation for higher quality.</p><div class="good-box"><span class="box-icon">✅</span>Progressive growing: start at low resolution (4×4), gradually add layers for higher resolutions during training.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Training / Process -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-training">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Strategies for GAN Applications</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">Training GANs for specific applications requires task-specific loss balancing, data preparation, and convergence monitoring.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">⚖️</div><h3>Loss Weighting &amp; Balancing</h3><p class="card-desc">Application GANs combine multiple loss terms (adversarial + reconstruction + perceptual + cycle). Proper weighting prevents any single term from dominating.</p><div class="code-snippet"><span class="cm"># Pix2Pix loss composition</span><br>L_G = L_GAN(G, D) + <span class="num">100.0</span> * L1(G(x), y)<br><span class="cm"># λ_L1=100 is standard for Pix2Pix</span></div><div class="tip-box"><span class="box-icon">💡</span>Start with λ_recon = 100 (Pix2Pix), λ_cycle = 10 (CycleGAN), λ_percep = 0.006 (SRGAN) as validated defaults.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>Paired vs Unpaired Data</h3><p class="card-desc">Pix2Pix needs paired (A, B) training samples. CycleGAN works with unpaired collections from each domain. Data availability dictates architecture choice.</p><div class="code-snippet"><span class="cm"># Paired: need (sketch, photo) pairs</span><br>dataset_paired = [(sketch1, photo1), ...]<br><span class="cm"># Unpaired: two separate image collections</span><br>dataset_unpaired = [sketches], [photos]</div></div>
+                <div class="card"><div class="card-icon">🎯</div><h3>Perceptual Quality Monitoring</h3><p class="card-desc">Loss values alone are unreliable for GANs. Use task-specific metrics: FID/IS for image generation, LPIPS for translation quality, PSNR/SSIM for super-resolution.</p><div class="code-snippet"><span class="kw">from</span> pytorch_fid <span class="kw">import</span> fid_score<br>fid = fid_score(real_imgs, gen_imgs)<br><span class="cm"># Lower FID = better quality and diversity</span></div><div class="good-box"><span class="box-icon">✅</span>Track FID every 5K iterations. For SR, monitor PSNR + LPIPS — PSNR captures pixel accuracy, LPIPS captures perceptual quality.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>Domain-Specific Optimizer Settings</h3><p class="card-desc">Different GAN applications benefit from tailored optimizer choices. SRGAN uses Adam β1=0.9; CycleGAN uses Adam β1=0.5 (like DCGAN).</p><div class="code-snippet"><span class="cm"># Pix2Pix / CycleGAN: β1=0.5 (GAN default)</span><br>Adam(<span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))<br><span class="cm"># SRGAN: β1=0.9 (closer to supervised learning)</span><br>Adam(<span class="fn">lr</span>=<span class="num">0.0001</span>, <span class="fn">betas</span>=(<span class="num">0.9</span>, <span class="num">0.999</span>))</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Regularization / Tuning -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-regularization">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning for GAN Applications</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">Application-specific regularization prevents overfitting, mode collapse, and instability in task-oriented GANs.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🔄</div><h3>Cycle-Consistency as Regularization</h3><p class="card-desc">CycleGAN's cycle-consistency loss acts as a strong regularizer — it prevents the generator from mapping all source images to a single target output, preserving content structure.</p><div class="code-snippet"><span class="cm"># Bidirectional cycle loss</span><br>forward_cycle = F.l1_loss(F(G(real_X)), real_X)<br>backward_cycle = F.l1_loss(G(F(real_Y)), real_Y)<br>cycle_loss = forward_cycle + backward_cycle</div><div class="good-box"><span class="box-icon">✅</span>Cycle-consistency is the primary defense against mode collapse in unpaired translation tasks.</div></div>
+                <div class="card"><div class="card-icon">🎭</div><h3>Identity Regularization</h3><p class="card-desc">Additional loss term in CycleGAN: feeding a target-domain image into the generator should leave it unchanged. Preserves color/tint composition.</p><div class="code-snippet"><span class="cm"># Identity mapping: G(y_target) ≈ y_target</span><br>id_loss = F.l1_loss(G(real_Y), real_Y) + F.l1_loss(F(real_X), real_X)<br>L_total = L_GAN + λ_cycle * L_cycle + λ_id * L_identity</div></div>
+                <div class="card"><div class="card-icon">🧪</div><h3>Conditioning Augmentation (StackGAN)</h3><p class="card-desc">Instead of using a fixed text embedding, sample from a Gaussian distribution around it. Smooths the embedding manifold for better generation diversity.</p><div class="code-snippet"><span class="cm"># Conditioning Augmentation: sample around text embedding</span><br>mu, logvar = text_encoder(text)<br>std = exp(logvar * <span class="num">0.5</span>)<br>c_hat = mu + std * randn_like(std)<br>L_KL = KL(N(mu, std) || N(<span class="num">0</span>, <span class="num">1</span>))</div><div class="tip-box"><span class="box-icon">💡</span>KL regularization on the augmented distribution prevents overfitting to individual text descriptions.</div></div>
+                <div class="card"><div class="card-icon">📏</div><h3>Feature Matching for Stability</h3><p class="card-desc">Train G to match intermediate discriminator features of real samples. Widely used in Pix2Pix, SRGAN, and AnoGAN to stabilize adversarial training.</p><div class="code-snippet"><span class="cm"># Match D features at multiple layers</span><br>real_feats = D.extract_features(real_imgs)<br>fake_feats = D.extract_features(fake_imgs)<br>fm_loss = sum([L1(rf, ff) <span class="kw">for</span> rf, ff <span class="kw">in</span> zip(real_feats, fake_feats)])</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Full Code Example -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-full-code">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">💻 Full Code – Pix2Pix Image-to-Image Translation with PyTorch</h2>
+            <p style="color:var(--text-light);margin-bottom:1rem;">A runnable Pix2Pix implementation for paired image translation. Key hyperparameters annotated with numbered labels.</p>
+            <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Pix2Pix: Image-to-Image Translation with Conditional GAN – all hyperparameters labeled."""</span>
+
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+<span class="kw">from</span> torch.utils.data <span class="kw">import</span> DataLoader
+
+<span class="cm"># ── ② Image-to-Image Translation Hyperparameters ──</span>
+<span class="anno">IN_CHANNELS</span> = <span class="num">3</span>      <span class="cm"># Input image channels (e.g., RGB sketch)</span>
+<span class="anno">OUT_CHANNELS</span> = <span class="num">3</span>     <span class="cm"># Output image channels (e.g., RGB photo)</span>
+<span class="anno">IMG_SIZE</span> = <span class="num">256</span>        <span class="cm"># Input/output image resolution</span>
+
+<span class="kw">class</span> <span class="fn">UNetGenerator</span>(nn.Module):
+    <span class="cm">"""U-Net with skip connections for image translation."""</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="cm"># Encoder: downsampling path</span>
+        <span class="fn">self</span>.enc1 = self._conv_block(<span class="anno">IN_CHANNELS</span>, <span class="num">64</span>, <span class="fn">bn</span>=<span class="kw">False</span>)
+        <span class="fn">self</span>.enc2 = self._conv_block(<span class="num">64</span>, <span class="num">128</span>)
+        <span class="fn">self</span>.enc3 = self._conv_block(<span class="num">128</span>, <span class="num">256</span>)
+        <span class="fn">self</span>.enc4 = self._conv_block(<span class="num">256</span>, <span class="num">512</span>)
+        <span class="cm"># Bottleneck</span>
+        <span class="fn">self</span>.bottleneck = self._conv_block(<span class="num">512</span>, <span class="num">512</span>)
+        <span class="cm"># Decoder: upsampling with skip connections</span>
+        <span class="fn">self</span>.dec4 = self._upconv_block(<span class="num">512</span>, <span class="num">256</span>)
+        <span class="fn">self</span>.dec3 = self._upconv_block(<span class="num">512</span>, <span class="num">128</span>)  <span class="cm"># +256 skip</span>
+        <span class="fn">self</span>.dec2 = self._upconv_block(<span class="num">256</span>, <span class="num">64</span>)   <span class="cm"># +128 skip</span>
+        <span class="fn">self</span>.dec1 = self._upconv_block(<span class="num">128</span>, <span class="anno">OUT_CHANNELS</span>, <span class="fn">bn</span>=<span class="kw">False</span>)  <span class="cm"># +64 skip</span>
+        <span class="fn">self</span>.final = nn.Tanh()
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, x):
+        e1 = <span class="fn">self</span>.enc1(x)
+        e2 = <span class="fn">self</span>.enc2(e1)
+        e3 = <span class="fn">self</span>.enc3(e2)
+        e4 = <span class="fn">self</span>.enc4(e3)
+        b = <span class="fn">self</span>.bottleneck(e4)
+        d4 = <span class="fn">self</span>.dec4(b, e4)
+        d3 = <span class="fn">self</span>.dec3(d4, e3)
+        d2 = <span class="fn">self</span>.dec2(d3, e2)
+        d1 = <span class="fn">self</span>.dec1(d2, e1)
+        <span class="kw">return</span> <span class="fn">self</span>.final(d1)
+
+<span class="kw">class</span> <span class="fn">PatchGANDiscriminator</span>(nn.Module):
+    <span class="cm">"""PatchGAN: classifies 70×70 overlapping patches as real/fake."""</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.layers = nn.Sequential(
+            nn.Conv2d(<span class="anno">IN_CHANNELS</span> + <span class="anno">OUT_CHANNELS</span>, <span class="num">64</span>, <span class="num">4</span>, <span class="num">2</span>, <span class="num">1</span>), nn.LeakyReLU(<span class="num">0.2</span>),
+            nn.Conv2d(<span class="num">64</span>, <span class="num">128</span>, <span class="num">4</span>, <span class="num">2</span>, <span class="num">1</span>), nn.BatchNorm2d(<span class="num">128</span>), nn.LeakyReLU(<span class="num">0.2</span>),
+            nn.Conv2d(<span class="num">128</span>, <span class="num">256</span>, <span class="num">4</span>, <span class="num">2</span>, <span class="num">1</span>), nn.BatchNorm2d(<span class="num">256</span>), nn.LeakyReLU(<span class="num">0.2</span>),
+            nn.Conv2d(<span class="num">256</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">1</span>)  <span class="cm"># 30×30 output grid</span>
+        )
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, src, tgt):
+        x = torch.cat([src, tgt], <span class="fn">dim</span>=<span class="num">1</span>)  <span class="cm"># Concatenate condition + output</span>
+        <span class="kw">return</span> <span class="fn">self</span>.layers(x)
+
+<span class="cm"># ── ③ Loss Weights ──</span>
+<span class="anno">LAMBDA_L1</span> = <span class="num">100.0</span>  <span class="cm"># L1 loss weight (high for structural accuracy)</span>
+
+G = UNetGenerator()
+D = PatchGANDiscriminator()
+
+<span class="cm"># ── ⑧ Optimizer: Pix2Pix uses β1=0.5 ──</span>
+<span class="anno">g_optim</span> = optim.Adam(G.parameters(), <span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))
+<span class="anno">d_optim</span> = optim.Adam(D.parameters(), <span class="fn">lr</span>=<span class="num">0.0002</span>, <span class="fn">betas</span>=(<span class="num">0.5</span>, <span class="num">0.999</span>))
+
+criterion_GAN = nn.BCEWithLogitsLoss()
+criterion_L1 = nn.L1Loss()
+
+<span class="anno">EPOCHS</span> = <span class="num">200</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="anno">EPOCHS</span>):
+    <span class="kw">for</span> real_A, real_B <span class="kw">in</span> dataloader:
+        batch = real_A.size(<span class="num">0</span>)
+
+        <span class="cm"># ── Train Discriminator ──</span>
+        fake_B = G(real_A)
+        real_pred = D(real_A, real_B)
+        fake_pred = D(real_A, fake_B.detach())
+        d_loss = criterion_GAN(real_pred, torch.ones_like(real_pred)) + \
+                 criterion_GAN(fake_pred, torch.zeros_like(fake_pred))
+        d_optim.zero_grad(); d_loss.backward(); d_optim.step()
+
+        <span class="cm"># ── Train Generator ──</span>
+        fake_pred = D(real_A, fake_B)
+        g_gan_loss = criterion_GAN(fake_pred, torch.ones_like(fake_pred))
+        g_l1_loss = criterion_L1(fake_B, real_B)
+        g_loss = g_gan_loss + <span class="anno">LAMBDA_L1</span> * g_l1_loss  <span class="cm"># ⑨ Combined loss</span>
+        g_optim.zero_grad(); g_loss.backward(); g_optim.step()
+
+    <span class="kw">print</span>(<span class="str">f"Epoch {epoch+1}/{EPOCHS} | D: {d_loss:.3f} | G: {g_loss:.3f} | L1: {g_l1_loss:.3f}"</span>)
+            </div>
+            <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);text-align:center;">⬆️ A complete Pix2Pix training loop. U-Net generator + PatchGAN discriminator + L1 reconstruction loss — the standard image translation recipe.</p>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Summary & Comparison -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-summary">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison of GAN Applications</h2>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead><tr><th>#</th><th>Application</th><th>Key Architecture</th><th>Key Loss / Technique</th><th>Benchmark Dataset</th></tr></thead>
+                    <tbody>
+                        <tr><td>①</td><td><strong>Image Generation</strong></td><td>StyleGAN (Mapping + Synthesis)</td><td>AdaIN, Style Mixing, R1 Gradient Penalty</td><td>FFHQ, LSUN</td></tr>
+                        <tr><td>②</td><td><strong>Image Translation (Paired)</strong></td><td>Pix2Pix: U-Net + PatchGAN</td><td>cGAN loss + λ=100 L1</td><td>Cityscapes, Facades, Maps</td></tr>
+                        <tr><td>③</td><td><strong>Image Translation (Unpaired)</strong></td><td>CycleGAN: 2 G + 2 D</td><td>Cycle-consistency + Identity loss</td><td>Horse↔Zebra, Monet↔Photo</td></tr>
+                        <tr><td>④</td><td><strong>Super-Resolution</strong></td><td>SRGAN/ESRGAN: RRDB blocks</td><td>Perceptual (VGG) + Adversarial + L1</td><td>DIV2K, Set5, Set14</td></tr>
+                        <tr><td>⑤</td><td><strong>Text-to-Image</strong></td><td>StackGAN (Stage I + II)</td><td>Conditioning Augmentation + KL</td><td>CUB-200, COCO</td></tr>
+                        <tr><td>⑥</td><td><strong>Data Augmentation</strong></td><td>DCGAN / StyleGAN + Classifier</td><td>Synthetic sample generation</td><td>Domain-specific (medical, rare classes)</td></tr>
+                        <tr><td>⑦</td><td><strong>Anomaly Detection</strong></td><td>AnoGAN / f-AnoGAN</td><td>Latent optimization + Feature matching</td><td>OCT retinal scans, industrial defects</td></tr>
+                        <tr><td>⑧</td><td><strong>Video Generation</strong></td><td>MoCoGAN / Video GAN</td><td>Spatio-temporal generation + 3D conv</td><td>UCF-101, Kinetics</td></tr>
+                        <tr><td>⑨</td><td><strong>Medical Imaging</strong></td><td>MedGAN / CycleGAN variant</td><td>Cross-modality translation + Privacy</td><td>CT/MRI datasets, MIMIC</td></tr>
+                        <tr><td>⑩</td><td><strong>Drug Discovery</strong></td><td>MolGAN / ORGAN</td><td>Graph convolutions + RL reward</td><td>ZINC, QM9, ChEMBL</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card params"><h4>🧠 Application-Specific Design Choices</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Architecture decisions driven by the task</p><ul><li>✅ U-Net for paired translation (skip connections)</li><li>✅ PatchGAN for texture-level realism</li><li>✅ VGG features for perceptual similarity</li><li>📌 <em>Inductive biases are key to success</em></li></ul></div>
+                <div class="comparison-card hyperparams"><h4>⚙️ Shared GAN Principles</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Concepts shared across all GAN applications</p><ul><li>🔧 Adversarial training (minimax game)</li><li>🔧 Generator-Discriminator balance</li><li>🔧 Latent space sampling (z ~ N(0,I))</li><li>📌 <em>Stable training is the common challenge</em></li></ul></div>
+            </div>
+            <div class="baseline-card">
+                <h3>🚀 Quick Reference: Which GAN Variant to Use?</h3><p style="opacity:0.85;margin-bottom:1rem;">Match your task to the right architecture:</p>
+                <div class="config-grid">
+                    <div class="config-item"><strong>StyleGAN2/3</strong><span>Unconditional generation</span></div><div class="config-item"><strong>Pix2Pix</strong><span>Paired image translation</span></div><div class="config-item"><strong>CycleGAN</strong><span>Unpaired domain transfer</span></div><div class="config-item"><strong>SRGAN/ESRGAN</strong><span>Super-resolution</span></div>
+                    <div class="config-item"><strong>StackGAN</strong><span>Text→Image synthesis</span></div><div class="config-item"><strong>AnoGAN</strong><span>Anomaly detection</span></div><div class="config-item"><strong>DCGAN</strong><span>Data augmentation</span></div><div class="config-item"><strong>MolGAN</strong><span>Molecular generation</span></div>
+                    <div class="config-item"><strong>Pix2PixHD</strong><span>High-res translation</span></div><div class="config-item"><strong>VideoGAN</strong><span>Video prediction</span></div>
+                </div>
+                <p style="margin-top:1rem;font-size:0.82rem;opacity:0.7;">🔬 Start with the variant designed for your task, then customize loss functions and architecture depth.</p>
+            </div>
+            <div class="summary-table-wrap" style="margin-top:1.5rem;">
+                <table class="summary-table">
+                    <thead><tr><th>Feature</th><th>Pix2Pix (Paired)</th><th>CycleGAN (Unpaired)</th><th>SRGAN (Super-Res)</th></tr></thead>
+                    <tbody>
+                        <tr><td>Generator</td><td>U-Net (encoder-decoder)</td><td>ResNet-based</td><td>Deep CNN + upsampling</td></tr>
+                        <tr><td>Discriminator</td><td>PatchGAN (30×30)</td><td>PatchGAN (70×70)</td><td>Standard CNN discriminator</td></tr>
+                        <tr><td>Primary Loss</td><td>cGAN + L1 (λ=100)</td><td>LSGAN + Cycle (λ=10) + Identity (λ=0.5)</td><td>Perceptual (VGG) + Adversarial + L1</td></tr>
+                        <tr><td>Data Requirement</td><td>Paired (A, B) samples</td><td>Two unpaired collections</td><td>Paired (LR, HR) samples</td></tr>
+                        <tr><td>Key Innovation</td><td>U-Net skip + L1 for structure</td><td>Cycle-consistency for unpaired learning</td><td>Perceptual loss in feature space</td></tr>
+                        <tr><td>Best For</td><td>Controlled translation tasks</td><td>Style transfer, domain adaptation</td><td>Photo enhancement, medical imaging</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Quiz (25 Questions) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-quiz">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">🧠 GAN Applications – Quiz</h2>
+            <p style="color:var(--text-light);margin-bottom:1.5rem;">Test your knowledge with 25 questions covering GAN applications, architectures, and training strategies.</p>
+            <div class="quiz-container" id="quizContainer">
+                <div class="quiz-progress">
+                    <span style="font-size:1.2rem;">📝</span>
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%;"></div></div>
+                    <span class="quiz-progress-text" id="quizProgressText">0 / 25</span>
+                </div>
+                <div id="quizQuestionArea"></div>
+                <div class="quiz-nav-btns" id="quizNavBtns">
+                    <button class="quiz-prev-btn" id="quizPrevBtn" style="display:none;">← Previous</button>
+                    <button class="quiz-next-btn" id="quizNextBtn">Next →</button>
+                    <button class="quiz-submit-btn" id="quizSubmitBtn" style="display:none;">Submit Quiz</button>
+                </div>
+                <div class="quiz-score-card" id="quizScoreCard">
+                    <h4 style="font-size:1.5rem;margin-bottom:0.5rem;color:#5eead4;">🏆 Quiz Complete!</h4>
+                    <div class="score-circle" id="scoreCircle" style="--score-deg:0deg;">
+                        <div class="score-inner" id="scoreInner">0%</div>
+                    </div>
+                    <p class="score-grade" id="scoreGrade"></p>
+                    <p class="score-breakdown" id="scoreBreakdown"></p>
+                    <button class="quiz-restart-btn" id="quizRestartBtn" style="margin-top:1.25rem;">🔄 Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+    <script>
+        // ═══════════════════════════════════════════
+        // QUIZ DATA – 25 Questions
+        // ═══════════════════════════════════════════
+        const quizQuestions = [
+            { q:"Which GAN variant is specifically designed for paired image-to-image translation?", opts:["CycleGAN","Pix2Pix","StyleGAN","StackGAN"], ans:1, exp:"Pix2Pix uses paired (A, B) training data with a U-Net generator and PatchGAN discriminator for controlled translation tasks." },
+            { q:"What is the key innovation that allows CycleGAN to work with unpaired datasets?", opts:["PatchGAN discriminator","Cycle-consistency loss","Progressive growing","Spectral normalization"], ans:1, exp:"Cycle-consistency loss ensures F(G(x)) ≈ x, preserving content structure while changing style between unpaired domains." },
+            { q:"What loss term does Pix2Pix add to the adversarial loss for structural accuracy?", opts:["Perceptual loss","L1 reconstruction loss","Wasserstein loss","Hinge loss"], ans:1, exp:"Pix2Pix combines adversarial loss with L1 loss (weighted by λ=100) to ensure the output is structurally similar to the target." },
+            { q:"Which GAN architecture is the gold standard for high-quality unconditional image generation?", opts:["DCGAN","SRGAN","StyleGAN","AnoGAN"], ans:2, exp:"StyleGAN2/3 achieves state-of-the-art image quality with disentangled latent space, style modulation (AdaIN), and progressive growing." },
+            { q:"What does SRGAN use for its perceptual loss?", opts:["Pixel-wise MSE","VGG network features","Inception score","Fréchet Inception Distance"], ans:1, exp:"SRGAN uses VGG-19 features (typically relu5_4) to compute perceptual similarity between super-resolved and ground truth images." },
+            { q:"What is the purpose of Conditioning Augmentation in StackGAN?", opts:["To increase image resolution","To smooth the text embedding manifold","To add noise to images","To regularize the discriminator"], ans:1, exp:"Conditioning Augmentation samples from a Gaussian distribution around the text embedding, smoothing the manifold for better generation diversity." },
+            { q:"Which GAN application is used to detect anomalies by finding the closest latent code that reconstructs a query image?", opts:["CycleGAN","Pix2Pix","AnoGAN","SRGAN"], ans:2, exp:"AnoGAN finds z* = argmin_z |G(z) - x| + λ·|D_features(G(z)) - D_features(x)| and uses the reconstruction error as the anomaly score." },
+            { q:"What type of discriminator does Pix2Pix use?", opts:["Standard CNN discriminator","PatchGAN (classifies image patches)","Multi-scale discriminator","Wasserstein critic"], ans:1, exp:"Pix2Pix uses a PatchGAN discriminator that classifies 70×70 overlapping image patches as real or fake, focusing on local texture quality." },
+            { q:"Which GAN variant uses a U-Net architecture for the generator?", opts:["StyleGAN","CycleGAN","Pix2Pix","StackGAN"], ans:2, exp:"Pix2Pix's generator is a U-Net with skip connections from encoder to decoder layers, preserving spatial information for image translation." },
+            { q:"What is the standard loss weight (λ) for the L1 term in Pix2Pix?", opts:["1","10","100","1000"], ans:2, exp:"λ_L1 = 100 is the standard weight. The high weight ensures the output preserves the structural content of the input image." },
+            { q:"Which loss function is NOT typically used in CycleGAN?", opts:["Adversarial loss (LSGAN)","Cycle-consistency loss","Identity loss","Perceptual (VGG) loss"], ans:3, exp:"CycleGAN uses adversarial loss, cycle-consistency loss, and identity loss. Perceptual VGG loss is used in SRGAN, not CycleGAN." },
+            { q:"What is the primary advantage of GAN-based data augmentation over traditional augmentation?", opts:["Faster training","Generates more realistic and diverse synthetic samples","Requires no training data","Always improves accuracy"], ans:1, exp:"GAN-based augmentation produces more realistic and semantically varied samples compared to simple rotation/flipping, benefiting complex domains like medical imaging." },
+            { q:"Which GAN application generates molecular graphs for drug discovery?", opts:["MedGAN","MolGAN","AnoGAN","SRGAN"], ans:1, exp:"MolGAN generates molecular graphs (atoms as nodes, bonds as edges) using graph convolutions, with RL rewards for desired pharmaceutical properties." },
+            { q:"What is the purpose of identity loss in CycleGAN?", opts:["To preserve the identity of the generator weights","To preserve color composition when feeding target-domain images to the generator","To match the identity of real and fake samples","To identify which domain an image belongs to"], ans:1, exp:"Identity loss ensures G(y_target) ≈ y_target — feeding a target-domain image through the generator should leave it unchanged, preserving color/tint." },
+            { q:"Which GAN architecture introduced progressive growing of layers during training?", opts:["DCGAN","StyleGAN","Progressive GAN","Pix2Pix"], ans:2, exp:"Progressive GAN (PGGAN) gradually adds layers to both G and D during training, starting from 4×4 resolution and growing to 1024×1024 for stable high-resolution generation." },
+            { q:"What does AdaIN stand for in StyleGAN?", opts:["Adaptive Input Normalization","Adaptive Instance Normalization","Adaptive Initialization Network","Adam Instance Normalization"], ans:1, exp:"Adaptive Instance Normalization (AdaIN) injects style codes by scaling and shifting normalized feature maps: AdaIN(x, w) = γ(w)·Norm(x) + β(w)." },
+            { q:"Which GAN variant is best suited for cross-modality medical image translation (e.g., MRI → CT)?", opts:["StackGAN","AnoGAN","CycleGAN variant","Vanilla GAN"], ans:2, exp:"CycleGAN-based variants are widely used for unpaired cross-modality medical image translation since paired MRI-CT datasets are rarely available." },
+            { q:"What is the primary challenge in training GANs for video generation compared to image generation?", opts:["Larger latent space","Spatio-temporal coherence across frames","Faster training speed","Easier discriminator task"], ans:1, exp:"Video GANs must maintain temporal consistency across frames. 3D convolutions in D and recurrent/spatio-temporal architectures in G are used to model motion." },
+            { q:"Which GAN uses a two-stage generation process (Stage-I: 64×64, Stage-II: 256×256)?", opts:["Pix2Pix","SRGAN","StackGAN","StyleGAN"], ans:2, exp:"StackGAN uses Stage-I to generate low-resolution structure from text embeddings, and Stage-II refines it to high resolution with finer details." },
+            { q:"What metric is commonly used to evaluate the quality of GAN-generated images?", opts:["Cross-entropy loss","Accuracy","FID (Fréchet Inception Distance)","Mean squared error"], ans:2, exp:"FID measures the Fréchet distance between Inception-v3 features of real and generated images. Lower FID indicates better quality and diversity." },
+            { q:"In the context of GAN applications, what is 'domain adaptation'?", opts:["Adapting the learning rate during training","Translating data from one domain to another (e.g., synthetic→real)","Changing the batch size per domain","Training on multiple GPUs"], ans:1, exp:"Domain adaptation uses GANs (like CycleGAN) to translate data between domains, such as adapting synthetic data to look realistic for training downstream models." },
+            { q:"What is the role of the PatchGAN discriminator's output grid (e.g., 30×30)?", opts:["Each cell classifies a patch of the input image as real or fake","Each cell generates a pixel of the output image","Each cell represents a latent dimension","Each cell corresponds to a training sample"], ans:0, exp:"Each cell in the PatchGAN output grid classifies whether the corresponding image patch (receptive field ~70×70 pixels) is real or fake." },
+            { q:"Which optimizer β1 value is recommended for Pix2Pix and CycleGAN (GAN-specific)?", opts:["0.9 (standard Adam)","0.5 (reduced momentum)","0.0 (no momentum)","0.99 (high momentum)"], ans:1, exp:"β1=0.5 is the DCGAN standard, also used in Pix2Pix and CycleGAN. Reduced momentum helps the generator adapt to the shifting discriminator landscape." },
+            { q:"What is the purpose of feature matching regularization in GAN applications?", opts:["To match the number of features in G and D","To match intermediate discriminator features of real and fake samples","To match learning rates across networks","To match batch sizes"], ans:1, exp:"Feature matching trains G to minimize the distance between D's intermediate features on real vs. fake samples, stabilizing training and reducing mode collapse." },
+            { q:"Which of the following is a real-world application of GANs in healthcare?", opts:["Sentiment analysis","Generating synthetic medical images for training while preserving privacy","Database indexing","Web scraping"], ans:1, exp:"GANs generate synthetic CT/MRI/X-ray images that augment training data while protecting patient privacy — a major application in medical AI research." }
+        ];
+
+        // ═══════════════════════════════════════════
+        // QUIZ STATE
+        // ═══════════════════════════════════════════
+        let quizState = {
+            currentIndex: 0,
+            answers: new Array(quizQuestions.length).fill(null),
+            submitted: false
+        };
+
+        function initQuiz() {
+            quizState = { currentIndex: 0, answers: new Array(quizQuestions.length).fill(null), submitted: false };
+            document.getElementById('quizScoreCard').classList.remove('show');
+            document.getElementById('quizQuestionArea').style.display = 'block';
+            document.getElementById('quizNavBtns').style.display = 'flex';
+            renderQuizQuestion();
+            updateQuizUI();
+        }
+
+        function renderQuizQuestion() {
+            const idx = quizState.currentIndex;
+            const q = quizQuestions[idx];
+            const area = document.getElementById('quizQuestionArea');
+            const selected = quizState.answers[idx];
+            const disabled = quizState.submitted;
+
+            let optsHTML = q.opts.map((opt, i) => {
+                let cls = 'quiz-option';
+                if (quizState.submitted && selected === i) {
+                    cls += (i === q.ans) ? ' correct' : ' incorrect';
+                } else if (!quizState.submitted && selected === i) {
+                    cls += ' selected';
+                }
+                const letters = ['A','B','C','D'];
+                return `<div class="${cls}" data-opt="${i}" ${!disabled ? 'onclick="selectQuizOption(' + i + ')"' : ''}>
+                    <span class="opt-letter">${letters[i]}</span>${opt}
+                </div>`;
+            }).join('');
+
+            let feedbackHTML = '';
+            if (quizState.submitted) {
+                const fbClass = selected === q.ans ? 'correct-fb' : 'incorrect-fb';
+                const fbIcon = selected === q.ans ? '✅' : '❌';
+                feedbackHTML = `<div class="quiz-feedback show ${fbClass}">
+                    <strong>${fbIcon} ${selected === q.ans ? 'Correct!' : 'Incorrect'}</strong> — ${q.exp}
+                </div>`;
+            }
+
+            area.innerHTML = `<div class="quiz-question-card">
+                <div class="q-number">${idx + 1}</div>
+                <div class="q-text">${q.q}</div>
+                <div class="quiz-options">${optsHTML}</div>
+                ${feedbackHTML}
+            </div>`;
+        }
+
+        function selectQuizOption(optIdx) {
+            if (quizState.submitted) return;
+            quizState.answers[quizState.currentIndex] = optIdx;
+            renderQuizQuestion();
+        }
+
+        function updateQuizUI() {
+            const total = quizQuestions.length;
+            const answered = quizState.answers.filter(a => a !== null).length;
+            const pct = Math.round((answered / total) * 100);
+            document.getElementById('quizProgressFill').style.width = pct + '%';
+            document.getElementById('quizProgressText').textContent = answered + ' / ' + total;
+
+            const prevBtn = document.getElementById('quizPrevBtn');
+            const nextBtn = document.getElementById('quizNextBtn');
+            const submitBtn = document.getElementById('quizSubmitBtn');
+
+            prevBtn.style.display = quizState.currentIndex > 0 ? 'inline-block' : 'none';
+            if (quizState.currentIndex >= total - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        function goToPrevQuestion() {
+            if (quizState.currentIndex > 0) {
+                quizState.currentIndex--;
+                renderQuizQuestion();
+                updateQuizUI();
+                document.querySelector('.quiz-question-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
+            }
+        }
+
+        function goToNextQuestion() {
+            if (quizState.currentIndex < quizQuestions.length - 1) {
+                quizState.currentIndex++;
+                renderQuizQuestion();
+                updateQuizUI();
+                document.querySelector('.quiz-question-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
+            }
+        }
+
+        function submitQuiz() {
+            quizState.submitted = true;
+            quizState.currentIndex = 0;
+            renderQuizQuestion();
+            updateQuizUI();
+
+            const correct = quizState.answers.reduce((sum, a, i) => sum + (a === quizQuestions[i].ans ? 1 : 0), 0);
+            const total = quizQuestions.length;
+            const pct = Math.round((correct / total) * 100);
+
+            document.getElementById('quizQuestionArea').style.display = 'none';
+            document.getElementById('quizNavBtns').style.display = 'none';
+
+            const scoreCard = document.getElementById('quizScoreCard');
+            const deg = (correct / total) * 360;
+            document.getElementById('scoreCircle').style.setProperty('--score-deg', deg + 'deg');
+            document.getElementById('scoreInner').textContent = pct + '%';
+            document.getElementById('scoreBreakdown').textContent = `You scored ${correct} out of ${total} questions correctly.`;
+
+            let grade = '';
+            if (pct >= 90) grade = '🌟 Outstanding! You have mastered GAN applications and architectures.';
+            else if (pct >= 70) grade = '👍 Great job! You have a solid understanding of GAN application domains.';
+            else if (pct >= 50) grade = '📚 Good effort! Review the application cards above and try again.';
+            else grade = '📖 Keep studying! Review each GAN variant and its use case carefully.';
+            document.getElementById('scoreGrade').textContent = grade;
+
+            scoreCard.classList.add('show');
+            scoreCard.scrollIntoView({ behavior:'smooth', block:'center' });
+        }
+
+        document.getElementById('quizPrevBtn').addEventListener('click', goToPrevQuestion);
+        document.getElementById('quizNextBtn').addEventListener('click', goToNextQuestion);
+        document.getElementById('quizSubmitBtn').addEventListener('click', submitQuiz);
+        document.getElementById('quizRestartBtn').addEventListener('click', initQuiz);
+
+        // ═══════════════════════════════════════════
+        // IMAGE FALLBACK
+        // ═══════════════════════════════════════════
+        function handleImageFallback() {
+            const img = document.getElementById('infographicImg');
+            const fallback = document.getElementById('infographicFallback');
+            if (img && fallback) { img.style.display = 'none'; fallback.style.display = 'block'; }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const img = document.getElementById('infographicImg');
+            if (img && !img.complete) {
+                setTimeout(() => { if (!img.complete || img.naturalWidth === 0) handleImageFallback(); }, 3000);
+            } else if (img && img.naturalWidth === 0) { handleImageFallback(); }
+        });
+        const tabNav = document.getElementById('tabNav');
+        const tabBtns = tabNav.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const targetPanel = document.getElementById('tab-' + targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.style.animation = 'none';
+                    targetPanel.offsetHeight;
+                    targetPanel.style.animation = 'fadeSlideIn 0.4s ease';
+                }
+                if (targetId === 'quiz') { initQuiz(); }
+                if (window.innerWidth < 768) { targetPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+        const backToTopBtn = document.getElementById('backToTop');
+        function toggleBackToTop() { if (window.scrollY > 500) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible'); }
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        toggleBackToTop();
+        const infographicImg = document.getElementById('infographicImg');
+        if (infographicImg) {
+            infographicImg.addEventListener('load', () => { const fallback = document.getElementById('infographicFallback'); if (fallback) fallback.style.display = 'none'; infographicImg.style.display = 'block'; });
+            infographicImg.addEventListener('error', handleImageFallback);
+        }
+        console.log('✅ Application of GAN Interactive Study Guide ready!');
+    </script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natural Language Generation – Complete Hyperparameter Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -60px; right: -80px; width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: -50px; left: -60px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .header .badge {
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+        }
+        .header h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .header h1 span {
+            background: linear-gradient(135deg, #5eead4, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header .tagline { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.75rem; font-weight: 400; letter-spacing: 0.01em; }
+        .header .intro { font-size: 0.95rem; opacity: 0.75; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .infographic-area {
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: -1.5rem auto 2rem;
+            max-width: 900px; padding: 1.5rem; text-align: center; position: relative; z-index: 2; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .infographic-area img { max-width: 100%; height: auto; border-radius: var(--radius); display: block; margin: 0 auto; }
+        .infographic-fallback {
+            display: none; background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); border-radius: var(--radius); padding: 2rem 1.5rem;
+            color: #e2e8f0; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.8; text-align: left; overflow-x: auto;
+        }
+        .infographic-fallback .gan-diagram { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .infographic-fallback .gate-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: center; min-width: 120px;
+        }
+        .infographic-fallback .gate-box strong { display: block; color: #5eead4; font-size: 1rem; margin-bottom: 0.4rem; }
+        .infographic-fallback .gate-box code { color: #fbbf24; font-size: 0.8rem; }
+        .infographic-fallback .arrow-sym { font-size: 1.8rem; color: #94a3b8; }
+        .infographic-area .caption { margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .tab-nav {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 0.5rem;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); position: sticky; top: 12px; z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 auto; min-width: 110px; padding: 0.7rem 1rem; border: none; background: transparent; border-radius: var(--radius);
+            cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); transition: var(--transition); white-space: nowrap; letter-spacing: 0.01em; position: relative;
+        }
+        .tab-btn:hover { color: var(--blue-mid); background: #eff6ff; }
+        .tab-btn.active { background: var(--blue-mid); color: #fff; box-shadow: var(--shadow); }
+        .tab-btn .tab-icon { margin-right: 0.35rem; }
+        .tab-panel { display: none; animation: fadeSlideIn 0.4s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-xl); transform: translateY(-2px); border-color: #cbd5e1; }
+        .card .card-icon { font-size: 2rem; margin-bottom: 0.5rem; display: inline-block; background: #f1f5f9; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0 0.35rem; color: var(--deep-blue); }
+        .card .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; line-height: 1.55; }
+        .code-snippet {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-family: var(--font-mono);
+            font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-snippet .kw { color: #c084fc; } .code-snippet .fn { color: #60a5fa; } .code-snippet .str { color: #fbbf24; } .code-snippet .num { color: #fb923c; } .code-snippet .cm { color: #6b7280; font-style: italic; }
+        .tip-box, .warn-box, .good-box {
+            margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .tip-box { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .warn-box { background: var(--warning-bg); border-left: 4px solid var(--warning-border); color: #92400e; }
+        .good-box { background: #eff6ff; border-left: 4px solid var(--blue-mid); color: #1e40af; }
+        .tip-box .box-icon, .warn-box .box-icon, .good-box .box-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .arch-visual {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 2rem; color: #e2e8f0; text-align: center; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .arch-visual .eq-block {
+            display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+        }
+        .arch-visual .eq-block .hl { color: #5eead4; font-weight: 700; }
+        .arch-visual .eq-block .hl2 { color: #fbbf24; font-weight: 700; }
+        .full-code-block {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow-lg); max-height: 70vh; overflow-y: auto;
+        }
+        .full-code-block .kw { color: #c084fc; } .full-code-block .fn { color: #60a5fa; } .full-code-block .str { color: #a3e635; } .full-code-block .num { color: #fb923c; } .full-code-block .cm { color: #6b7280; font-style: italic; } .full-code-block .anno { color: #f472b6; font-weight: 700; }
+        .summary-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .summary-table { width: 100%; border-collapse: collapse; background: var(--bg-card); font-size: 0.9rem; }
+        .summary-table thead { background: var(--deep-blue); color: #fff; }
+        .summary-table thead th { padding: 0.85rem 1rem; text-align: left; font-weight: 600; letter-spacing: 0.02em; }
+        .summary-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        .summary-table tbody tr:hover { background: #f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .comparison-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+        .comparison-card.params { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #93c5fd; }
+        .comparison-card.hyperparams { background: linear-gradient(135deg, #f0fdf4, #ccfbf1); border: 2px solid #5eead4; }
+        .comparison-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comparison-card ul { list-style: none; padding: 0; text-align: left; display: inline-block; }
+        .comparison-card li { padding: 0.2rem 0; font-size: 0.88rem; }
+        .baseline-card {
+            background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); color: #fff; border-radius: var(--radius-xl); padding: 2rem; text-align: center; box-shadow: var(--shadow-xl);
+        }
+        .baseline-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #5eead4; }
+        .baseline-card .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .baseline-card .config-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.75rem; }
+        .baseline-card .config-item strong { display: block; color: #fbbf24; font-size: 1rem; }
+        .baseline-card .config-item span { font-size: 0.78rem; opacity: 0.8; }
+        .back-to-top {
+            position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue-mid); color: #fff; border: none;
+            cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition); z-index: 99; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--deep-blue); transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        .eq-explanation-card {
+            background: #f8fafc; border-radius: var(--radius-lg); padding: 1.8rem; margin-top: 1.5rem; border: 1px solid #cbd5e1;
+        }
+        .eq-explanation-card h4 { font-size: 1.2rem; color: var(--deep-blue); margin-bottom: 1rem; }
+        .eq-term-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.8rem;
+        }
+        .eq-term-item {
+            background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--teal-light);
+        }
+        .eq-term-item .symbol { font-family: var(--font-mono); font-weight: 700; color: var(--blue-mid); font-size: 1.15rem; }
+        .eq-term-item .meaning { font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem; }
+        .eq-term-item .dims { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-style: italic; }
+        .highlight-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .highlight-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+        .highlight-table tr:last-child td { border-bottom: none; }
+        /* ===== QUIZ STYLES ===== */
+        .quiz-container { max-width: 800px; margin: 0 auto; }
+        .quiz-progress {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem 1.25rem;
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+        .quiz-progress-bar {
+            flex: 1; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--teal-light), var(--blue-mid));
+            border-radius: 10px; transition: width 0.4s ease;
+        }
+        .quiz-progress-text { font-weight: 700; color: var(--deep-blue); font-size: 0.9rem; white-space: nowrap; }
+        .quiz-question-card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.75rem;
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border); margin-bottom: 1.25rem;
+            transition: var(--transition); animation: fadeSlideIn 0.35s ease;
+        }
+        .quiz-question-card .q-number {
+            display: inline-block; background: var(--deep-blue); color: #fff; width: 36px; height: 36px;
+            border-radius: 50%; text-align: center; line-height: 36px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem;
+        }
+        .quiz-question-card .q-text { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 1.25rem; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .quiz-option {
+            display: flex; align-items: center; gap: 0.65rem; padding: 0.8rem 1rem; border: 2px solid var(--border);
+            border-radius: var(--radius); cursor: pointer; transition: var(--transition); font-size: 0.92rem; background: #fafbfc;
+        }
+        .quiz-option:hover { border-color: var(--blue-mid); background: #eff6ff; }
+        .quiz-option.selected { border-color: var(--blue-mid); background: #dbeafe; font-weight: 600; }
+        .quiz-option.correct { border-color: var(--tip-border); background: var(--tip-bg); color: #166534; }
+        .quiz-option.incorrect { border-color: var(--danger-border); background: var(--danger-bg); color: #991b1b; }
+        .quiz-option .opt-letter {
+            width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; transition: var(--transition);
+        }
+        .quiz-option.selected .opt-letter { background: var(--blue-mid); color: #fff; }
+        .quiz-option.correct .opt-letter { background: var(--tip-border); color: #fff; }
+        .quiz-option.incorrect .opt-letter { background: var(--danger-border); color: #fff; }
+        .quiz-feedback {
+            margin-top: 1rem; padding: 0.8rem 1rem; border-radius: var(--radius-sm); font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct-fb { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .quiz-feedback.incorrect-fb { background: var(--danger-bg); border-left: 4px solid var(--danger-border); color: #991b1b; }
+        .quiz-nav-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+        .quiz-nav-btns button {
+            padding: 0.7rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;
+            font-size: 0.9rem; transition: var(--transition);
+        }
+        .quiz-prev-btn { background: #e2e8f0; color: var(--text); }
+        .quiz-prev-btn:hover { background: #cbd5e1; }
+        .quiz-next-btn { background: var(--blue-mid); color: #fff; }
+        .quiz-next-btn:hover { background: var(--deep-blue); }
+        .quiz-submit-btn { background: var(--teal); color: #fff; }
+        .quiz-submit-btn:hover { background: #0f766e; }
+        .quiz-restart-btn { background: #f59e0b; color: #fff; }
+        .quiz-restart-btn:hover { background: #d97706; }
+        .quiz-score-card {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #0d3b4e 100%); color: #fff;
+            border-radius: var(--radius-xl); padding: 2.5rem 2rem; text-align: center; box-shadow: var(--shadow-xl); display: none;
+        }
+        .quiz-score-card.show { display: block; animation: fadeSlideIn 0.5s ease; }
+        .quiz-score-card .score-circle {
+            width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#5eead4 0deg var(--score-deg), rgba(255,255,255,0.15) var(--score-deg) 360deg);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; position: relative;
+        }
+        .quiz-score-card .score-inner {
+            width: 90px; height: 90px; border-radius: 50%; background: var(--deep-blue);
+            display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800;
+        }
+        .quiz-score-card .score-grade { font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.9; }
+        .quiz-score-card .score-breakdown { font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; } .comparison-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 0.76rem; padding: 0.5rem 0.6rem; min-width: auto; flex: 1 1 calc(33% - 0.3rem); }
+            .header { padding: 2rem 1rem 1.5rem; } .header h1 { font-size: 1.6rem; }
+            .eq-term-grid { grid-template-columns: 1fr; }
+            .quiz-question-card { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- HEADER -->
+    <!-- ═══════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">🔧 Basics of Natural Language Generation</div>
+            <h1>Basics of Natural Language Generation – <span>Hyperparameters</span></h1>
+            <p class="tagline">Master the transformer decoder hyperparameters that power modern text generation — from attention heads to warmup schedules.</p>
+            <p class="intro">
+                Natural Language Generation (NLG) uses autoregressive transformer decoders to produce coherent, context-aware text.
+                This guide covers the 10 most important hyperparameters for NLG models, from attention heads and embedding size to
+                learning rate warmup and label smoothing, with practical PyTorch examples and a runnable GPT-style training demo.
+            </p>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- INFOGRAPHIC IMAGE AREA -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <div class="infographic-area" id="infographicArea">
+            <img id="infographicImg" src="images/NLG.png" alt="Natural Language Generation Nutshell Infographic" loading="lazy" onerror="handleImageFallback()">
+            <div class="infographic-fallback" id="infographicFallback">
+                <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">📝 NLG Transformer Decoder Flow</div>
+                <div class="gan-diagram">
+                    <div class="gate-box"><strong>Input Tokens</strong><code>x<sub>1</sub>, x<sub>2</sub>, …, x<sub>t</sub></code><br><small style="color:#94a3b8;">Tokenized + Positional Encoding</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Masked Self-Attention</strong><code>Attention(Q,K,V)</code><br><small style="color:#94a3b8;">Causal mask for autoregression</small></div>
+                    <span class="arrow-sym">⟶</span>
+                    <div class="gate-box"><strong>Output Logits</strong><code>Softmax → P(x<sub>t+1</sub>)</code><br><small style="color:#94a3b8;">Next-token probability distribution</small></div>
+                </div>
+                <div style="text-align:center;color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">
+                    Teacher Forcing &nbsp;|&nbsp; Cross-Entropy Loss &nbsp;|&nbsp; Autoregressive Sampling &nbsp;|&nbsp; Top-k / Top-p Decoding
+                </div>
+            </div>
+            <p class="caption">📊 NLG pipeline — tokenization, masked self-attention, and next-token probability prediction</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB NAVIGATION -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="container">
+        <nav class="tab-nav" id="tabNav">
+            <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Hyperparameters</button>
+            <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+            <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+            <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+            <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+            <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+            <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+        </nav>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: All Hyperparameters (1–10) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel active" id="tab-all-concepts">
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🔍</div><h3>① Attention Heads</h3><p class="card-desc">Number of parallel attention heads in each multi-head attention layer. More heads capture more diverse token relationships.</p><div class="code-snippet"><span class="kw">from</span> torch.nn <span class="kw">import</span> MultiheadAttention<br>attn = MultiheadAttention(<span class="fn">embed_dim</span>=<span class="num">512</span>, <span class="fn">num_heads</span>=<span class="num">8</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use 8–16 heads. Embedding dimension must be divisible by num_heads. GPT-2 uses 12–16 heads per layer.</div></div>
+                <div class="card"><div class="card-icon">🏢</div><h3>② Model Depth (Decoder Layers)</h3><p class="card-desc">Number of stacked transformer decoder blocks. Deeper models learn richer linguistic representations but are harder to train.</p><div class="code-snippet"><span class="cm"># GPT-2 Small: 12 layers, GPT-2 XL: 48 layers</span><br>num_decoder_layers = <span class="num">12</span><br>decoder = nn.TransformerDecoder(<br>    decoder_layer, <span class="fn">num_layers</span>=num_decoder_layers)</div><div class="good-box"><span class="box-icon">✅</span>6–12 layers for small models; 24–48 for large. Depth correlates strongly with NLG quality.</div></div>
+                <div class="card"><div class="card-icon">📐</div><h3>③ Embedding Size (d_model)</h3><p class="card-desc">Dimensionality of token embeddings and hidden states throughout the decoder. Larger embeddings capture more nuanced semantics.</p><div class="code-snippet"><span class="kw">class</span> <span class="fn">GPTConfig</span>:<br>    vocab_size = <span class="num">50257</span><br>    n_embd = <span class="num">768</span>  <span class="cm"># GPT-2 Small</span></div><div class="tip-box"><span class="box-icon">💡</span>Common sizes: 512 (small), 768 (GPT-2), 1024 (GPT-2 Medium), 1600 (GPT-2 XL). Scale d_model with num_heads.</div></div>
+                <div class="card"><div class="card-icon">🎲</div><h3>④ Dropout Rate</h3><p class="card-desc">Probability of dropping activations during training. Applied to attention weights, residual connections, and embeddings.</p><div class="code-snippet">config = GPTConfig(<br>    <span class="fn">embd_pdrop</span>=<span class="num">0.1</span>,<br>    <span class="fn">attn_pdrop</span>=<span class="num">0.1</span>,<br>    <span class="fn">resid_pdrop</span>=<span class="num">0.1</span>)</div><div class="tip-box"><span class="box-icon">💡</span>GPT-2 uses 0.1 dropout throughout. For smaller datasets, increase to 0.2–0.3 to prevent overfitting.</div></div>
+                <div class="card"><div class="card-icon">🎯</div><h3>⑤ Learning Rate</h3><p class="card-desc">The peak learning rate after warmup. Transformer decoders are sensitive to LR — too high causes instability, too low stalls learning.</p><div class="code-snippet"><span class="cm"># GPT-2: peak LR = 6e-4 (AdamW)</span><br>optimizer = AdamW(<br>    model.parameters(), <span class="fn">lr</span>=<span class="num">6e-4</span>,<br>    <span class="fn">betas</span>=(<span class="num">0.9</span>, <span class="num">0.95</span>))</div><div class="warn-box"><span class="box-icon">⚠️</span>GPT uses 6e-4; for smaller models start at 3e-4. Too high causes loss spikes in transformer decoders.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>⑥ Batch Size</h3><p class="card-desc">Number of sequences per gradient update. NLG models benefit from large batches for stable gradient estimates.</p><div class="code-snippet"><span class="cm"># GPT-2: batch_size=512 sequences</span><br>dataloader = DataLoader(<br>    dataset, <span class="fn">batch_size</span>=<span class="num">64</span>,<br>    <span class="fn">shuffle</span>=<span class="kw">True</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use 32–128 per GPU. Combine with gradient accumulation to simulate larger effective batch sizes (e.g., 512).</div></div>
+                <div class="card"><div class="card-icon">🔥</div><h3>⑦ Warmup Steps</h3><p class="card-desc">Gradually increases the learning rate from near-zero to the peak value. Critical for transformer stability early in training.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">lr_schedule</span>(step):<br>    <span class="kw">if</span> step < <span class="anno">WARMUP_STEPS</span>:<br>        <span class="kw">return</span> peak_lr * step / <span class="anno">WARMUP_STEPS</span><br>    <span class="kw">return</span> peak_lr * decay_factor</div><div class="good-box"><span class="box-icon">✅</span>GPT uses 2000–4000 warmup steps. Without warmup, transformer decoders often diverge in the first few hundred steps.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>⑧ Optimizer (AdamW)</h3><p class="card-desc">AdamW decouples weight decay from the Adam update, improving generalization. The standard optimizer for GPT-style NLG models.</p><div class="code-snippet"><span class="kw">from</span> torch.optim <span class="kw">import</span> AdamW<br>optimizer = AdamW(<br>    model.parameters(),<br>    <span class="fn">lr</span>=<span class="num">6e-4</span>,<br>    <span class="fn">weight_decay</span>=<span class="num">0.1</span>,<br>    <span class="fn">betas</span>=(<span class="num">0.9</span>, <span class="num">0.95</span>))</div><div class="tip-box"><span class="box-icon">💡</span>AdamW with β1=0.9, β2=0.95 is standard for GPT. Weight decay of 0.1 controls overfitting in large models.</div></div>
+                <div class="card"><div class="card-icon">📏</div><h3>⑨ Sequence Length (Context Window)</h3><p class="card-desc">Maximum token length processed by the model. Longer contexts capture more text but increase memory quadratically (O(n²) due to attention).</p><div class="code-snippet"><span class="cm"># GPT-2: 1024 token context; GPT-3: 2048</span><br>block_size = <span class="num">1024</span><br><span class="cm"># Positional embeddings must match</span><br>pos_emb = nn.Embedding(block_size, n_embd)</div><div class="warn-box"><span class="box-icon">⚠️</span>Memory scales with O(n²) in attention. Use 256–512 for smaller models; 1024–2048 for production NLG.</div></div>
+                <div class="card"><div class="card-icon">📉</div><h3>⑩ Loss Function (Cross-Entropy + Label Smoothing)</h3><p class="card-desc">Next-token prediction uses cross-entropy loss. Label smoothing prevents overconfidence by softening the target distribution.</p><div class="code-snippet"><span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F<br>loss = F.cross_entropy(<br>    logits.view(-<span class="num">1</span>, vocab_size),<br>    targets.view(-<span class="num">1</span>),<br>    <span class="fn">label_smoothing</span>=<span class="num">0.1</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Label smoothing of 0.1 is common. It distributes 10% of the probability mass uniformly across non-target tokens, improving calibration.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Architecture -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-architecture">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ NLG Transformer Decoder Architecture</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">
+                Modern NLG models use a stack of transformer decoder blocks. Each block applies masked self-attention followed by a
+                feed-forward network, with residual connections and layer normalization. The causal mask ensures each token only
+                attends to previous tokens, enabling autoregressive generation.
+            </p>
+            <div class="arch-visual">
+                <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">📐 NLG Core Equations</div>
+                <div class="eq-block"><span class="hl">Scaled Dot-Product Attention:</span><br>Attention(Q,K,V) = softmax(<span class="hl2">QK<sup>T</sup>/√d<sub>k</sub></span> + Mask) V</div>
+                <div class="eq-block"><span class="hl">Multi-Head Attention:</span><br>MultiHead(Q,K,V) = Concat(<span class="hl2">head<sub>1</sub>, …, head<sub>h</sub></span>) W<sup>O</sup></div>
+                <div class="eq-block"><span class="hl">Autoregressive Probability:</span><br>P(x) = ∏<sub>t=1</sub><sup>T</sup> P(<span class="hl2">x<sub>t</sub></span> | x<sub>1</sub>, …, x<sub>t-1</sub>)</div>
+                <div class="eq-block"><span class="hl">Feed-Forward Network (FFN):</span><br>FFN(x) = <span class="hl2">W<sub>2</sub>·GELU(W<sub>1</sub>x + b<sub>1</sub>)</span> + b<sub>2</sub></div>
+            </div>
+
+            <div class="eq-explanation-card">
+                <h4>📖 Equation Element Breakdown – What every symbol means</h4>
+                <p style="margin-bottom:1.2rem; font-size:0.9rem; color:var(--text-light);">
+                    Understanding the attention mechanism and autoregressive structure is key to tuning NLG model performance.
+                </p>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Attention Mechanism</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">Q, K, V</div><div class="meaning">Query, Key, Value matrices — all derived from the same input through learned linear projections W<sup>Q</sup>, W<sup>K</sup>, W<sup>V</sup>.</div><div class="dims">Shape: (batch, seq_len, d_k). d_k = d_model / num_heads</div></div>
+                    <div class="eq-term-item"><div class="symbol">QK<sup>T</sup>/√d<sub>k</sub></div><div class="meaning">Scaled dot-product. The scaling factor √d<sub>k</sub> prevents large dot products from pushing softmax into saturated regions.</div><div class="dims">Output: (batch, num_heads, seq_len, seq_len) attention matrix</div></div>
+                    <div class="eq-term-item"><div class="symbol">Causal Mask</div><div class="meaning">Upper-triangular matrix of −∞ values that prevents token t from attending to tokens > t. Enforces autoregressive property.</div><div class="dims">Shape: (seq_len, seq_len). mask[i,j] = −∞ if j > i</div></div>
+                    <div class="eq-term-item"><div class="symbol">softmax(·)</div><div class="meaning">Converts raw attention scores into a probability distribution over previous tokens. Each row sums to 1.</div><div class="dims">Applied row-wise along the last dimension</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Multi-Head &amp; FFN</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">head<sub>i</sub></div><div class="meaning">Output of the i-th attention head, computed with its own Q,K,V projections. Each head learns distinct token relationships.</div><div class="dims">Shape: (batch, seq_len, d_k). d_k = d_model / num_heads</div></div>
+                    <div class="eq-term-item"><div class="symbol">W<sup>O</sup></div><div class="meaning">Output projection matrix that combines all head outputs back into d_model space. Learned during training.</div><div class="dims">Shape: (d_model, d_model)</div></div>
+                    <div class="eq-term-item"><div class="symbol">GELU</div><div class="meaning">Gaussian Error Linear Unit — the activation used in GPT's FFN. Smoother than ReLU, better for transformer training.</div><div class="dims">GELU(x) = x·Φ(x) where Φ is the standard Gaussian CDF</div></div>
+                    <div class="eq-term-item"><div class="symbol">Autoregressive P(x)</div><div class="meaning">The joint probability is factorized as a product of conditional next-token probabilities. Each step depends on all previous tokens.</div><div class="dims">Chain rule: P(x₁,…,x_T) = ∏ P(x_t | x_{<t})</div></div>
+                </div>
+
+                <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Residual &amp; Normalization</h5>
+                <div class="eq-term-grid">
+                    <div class="eq-term-item"><div class="symbol">Residual Connection</div><div class="meaning">Adds the input of a sublayer to its output: out = x + Sublayer(LayerNorm(x)). Enables training of very deep transformers.</div><div class="dims">Identity shortcut preserves gradient flow through deep networks</div></div>
+                    <div class="eq-term-item"><div class="symbol">LayerNorm</div><div class="meaning">Normalizes activations across the feature dimension. Pre-LN (applied before attention/FFN) is more stable than Post-LN.</div><div class="dims">Normalizes over d_model features per token position</div></div>
+                </div>
+
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted); background: #e0f2fe; padding:0.8rem; border-radius: var(--radius-sm);">
+                    💡 <strong>Key insight:</strong> The causal mask is what makes the decoder autoregressive — without it, attention would be bidirectional (like BERT's encoder) and the model couldn't generate text left-to-right.
+                </div>
+            </div>
+
+            <div class="card-grid" style="margin-top:1rem;">
+                <div class="card"><div class="card-icon">🔍</div><h3>Decoder-Only Architecture</h3><p class="card-desc">GPT models use decoder-only transformers — no encoder stack. The decoder handles both representation learning and generation in a single stack of layers.</p><div class="tip-box"><span class="box-icon">💡</span>Decoder-only is simpler than encoder-decoder (T5, BART) and scales better for pure generation tasks.</div></div>
+                <div class="card"><div class="card-icon">🔄</div><h3>Autoregressive Generation</h3><p class="card-desc">During inference, tokens are generated one at a time, with each new token appended to the context for predicting the next. This sequential process defines NLG.</p><div class="tip-box"><span class="box-icon">💡</span>Use temperature, top-k, and top-p (nucleus) sampling to control generation diversity vs. determinism.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Training -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-training">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Process Hyperparameters</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">NLG training uses teacher forcing and careful learning rate scheduling to stabilize the autoregressive objective.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🎯</div><h3>Learning Rate Schedule</h3><p class="card-desc">Linear warmup followed by cosine or linear decay. The schedule is as important as the peak LR value for transformer convergence.</p><div class="code-snippet"><span class="cm"># Cosine decay after warmup</span><br>scheduler = CosineAnnealingLR(<br>    optimizer, <span class="fn">T_max</span>=max_steps - warmup)</div><div class="good-box"><span class="box-icon">✅</span>GPT uses: warmup for 2000 steps to 6e-4, then cosine decay to 10% of peak by the end of training.</div></div>
+                <div class="card"><div class="card-icon">📝</div><h3>Teacher Forcing</h3><p class="card-desc">During training, the ground-truth previous tokens are fed as input regardless of model predictions. This stabilizes early training.</p><div class="code-snippet"><span class="cm"># Teacher forcing: use real targets as input</span><br><span class="kw">def</span> <span class="fn">train_step</span>(x):<br>    <span class="cm"># x = [t0, t1, t2, ..., tn]</span><br>    logits = model(x[:-<span class="num">1</span>])  <span class="cm"># predict next token</span><br>    loss = CE(logits, x[<span class="num">1</span>:])  <span class="cm"># compare with actual next</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Teacher forcing creates a train-inference mismatch. Scheduled sampling can help bridge the gap for seq2seq models.</div></div>
+                <div class="card"><div class="card-icon">📦</div><h3>Gradient Accumulation</h3><p class="card-desc">Simulates larger batch sizes by accumulating gradients over multiple micro-batches before updating weights. Essential for GPU-memory-constrained NLG training.</p><div class="code-snippet"><span class="cm"># Accumulate over 4 micro-batches for effective BS=256</span><br>micro_batch = <span class="num">64</span><br>accum_steps = <span class="num">4</span><br>loss = loss / accum_steps<br>loss.backward()<br><span class="kw">if</span> (step + <span class="num">1</span>) % accum_steps == <span class="num">0</span>: optimizer.step()</div><div class="tip-box"><span class="box-icon">💡</span>Effective batch = micro_batch × accum_steps. GPT-2 used ~512; GPT-3 used millions of tokens per batch.</div></div>
+                <div class="card"><div class="card-icon">🔧</div><h3>Mixed Precision Training (FP16/BF16)</h3><p class="card-desc">Uses half-precision floating point to reduce memory and speed up training. Nearly all modern NLG models train with mixed precision.</p><div class="code-snippet"><span class="kw">from</span> torch.cuda.amp <span class="kw">import</span> autocast, GradScaler<br>scaler = GradScaler()<br><span class="kw">with</span> autocast():<br>    loss = model(x)<br>scaler.scale(loss).backward()</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Regularization -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-regularization">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning Techniques</h2>
+            <p style="color:var(--text-light);margin-bottom:1.25rem;">Transformer decoders are prone to overfitting on small datasets. These techniques improve generalization and calibration.</p>
+            <div class="card-grid">
+                <div class="card"><div class="card-icon">🏷️</div><h3>Label Smoothing</h3><p class="card-desc">Softens the one-hot target distribution, distributing probability mass to non-target tokens. Improves calibration and reduces overconfidence.</p><div class="code-snippet"><span class="cm"># Label smoothing: ε=0.1</span><br><span class="cm"># P'(x_t = w) = (1-ε) if w is target else ε/(V-1)</span><br>loss = F.cross_entropy(<br>    logits, targets,<br>    <span class="fn">label_smoothing</span>=<span class="num">0.1</span>)</div><div class="tip-box"><span class="box-icon">💡</span>ε=0.1 is standard. Larger values (0.2) for small datasets. Helps with perplexity and BLEU scores.</div></div>
+                <div class="card"><div class="card-icon">⚖️</div><h3>Weight Decay</h3><p class="card-desc">AdamW's decoupled weight decay penalizes large weights without interfering with the adaptive learning rate. Crucial for NLG generalization.</p><div class="code-snippet"><span class="cm"># AdamW decouples weight decay from Adam</span><br>optimizer = AdamW(<br>    model.parameters(),<br>    <span class="fn">weight_decay</span>=<span class="num">0.1</span>)  <span class="cm"># GPT-2 standard</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Standard Adam's L2 regularization is not equivalent to weight decay. Always use AdamW for transformer NLG.</div></div>
+                <div class="card"><div class="card-icon">✂️</div><h3>Dropout Placement</h3><p class="card-desc">Dropout is applied at three points in GPT: embedding dropout, attention dropout (on softmax weights), and residual dropout (after each sublayer).</p><div class="code-snippet"><span class="cm"># Three dropout rates in GPT-style models</span><br>embd_dropout = <span class="num">0.1</span>   <span class="cm"># After token+position embeddings</span><br>attn_dropout = <span class="num">0.1</span>   <span class="cm"># Within attention softmax</span><br>resid_dropout = <span class="num">0.1</span>  <span class="cm"># After each residual connection</span></div><div class="good-box"><span class="box-icon">✅</span>Keep all three dropout rates equal (0.1). On very small datasets, increase to 0.2–0.3.</div></div>
+                <div class="card"><div class="card-icon">📏</div><h3>Gradient Clipping</h3><p class="card-desc">Clips gradients to a maximum norm to prevent loss spikes. Standard for training large transformer decoders stably.</p><div class="code-snippet"><span class="cm"># Clip gradients to max norm of 1.0</span><br>torch.nn.utils.clip_grad_norm_(<br>    model.parameters(),<br>    <span class="fn">max_norm</span>=<span class="num">1.0</span>)</div><div class="tip-box"><span class="box-icon">💡</span>max_norm=1.0 is the GPT standard. Monitor gradient norms — if spikes occur, lower to 0.5.</div></div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Full Code -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-full-code">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">💻 Full Code – GPT-Style Text Generation with PyTorch</h2>
+            <p style="color:var(--text-light);margin-bottom:1rem;">A minimal GPT decoder training script. All hyperparameters annotated with numbered labels matching the cards above.</p>
+            <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Minimal GPT-style text generation – all hyperparameters labeled."""</span>
+
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+<span class="kw">from</span> torch.optim <span class="kw">import</span> AdamW
+
+<span class="cm"># ── Hyperparameter Configuration ──</span>
+<span class="anno">VOCAB_SIZE</span> = <span class="num">50257</span>      <span class="cm"># GPT-2 vocabulary size</span>
+<span class="anno">N_EMBD</span> = <span class="num">768</span>           <span class="cm"># ③ Embedding dimension (d_model)</span>
+<span class="anno">N_HEAD</span> = <span class="num">12</span>            <span class="cm"># ① Number of attention heads</span>
+<span class="anno">N_LAYER</span> = <span class="num">12</span>           <span class="cm"># ② Decoder layers (depth)</span>
+<span class="anno">BLOCK_SIZE</span> = <span class="num">1024</span>       <span class="cm"># ⑨ Maximum sequence length</span>
+<span class="anno">DROPOUT</span> = <span class="num">0.1</span>           <span class="cm"># ④ Dropout rate</span>
+<span class="anno">PEAK_LR</span> = <span class="num">6e-4</span>          <span class="cm"># ⑤ Peak learning rate</span>
+<span class="anno">BATCH_SIZE</span> = <span class="num">64</span>         <span class="cm"># ⑥ Batch size</span>
+<span class="anno">WARMUP_STEPS</span> = <span class="num">2000</span>     <span class="cm"># ⑦ LR warmup steps</span>
+<span class="anno">WEIGHT_DECAY</span> = <span class="num">0.1</span>      <span class="cm"># ⑧ Weight decay (AdamW)</span>
+<span class="anno">LABEL_SMOOTH</span> = <span class="num">0.1</span>      <span class="cm"># ⑩ Label smoothing ε</span>
+
+<span class="kw">class</span> <span class="fn">CausalSelfAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="kw">assert</span> <span class="anno">N_EMBD</span> % <span class="anno">N_HEAD</span> == <span class="num">0</span>
+        <span class="fn">self</span>.c_attn = nn.Linear(<span class="anno">N_EMBD</span>, <span class="num">3</span> * <span class="anno">N_EMBD</span>)  <span class="cm"># Q, K, V projection</span>
+        <span class="fn">self</span>.c_proj = nn.Linear(<span class="anno">N_EMBD</span>, <span class="anno">N_EMBD</span>)    <span class="cm"># Output projection W^O</span>
+        <span class="fn">self</span>.attn_dropout = nn.Dropout(<span class="anno">DROPOUT</span>)
+        <span class="fn">self</span>.resid_dropout = nn.Dropout(<span class="anno">DROPOUT</span>)
+        <span class="cm"># Causal mask (upper triangular −∞)</span>
+        <span class="fn">self</span>.register_buffer(<span class="str">"bias"</span>, torch.tril(torch.ones(<span class="anno">BLOCK_SIZE</span>, <span class="anno">BLOCK_SIZE</span>))
+                                        .view(<span class="num">1</span>, <span class="num">1</span>, <span class="anno">BLOCK_SIZE</span>, <span class="anno">BLOCK_SIZE</span>))
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, x):
+        B, T, C = x.size()
+        qkv = <span class="fn">self</span>.c_attn(x).split(<span class="anno">N_EMBD</span>, <span class="fn">dim</span>=<span class="num">2</span>)
+        q, k, v = [t.view(B, T, <span class="anno">N_HEAD</span>, C // <span class="anno">N_HEAD</span>).transpose(<span class="num">1</span>, <span class="num">2</span>) <span class="kw">for</span> t <span class="kw">in</span> qkv]
+        att = (q @ k.transpose(-<span class="num">2</span>, -<span class="num">1</span>)) * (<span class="num">1.0</span> / ((C // <span class="anno">N_HEAD</span>) ** <span class="num">0.5</span>))  <span class="cm"># Scale by 1/√d_k</span>
+        att = att.masked_fill(<span class="fn">self</span>.bias[:,:,:T,:T] == <span class="num">0</span>, <span class="kw">float</span>(<span class="str">'-inf'</span>))  <span class="cm"># Causal mask</span>
+        att = F.softmax(att, <span class="fn">dim</span>=-<span class="num">1</span>)
+        att = <span class="fn">self</span>.attn_dropout(att)
+        y = att @ v
+        y = y.transpose(<span class="num">1</span>, <span class="num">2</span>).contiguous().view(B, T, C)
+        <span class="kw">return</span> <span class="fn">self</span>.resid_dropout(<span class="fn">self</span>.c_proj(y))
+
+<span class="kw">class</span> <span class="fn">GPTBlock</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.ln_1 = nn.LayerNorm(<span class="anno">N_EMBD</span>)
+        <span class="fn">self</span>.attn = CausalSelfAttention()
+        <span class="fn">self</span>.ln_2 = nn.LayerNorm(<span class="anno">N_EMBD</span>)
+        <span class="fn">self</span>.mlp = nn.Sequential(
+            nn.Linear(<span class="anno">N_EMBD</span>, <span class="num">4</span> * <span class="anno">N_EMBD</span>), nn.GELU(),
+            nn.Linear(<span class="num">4</span> * <span class="anno">N_EMBD</span>, <span class="anno">N_EMBD</span>), nn.Dropout(<span class="anno">DROPOUT</span>),
+        )
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, x):
+        x = x + <span class="fn">self</span>.attn(<span class="fn">self</span>.ln_1(x))   <span class="cm"># Residual + attention</span>
+        x = x + <span class="fn">self</span>.mlp(<span class="fn">self</span>.ln_2(x))    <span class="cm"># Residual + FFN</span>
+        <span class="kw">return</span> x
+
+<span class="kw">class</span> <span class="fn">GPT</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.tok_emb = nn.Embedding(<span class="anno">VOCAB_SIZE</span>, <span class="anno">N_EMBD</span>)
+        <span class="fn">self</span>.pos_emb = nn.Embedding(<span class="anno">BLOCK_SIZE</span>, <span class="anno">N_EMBD</span>)
+        <span class="fn">self</span>.drop = nn.Dropout(<span class="anno">DROPOUT</span>)
+        <span class="fn">self</span>.blocks = nn.Sequential(*[GPTBlock() <span class="kw">for</span> _ <span class="kw">in</span> range(<span class="anno">N_LAYER</span>)])
+        <span class="fn">self</span>.ln_f = nn.LayerNorm(<span class="anno">N_EMBD</span>)
+        <span class="fn">self</span>.lm_head = nn.Linear(<span class="anno">N_EMBD</span>, <span class="anno">VOCAB_SIZE</span>, <span class="fn">bias</span>=<span class="kw">False</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, idx):
+        B, T = idx.shape
+        tok_emb = <span class="fn">self</span>.tok_emb(idx)
+        pos_emb = <span class="fn">self</span>.pos_emb(torch.arange(T, device=idx.device))
+        x = <span class="fn">self</span>.drop(tok_emb + pos_emb)
+        x = <span class="fn">self</span>.blocks(x)
+        x = <span class="fn">self</span>.ln_f(x)
+        <span class="kw">return</span> <span class="fn">self</span>.lm_head(x)
+
+model = GPT()
+optimizer = AdamW(model.parameters(), <span class="fn">lr</span>=<span class="anno">PEAK_LR</span>,
+                  <span class="fn">betas</span>=(<span class="num">0.9</span>, <span class="num">0.95</span>), <span class="fn">weight_decay</span>=<span class="anno">WEIGHT_DECAY</span>)
+
+<span class="cm"># ── ⑦ LR schedule: linear warmup → cosine decay ──</span>
+<span class="kw">def</span> <span class="fn">get_lr</span>(step):
+    <span class="kw">if</span> step < <span class="anno">WARMUP_STEPS</span>:
+        <span class="kw">return</span> <span class="anno">PEAK_LR</span> * step / <span class="anno">WARMUP_STEPS</span>
+    progress = (step - <span class="anno">WARMUP_STEPS</span>) / (max_steps - <span class="anno">WARMUP_STEPS</span>)
+    <span class="kw">return</span> <span class="anno">PEAK_LR</span> * <span class="num">0.5</span> * (<span class="num">1.0</span> + math.cos(math.pi * progress))
+
+<span class="cm"># ── Training loop ──</span>
+<span class="kw">for</span> step, (x,) <span class="kw">in</span> enumerate(dataloader):
+    lr = get_lr(step)
+    <span class="kw">for</span> param_group <span class="kw">in</span> optimizer.param_groups:
+        param_group[<span class="str">'lr'</span>] = lr
+
+    logits = model(x[:, :-<span class="num">1</span>])          <span class="cm"># Predict next token</span>
+    loss = F.cross_entropy(                 <span class="cm"># ⑩ Cross-entropy loss</span>
+        logits.reshape(-<span class="num">1</span>, <span class="anno">VOCAB_SIZE</span>),
+        x[:, <span class="num">1</span>:].reshape(-<span class="num">1</span>),
+        <span class="fn">label_smoothing</span>=<span class="anno">LABEL_SMOOTH</span>)
+
+    optimizer.zero_grad()
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), <span class="num">1.0</span>)
+    optimizer.step()
+
+    <span class="kw">print</span>(<span class="str">f"Step {step} | Loss: {loss:.4f} | LR: {lr:.2e}"</span>)
+            </div>
+            <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);text-align:center;">⬆️ Complete GPT decoder training loop. All ⑩ hyperparameters annotated. Causal masking + GELU activation + Pre-LN architecture.</p>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Summary & Comparison -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-summary">
+            <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead><tr><th>#</th><th>Hyperparameter</th><th>Purpose</th><th>Typical Range / Values</th></tr></thead>
+                    <tbody>
+                        <tr><td>①</td><td><strong>Attention Heads</strong></td><td>Parallel attention projections for diverse token relationships</td><td>8, 12, 16</td></tr>
+                        <tr><td>②</td><td><strong>Decoder Layers (Depth)</strong></td><td>Stacked transformer blocks for hierarchical representations</td><td>6–12 (small), 24–96 (large)</td></tr>
+                        <tr><td>③</td><td><strong>Embedding Size (d_model)</strong></td><td>Token representation dimensionality; hidden state size</td><td>512, 768, 1024, 1600</td></tr>
+                        <tr><td>④</td><td><strong>Dropout Rate</strong></td><td>Regularization on attention, embeddings, and residuals</td><td>0.1, 0.2, 0.3</td></tr>
+                        <tr><td>⑤</td><td><strong>Learning Rate (Peak)</strong></td><td>Maximum LR after warmup; critical for transformer stability</td><td>3e-4 to 1e-3 (GPT: 6e-4)</td></tr>
+                        <tr><td>⑥</td><td><strong>Batch Size</strong></td><td>Sequences per update; larger is more stable for NLG</td><td>32–512 (effective)</td></tr>
+                        <tr><td>⑦</td><td><strong>Warmup Steps</strong></td><td>Gradual LR increase; prevents early divergence</td><td>1000–4000 (GPT: 2000)</td></tr>
+                        <tr><td>⑧</td><td><strong>Optimizer (AdamW)</strong></td><td>Decoupled weight decay for better generalization</td><td>AdamW with β=(0.9, 0.95)</td></tr>
+                        <tr><td>⑨</td><td><strong>Sequence Length</strong></td><td>Context window; O(n²) memory cost in attention</td><td>256–2048 (GPT-2: 1024)</td></tr>
+                        <tr><td>⑩</td><td><strong>Loss + Label Smoothing</strong></td><td>Cross-entropy with soft targets; improves calibration</td><td>CE + ε=0.1 smoothing</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card params"><h4>🧠 Learned Parameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Discovered automatically during autoregressive training</p><ul><li>✅ Token &amp; positional embeddings</li><li>✅ Q, K, V projection matrices (W^Q, W^K, W^V)</li><li>✅ Output projection &amp; FFN weights</li><li>📌 <em>Updated via AdamW with teacher forcing</em></li></ul></div>
+                <div class="comparison-card hyperparams"><h4>⚙️ Hyperparameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Set manually before training begins</p><ul><li>🔧 Attention heads, layers, embed size</li><li>🔧 LR, batch size, warmup steps</li><li>🔧 Dropout, weight decay, label smoothing</li><li>📌 <em>Chosen by the practitioner</em></li></ul></div>
+            </div>
+            <div class="baseline-card">
+                <h3>🚀 Common Starting Configuration (GPT-2 Small)</h3><p style="opacity:0.85;margin-bottom:1rem;">Use these defaults as your first experiment baseline:</p>
+                <div class="config-grid">
+                    <div class="config-item"><strong>12</strong><span>① Attention Heads</span></div><div class="config-item"><strong>12 layers</strong><span>② Decoder Depth</span></div><div class="config-item"><strong>768</strong><span>③ Embedding Size</span></div><div class="config-item"><strong>0.1</strong><span>④ Dropout</span></div><div class="config-item"><strong>6e-4</strong><span>⑤ Learning Rate</span></div><div class="config-item"><strong>512</strong><span>⑥ Effective Batch</span></div><div class="config-item"><strong>2000</strong><span>⑦ Warmup Steps</span></div><div class="config-item"><strong>AdamW 0.1</strong><span>⑧ Optimizer/WD</span></div><div class="config-item"><strong>1024</strong><span>⑨ Sequence Length</span></div><div class="config-item"><strong>CE + 0.1 LS</strong><span>⑩ Loss + Smoothing</span></div>
+                </div>
+                <p style="margin-top:1rem;font-size:0.82rem;opacity:0.7;">🔬 Tune from here: first adjust learning rate and warmup, then model depth, then batch size and dropout.</p>
+            </div>
+            <div class="summary-table-wrap" style="margin-top:1.5rem;">
+                <table class="summary-table">
+                    <thead><tr><th>Feature</th><th>GPT (Decoder-Only)</th><th>BERT (Encoder-Only)</th><th>T5 (Encoder-Decoder)</th></tr></thead>
+                    <tbody>
+                        <tr><td>Attention</td><td>Causal (unidirectional)</td><td>Bidirectional</td><td>Bidirectional enc + causal dec</td></tr>
+                        <tr><td>Generation</td><td>✅ Native autoregressive</td><td>❌ Not designed for generation</td><td>✅ Seq2seq generation</td></tr>
+                        <tr><td>Pretraining</td><td>Next-token prediction</td><td>Masked language modeling</td><td>Span corruption</td></tr>
+                        <tr><td>Parameters</td><td>Fewer (single stack)</td><td>Fewer (single stack)</td><td>More (dual stack)</td></tr>
+                        <tr><td>Best For</td><td>Open-ended NLG, chat, stories</td><td>Classification, NER, QA</td><td>Translation, summarization</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- TAB: Quiz (25 Questions) -->
+        <!-- ══════════════════════════════════════ -->
+        <div class="tab-panel" id="tab-quiz">
+            <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">🧠 NLG Hyperparameters – Quiz</h2>
+            <p style="color:var(--text-light);margin-bottom:1.5rem;">Test your knowledge with 25 questions covering NLG architecture, transformer hyperparameters, and training strategies.</p>
+            <div class="quiz-container" id="quizContainer">
+                <div class="quiz-progress">
+                    <span style="font-size:1.2rem;">📝</span>
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%;"></div></div>
+                    <span class="quiz-progress-text" id="quizProgressText">0 / 25</span>
+                </div>
+                <div id="quizQuestionArea"></div>
+                <div class="quiz-nav-btns" id="quizNavBtns">
+                    <button class="quiz-prev-btn" id="quizPrevBtn" style="display:none;">← Previous</button>
+                    <button class="quiz-next-btn" id="quizNextBtn">Next →</button>
+                    <button class="quiz-submit-btn" id="quizSubmitBtn" style="display:none;">Submit Quiz</button>
+                </div>
+                <div class="quiz-score-card" id="quizScoreCard">
+                    <h4 style="font-size:1.5rem;margin-bottom:0.5rem;color:#5eead4;">🏆 Quiz Complete!</h4>
+                    <div class="score-circle" id="scoreCircle" style="--score-deg:0deg;">
+                        <div class="score-inner" id="scoreInner">0%</div>
+                    </div>
+                    <p class="score-grade" id="scoreGrade"></p>
+                    <p class="score-breakdown" id="scoreBreakdown"></p>
+                    <button class="quiz-restart-btn" id="quizRestartBtn" style="margin-top:1.25rem;">🔄 Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+    <script>
+        // ═══════════════════════════════════════════
+        // QUIZ DATA – 25 Questions
+        // ═══════════════════════════════════════════
+        const quizQuestions = [
+            { q:"What is the standard number of attention heads in GPT-2 Small?", opts:["4","8","12","16"], ans:2, exp:"GPT-2 Small uses 12 attention heads with an embedding dimension of 768, giving d_k = 64 per head." },
+            { q:"Why is the causal (triangular) mask essential in the transformer decoder?", opts:["To speed up training","To prevent each token from attending to future tokens","To enable bidirectional attention","To reduce memory usage"], ans:1, exp:"The causal mask sets attention scores for future positions to −∞, ensuring the model is autoregressive — each token can only attend to itself and previous tokens." },
+            { q:"What is the purpose of scaling dot-product attention by 1/√d_k?", opts:["To normalize the output to [0,1]","To prevent large dot products from pushing softmax into saturated (low-gradient) regions","To increase the attention span","To reduce the number of parameters"], ans:1, exp:"Without scaling, large d_k values produce large dot products, causing softmax to become nearly one-hot with near-zero gradients." },
+            { q:"Which optimizer is standard for GPT-style NLG models and why?", opts:["SGD — it generalizes best","Adam — it converges fastest","AdamW — it decouples weight decay from the adaptive learning rate","RMSprop — it handles non-stationary objectives"], ans:2, exp:"AdamW decouples weight decay from Adam's gradient normalization, providing better generalization than standard Adam." },
+            { q:"What is the standard peak learning rate for GPT-2 training?", opts:["1e-3","6e-4","3e-5","1e-2"], ans:1, exp:"GPT-2 uses a peak LR of 6e-4 with AdamW and a linear warmup of 2000 steps followed by cosine decay." },
+            { q:"Why is learning rate warmup critical for training transformer decoders?", opts:["It saves GPU memory","Without warmup, large initial updates can cause loss divergence in the first few hundred steps","It reduces the number of epochs needed","It automatically tunes the learning rate"], ans:1, exp:"Transformers are sensitive to initial updates. Warmup gradually increases the LR from near-zero, preventing early divergence before the optimizer's momentum estimates stabilize." },
+            { q:"What does label smoothing do in NLG training?", opts:["Smooths the input token embeddings","Softens the one-hot target distribution to prevent overconfidence","Averages predictions across multiple heads","Normalizes the output logits"], ans:1, exp:"Label smoothing with ε=0.1 distributes 10% of probability mass uniformly across non-target tokens, improving model calibration and generalization." },
+            { q:"What is the embedding dimension (d_model) of GPT-2 Small?", opts:["512","768","1024","1600"], ans:1, exp:"GPT-2 Small: d_model=768 with 12 heads (d_k=64). GPT-2 Medium: 1024. GPT-2 Large: 1280. GPT-2 XL: 1600." },
+            { q:"What is teacher forcing in the context of NLG training?", opts:["A human teacher correcting model outputs","Using ground-truth previous tokens as input during training instead of model predictions","Forcing the model to learn faster with a higher LR","Using a pretrained teacher model to guide training"], ans:1, exp:"Teacher forcing feeds the correct previous token as input (not the model's prediction), stabilizing training by preventing error accumulation." },
+            { q:"Which activation function does GPT use in its feed-forward network?", opts:["ReLU","Tanh","GELU","Sigmoid"], ans:2, exp:"GELU (Gaussian Error Linear Unit) provides smoother gradients than ReLU and is standard in GPT and BERT. GELU(x) = x·Φ(x)." },
+            { q:"What is the effective batch size typically used in GPT-2 training?", opts:["32 sequences","64 sequences","~512 sequences","~4096 sequences"], ans:2, exp:"GPT-2 uses an effective batch size of ~512 sequences, often achieved through gradient accumulation over multiple micro-batches." },
+            { q:"How does the memory cost of self-attention scale with sequence length?", opts:["O(n) — linear","O(n log n) — log-linear","O(n²) — quadratic","O(1) — constant"], ans:2, exp:"The QK^T attention matrix is (n × n), making memory and computation O(n²). This is why context windows are limited and techniques like FlashAttention are used." },
+            { q:"What is the purpose of gradient accumulation in NLG training?", opts:["To speed up gradient computation","To simulate larger batch sizes without exceeding GPU memory","To improve gradient accuracy through averaging","To reduce the number of optimizer steps"], ans:1, exp:"Gradient accumulation sums gradients over multiple micro-batches before calling optimizer.step(), achieving large effective batch sizes on limited GPU memory." },
+            { q:"Which of the following is NOT a standard regularization technique for NLG transformer decoders?", opts:["Dropout on attention weights","Label smoothing","L1 regularization on embeddings","Weight decay (AdamW)"], ans:2, exp:"L1 regularization is not standard for NLG. Dropout, label smoothing, and AdamW weight decay are the primary regularization methods for GPT-style models." },
+            { q:"What is the typical weight decay value used in AdamW for GPT-2?", opts:["0.01","0.1","0.5","1.0"], ans:1, exp:"GPT-2 uses weight_decay=0.1 with AdamW. This relatively high value helps control overfitting in large transformer models." },
+            { q:"What is the context window size of GPT-2?", opts:["512 tokens","1024 tokens","2048 tokens","4096 tokens"], ans:1, exp:"GPT-2 uses a 1024-token context window. GPT-3 increased this to 2048. Modern models like GPT-4 support much larger contexts." },
+            { q:"In multi-head attention, what is d_k (the dimension per head)?", opts:["d_model","d_model × num_heads","d_model / num_heads","num_heads / d_model"], ans:2, exp:"d_k = d_model / num_heads. For GPT-2 Small: 768 / 12 = 64. Each head projects into a lower-dimensional subspace." },
+            { q:"What is the primary advantage of the decoder-only architecture (GPT) over encoder-decoder (T5) for NLG?", opts:["It can do bidirectional attention","It uses fewer parameters for the same generation capability","It never needs pretraining","It supports all languages"], ans:1, exp:"Decoder-only models use a single parameter stack shared between understanding and generation, making them more parameter-efficient for pure generation tasks." },
+            { q:"What does GELU stand for?", opts:["Gradient Elastic Linear Unit","Gaussian Error Linear Unit","General Exponential Loss Unit","Gated Element-wise Linear Unit"], ans:1, exp:"GELU = Gaussian Error Linear Unit. It multiplies the input by the CDF of the standard normal distribution: GELU(x) = x·Φ(x)." },
+            { q:"What is the standard β2 value for AdamW in GPT training?", opts:["0.999","0.99","0.95","0.9"], ans:2, exp:"GPT uses β1=0.9 and β2=0.95 (slightly lower than the default 0.999) which reduces the influence of very old gradient estimates." },
+            { q:"What happens if you set dropout to 0.0 during NLG training on a small dataset?", opts:["Training is faster and always better","The model is likely to overfit and generalize poorly","Dropout doesn't affect transformer training","The model will underfit"], ans:1, exp:"Without dropout, transformer decoders easily overfit on small datasets. Dropout acts as a crucial regularizer by randomly disabling connections during training." },
+            { q:"Which normalization placement (Pre-LN vs Post-LN) is more stable for training deep transformers?", opts:["Post-LN — applied after each sublayer","Pre-LN — applied before each sublayer","Both are equally stable","No normalization is needed"], ans:1, exp:"Pre-LN (LayerNorm before attention/FFN) provides more stable gradient flow than Post-LN, especially for deep models. GPT-2 uses Pre-LN." },
+            { q:"What is the purpose of the residual connections in transformer decoder blocks?", opts:["To add more parameters","To enable gradient flow through deep networks by providing identity shortcuts","To replace layer normalization","To double the model size"], ans:1, exp:"Residual connections (x = x + Sublayer(LN(x))) allow gradients to flow directly through the network, enabling training of very deep transformers without vanishing gradients." },
+            { q:"Which decoding strategy uses top-p (nucleus) sampling?", opts:["Always selecting the most likely token","Sampling from the smallest set of tokens whose cumulative probability exceeds p","Random uniform sampling from the vocabulary","Always using beam search"], ans:1, exp:"Top-p (nucleus) sampling dynamically selects the minimal set of tokens whose cumulative probability ≥ p (e.g., 0.9), balancing diversity and quality." },
+            { q:"What is the primary loss function used for autoregressive NLG training?", opts:["Mean squared error","Binary cross-entropy","Categorical cross-entropy (next-token prediction)","Contrastive loss"], ans:2, exp:"NLG models are trained with cross-entropy loss between predicted token probabilities and the actual next token, optionally with label smoothing." }
+        ];
+
+        // ═══════════════════════════════════════════
+        // QUIZ STATE
+        // ═══════════════════════════════════════════
+        let quizState = {
+            currentIndex: 0,
+            answers: new Array(quizQuestions.length).fill(null),
+            submitted: false
+        };
+
+        function initQuiz() {
+            quizState = { currentIndex: 0, answers: new Array(quizQuestions.length).fill(null), submitted: false };
+            document.getElementById('quizScoreCard').classList.remove('show');
+            document.getElementById('quizQuestionArea').style.display = 'block';
+            document.getElementById('quizNavBtns').style.display = 'flex';
+            renderQuizQuestion();
+            updateQuizUI();
+        }
+
+        function renderQuizQuestion() {
+            const idx = quizState.currentIndex;
+            const q = quizQuestions[idx];
+            const area = document.getElementById('quizQuestionArea');
+            const selected = quizState.answers[idx];
+            const disabled = quizState.submitted;
+
+            let optsHTML = q.opts.map((opt, i) => {
+                let cls = 'quiz-option';
+                if (quizState.submitted && selected === i) {
+                    cls += (i === q.ans) ? ' correct' : ' incorrect';
+                } else if (!quizState.submitted && selected === i) {
+                    cls += ' selected';
+                }
+                const letters = ['A','B','C','D'];
+                return `<div class="${cls}" data-opt="${i}" ${!disabled ? 'onclick="selectQuizOption(' + i + ')"' : ''}>
+                    <span class="opt-letter">${letters[i]}</span>${opt}
+                </div>`;
+            }).join('');
+
+            let feedbackHTML = '';
+            if (quizState.submitted) {
+                const fbClass = selected === q.ans ? 'correct-fb' : 'incorrect-fb';
+                const fbIcon = selected === q.ans ? '✅' : '❌';
+                feedbackHTML = `<div class="quiz-feedback show ${fbClass}">
+                    <strong>${fbIcon} ${selected === q.ans ? 'Correct!' : 'Incorrect'}</strong> — ${q.exp}
+                </div>`;
+            }
+
+            area.innerHTML = `<div class="quiz-question-card">
+                <div class="q-number">${idx + 1}</div>
+                <div class="q-text">${q.q}</div>
+                <div class="quiz-options">${optsHTML}</div>
+                ${feedbackHTML}
+            </div>`;
+        }
+
+        function selectQuizOption(optIdx) {
+            if (quizState.submitted) return;
+            quizState.answers[quizState.currentIndex] = optIdx;
+            renderQuizQuestion();
+        }
+
+        function updateQuizUI() {
+            const total = quizQuestions.length;
+            const answered = quizState.answers.filter(a => a !== null).length;
+            const pct = Math.round((answered / total) * 100);
+            document.getElementById('quizProgressFill').style.width = pct + '%';
+            document.getElementById('quizProgressText').textContent = answered + ' / ' + total;
+
+            const prevBtn = document.getElementById('quizPrevBtn');
+            const nextBtn = document.getElementById('quizNextBtn');
+            const submitBtn = document.getElementById('quizSubmitBtn');
+
+            prevBtn.style.display = quizState.currentIndex > 0 ? 'inline-block' : 'none';
+            if (quizState.currentIndex >= total - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        function goToPrevQuestion() {
+            if (quizState.currentIndex > 0) {
+                quizState.currentIndex--;
+                renderQuizQuestion();
+                updateQuizUI();
+                document.querySelector('.quiz-question-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
+            }
+        }
+
+        function goToNextQuestion() {
+            if (quizState.currentIndex < quizQuestions.length - 1) {
+                quizState.currentIndex++;
+                renderQuizQuestion();
+                updateQuizUI();
+                document.querySelector('.quiz-question-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
+            }
+        }
+
+        function submitQuiz() {
+            quizState.submitted = true;
+            quizState.currentIndex = 0;
+            renderQuizQuestion();
+            updateQuizUI();
+
+            const correct = quizState.answers.reduce((sum, a, i) => sum + (a === quizQuestions[i].ans ? 1 : 0), 0);
+            const total = quizQuestions.length;
+            const pct = Math.round((correct / total) * 100);
+
+            document.getElementById('quizQuestionArea').style.display = 'none';
+            document.getElementById('quizNavBtns').style.display = 'none';
+
+            const scoreCard = document.getElementById('quizScoreCard');
+            const deg = (correct / total) * 360;
+            document.getElementById('scoreCircle').style.setProperty('--score-deg', deg + 'deg');
+            document.getElementById('scoreInner').textContent = pct + '%';
+            document.getElementById('scoreBreakdown').textContent = `You scored ${correct} out of ${total} questions correctly.`;
+
+            let grade = '';
+            if (pct >= 90) grade = '🌟 Outstanding! You have mastered NLG transformer hyperparameters.';
+            else if (pct >= 70) grade = '👍 Great job! You have a solid understanding of NLG architecture and training.';
+            else if (pct >= 50) grade = '📚 Good effort! Review the hyperparameter cards above and try again.';
+            else grade = '📖 Keep studying! Review each card and the architecture breakdown carefully.';
+            document.getElementById('scoreGrade').textContent = grade;
+
+            scoreCard.classList.add('show');
+            scoreCard.scrollIntoView({ behavior:'smooth', block:'center' });
+        }
+
+        document.getElementById('quizPrevBtn').addEventListener('click', goToPrevQuestion);
+        document.getElementById('quizNextBtn').addEventListener('click', goToNextQuestion);
+        document.getElementById('quizSubmitBtn').addEventListener('click', submitQuiz);
+        document.getElementById('quizRestartBtn').addEventListener('click', initQuiz);
+
+        // ═══════════════════════════════════════════
+        // IMAGE FALLBACK
+        // ═══════════════════════════════════════════
+        function handleImageFallback() {
+            const img = document.getElementById('infographicImg');
+            const fallback = document.getElementById('infographicFallback');
+            if (img && fallback) { img.style.display = 'none'; fallback.style.display = 'block'; }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const img = document.getElementById('infographicImg');
+            if (img && !img.complete) {
+                setTimeout(() => { if (!img.complete || img.naturalWidth === 0) handleImageFallback(); }, 3000);
+            } else if (img && img.naturalWidth === 0) { handleImageFallback(); }
+        });
+        const tabNav = document.getElementById('tabNav');
+        const tabBtns = tabNav.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const targetPanel = document.getElementById('tab-' + targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                    targetPanel.style.animation = 'none';
+                    targetPanel.offsetHeight;
+                    targetPanel.style.animation = 'fadeSlideIn 0.4s ease';
+                }
+                if (targetId === 'quiz') { initQuiz(); }
+                if (window.innerWidth < 768) { targetPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+        const backToTopBtn = document.getElementById('backToTop');
+        function toggleBackToTop() { if (window.scrollY > 500) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible'); }
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        toggleBackToTop();
+        const infographicImg = document.getElementById('infographicImg');
+        if (infographicImg) {
+            infographicImg.addEventListener('load', () => { const fallback = document.getElementById('infographicFallback'); if (fallback) fallback.style.display = 'none'; infographicImg.style.display = 'block'; });
+            infographicImg.addEventListener('error', handleImageFallback);
+        }
+        console.log('✅ Natural Language Generation Hyperparameters Interactive Guide ready!');
+    </script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
+</body>
+</html>

@@ -102,12 +102,12 @@ Use the same visual styling, layout, and class names as `RNN.html`, but replace 
 
 ## Example usage
 
-Create an HTML study guide for "Training General Adversarial Network" — a topic relevant to the **CGAI exam**. Follow the same structure as `Training_GAN.html`. Use:
-- badge: "🔧 Training GAN"
-- title: "Training General Adversarial Network"
+Create an HTML study guide for "Basic Understanding of Natural Language Generation" — a topic relevant to the **CGAI exam**. Follow the same structure as `NL_Generation.html`. Use:
+- badge: "🔧 Basics of Natural Language Generation"
+- title: "Basics of Natural Language Generation"
 - tagline: one concise sentence about tuning attention models
 - intro paragraph describing the topic and guide scope
-- infographic image filename: `TRAINING_GAN.png` in the images folder
+- infographic image filename: `NLG.png` in the images folder
 - 10 cards covering attention heads, model depth, embedding size, dropout, learning rate, batch size, warmup steps, optimizer, sequence length, loss
 - architecture section with attention equations and term breakdown
 - training and regularization sections with Transformer-specific advice
