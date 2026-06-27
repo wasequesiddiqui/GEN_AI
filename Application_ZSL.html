@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application of ZSL & Multimodal Learning – Complete Study Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d; --blue: #1e40af; --blue-mid: #2563eb; --teal: #0d9488; --teal-light: #14b8a6; --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc; --bg-card: #ffffff; --bg-code: #0f172a; --text: #1e293b; --text-light: #475569; --text-muted: #64748b;
+            --border: #e2e8f0; --warning-bg: #fffbeb; --warning-border: #f59e0b; --tip-bg: #f0fdf4; --tip-border: #22c55e;
+            --danger-bg: #fef2f2; --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.05); --shadow: 0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,.1),0 4px 10px rgba(0,0,0,.06); --shadow-xl: 0 20px 40px rgba(0,0,0,.12);
+            --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
+            --transition: .3s cubic-bezier(.4,0,.2,1);
+            --font-mono: 'SF Mono','Fira Code','JetBrains Mono','Consolas','Monaco',monospace;
+            --font-sans: 'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}
+        body{font-family:var(--font-sans);background:linear-gradient(170deg,#f0f9ff 0%,#f8fafc 30%,#f0fdf4 70%,#ecfeff 100%);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+        .header{background:linear-gradient(135deg,var(--deep-blue) 0%,#1e3a5f 30%,#0f4c5c 70%,#0d3b4e 100%);color:#fff;padding:3rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-60px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(20,184,166,.25) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+        .header::after{content:'';position:absolute;bottom:-50px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,.2) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+        .header-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+        .header .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);padding:.35rem 1rem;border-radius:50px;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1rem;font-weight:500}
+        .header h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+        .header h1 span{background:linear-gradient(135deg,#5eead4,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .tagline{font-size:1.15rem;opacity:.9;margin-bottom:.75rem;font-weight:400}
+        .header .intro{font-size:.95rem;opacity:.75;max-width:600px;margin:0 auto;line-height:1.7}
+        .container{max-width:1100px;margin:0 auto;padding:1.5rem 1.25rem}
+        .infographic-area{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);margin:-1.5rem auto 2rem;max-width:900px;padding:1.5rem;text-align:center;position:relative;z-index:2;border:1px solid var(--border)}
+        .infographic-area img{max-width:100%;height:auto;border-radius:var(--radius);display:block;margin:0 auto}
+        .infographic-fallback{display:none;background:linear-gradient(135deg,#1a365d 0%,#0d3b4e 100%);border-radius:var(--radius);padding:2rem 1.5rem;color:#e2e8f0;font-family:var(--font-mono);font-size:.9rem;line-height:1.8;text-align:left;overflow-x:auto}
+        .infographic-fallback .gan-diagram{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:1rem 0}
+        .infographic-fallback .gate-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:1rem 1.25rem;text-align:center;min-width:120px}
+        .infographic-fallback .gate-box strong{display:block;color:#5eead4;font-size:1rem;margin-bottom:.4rem}
+        .infographic-fallback .gate-box code{color:#fbbf24;font-size:.8rem}
+        .infographic-fallback .arrow-sym{font-size:1.8rem;color:#94a3b8}
+        .infographic-area .caption{margin-top:.75rem;font-size:.85rem;color:var(--text-muted);font-style:italic}
+        .tab-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;background:var(--bg-card);padding:.5rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);position:sticky;top:12px;z-index:10}
+        .tab-btn{flex:1 1 auto;min-width:110px;padding:.7rem 1rem;border:none;background:transparent;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.88rem;color:var(--text-muted);transition:var(--transition);white-space:nowrap}
+        .tab-btn:hover{color:var(--blue-mid);background:#eff6ff}
+        .tab-btn.active{background:var(--blue-mid);color:#fff;box-shadow:var(--shadow)}
+        .tab-panel{display:none;animation:fadeSlideIn .4s ease}
+        .tab-panel.active{display:block}
+        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+        .card{background:var(--bg-card);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:var(--transition);position:relative;overflow:hidden}
+        .card:hover{box-shadow:var(--shadow-xl);transform:translateY(-2px);border-color:#cbd5e1}
+        .card .card-icon{font-size:2rem;margin-bottom:.5rem;background:#f1f5f9;width:48px;height:48px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center}
+        .card h3{font-size:1.15rem;font-weight:700;margin:.5rem 0 .35rem;color:var(--deep-blue)}
+        .card .card-desc{font-size:.9rem;color:var(--text-light);margin-bottom:.75rem;line-height:1.55}
+        .code-snippet{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-sm);padding:.75rem 1rem;font-family:var(--font-mono);font-size:.8rem;overflow-x:auto;margin:.5rem 0;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+        .code-snippet .kw{color:#c084fc}.code-snippet .fn{color:#60a5fa}.code-snippet .str{color:#fbbf24}.code-snippet .num{color:#fb923c}.code-snippet .cm{color:#6b7280;font-style:italic}
+        .tip-box,.warn-box,.good-box{margin-top:.75rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;display:flex;align-items:flex-start;gap:.5rem}
+        .tip-box{background:var(--tip-bg);border-left:4px solid var(--tip-border);color:#166534}
+        .warn-box{background:var(--warning-bg);border-left:4px solid var(--warning-border);color:#92400e}
+        .good-box{background:#eff6ff;border-left:4px solid var(--blue-mid);color:#1e40af}
+        .arch-visual{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:var(--radius-lg);padding:2rem;color:#e2e8f0;text-align:center;margin-bottom:1.5rem;overflow-x:auto}
+        .arch-visual .eq-block{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:1rem 1.5rem;margin:.5rem;text-align:left;font-family:var(--font-mono);font-size:.85rem;line-height:1.7}
+        .arch-visual .eq-block .hl{color:#5eead4;font-weight:700}.arch-visual .eq-block .hl2{color:#fbbf24;font-weight:700}
+        .full-code-block{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-lg);padding:1.5rem;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word;box-shadow:var(--shadow-lg);max-height:70vh;overflow-y:auto}
+        .full-code-block .kw{color:#c084fc}.full-code-block .fn{color:#60a5fa}.full-code-block .str{color:#a3e635}.full-code-block .num{color:#fb923c}.full-code-block .cm{color:#6b7280;font-style:italic}.full-code-block .anno{color:#f472b6;font-weight:700}
+        .summary-table-wrap{overflow-x:auto;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem}
+        .summary-table{width:100%;border-collapse:collapse;background:var(--bg-card);font-size:.9rem}
+        .summary-table thead{background:var(--deep-blue);color:#fff}
+        .summary-table thead th{padding:.85rem 1rem;text-align:left;font-weight:600}
+        .summary-table tbody td{padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+        .summary-table tbody tr:hover{background:#f8fafc}.summary-table tbody tr:last-child td{border-bottom:none}
+        .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+        .comparison-card{border-radius:var(--radius-lg);padding:1.5rem;text-align:center;box-shadow:var(--shadow)}
+        .comparison-card.params{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd}
+        .comparison-card.hyperparams{background:linear-gradient(135deg,#f0fdf4,#ccfbf1);border:2px solid #5eead4}
+        .comparison-card h4{font-size:1.1rem;margin-bottom:.5rem}
+        .comparison-card ul{list-style:none;padding:0;text-align:left;display:inline-block}
+        .comparison-card li{padding:.2rem 0;font-size:.88rem}
+        .baseline-card{background:linear-gradient(135deg,#1a365d 0%,#0d3b4e 100%);color:#fff;border-radius:var(--radius-xl);padding:2rem;text-align:center;box-shadow:var(--shadow-xl)}
+        .baseline-card h3{font-size:1.3rem;margin-bottom:1rem;color:#5eead4}
+        .baseline-card .config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-top:1rem}
+        .baseline-card .config-item{background:rgba(255,255,255,.08);border-radius:var(--radius);padding:.75rem}
+        .baseline-card .config-item strong{display:block;color:#fbbf24;font-size:1rem}
+        .baseline-card .config-item span{font-size:.78rem;opacity:.8}
+        .back-to-top{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:var(--blue-mid);color:#fff;border:none;cursor:pointer;font-size:1.3rem;box-shadow:var(--shadow-lg);transition:var(--transition);z-index:99;opacity:0;transform:translateY(20px);pointer-events:none;display:flex;align-items:center;justify-content:center}
+        .back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+        .back-to-top:hover{background:var(--deep-blue);transform:translateY(-3px);box-shadow:var(--shadow-xl)}
+        .eq-explanation-card{background:#f8fafc;border-radius:var(--radius-lg);padding:1.8rem;margin-top:1.5rem;border:1px solid #cbd5e1}
+        .eq-explanation-card h4{font-size:1.2rem;color:var(--deep-blue);margin-bottom:1rem}
+        .eq-term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.8rem}
+        .eq-term-item{background:white;border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow-sm);border-left:5px solid var(--teal-light)}
+        .eq-term-item .symbol{font-family:var(--font-mono);font-weight:700;color:var(--blue-mid);font-size:1.15rem}
+        .eq-term-item .meaning{font-size:.85rem;color:var(--text-light);margin-top:.25rem}
+        .quiz-container{max-width:800px;margin:0 auto}
+        .quiz-progress{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border)}
+        .quiz-progress-bar{flex:1;height:10px;background:#e2e8f0;border-radius:10px;overflow:hidden}
+        .quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--teal-light),var(--blue-mid));border-radius:10px;transition:width .4s ease}
+        .quiz-progress-text{font-weight:700;color:var(--deep-blue);font-size:.9rem;white-space:nowrap}
+        .quiz-question-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:1.75rem;box-shadow:var(--shadow-lg);border:1px solid var(--border);margin-bottom:1.25rem;animation:fadeSlideIn .35s ease}
+        .quiz-question-card .q-number{display:inline-block;background:var(--deep-blue);color:#fff;width:36px;height:36px;border-radius:50%;text-align:center;line-height:36px;font-weight:700;font-size:.9rem;margin-bottom:.75rem}
+        .quiz-question-card .q-text{font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:1.25rem;line-height:1.5}
+        .quiz-options{display:flex;flex-direction:column;gap:.6rem}
+        .quiz-option{display:flex;align-items:center;gap:.65rem;padding:.8rem 1rem;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:var(--transition);font-size:.92rem;background:#fafbfc}
+        .quiz-option:hover{border-color:var(--blue-mid);background:#eff6ff}
+        .quiz-option.selected{border-color:var(--blue-mid);background:#dbeafe;font-weight:600}
+        .quiz-option.correct{border-color:var(--tip-border);background:var(--tip-bg);color:#166534}
+        .quiz-option.incorrect{border-color:var(--danger-border);background:var(--danger-bg);color:#991b1b}
+        .quiz-option .opt-letter{width:32px;height:32px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;transition:var(--transition)}
+        .quiz-option.selected .opt-letter{background:var(--blue-mid);color:#fff}
+        .quiz-option.correct .opt-letter{background:var(--tip-border);color:#fff}
+        .quiz-option.incorrect .opt-letter{background:var(--danger-border);color:#fff}
+        .quiz-feedback{margin-top:1rem;padding:.8rem 1rem;border-radius:var(--radius-sm);font-size:.88rem;line-height:1.5;display:none}
+        .quiz-feedback.show{display:block}
+        .quiz-feedback.correct-fb{background:var(--tip-bg);border-left:4px solid var(--tip-border);color:#166534}
+        .quiz-feedback.incorrect-fb{background:var(--danger-bg);border-left:4px solid var(--danger-border);color:#991b1b}
+        .quiz-nav-btns{display:flex;gap:.75rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+        .quiz-nav-btns button{padding:.7rem 1.5rem;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.9rem;transition:var(--transition)}
+        .quiz-prev-btn{background:#e2e8f0;color:var(--text)}.quiz-prev-btn:hover{background:#cbd5e1}
+        .quiz-next-btn{background:var(--blue-mid);color:#fff}.quiz-next-btn:hover{background:var(--deep-blue)}
+        .quiz-submit-btn{background:var(--teal);color:#fff}.quiz-submit-btn:hover{background:#0f766e}
+        .quiz-restart-btn{background:#f59e0b;color:#fff}.quiz-restart-btn:hover{background:#d97706}
+        .quiz-score-card{background:linear-gradient(135deg,var(--deep-blue) 0%,#0d3b4e 100%);color:#fff;border-radius:var(--radius-xl);padding:2.5rem 2rem;text-align:center;box-shadow:var(--shadow-xl);display:none}
+        .quiz-score-card.show{display:block;animation:fadeSlideIn .5s ease}
+        .quiz-score-card .score-circle{width:120px;height:120px;border-radius:50%;background:conic-gradient(#5eead4 0deg var(--score-deg),rgba(255,255,255,.15) var(--score-deg) 360deg);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;position:relative}
+        .quiz-score-card .score-inner{width:90px;height:90px;border-radius:50%;background:var(--deep-blue);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800}
+        .quiz-score-card .score-grade{font-size:1.1rem;margin-top:.5rem;opacity:.9}
+        @media(max-width:768px){.card-grid{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr}.tab-btn{font-size:.76rem;padding:.5rem .6rem;min-width:auto;flex:1 1 calc(33% - .3rem)}.header{padding:2rem 1rem 1.5rem}.header h1{font-size:1.6rem}.eq-term-grid{grid-template-columns:1fr}.quiz-question-card{padding:1.25rem}}
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="badge">🔧 Application of ZSL &amp; Multimodal Learning</div>
+        <h1>Applications of ZSL &amp; Multimodal Learning – <span>Complete Guide</span></h1>
+        <p class="tagline">Explore how zero-shot and multimodal AI power real-world systems — from medical diagnosis to autonomous driving.</p>
+        <p class="intro">
+            Zero-Shot Learning (ZSL) and multimodal AI combine vision, language, and audio to build systems that generalize beyond
+            their training data. This guide covers 10 key application domains — image classification, cross-modal retrieval, VQA,
+            medical diagnosis, autonomous driving, and more — with practical code examples, architecture breakdowns, and a
+            comprehensive self-assessment quiz for the CGAI exam.
+        </p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="infographic-area" id="infographicArea">
+        <img id="infographicImg" src="images/APPLICATION_ZSL.png" alt="Applications of ZSL & Multimodal Learning Infographic" loading="lazy" onerror="handleImageFallback()">
+        <div class="infographic-fallback" id="infographicFallback">
+            <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🌐 ZSL &amp; Multimodal Application Ecosystem</div>
+            <div class="gan-diagram">
+                <div class="gate-box"><strong>👁️ Vision</strong><code>Image Classification</code><br><code>Object Detection</code><br><small style="color:#94a3b8;">Unseen classes</small></div>
+                <span class="arrow-sym">⟷</span>
+                <div class="gate-box"><strong>📝 Language</strong><code>Text Prompts</code><br><code>Semantic Embeddings</code><br><small style="color:#94a3b8;">Cross-modal bridge</small></div>
+                <span class="arrow-sym">⟷</span>
+                <div class="gate-box"><strong>🎯 Applications</strong><code>Medical, VQA,</code><br><code>Retrieval, Driving</code><br><small style="color:#94a3b8;">Real-world impact</small></div>
+            </div>
+            <div style="text-align:center;color:#94a3b8;font-size:.78rem;margin-top:.75rem;">CLIP &nbsp;|&nbsp; ALIGN &nbsp;|&nbsp; BLIP &nbsp;|&nbsp; Flamingo &nbsp;|&nbsp; GPT-4V &nbsp;|&nbsp; LLaVA &nbsp;|&nbsp; ImageBind</div>
+        </div>
+        <p class="caption">📊 ZSL &amp; multimodal applications — vision-language models powering classification, retrieval, and reasoning across modalities</p>
+    </div>
+</div>
+
+<div class="container">
+    <nav class="tab-nav" id="tabNav">
+        <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Applications</button>
+        <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+        <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+        <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+        <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+        <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+        <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+    </nav>
+
+    <div class="tab-panel active" id="tab-all-concepts">
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">🖼️</div><h3>① ZSL Image Classification</h3><p class="card-desc">Classify images into categories never seen during training by leveraging semantic descriptions (attributes, word vectors, or text prompts).</p><div class="code-snippet"><span class="kw">import</span> clip<br>model, preprocess = clip.load(<span class="str">"ViT-B/32"</span>)<br>image = preprocess(img).unsqueeze(<span class="num">0</span>)<br>text = clip.tokenize([<span class="str">"a photo of a zebra"</span>])<br>logits = model(image, text)</div><div class="tip-box"><span class="box-icon">💡</span>CLIP achieves ~76% zero-shot accuracy on ImageNet without any ImageNet training — purely from 400M image-text pairs.</div></div>
+            <div class="card"><div class="card-icon">🔍</div><h3>② Cross-Modal Retrieval</h3><p class="card-desc">Search images using text queries (or vice versa) in a shared embedding space. Powers Google Images, stock photo search, and e-commerce.</p><div class="code-snippet"><span class="cm"># Text-to-image retrieval via CLIP</span><br>img_embeds = model.encode_image(images)<br>txt_embeds = model.encode_text(queries)<br>similarity = img_embeds @ txt_embeds.T<br>top_k = similarity.topk(<span class="fn">k</span>=<span class="num">10</span>)</div><div class="good-box"><span class="box-icon">✅</span>Dual-encoder models (CLIP, ALIGN) enable sub-second retrieval across millions of images via precomputed embeddings.</div></div>
+            <div class="card"><div class="card-icon">❓</div><h3>③ Visual Question Answering (VQA)</h3><p class="card-desc">Answer natural language questions about images by fusing visual and textual representations. BLIP, LLaVA, and GPT-4V are state-of-the-art.</p><div class="code-snippet"><span class="cm"># VQA: image + question → answer</span><br><span class="kw">from</span> transformers <span class="kw">import</span> pipeline<br>vqa = pipeline(<span class="str">"visual-question-answering"</span>)<br>answer = vqa(image, <span class="str">"How many cats?"</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Modern VQA uses multimodal fusion — cross-attention between visual tokens and text tokens in a unified transformer decoder.</div></div>
+            <div class="card"><div class="card-icon">🏥</div><h3>④ ZSL for Medical Diagnosis</h3><p class="card-desc">Diagnose rare diseases and detect anomalies in medical images for conditions with no training examples. Uses attribute-based or text-prompt ZSL.</p><div class="code-snippet"><span class="cm"># Zero-shot chest X-ray classification</span><br>prompts = [<span class="str">"X-ray showing pneumonia"</span>,<br>           <span class="str">"X-ray showing pneumothorax"</span>,<br>           <span class="str">"Normal chest X-ray"</span>]<br>pred = clip(image, prompts).argmax()</div><div class="good-box"><span class="box-icon">✅</span>ZSL enables diagnosis of rare pathologies (<100 training cases) by describing conditions in natural language prompts.</div></div>
+            <div class="card"><div class="card-icon">🎬</div><h3>⑤ Zero-Shot Action Recognition</h3><p class="card-desc">Recognize human actions in videos that were never seen during training. Combines temporal visual features with action class embeddings.</p><div class="code-snippet"><span class="cm"># Zero-shot action recognition</span><br>video_features = video_encoder(frames)<br>action_embeds = text_encoder([<br>    <span class="str">"person jumping"</span>,<br>    <span class="str">"person playing guitar"</span>])<br>pred = cosine_sim(video_features, action_embeds)</div><div class="tip-box"><span class="box-icon">💡</span>Video-text models like VideoCLIP and InternVideo achieve ~50–60% zero-shot accuracy on Kinetics-400 action classes.</div></div>
+            <div class="card"><div class="card-icon">🤖</div><h3>⑥ Multimodal LLMs (GPT-4V, LLaVA)</h3><p class="card-desc">Large language models extended with vision encoders enable open-ended reasoning about images, diagrams, and documents.</p><div class="code-snippet"><span class="cm"># LLaVA: vision encoder + LLM projection</span><br>vision_tokens = clip_vision(image)<br>proj_tokens = projector(vision_tokens)<br>response = llm.generate(<br>    proj_tokens + text_tokens)</div><div class="good-box"><span class="box-icon">✅</span>LLaVA achieves GPT-4-level multimodal chat by projecting CLIP vision features into the LLM's token space via a simple linear layer.</div></div>
+            <div class="card"><div class="card-icon">🚗</div><h3>⑦ ZSL for Autonomous Driving</h3><p class="card-desc">Detect rare or unexpected objects on the road (debris, animals, construction) using zero-shot object detection with vision-language models.</p><div class="code-snippet"><span class="cm"># Zero-shot object detection with OWL-ViT</span><br><span class="kw">from</span> transformers <span class="kw">import</span> OwlViTForObjectDetection<br>detector = OwlViTForObjectDetection.from_pretrained(<br>    <span class="str">"google/owlvit-base-patch32"</span>)<br>results = detector(image, [<span class="str">"traffic cone"</span>, <span class="str">"deer"</span>])</div><div class="warn-box"><span class="box-icon">⚠️</span>ZSL detection is crucial for safety-critical edge cases. OWL-ViT enables detecting arbitrary object categories from text prompts.</div></div>
+            <div class="card"><div class="card-icon">🎵</div><h3>⑧ Audio-Visual Multimodal Learning</h3><p class="card-desc">Jointly process audio and video for tasks like speech recognition, music classification, and audiovisual event localization.</p><div class="code-snippet"><span class="cm"># Audio-visual zero-shot classification</span><br>audio_feat = audio_encoder(waveform)<br>visual_feat = video_encoder(frames)<br>joint_feat = fusion(audio_feat, visual_feat)<br>pred = classifier(joint_feat)</div><div class="tip-box"><span class="box-icon">💡</span>ImageBind (Meta) learns a joint embedding across 6 modalities: image, text, audio, depth, thermal, and IMU — all aligned to images.</div></div>
+            <div class="card"><div class="card-icon">📊</div><h3>⑨ Multimodal Sentiment Analysis</h3><p class="card-desc">Predict sentiment from video by combining facial expressions (visual), tone of voice (audio), and spoken words (text) in a fused model.</p><div class="code-snippet"><span class="cm"># Trimodal sentiment fusion</span><br>text_emb = bert(transcript)<br>audio_emb = wav2vec(audio)<br>visual_emb = resnet(frames)<br>fused = cross_attn(text_emb, audio_emb, visual_emb)<br>sentiment = classifier(fused)  <span class="cm"># positive/negative/neutral</span></div><div class="good-box"><span class="box-icon">✅</span>Multimodal sentiment achieves 5–15% higher accuracy than text-only. MOSEI and CMU-MOSI are standard benchmarks.</div></div>
+            <div class="card"><div class="card-icon">🧬</div><h3>⑩ Cross-Modal Generation (Text→Image)</h3><p class="card-desc">Generate images from text descriptions using diffusion models guided by multimodal embeddings. Stable Diffusion, DALL-E, and Midjourney use CLIP text encoders.</p><div class="code-snippet"><span class="cm"># Stable Diffusion: CLIP text encoder + UNet</span><br><span class="kw">from</span> diffusers <span class="kw">import</span> StableDiffusionPipeline<br>pipe = StableDiffusionPipeline.from_pretrained(<br>    <span class="str">"runwayml/stable-diffusion-v1-5"</span>)<br>image = pipe(<span class="str">"a cat wearing a spacesuit"</span>).images[<span class="num">0</span>]</div><div class="tip-box"><span class="box-icon">💡</span>The CLIP text encoder in Stable Diffusion provides the semantic bridge between natural language and visual generation — a direct ZSL application.</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-architecture">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ Multimodal &amp; Zero-Shot Architecture Patterns</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">Modern ZSL and multimodal systems use dual-encoder or fusion-based architectures that project different modalities into a shared embedding space for zero-shot transfer.</p>
+        <div class="arch-visual">
+            <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🌐 Multimodal Core Equations</div>
+            <div class="eq-block"><span class="hl">Dual-Encoder Similarity (CLIP):</span><br>s(I,T) = <span class="hl2">f<sub>img</sub>(I)</span><sup>T</sup> · <span class="hl2">f<sub>txt</sub>(T)</span> / τ</div>
+            <div class="eq-block"><span class="hl">Contrastive Loss (InfoNCE):</span><br>L = −log exp(<span class="hl2">s(I,T)/τ</span>) / Σ<sub>k</sub> exp(s(I,T<sub>k</sub>)/τ)</div>
+            <div class="eq-block"><span class="hl">Multimodal Fusion (Cross-Attn):</span><br>h<sub>fused</sub> = CrossAttn(<span class="hl2">Q<sub>txt</sub>, K<sub>img</sub>, V<sub>img</sub></span>)</div>
+            <div class="eq-block"><span class="hl">Zero-Shot Prediction:</span><br>ŷ = argmax<sub>c</sub> <span class="hl2">s(I, prompt(c))</span></div>
+        </div>
+
+        <div class="eq-explanation-card">
+            <h4>📖 Architecture Breakdown – Dual-Encoder, Fusion, and Contrastive Learning</h4>
+            <p style="margin-bottom:1.2rem;font-size:.9rem;color:var(--text-light);">Understanding how modalities are aligned and fused is central to building effective ZSL and multimodal systems.</p>
+
+            <h5 style="color:var(--teal);margin-bottom:.8rem;">🔹 Dual-Encoder Architecture</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">f<sub>img</sub>(I)</div><div class="meaning">Image encoder (ViT/ResNet) that maps an image to a normalized embedding vector in the shared space.</div><div class="dims">Shape: (batch, d). d=512 (CLIP ViT-B/32), d=768 (ViT-L/14)</div></div>
+                <div class="eq-term-item"><div class="symbol">f<sub>txt</sub>(T)</div><div class="meaning">Text encoder (transformer) that maps a text prompt to a normalized embedding in the same space.</div><div class="dims">Shape: (batch, d). Same dimension as image encoder output</div></div>
+                <div class="eq-term-item"><div class="symbol">τ (temperature)</div><div class="meaning">Learnable temperature parameter that scales the logits. Controls the sharpness of the similarity distribution.</div><div class="dims">CLIP learns τ ≈ 0.07 (initialized at log(1/0.07) ≈ 2.66)</div></div>
+                <div class="eq-term-item"><div class="symbol">Shared Space</div><div class="meaning">Both encoders project into a unit hypersphere (L2-normalized). Similarity = cosine distance on the sphere.</div><div class="dims">All embeddings lie on S<sup>d-1</sup> — the d-dimensional unit sphere</div></div>
+            </div>
+
+            <h5 style="color:var(--teal);margin-bottom:.8rem;">🔹 Contrastive Training &amp; Fusion</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">InfoNCE Loss</div><div class="meaning">Contrastive objective: pulls matched (I,T) pairs together while pushing all other pairs apart in the batch.</div><div class="dims">Batch of N pairs → N positive pairs, N²−N negative pairs</div></div>
+                <div class="eq-term-item"><div class="symbol">Cross-Attention</div><div class="meaning">Text tokens attend to image patch tokens (or vice versa). Enables fine-grained multimodal reasoning beyond global similarity.</div><div class="dims">Q from text, K/V from image. Used in BLIP-2, LLaVA, Flamingo</div></div>
+                <div class="eq-term-item"><div class="symbol">Prompt Engineering</div><div class="meaning">Crafting text prompts (e.g., "a photo of a {class}") drastically affects zero-shot accuracy. Prompt ensembles improve robustness.</div><div class="dims">CLIP: 80 prompt templates averaged. CuPL: LLM-generated prompts per class</div></div>
+            </div>
+
+            <div style="margin-top:1rem;font-size:.85rem;color:var(--text-muted);background:#e0f2fe;padding:.8rem;border-radius:var(--radius-sm);">
+                💡 <strong>Key insight:</strong> The shared embedding space is what makes zero-shot transfer possible — any new class can be classified by simply encoding its text description, with no additional training needed.
+            </div>
+        </div>
+
+        <div class="card-grid" style="margin-top:1rem;">
+            <div class="card"><div class="card-icon">🔍</div><h3>Dual-Encoder (CLIP-style)</h3><p class="card-desc">Separate image and text encoders produce independent embeddings. Fast retrieval via precomputed embeddings; best for classification and search.</p><div class="tip-box"><span class="box-icon">💡</span>Dual-encoder: O(1) per query after indexing. Best for retrieval, zero-shot classification, and moderation at scale.</div></div>
+            <div class="card"><div class="card-icon">🔄</div><h3>Fusion-Based (BLIP-2, LLaVA)</h3><p class="card-desc">Cross-attention between vision and language tokens enables deeper reasoning. Better for VQA, captioning, and detailed visual understanding.</p><div class="good-box"><span class="box-icon">✅</span>Fusion models outperform dual-encoders on VQA and captioning but require running the full model for each query (no pre-indexing).</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-training">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Strategies for Multimodal &amp; ZSL Models</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">Training multimodal models requires large-scale contrastive learning with careful batch construction and data curation.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">⚖️</div><h3>Contrastive Pretraining (CLIP-style)</h3><p class="card-desc">Train on millions of (image, text) pairs using symmetric InfoNCE loss. The large batch size provides abundant negative examples.</p><div class="code-snippet"><span class="cm"># Symmetric contrastive loss</span><br>logits = img_emb @ txt_emb.T * exp(t)<br>labels = arange(N)<br>loss = (CE(logits, labels, axis=<span class="num">0</span>) + CE(logits, labels, axis=<span class="num">1</span>)) / <span class="num">2</span></div><div class="good-box"><span class="box-icon">✅</span>CLIP was trained on 400M image-text pairs with batch size 32,768. Scale of data and batch size are the most important factors.</div></div>
+            <div class="card"><div class="card-icon">📦</div><h3>Large-Scale Data Curation</h3><p class="card-desc">Multimodal models need diverse, high-quality paired data. Web-scraped alt-text (LAION, COYO) is standard for pretraining.</p><div class="code-snippet"><span class="cm"># LAION-5B: 5.85 billion image-text pairs</span><br><span class="kw">from</span> datasets <span class="kw">import</span> load_dataset<br>dataset = load_dataset(<span class="str">"laion/laion400m"</span>)<br><span class="cm"># Filter by aesthetic score, resolution, safety</span></div><div class="tip-box"><span class="box-icon">💡</span>Data quality filtering (CLIP score, aesthetic score, resolution) improves zero-shot transfer by 3–5% vs unfiltered data.</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>Prompt Engineering &amp; Ensembling</h3><p class="card-desc">Zero-shot accuracy varies dramatically with prompt wording. Prompt ensembles average over multiple templates for robust predictions.</p><div class="code-snippet"><span class="cm"># CLIP prompt ensembling (80 templates)</span><br>templates = [<span class="str">"a photo of a {}."</span>,<br>             <span class="str">"a blurry photo of a {}."</span>,<br>             <span class="str">"a {} in the wild."</span>]<br>text_features = mean([f_txt(t.format(c)) <span class="kw">for</span> t <span class="kw">in</span> templates])</div></div>
+            <div class="card"><div class="card-icon">🔧</div><h3>Two-Stage Training (BLIP-2)</h3><p class="card-desc">Stage 1: Train a Q-Former to bridge frozen vision encoder and frozen LLM. Stage 2: Fine-tune on instruction-following data.</p><div class="code-snippet"><span class="cm"># BLIP-2: Q-Former learns to extract</span><br><span class="cm"># visual features relevant to the text query</span><br>query_tokens = QFormer(vision_features, text)<br>response = frozen_LLM(query_tokens)</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-regularization">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning for Multimodal Models</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">Key techniques to prevent overfitting and improve zero-shot generalization in multimodal learning.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">🌡️</div><h3>Temperature Scaling</h3><p class="card-desc">The learnable temperature τ in contrastive loss controls the concentration of the similarity distribution. Critical for calibration.</p><div class="code-snippet"><span class="cm"># Learnable log-temperature</span><br><span class="kw">self</span>.logit_scale = nn.Parameter(torch.ones([]) * np.log(<span class="num">1</span>/<span class="num">0.07</span>))<br>logits = img_emb @ txt_emb.T * <span class="kw">self</span>.logit_scale.exp()</div><div class="tip-box"><span class="box-icon">💡</span>CLIP initializes τ at 0.07 (logit_scale ≈ 2.66). The learned value converges to ~0.01–0.02 during training.</div></div>
+            <div class="card"><div class="card-icon">🔀</div><h3>Modality Dropout</h3><p class="card-desc">Randomly drops one modality during training to prevent the model from over-relying on a single modality. Improves robustness.</p><div class="code-snippet"><span class="cm"># Drop visual modality with probability p</span><br><span class="kw">if</span> random() < <span class="num">0.1</span>:<br>    visual_features = zeros_like(visual_features)<br><span class="cm"># Forces reliance on text when vision is absent</span></div><div class="good-box"><span class="box-icon">✅</span>Modality dropout (p=0.05–0.15) improves robustness to missing modalities at inference time. Standard in multimodal transformers.</div></div>
+            <div class="card"><div class="card-icon">📐</div><h3>L2 Normalization + Weight Decay</h3><p class="card-desc">Embeddings are L2-normalized to the unit sphere. Weight decay on projection layers prevents overfitting to training class distribution.</p><div class="code-snippet"><span class="cm"># L2-normalize embeddings</span><br>img_emb = F.normalize(img_emb, <span class="fn">dim</span>=-<span class="num">1</span>)<br>txt_emb = F.normalize(txt_emb, <span class="fn">dim</span>=-<span class="num">1</span>)<br><span class="cm"># Cosine similarity = dot product on sphere</span></div></div>
+            <div class="card"><div class="card-icon">📏</div><h3>Gradient Clipping &amp; Large-Batch Stability</h3><p class="card-desc">Large contrastive batches (32K+) need gradient clipping and careful LR warmup to prevent training instability.</p><div class="code-snippet"><span class="cm"># CLIP training stability</span><br>clip_grad_norm_(model.parameters(), <span class="num">1.0</span>)<br><span class="cm"># LR warmup over first 2000 steps</span><br>lr = peak_lr * min(<span class="num">1.0</span>, step / warmup)</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-full-code">
+        <h2 style="margin-bottom:.5rem;color:var(--deep-blue);">💻 Full Code – CLIP-style Zero-Shot Classification with PyTorch</h2>
+        <p style="color:var(--text-light);margin-bottom:1rem;">A minimal CLIP-style dual-encoder implementation for zero-shot image classification. All key hyperparameters annotated.</p>
+        <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Minimal CLIP-style dual encoder for zero-shot classification."""</span>
+
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+<span class="kw">import</span> torchvision.models <span class="kw">as</span> models
+
+<span class="cm"># ── Hyperparameters ──</span>
+<span class="anno">EMBED_DIM</span> = <span class="num">512</span>          <span class="cm"># Shared embedding dimension</span>
+<span class="anno">TEMPERATURE</span> = <span class="num">0.07</span>       <span class="cm"># τ — temperature for contrastive loss</span>
+<span class="anno">BATCH_SIZE</span> = <span class="num">256</span>         <span class="cm"># Batch size for contrastive pairs</span>
+<span class="anno">LR</span> = <span class="num">5e-4</span>               <span class="cm"># Peak learning rate</span>
+<span class="anno">WARMUP</span> = <span class="num">2000</span>            <span class="cm"># LR warmup steps</span>
+<span class="anno">EPOCHS</span> = <span class="num">30</span>             <span class="cm"># Training epochs</span>
+<span class="anno">WEIGHT_DECAY</span> = <span class="num">0.2</span>       <span class="cm"># AdamW weight decay</span>
+
+<span class="kw">class</span> <span class="fn">ImageEncoder</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        backbone = models.resnet50(<span class="fn">pretrained</span>=<span class="kw">True</span>)
+        <span class="fn">self</span>.backbone = nn.Sequential(*list(backbone.children())[:-<span class="num">1</span>])
+        <span class="fn">self</span>.projection = nn.Linear(<span class="num">2048</span>, <span class="anno">EMBED_DIM</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, x):
+        feat = <span class="fn">self</span>.backbone(x).flatten(<span class="num">1</span>)  <span class="cm"># (batch, 2048)</span>
+        emb = <span class="fn">self</span>.projection(feat)              <span class="cm"># (batch, 512)</span>
+        <span class="kw">return</span> F.normalize(emb, <span class="fn">dim</span>=-<span class="num">1</span>)       <span class="cm"># L2-normalize to unit sphere</span>
+
+<span class="kw">class</span> <span class="fn">TextEncoder</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>, vocab_size=<span class="num">49408</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.token_embed = nn.Embedding(vocab_size, <span class="num">512</span>)
+        <span class="fn">self</span>.transformer = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(<span class="fn">d_model</span>=<span class="num">512</span>, <span class="fn">nhead</span>=<span class="num">8</span>, <span class="fn">batch_first</span>=<span class="kw">True</span>),
+            <span class="fn">num_layers</span>=<span class="num">6</span>)
+        <span class="fn">self</span>.projection = nn.Linear(<span class="num">512</span>, <span class="anno">EMBED_DIM</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, tokens):
+        x = <span class="fn">self</span>.token_embed(tokens)
+        x = <span class="fn">self</span>.transformer(x)               <span class="cm"># (batch, seq_len, 512)</span>
+        emb = x[torch.arange(x.size(<span class="num">0</span>)), tokens.argmax(<span class="fn">dim</span>=-<span class="num">1</span>)]  <span class="cm"># EOT token</span>
+        emb = <span class="fn">self</span>.projection(emb)              <span class="cm"># (batch, 512)</span>
+        <span class="kw">return</span> F.normalize(emb, <span class="fn">dim</span>=-<span class="num">1</span>)
+
+<span class="kw">class</span> <span class="fn">CLIP</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.image_encoder = ImageEncoder()
+        <span class="fn">self</span>.text_encoder = TextEncoder()
+        <span class="fn">self</span>.logit_scale = nn.Parameter(torch.ones([]) * torch.log(torch.tensor(<span class="num">1</span>/<span class="anno">TEMPERATURE</span>)))
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, images, text_tokens):
+        img_emb = <span class="fn">self</span>.image_encoder(images)    <span class="cm"># (N, 512)</span>
+        txt_emb = <span class="fn">self</span>.text_encoder(text_tokens)  <span class="cm"># (N, 512)</span>
+        logits = img_emb @ txt_emb.T * <span class="fn">self</span>.logit_scale.exp()
+        <span class="kw">return</span> logits
+
+<span class="kw">def</span> <span class="fn">contrastive_loss</span>(logits):
+    <span class="cm"># Symmetric InfoNCE: image→text + text→image</span>
+    labels = torch.arange(logits.size(<span class="num">0</span>), device=logits.device)
+    loss_i = F.cross_entropy(logits, labels)       <span class="cm"># image→text</span>
+    loss_t = F.cross_entropy(logits.T, labels)     <span class="cm"># text→image</span>
+    <span class="kw">return</span> (loss_i + loss_t) / <span class="num">2</span>
+
+model = CLIP().to(device)
+optimizer = optim.AdamW(model.parameters(), <span class="fn">lr</span>=<span class="anno">LR</span>,
+                        <span class="fn">weight_decay</span>=<span class="anno">WEIGHT_DECAY</span>)
+
+<span class="cm"># ── Training ──</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="anno">EPOCHS</span>):
+    <span class="kw">for</span> images, texts <span class="kw">in</span> dataloader:
+        logits = model(images, texts)
+        loss = contrastive_loss(logits)
+        optimizer.zero_grad(); loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), <span class="num">1.0</span>)
+        optimizer.step()
+
+<span class="cm"># ── Zero-Shot Inference ──</span>
+<span class="kw">def</span> <span class="fn">zero_shot_classify</span>(image, class_descriptions):
+    <span class="kw">with</span> torch.no_grad():
+        img_emb = model.image_encoder(image)       <span class="cm"># (1, 512)</span>
+        prompts = [<span class="str">f"a photo of a {c}"</span> <span class="kw">for</span> c <span class="kw">in</span> class_descriptions]
+        txt_emb = model.text_encoder(tokenize(prompts))  <span class="cm"># (num_classes, 512)</span>
+        scores = (img_emb @ txt_emb.T).squeeze()   <span class="cm"># Cosine similarity</span>
+        pred = scores.argmax().item()
+    <span class="kw">return</span> class_descriptions[pred], scores
+
+<span class="kw">print</span>(<span class="str">f"Zero-shot prediction: {zero_shot_classify(img, ['cat','dog','bird'])}"</span>)
+        </div>
+        <p style="margin-top:.75rem;font-size:.85rem;color:var(--text-muted);text-align:center;">⬆️ Minimal CLIP-style dual encoder. Dual-encoder architecture + symmetric InfoNCE loss + temperature-scaled cosine similarity for zero-shot classification.</p>
+    </div>
+
+    <div class="tab-panel" id="tab-summary">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+        <div class="summary-table-wrap">
+            <table class="summary-table">
+                <thead><tr><th>#</th><th>Application</th><th>Key Architecture</th><th>Key Technique</th><th>Benchmark / Dataset</th></tr></thead>
+                <tbody>
+                    <tr><td>①</td><td><strong>ZSL Image Classification</strong></td><td>CLIP / ALIGN dual encoder</td><td>Cosine similarity + prompt engineering</td><td>ImageNet (zero-shot)</td></tr>
+                    <tr><td>②</td><td><strong>Cross-Modal Retrieval</strong></td><td>Dual encoder + FAISS indexing</td><td>Precomputed embeddings + ANN search</td><td>COCO, Flickr30K</td></tr>
+                    <tr><td>③</td><td><strong>Visual QA</strong></td><td>BLIP-2 / LLaVA (fusion)</td><td>Cross-attention + LLM decoding</td><td>VQA v2, GQA</td></tr>
+                    <tr><td>④</td><td><strong>Medical Diagnosis</strong></td><td>CLIP + domain prompts</td><td>Text-prompt-based ZSL classification</td><td>CheXpert, MIMIC-CXR</td></tr>
+                    <tr><td>⑤</td><td><strong>Action Recognition</strong></td><td>VideoCLIP / InternVideo</td><td>Temporal pooling + text alignment</td><td>Kinetics-400, UCF-101</td></tr>
+                    <tr><td>⑥</td><td><strong>Multimodal LLMs</strong></td><td>LLaVA / GPT-4V</td><td>Vision encoder → projection → LLM</td><td>MMBench, MM-Vet</td></tr>
+                    <tr><td>⑦</td><td><strong>Autonomous Driving</strong></td><td>OWL-ViT / Grounding DINO</td><td>Open-vocabulary object detection</td><td>nuScenes, Waymo</td></tr>
+                    <tr><td>⑧</td><td><strong>Audio-Visual Learning</strong></td><td>ImageBind (6 modalities)</td><td>Joint embedding via image alignment</td><td>AudioSet, VGGSound</td></tr>
+                    <tr><td>⑨</td><td><strong>Sentiment Analysis</strong></td><td>Multimodal transformer fusion</td><td>Trimodal cross-attention (T+A+V)</td><td>CMU-MOSEI, MOSI</td></tr>
+                    <tr><td>⑩</td><td><strong>Text→Image Generation</strong></td><td>Stable Diffusion / DALL-E</td><td>CLIP text encoder + diffusion UNet</td><td>COCO FID, DrawBench</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="comparison-grid">
+            <div class="comparison-card params"><h4>🧠 Dual-Encoder Models</h4><p style="font-size:.85rem;color:#475569;margin-bottom:.5rem;">Separate encoders, shared embedding space</p><ul><li>✅ Fast retrieval (pre-indexed)</li><li>✅ Excellent for zero-shot classification</li><li>✅ Scalable to billions of images</li><li>📌 CLIP, ALIGN, SigLIP</li></ul></div>
+            <div class="comparison-card hyperparams"><h4>⚙️ Fusion-Based Models</h4><p style="font-size:.85rem;color:#475569;margin-bottom:.5rem;">Cross-attention between modalities</p><ul><li>🔧 Deeper reasoning capability</li><li>🔧 Better for VQA &amp; captioning</li><li>🔧 No pre-indexing (slower retrieval)</li><li>📌 BLIP-2, LLaVA, Flamingo</li></ul></div>
+        </div>
+        <div class="baseline-card">
+            <h3>🚀 Quick Reference: Model Selection Guide</h3><p style="opacity:.85;margin-bottom:1rem;">Choose based on your task:</p>
+            <div class="config-grid">
+                <div class="config-item"><strong>CLIP</strong><span>Zero-shot classification</span></div><div class="config-item"><strong>BLIP-2</strong><span>VQA &amp; captioning</span></div><div class="config-item"><strong>LLaVA</strong><span>Multimodal chat</span></div><div class="config-item"><strong>OWL-ViT</strong><span>Open-vocab detection</span></div>
+                <div class="config-item"><strong>ImageBind</strong><span>6-modality alignment</span></div><div class="config-item"><strong>Stable Diffusion</strong><span>Text-to-image gen</span></div><div class="config-item"><strong>VideoCLIP</strong><span>Video understanding</span></div><div class="config-item"><strong>MedCLIP</strong><span>Medical ZSL</span></div>
+            </div>
+        </div>
+        <div class="summary-table-wrap" style="margin-top:1.5rem;">
+            <table class="summary-table">
+                <thead><tr><th>Feature</th><th>CLIP (Dual-Encoder)</th><th>BLIP-2 (Q-Former)</th><th>LLaVA (Projection)</th></tr></thead>
+                <tbody>
+                    <tr><td>Image Encoder</td><td>ViT (frozen in some variants)</td><td>ViT (frozen)</td><td>CLIP ViT (frozen)</td></tr>
+                    <tr><td>Text/LLM</td><td>Transformer text encoder</td><td>Frozen LLM (OPT/FlanT5)</td><td>Vicuna/LLaMA (fine-tuned)</td></tr>
+                    <tr><td>Bridge</td><td>Shared embedding space</td><td>Q-Former (learned queries)</td><td>Linear projection layer</td></tr>
+                    <tr><td>Retrieval</td><td>✅ Fast (pre-indexed)</td><td>❌ Per-query computation</td><td>❌ Per-query computation</td></tr>
+                    <tr><td>Best For</td><td>Classification, search</td><td>VQA, captioning, retrieval</td><td>Visual chat, reasoning</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-quiz">
+        <h2 style="margin-bottom:.5rem;color:var(--deep-blue);">🧠 ZSL &amp; Multimodal Applications – Quiz</h2>
+        <p style="color:var(--text-light);margin-bottom:1.5rem;">Test your knowledge with 25 questions covering zero-shot learning, multimodal architectures, and real-world applications.</p>
+        <div class="quiz-container" id="quizContainer">
+            <div class="quiz-progress"><span style="font-size:1.2rem;">📝</span><div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0;"></div></div><span class="quiz-progress-text" id="quizProgressText">0 / 25</span></div>
+            <div id="quizQuestionArea"></div>
+            <div class="quiz-nav-btns" id="quizNavBtns">
+                <button class="quiz-prev-btn" id="quizPrevBtn" style="display:none;">← Previous</button>
+                <button class="quiz-next-btn" id="quizNextBtn">Next →</button>
+                <button class="quiz-submit-btn" id="quizSubmitBtn" style="display:none;">Submit Quiz</button>
+            </div>
+            <div class="quiz-score-card" id="quizScoreCard">
+                <h4 style="font-size:1.5rem;margin-bottom:.5rem;color:#5eead4;">🏆 Quiz Complete!</h4>
+                <div class="score-circle" id="scoreCircle" style="--score-deg:0deg;"><div class="score-inner" id="scoreInner">0%</div></div>
+                <p class="score-grade" id="scoreGrade"></p><p class="score-breakdown" id="scoreBreakdown"></p>
+                <button class="quiz-restart-btn" id="quizRestartBtn" style="margin-top:1.25rem;">🔄 Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+const quizQuestions=[
+{q:"What enables CLIP to perform zero-shot image classification?",opts:["Training on ImageNet labels","A shared image-text embedding space trained on 400M pairs via contrastive learning","Using a very deep CNN","Manual feature engineering"],ans:1,exp:"CLIP's dual encoders project images and text into a shared normed space, enabling classification of any category by computing cosine similarity with its text description."},
+{q:"What is the InfoNCE (contrastive) loss function?",opts:["Mean squared error between image and text","A loss that pulls matched (image,text) pairs together while pushing all other pairs apart in the batch","Cross-entropy on class labels","Binary cross-entropy"],ans:1,exp:"InfoNCE = −log(exp(s/τ)/Σexp(s_k/τ)) maximizes similarity for positive pairs and minimizes it for negative pairs within the batch."},
+{q:"What is the role of the temperature parameter τ in CLIP?",opts:["Controls the model's physical temperature","Scales the logits to control the sharpness of the similarity distribution","Determines the learning rate","Sets the batch size"],ans:1,exp:"τ scales the logits before softmax. Lower τ makes the distribution sharper (more confident). CLIP learns τ ≈ 0.01–0.07."},
+{q:"Which architecture type is best for fast large-scale image retrieval?",opts:["Fusion-based models (BLIP-2, LLaVA)","Dual-encoder models (CLIP, ALIGN)","Single-encoder models","Generative models only"],ans:1,exp:"Dual-encoders precompute image embeddings offline; retrieval = dot product search, making it O(log N) with ANN indices like FAISS."},
+{q:"What is the difference between dual-encoder and fusion-based multimodal models?",opts:["They're the same thing","Dual-encoders process modalities separately and compare embeddings; fusion models use cross-attention between modalities","Dual-encoders are always better","Fusion models don't use text"],ans:1,exp:"Dual-encoder (CLIP): f_img(I)·f_txt(T). Fusion (BLIP-2): CrossAttn(Q_txt, K_img, V_img). Fusion enables deeper reasoning but is slower."},
+{q:"What does BLIP-2's Q-Former do?",opts:["It's a query optimizer","It learns to extract visual features relevant to a text query, bridging a frozen vision encoder and frozen LLM","It replaces the image encoder","It's a type of data augmentation"],ans:1,exp:"Q-Former uses learnable query tokens with cross-attention to extract task-relevant visual features, enabling frozen LLMs to understand images."},
+{q:"How does LLaVA connect vision to language?",opts:["Using complex cross-attention layers","Projecting CLIP vision features into the LLM's token embedding space via a simple linear layer","Encoding images as text","Using OCR only"],ans:1,exp:"LLaVA's surprisingly simple approach: a single linear layer projects CLIP image features into the LLM token space, treating them as 'visual tokens'."},
+{q:"What is prompt engineering in zero-shot classification?",opts:["Writing Python prompts","Crafting text descriptions (like 'a photo of a {}') that improve zero-shot accuracy","Asking the model questions","Training with prompts"],ans:1,exp:"Prompt wording dramatically affects accuracy. CLIP uses 80 template ensembles. CuPL generates per-class prompts with LLMs for better results."},
+{q:"Which application uses zero-shot object detection for autonomous driving?",opts:["CLIP for classification","OWL-ViT and Grounding DINO for detecting arbitrary objects from text prompts","ResNet for detection","YOLO only"],ans:1,exp:"OWL-ViT enables open-vocabulary detection — finding any object described in text without training on that specific category. Critical for edge cases."},
+{q:"What is ImageBind?",opts:["A image classification model","Meta's model that learns a joint embedding across 6 modalities (image, text, audio, depth, thermal, IMU) all aligned to images","A text generation model","A video codec"],ans:1,exp:"ImageBind aligns 6 modalities to a shared image-centric embedding, enabling cross-modal zero-shot tasks like audio→image retrieval without paired training."},
+{q:"What is modality dropout?",opts:["Dropping entire training samples","Randomly zeroing one modality during training to prevent over-reliance on any single modality","Dropping model parameters","Using fewer GPUs"],ans:1,exp:"Modality dropout (p=0.05–0.15) forces the model to work with partial inputs, improving robustness when a modality is missing at inference."},
+{q:"Why is batch size critical in contrastive learning?",opts:["It affects GPU memory only","Larger batches provide more negative examples, improving the quality of the contrastive signal","Batch size doesn't matter","Smaller batches are always better"],ans:1,exp:"CLIP uses batch_size=32,768. More negatives = harder contrastive task = better representations. This is the key scaling insight of CLIP."},
+{q:"Which dataset is commonly used for multimodal sentiment analysis?",opts:["ImageNet","CMU-MOSEI (text + audio + video)","CIFAR-10","COCO"],ans:1,exp:"CMU-MOSEI and CMU-MOSI provide aligned text transcripts, audio, and facial video for trimodal sentiment and emotion recognition."},
+{q:"What is the cross-modal generation pipeline in Stable Diffusion?",opts:["Image → Image only","CLIP text encoder → diffusion UNet → VAE decoder → image","Text → text only","Audio → text"],ans:1,exp:"Stable Diffusion: CLIP encodes the prompt, cross-attention injects it into a UNet that denoises latents, and a VAE decoder produces the final image."},
+{q:"How does ZSL help in medical diagnosis?",opts:["It doesn't","Enables diagnosis of rare conditions by describing them in text prompts, without needing training examples","It replaces doctors","It generates synthetic patients"],ans:1,exp:"ZSL enables classification of rare pathologies (<100 cases) via text descriptions, crucial for medical AI where training data is scarce for rare conditions."},
+{q:"What makes dual-encoder retrieval so fast at scale?",opts:["Using smaller images","Precomputed image embeddings can be indexed (FAISS) and searched via dot product in O(log N) time","Brute-force search","Using only text"],ans:1,exp:"All image embeddings are precomputed and stored in ANN indices (FAISS, ScaNN). A query performs one text encoding + fast vector search."},
+{q:"What is the main advantage of fusion models (BLIP-2, LLaVA) over dual-encoders?",opts:["They're always faster","They enable deeper cross-modal reasoning via cross-attention, better for VQA and detailed understanding","They use fewer parameters","They don't need training"],ans:1,exp:"Fusion models let text tokens directly attend to image regions, enabling counting, spatial reasoning, and detailed description."},
+{q:"What is the standard L2 normalization step in CLIP embeddings?",opts:["BatchNorm","LayerNorm","F.normalize(emb, dim=-1) — projecting embeddings onto the unit hypersphere","No normalization is used"],ans:2,exp:"Both image and text embeddings are L2-normalized so ||f(I)||=||f(T)||=1. Dot product = cosine similarity on the unit sphere."},
+{q:"Which model enables zero-shot video action recognition?",opts:["ResNet","VideoCLIP / InternVideo","BERT","GPT-2"],ans:1,exp:"VideoCLIP aligns video features with text descriptions via contrastive learning, enabling recognition of unseen actions like 'person breakdancing'."},
+{q:"What is the purpose of weight decay in CLIP training?",opts:["It's not used","To regularize the model and prevent overfitting — CLIP uses a relatively high weight_decay=0.2","To speed up training","To reduce model size"],ans:1,exp:"CLIP uses weight_decay=0.2 with AdamW, which is higher than typical values (0.01–0.1). This strong regularization helps generalization."},
+{q:"What does OWL-ViT enable?",ops:["Image classification only","Open-vocabulary object detection — finding any object described in text without training on that category","Text generation","Audio processing"],ans:1,exp:"OWL-ViT (Open-World Localization) detects objects described by arbitrary text prompts, enabling zero-shot detection of novel categories."},
+{q:"How does the symmetric InfoNCE loss differ from standard cross-entropy?",opts:["It's the same","It computes loss in both directions (image→text AND text→image) and averages them","It only goes image→text","It uses a different optimizer"],ans:1,exp:"Symmetric loss = (CE(img→text) + CE(text→img))/2. This ensures both encoders learn equally good representations."},
+{q:"What is a key challenge of GZSL (Generalized Zero-Shot Learning) applied to multimodal systems?",opts:["Too much data","The model biases predictions toward seen classes; calibrated stacking is needed to correct this","Too many parameters","All of the above"],ans:1,exp:"Without calibration, GZSL models classify most unseen-class images as seen classes. Calibrated stacking subtracts a bias factor from seen-class scores."},
+{q:"What is the purpose of gradient clipping in CLIP training?",opts:["It prevents exploding gradients in large-batch contrastive training","It reduces model size","It speeds up inference","It's not needed"],ans:0,exp:"With batch sizes of 32K+, gradients can become unstable. clip_grad_norm_(1.0) prevents loss spikes during large-scale contrastive training."},
+{q:"Which of the following is NOT a real-world ZSL/multimodal application?",opts:["Zero-shot medical diagnosis","Cross-modal image retrieval","Text-to-image generation","Training a model that only works on seen classes with no semantic bridge"],ans:3,exp:"ZSL specifically requires a semantic bridge (attributes, word vectors, or text prompts) to generalize to unseen classes. Without this bridge, it's standard supervised learning."}
+];
+
+let quizState={currentIndex:0,answers:new Array(quizQuestions.length).fill(null),submitted:false};
+function initQuiz(){quizState={currentIndex:0,answers:new Array(quizQuestions.length).fill(null),submitted:false};document.getElementById('quizScoreCard').classList.remove('show');document.getElementById('quizQuestionArea').style.display='block';document.getElementById('quizNavBtns').style.display='flex';renderQuizQuestion();updateQuizUI();}
+function renderQuizQuestion(){const i=quizState.currentIndex,q=quizQuestions[i],a=document.getElementById('quizQuestionArea'),s=quizState.answers[i],d=quizState.submitted;let o=q.opts.map((o,j)=>{let c='quiz-option';if(d&&s===j)c+=(j===q.ans)?' correct':' incorrect';else if(!d&&s===j)c+=' selected';return`<div class="${c}" ${!d?'onclick="selectQuizOption('+j+')"':''}><span class="opt-letter">${'ABCD'[j]}</span>${o}</div>`;}).join('');let f='';if(d){const cl=s===q.ans?'correct-fb':'incorrect-fb';f=`<div class="quiz-feedback show ${cl}"><strong>${s===q.ans?'✅':'❌'} ${s===q.ans?'Correct!':'Incorrect'}</strong> — ${q.exp}</div>`;}a.innerHTML=`<div class="quiz-question-card"><div class="q-number">${i+1}</div><div class="q-text">${q.q}</div><div class="quiz-options">${o}</div>${f}</div>`;}
+function selectQuizOption(j){if(!quizState.submitted){quizState.answers[quizState.currentIndex]=j;renderQuizQuestion();}}
+function updateQuizUI(){const t=quizQuestions.length,a=quizState.answers.filter(x=>x!==null).length;document.getElementById('quizProgressFill').style.width=Math.round((a/t)*100)+'%';document.getElementById('quizProgressText').textContent=a+' / '+t;document.getElementById('quizPrevBtn').style.display=quizState.currentIndex>0?'inline-block':'none';if(quizState.currentIndex>=t-1){document.getElementById('quizNextBtn').style.display='none';document.getElementById('quizSubmitBtn').style.display='inline-block';}else{document.getElementById('quizNextBtn').style.display='inline-block';document.getElementById('quizSubmitBtn').style.display='none';}}
+function goPrev(){if(quizState.currentIndex>0){quizState.currentIndex--;renderQuizQuestion();updateQuizUI();document.querySelector('.quiz-question-card')?.scrollIntoView({behavior:'smooth',block:'center'});}}
+function goNext(){if(quizState.currentIndex<quizQuestions.length-1){quizState.currentIndex++;renderQuizQuestion();updateQuizUI();document.querySelector('.quiz-question-card')?.scrollIntoView({behavior:'smooth',block:'center'});}}
+function submitQuiz(){quizState.submitted=true;quizState.currentIndex=0;renderQuizQuestion();updateQuizUI();const c=quizState.answers.reduce((s,a,i)=>s+(a===quizQuestions[i].ans?1:0),0),t=quizQuestions.length,p=Math.round((c/t)*100);document.getElementById('quizQuestionArea').style.display='none';document.getElementById('quizNavBtns').style.display='none';document.getElementById('scoreCircle').style.setProperty('--score-deg',(c/t*360)+'deg');document.getElementById('scoreInner').textContent=p+'%';document.getElementById('scoreBreakdown').textContent=`You scored ${c} out of ${t} questions correctly.`;let g=p>=90?'🌟 Outstanding! Master of ZSL & multimodal applications.':p>=70?'👍 Great job! Solid understanding of multimodal AI.':p>=50?'📚 Good effort! Review the application cards and try again.':'📖 Keep studying! Review the dual-encoder vs fusion architectures and real-world use cases.';document.getElementById('scoreGrade').textContent=g;const sc=document.getElementById('quizScoreCard');sc.classList.add('show');sc.scrollIntoView({behavior:'smooth',block:'center'});}
+document.getElementById('quizPrevBtn').addEventListener('click',goPrev);document.getElementById('quizNextBtn').addEventListener('click',goNext);document.getElementById('quizSubmitBtn').addEventListener('click',submitQuiz);document.getElementById('quizRestartBtn').addEventListener('click',initQuiz);
+function handleImageFallback(){const i=document.getElementById('infographicImg'),f=document.getElementById('infographicFallback');if(i&&f){i.style.display='none';f.style.display='block';}}
+window.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('infographicImg');if(i&&!i.complete){setTimeout(()=>{if(!i.complete||i.naturalWidth===0)handleImageFallback();},3000);}else if(i&&i.naturalWidth===0)handleImageFallback();});
+const tn=document.getElementById('tabNav'),tbs=tn.querySelectorAll('.tab-btn'),tps=document.querySelectorAll('.tab-panel');tbs.forEach(b=>{b.addEventListener('click',()=>{const tid=b.getAttribute('data-tab');tbs.forEach(x=>x.classList.remove('active'));tps.forEach(p=>p.classList.remove('active'));b.classList.add('active');const tp=document.getElementById('tab-'+tid);if(tp){tp.classList.add('active');tp.style.animation='none';tp.offsetHeight;tp.style.animation='fadeSlideIn .4s ease';}if(tid==='quiz')initQuiz();if(window.innerWidth<768)tp?.scrollIntoView({behavior:'smooth',block:'start'});})});
+const bt=document.getElementById('backToTop');function tBT(){if(window.scrollY>500)bt.classList.add('visible');else bt.classList.remove('visible');}window.addEventListener('scroll',tBT,{passive:true});bt.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});tBT();
+const ii=document.getElementById('infographicImg');if(ii){ii.addEventListener('load',()=>{const f=document.getElementById('infographicFallback');if(f)f.style.display='none';ii.style.display='block';});ii.addEventListener('error',handleImageFallback);}
+console.log('✅ Application of ZSL & Multimodal Learning Interactive Study Guide ready!');
+</script>
+<div class="back-to-hub"><a href="index.html">← Back to Study Hub</a></div>
+</body>
+</html>
