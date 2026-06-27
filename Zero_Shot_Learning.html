@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero-Shot Learning – Complete Hyperparameter Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before { content:''; position:absolute; top:-60px; right:-80px; width:260px; height:260px; background:radial-gradient(circle,rgba(20,184,166,.25) 0%,transparent 70%); border-radius:50%; pointer-events:none; }
+        .header::after { content:''; position:absolute; bottom:-50px; left:-60px; width:200px; height:200px; background:radial-gradient(circle,rgba(37,99,235,.2) 0%,transparent 70%); border-radius:50%; pointer-events:none; }
+        .header-content { position:relative; z-index:1; max-width:800px; margin:0 auto; }
+        .header .badge { display:inline-block; background:rgba(255,255,255,.15); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.25); padding:.35rem 1rem; border-radius:50px; font-size:.85rem; letter-spacing:.04em; text-transform:uppercase; margin-bottom:1rem; font-weight:500; }
+        .header h1 { font-size:clamp(2rem,4.5vw,3.2rem); font-weight:800; letter-spacing:-.02em; margin-bottom:.5rem; }
+        .header h1 span { background:linear-gradient(135deg,#5eead4,#22d3ee); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .header .tagline { font-size:1.15rem; opacity:.9; margin-bottom:.75rem; font-weight:400; letter-spacing:.01em; }
+        .header .intro { font-size:.95rem; opacity:.75; max-width:600px; margin:0 auto; line-height:1.7; }
+        .container { max-width:1100px; margin:0 auto; padding:1.5rem 1.25rem; }
+        .infographic-area { background:var(--bg-card); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); margin:-1.5rem auto 2rem; max-width:900px; padding:1.5rem; text-align:center; position:relative; z-index:2; border:1px solid var(--border); transition:var(--transition); }
+        .infographic-area img { max-width:100%; height:auto; border-radius:var(--radius); display:block; margin:0 auto; }
+        .infographic-fallback { display:none; background:linear-gradient(135deg,#1a365d 0%,#0d3b4e 100%); border-radius:var(--radius); padding:2rem 1.5rem; color:#e2e8f0; font-family:var(--font-mono); font-size:.9rem; line-height:1.8; text-align:left; overflow-x:auto; }
+        .infographic-fallback .gan-diagram { display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin:1rem 0; }
+        .infographic-fallback .gate-box { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:var(--radius); padding:1rem 1.25rem; text-align:center; min-width:120px; }
+        .infographic-fallback .gate-box strong { display:block; color:#5eead4; font-size:1rem; margin-bottom:.4rem; }
+        .infographic-fallback .gate-box code { color:#fbbf24; font-size:.8rem; }
+        .infographic-fallback .arrow-sym { font-size:1.8rem; color:#94a3b8; }
+        .infographic-area .caption { margin-top:.75rem; font-size:.85rem; color:var(--text-muted); font-style:italic; }
+        .tab-nav { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1.5rem; background:var(--bg-card); padding:.5rem; border-radius:var(--radius-lg); box-shadow:var(--shadow); border:1px solid var(--border); position:sticky; top:12px; z-index:10; }
+        .tab-btn { flex:1 1 auto; min-width:110px; padding:.7rem 1rem; border:none; background:transparent; border-radius:var(--radius); cursor:pointer; font-weight:600; font-size:.88rem; color:var(--text-muted); transition:var(--transition); white-space:nowrap; letter-spacing:.01em; position:relative; }
+        .tab-btn:hover { color:var(--blue-mid); background:#eff6ff; }
+        .tab-btn.active { background:var(--blue-mid); color:#fff; box-shadow:var(--shadow); }
+        .tab-btn .tab-icon { margin-right:.35rem; }
+        .tab-panel { display:none; animation:fadeSlideIn .4s ease; }
+        .tab-panel.active { display:block; }
+        @keyframes fadeSlideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1.25rem; }
+        .card { background:var(--bg-card); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow); border:1px solid var(--border); transition:var(--transition); position:relative; overflow:hidden; }
+        .card:hover { box-shadow:var(--shadow-xl); transform:translateY(-2px); border-color:#cbd5e1; }
+        .card .card-icon { font-size:2rem; margin-bottom:.5rem; display:inline-block; background:#f1f5f9; width:48px; height:48px; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; }
+        .card h3 { font-size:1.15rem; font-weight:700; margin:.5rem 0 .35rem; color:var(--deep-blue); }
+        .card .card-desc { font-size:.9rem; color:var(--text-light); margin-bottom:.75rem; line-height:1.55; }
+        .code-snippet { background:var(--bg-code); color:#e2e8f0; border-radius:var(--radius-sm); padding:.75rem 1rem; font-family:var(--font-mono); font-size:.8rem; overflow-x:auto; margin:.5rem 0; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+        .code-snippet .kw { color:#c084fc; } .code-snippet .fn { color:#60a5fa; } .code-snippet .str { color:#fbbf24; } .code-snippet .num { color:#fb923c; } .code-snippet .cm { color:#6b7280; font-style:italic; }
+        .tip-box,.warn-box,.good-box { margin-top:.75rem; padding:.65rem .9rem; border-radius:var(--radius-sm); font-size:.82rem; line-height:1.5; display:flex; align-items:flex-start; gap:.5rem; }
+        .tip-box { background:var(--tip-bg); border-left:4px solid var(--tip-border); color:#166534; }
+        .warn-box { background:var(--warning-bg); border-left:4px solid var(--warning-border); color:#92400e; }
+        .good-box { background:#eff6ff; border-left:4px solid var(--blue-mid); color:#1e40af; }
+        .tip-box .box-icon,.warn-box .box-icon,.good-box .box-icon { flex-shrink:0; font-size:1.1rem; }
+        .arch-visual { background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%); border-radius:var(--radius-lg); padding:2rem; color:#e2e8f0; text-align:center; margin-bottom:1.5rem; overflow-x:auto; }
+        .arch-visual .eq-block { display:inline-block; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); border-radius:var(--radius); padding:1rem 1.5rem; margin:.5rem; text-align:left; font-family:var(--font-mono); font-size:.85rem; line-height:1.7; }
+        .arch-visual .eq-block .hl { color:#5eead4; font-weight:700; }
+        .arch-visual .eq-block .hl2 { color:#fbbf24; font-weight:700; }
+        .full-code-block { background:var(--bg-code); color:#e2e8f0; border-radius:var(--radius-lg); padding:1.5rem; font-family:var(--font-mono); font-size:.82rem; line-height:1.6; overflow-x:auto; white-space:pre-wrap; word-break:break-word; box-shadow:var(--shadow-lg); max-height:70vh; overflow-y:auto; }
+        .full-code-block .kw { color:#c084fc; } .full-code-block .fn { color:#60a5fa; } .full-code-block .str { color:#a3e635; } .full-code-block .num { color:#fb923c; } .full-code-block .cm { color:#6b7280; font-style:italic; } .full-code-block .anno { color:#f472b6; font-weight:700; }
+        .summary-table-wrap { overflow-x:auto; border-radius:var(--radius-lg); box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:1.5rem; }
+        .summary-table { width:100%; border-collapse:collapse; background:var(--bg-card); font-size:.9rem; }
+        .summary-table thead { background:var(--deep-blue); color:#fff; }
+        .summary-table thead th { padding:.85rem 1rem; text-align:left; font-weight:600; letter-spacing:.02em; }
+        .summary-table tbody td { padding:.75rem 1rem; border-bottom:1px solid var(--border); }
+        .summary-table tbody tr:hover { background:#f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom:none; }
+        .comparison-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.5rem; }
+        .comparison-card { border-radius:var(--radius-lg); padding:1.5rem; text-align:center; box-shadow:var(--shadow); }
+        .comparison-card.params { background:linear-gradient(135deg,#eff6ff,#dbeafe); border:2px solid #93c5fd; }
+        .comparison-card.hyperparams { background:linear-gradient(135deg,#f0fdf4,#ccfbf1); border:2px solid #5eead4; }
+        .comparison-card h4 { font-size:1.1rem; margin-bottom:.5rem; }
+        .comparison-card ul { list-style:none; padding:0; text-align:left; display:inline-block; }
+        .comparison-card li { padding:.2rem 0; font-size:.88rem; }
+        .baseline-card { background:linear-gradient(135deg,#1a365d 0%,#0d3b4e 100%); color:#fff; border-radius:var(--radius-xl); padding:2rem; text-align:center; box-shadow:var(--shadow-xl); }
+        .baseline-card h3 { font-size:1.3rem; margin-bottom:1rem; color:#5eead4; }
+        .baseline-card .config-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.75rem; margin-top:1rem; }
+        .baseline-card .config-item { background:rgba(255,255,255,.08); border-radius:var(--radius); padding:.75rem; }
+        .baseline-card .config-item strong { display:block; color:#fbbf24; font-size:1rem; }
+        .baseline-card .config-item span { font-size:.78rem; opacity:.8; }
+        .back-to-top { position:fixed; bottom:28px; right:28px; width:44px; height:44px; border-radius:50%; background:var(--blue-mid); color:#fff; border:none; cursor:pointer; font-size:1.3rem; box-shadow:var(--shadow-lg); transition:var(--transition); z-index:99; opacity:0; transform:translateY(20px); pointer-events:none; display:flex; align-items:center; justify-content:center; }
+        .back-to-top.visible { opacity:1; transform:translateY(0); pointer-events:auto; }
+        .back-to-top:hover { background:var(--deep-blue); transform:translateY(-3px); box-shadow:var(--shadow-xl); }
+        .eq-explanation-card { background:#f8fafc; border-radius:var(--radius-lg); padding:1.8rem; margin-top:1.5rem; border:1px solid #cbd5e1; }
+        .eq-explanation-card h4 { font-size:1.2rem; color:var(--deep-blue); margin-bottom:1rem; }
+        .eq-term-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; margin-bottom:1.8rem; }
+        .eq-term-item { background:white; border-radius:var(--radius); padding:1rem; box-shadow:var(--shadow-sm); border-left:5px solid var(--teal-light); }
+        .eq-term-item .symbol { font-family:var(--font-mono); font-weight:700; color:var(--blue-mid); font-size:1.15rem; }
+        .eq-term-item .meaning { font-size:.85rem; color:var(--text-light); margin-top:.25rem; }
+        .eq-term-item .dims { font-size:.78rem; color:var(--text-muted); margin-top:.2rem; font-style:italic; }
+        /* QUIZ STYLES */
+        .quiz-container { max-width:800px; margin:0 auto; }
+        .quiz-progress { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; padding:1rem 1.25rem; background:var(--bg-card); border-radius:var(--radius-lg); box-shadow:var(--shadow); border:1px solid var(--border); }
+        .quiz-progress-bar { flex:1; height:10px; background:#e2e8f0; border-radius:10px; overflow:hidden; }
+        .quiz-progress-fill { height:100%; background:linear-gradient(90deg,var(--teal-light),var(--blue-mid)); border-radius:10px; transition:width .4s ease; }
+        .quiz-progress-text { font-weight:700; color:var(--deep-blue); font-size:.9rem; white-space:nowrap; }
+        .quiz-question-card { background:var(--bg-card); border-radius:var(--radius-lg); padding:1.75rem; box-shadow:var(--shadow-lg); border:1px solid var(--border); margin-bottom:1.25rem; transition:var(--transition); animation:fadeSlideIn .35s ease; }
+        .quiz-question-card .q-number { display:inline-block; background:var(--deep-blue); color:#fff; width:36px; height:36px; border-radius:50%; text-align:center; line-height:36px; font-weight:700; font-size:.9rem; margin-bottom:.75rem; }
+        .quiz-question-card .q-text { font-size:1.05rem; font-weight:600; color:var(--text); margin-bottom:1.25rem; line-height:1.5; }
+        .quiz-options { display:flex; flex-direction:column; gap:.6rem; }
+        .quiz-option { display:flex; align-items:center; gap:.65rem; padding:.8rem 1rem; border:2px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:var(--transition); font-size:.92rem; background:#fafbfc; }
+        .quiz-option:hover { border-color:var(--blue-mid); background:#eff6ff; }
+        .quiz-option.selected { border-color:var(--blue-mid); background:#dbeafe; font-weight:600; }
+        .quiz-option.correct { border-color:var(--tip-border); background:var(--tip-bg); color:#166534; }
+        .quiz-option.incorrect { border-color:var(--danger-border); background:var(--danger-bg); color:#991b1b; }
+        .quiz-option .opt-letter { width:32px; height:32px; border-radius:50%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem; flex-shrink:0; transition:var(--transition); }
+        .quiz-option.selected .opt-letter { background:var(--blue-mid); color:#fff; }
+        .quiz-option.correct .opt-letter { background:var(--tip-border); color:#fff; }
+        .quiz-option.incorrect .opt-letter { background:var(--danger-border); color:#fff; }
+        .quiz-feedback { margin-top:1rem; padding:.8rem 1rem; border-radius:var(--radius-sm); font-size:.88rem; line-height:1.5; display:none; }
+        .quiz-feedback.show { display:block; }
+        .quiz-feedback.correct-fb { background:var(--tip-bg); border-left:4px solid var(--tip-border); color:#166534; }
+        .quiz-feedback.incorrect-fb { background:var(--danger-bg); border-left:4px solid var(--danger-border); color:#991b1b; }
+        .quiz-nav-btns { display:flex; gap:.75rem; justify-content:center; margin-top:1.5rem; flex-wrap:wrap; }
+        .quiz-nav-btns button { padding:.7rem 1.5rem; border:none; border-radius:var(--radius); cursor:pointer; font-weight:600; font-size:.9rem; transition:var(--transition); }
+        .quiz-prev-btn { background:#e2e8f0; color:var(--text); }
+        .quiz-prev-btn:hover { background:#cbd5e1; }
+        .quiz-next-btn { background:var(--blue-mid); color:#fff; }
+        .quiz-next-btn:hover { background:var(--deep-blue); }
+        .quiz-submit-btn { background:var(--teal); color:#fff; }
+        .quiz-submit-btn:hover { background:#0f766e; }
+        .quiz-restart-btn { background:#f59e0b; color:#fff; }
+        .quiz-restart-btn:hover { background:#d97706; }
+        .quiz-score-card { background:linear-gradient(135deg,var(--deep-blue) 0%,#0d3b4e 100%); color:#fff; border-radius:var(--radius-xl); padding:2.5rem 2rem; text-align:center; box-shadow:var(--shadow-xl); display:none; }
+        .quiz-score-card.show { display:block; animation:fadeSlideIn .5s ease; }
+        .quiz-score-card .score-circle { width:120px; height:120px; border-radius:50%; background:conic-gradient(#5eead4 0deg var(--score-deg),rgba(255,255,255,.15) var(--score-deg) 360deg); display:flex; align-items:center; justify-content:center; margin:0 auto 1.25rem; position:relative; }
+        .quiz-score-card .score-inner { width:90px; height:90px; border-radius:50%; background:var(--deep-blue); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:800; }
+        .quiz-score-card .score-grade { font-size:1.1rem; margin-top:.5rem; opacity:.9; }
+        .quiz-score-card .score-breakdown { font-size:.9rem; opacity:.75; margin-top:.5rem; }
+        @media (max-width:768px) {
+            .card-grid { grid-template-columns:1fr; } .comparison-grid { grid-template-columns:1fr; }
+            .tab-btn { font-size:.76rem; padding:.5rem .6rem; min-width:auto; flex:1 1 calc(33% - .3rem); }
+            .header { padding:2rem 1rem 1.5rem; } .header h1 { font-size:1.6rem; }
+            .eq-term-grid { grid-template-columns:1fr; }
+            .quiz-question-card { padding:1.25rem; }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="badge">🔧 Zero-Shot Learning</div>
+        <h1>Zero-Shot Learning – <span>Hyperparameters</span></h1>
+        <p class="tagline">Master the art of recognizing unseen classes by bridging visual features with semantic embeddings.</p>
+        <p class="intro">
+            Zero-Shot Learning (ZSL) enables models to recognize classes never seen during training by mapping visual features
+            into a semantic embedding space (attributes, word vectors). This guide covers the 10 most important hyperparameters
+            for ZSL, from embedding dimension and compatibility functions to ranking loss and hubness calibration, with
+            practical PyTorch examples and a runnable ZSL demo.
+        </p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="infographic-area" id="infographicArea">
+        <img id="infographicImg" src="images/ZSL.png" alt="Zero-Shot Learning Nutshell Infographic" loading="lazy" onerror="handleImageFallback()">
+        <div class="infographic-fallback" id="infographicFallback">
+            <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🔍 Zero-Shot Learning Pipeline</div>
+            <div class="gan-diagram">
+                <div class="gate-box"><strong>Seen Classes</strong><code>x<sub>seen</sub> → CNN → φ(x)</code><br><small style="color:#94a3b8;">Visual feature extractor</small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Compatibility</strong><code>s(x,y) = φ(x)<sup>T</sup>W ψ(y)</code><br><small style="color:#94a3b8;">Visual-semantic mapping</small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Unseen Classes</strong><code>y* = argmax s(x, ψ(y))</code><br><small style="color:#94a3b8;">Zero-shot prediction via semantics</small></div>
+            </div>
+            <div style="text-align:center;color:#94a3b8;font-size:.78rem;margin-top:.75rem;">
+                Attributes &nbsp;|&nbsp; Word2Vec &nbsp;|&nbsp; GloVe &nbsp;|&nbsp; Ranking Loss &nbsp;|&nbsp; Hubness Problem &nbsp;|&nbsp; GZSL
+            </div>
+        </div>
+        <p class="caption">📊 ZSL pipeline — visual features projected into a semantic space for recognizing unseen classes</p>
+    </div>
+</div>
+
+<div class="container">
+    <nav class="tab-nav" id="tabNav">
+        <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Hyperparameters</button>
+        <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+        <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+        <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+        <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+        <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+        <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+    </nav>
+
+    <div class="tab-panel active" id="tab-all-concepts">
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">🧬</div><h3>① Semantic Embedding Dimension</h3><p class="card-desc">Dimensionality of the class attribute/word vectors. Larger dimensions encode richer semantics but require more training data.</p><div class="code-snippet"><span class="cm"># Common semantic spaces</span><br>attr_dim = <span class="num">85</span>   <span class="cm"># AWA: 85 class-level attributes</span><br>w2v_dim = <span class="num">300</span>  <span class="cm"># Word2Vec: 300-d word vectors</span><br>glove_dim = <span class="num">300</span> <span class="cm"># GloVe: 300-d embeddings</span></div><div class="tip-box"><span class="box-icon">💡</span>Attributes (30–312 dims) give interpretable ZSL; word vectors (300d) scale to thousands of classes with less annotation effort.</div></div>
+            <div class="card"><div class="card-icon">🔬</div><h3>② Visual Feature Dimension (Backbone)</h3><p class="card-desc">Output dimension of the CNN backbone used to extract image features. Typically from a pretrained ResNet or ViT.</p><div class="code-snippet"><span class="kw">import</span> torchvision.models <span class="kw">as</span> models<br>backbone = models.resnet101(<span class="fn">pretrained</span>=<span class="kw">True</span>)<br>visual_dim = <span class="num">2048</span>  <span class="cm"># ResNet-101 output</span></div><div class="good-box"><span class="box-icon">✅</span>ResNet-101 (2048d) is standard. ViT-B/16 (768d) and CLIP (512d) are modern alternatives with better generalization.</div></div>
+            <div class="card"><div class="card-icon">🔗</div><h3>③ Joint Embedding / Projection Dimension</h3><p class="card-desc">Shared dimension for mapping both visual and semantic features. Balances expressiveness and overfitting risk.</p><div class="code-snippet"><span class="kw">self</span>.visual_proj = nn.Linear(<span class="num">2048</span>, <span class="anno">joint_dim</span>=<span class="num">512</span>)<br><span class="kw">self</span>.semantic_proj = nn.Linear(attr_dim, <span class="anno">joint_dim</span>=<span class="num">512</span>)<br><span class="cm"># Cosine similarity in joint space</span><br>score = F.cosine_similarity(v_proj, s_proj)</div><div class="tip-box"><span class="box-icon">💡</span>Joint dim 256–1024. Smaller dims (256–512) work best for attribute-based ZSL; larger (1024) for word vector spaces.</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>④ Compatibility Function</h3><p class="card-desc">The scoring function between visual features and class semantics. Linear, bilinear, and cosine-based scores are common choices.</p><div class="code-snippet"><span class="cm"># Linear compatibility</span><br>score = visual_feat @ W @ semantic_vec<br><span class="cm"># Bilinear (learned compatibility)</span><br>score = visual_feat @ W_pair @ semantic_vec<br><span class="cm"># Cosine (no learned params)</span><br>score = F.cosine_similarity(vis, sem)</div><div class="good-box"><span class="box-icon">✅</span>Bilinear compatibility (learned interaction matrix) is most expressive. Cosine is simpler and handles the hubness problem better.</div></div>
+            <div class="card"><div class="card-icon">📉</div><h3>⑤ Loss Function (Ranking Loss)</h3><p class="card-desc">ZSL uses ranking-based losses (pairwise or hinge) to push correct class scores above incorrect ones by a margin.</p><div class="code-snippet"><span class="cm"># Hinge ranking loss with margin</span><br>loss = max(<span class="num">0</span>, margin - pos_score + neg_score)<br><span class="cm"># Triplet loss variant</span><br>loss = max(<span class="num">0</span>, d(vis, pos_sem) - d(vis, neg_sem) + margin)</div><div class="tip-box"><span class="box-icon">💡</span>Margin=0.1–1.0. Pairwise ranking loss is standard. Cross-entropy on seen classes optionally regularizes joint training.</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>⑥ Learning Rate</h3><p class="card-desc">ZSL often fine-tunes a pretrained backbone with a lower LR for the CNN and higher LR for the projection layers.</p><div class="code-snippet"><span class="cm"># Differential learning rates</span><br>optimizer = Adam([<br>    {<span class="str">'params'</span>: backbone.parameters(), <span class="str">'lr'</span>: <span class="num">1e-5</span>},<br>    {<span class="str">'params'</span>: projection.parameters(), <span class="str">'lr'</span>: <span class="num">1e-4</span>}])</div><div class="good-box"><span class="box-icon">✅</span>Use 1e-5 for pretrained backbone, 1e-4 to 1e-3 for ZSL-specific layers. Differential LRs prevent distorting pretrained features.</div></div>
+            <div class="card"><div class="card-icon">📦</div><h3>⑦ Batch Size</h3><p class="card-desc">Batch size for ZSL training. Larger batches provide more negative examples for ranking loss, improving discriminative quality.</p><div class="code-snippet"><span class="cm"># Batch includes images from multiple seen classes</span><br>dataloader = DataLoader(<br>    dataset, <span class="fn">batch_size</span>=<span class="num">128</span>,<br>    <span class="fn">shuffle</span>=<span class="kw">True</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Batch size 64–256. Larger batches provide richer negative sampling for ranking loss. Use class-balanced sampling.</div></div>
+            <div class="card"><div class="card-icon">🔄</div><h3>⑧ Training Epochs</h3><p class="card-desc">ZSL models converge quickly (10–50 epochs) with pretrained backbones. Monitor seen-class accuracy and unseen-class harmonic mean.</p><div class="code-snippet"><span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="num">30</span>):<br>    train_epoch(model, seen_loader)<br>    <span class="cm"># Validate on both seen & unseen</span><br>    seen_acc = evaluate(model, seen_test)<br>    unseen_acc = evaluate(model, unseen_test)<br>    H = <span class="num">2</span>*seen_acc*unseen_acc/(seen_acc+unseen_acc)</div><div class="good-box"><span class="box-icon">✅</span>Track harmonic mean H of seen and unseen accuracy. Stop when H plateaus — overfitting reduces unseen performance.</div></div>
+            <div class="card"><div class="card-icon">🔧</div><h3>⑨ Optimizer &amp; Weight Decay</h3><p class="card-desc">Adam/AdamW with moderate weight decay. ZSL models benefit from stronger regularization on the projection layers.</p><div class="code-snippet">optimizer = AdamW(<br>    model.parameters(),<br>    <span class="fn">lr</span>=<span class="num">1e-4</span>,<br>    <span class="fn">weight_decay</span>=<span class="num">1e-4</span>)<br>scheduler = CosineAnnealingLR(optimizer, <span class="fn">T_max</span>=<span class="num">30</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Adam with wd=1e-4 to 1e-3. Cosine LR scheduling helps avoid overfitting to seen classes at the expense of unseen generalization.</div></div>
+            <div class="card"><div class="card-icon">🌐</div><h3>⑩ Semantic Space Type</h3><p class="card-desc">The choice of class representation — attributes, word vectors, or text descriptions. Drastically affects ZSL performance and scalability.</p><div class="code-snippet"><span class="cm"># ① Attribute vectors (AWA/CUB datasets)</span><br>semantic = class_attributes  <span class="cm"># (num_classes, attr_dim)</span><br><span class="cm"># ② Word vectors (ImageNet-scale ZSL)</span><br>semantic = word2vec[class_names]<br><span class="cm"># ③ CLIP text embeddings (modern ZSL)</span><br>semantic = clip.encode_text(class_descriptions)</div><div class="good-box"><span class="box-icon">✅</span>CLIP-style text embeddings are the state-of-the-art choice. Attributes remain important for fine-grained ZSL (bird species, etc.).</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-architecture">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ Zero-Shot Learning Architecture</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">ZSL maps visual features and class semantics into a shared space where compatibility scores determine class membership. The architecture has three stages: visual encoding, semantic projection, and compatibility scoring.</p>
+        <div class="arch-visual">
+            <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🔬 ZSL Core Equations</div>
+            <div class="eq-block"><span class="hl">Visual Embedding:</span><br>φ(x) = <span class="hl2">CNN<sub>θ</sub>(x)</span> &nbsp; ∈ ℝ<sup>d<sub>v</sub></sup></div>
+            <div class="eq-block"><span class="hl">Semantic Embedding:</span><br>ψ(y) = <span class="hl2">a<sub>y</sub></span> (attributes) or <span class="hl2">word2vec(y)</span></div>
+            <div class="eq-block"><span class="hl">Compatibility Score:</span><br>s(x,y) = <span class="hl2">φ(x)<sup>T</sup> W ψ(y)</span> &nbsp; (bilinear)</div>
+            <div class="eq-block"><span class="hl">Zero-Shot Prediction:</span><br>ŷ = argmax<sub>y∈Y<sub>unseen</sub></sub> <span class="hl2">s(x, y)</span></div>
+        </div>
+
+        <div class="eq-explanation-card">
+            <h4>📖 Equation Element Breakdown – Visual-Semantic Mapping</h4>
+            <p style="margin-bottom:1.2rem; font-size:.9rem; color:var(--text-light);">Each component of the ZSL pipeline explained — from visual feature extraction to zero-shot classification.</p>
+
+            <h5 style="color:var(--teal);margin-bottom:.8rem;">🔹 Visual &amp; Semantic Encoding</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">φ(x)</div><div class="meaning">Visual feature vector extracted from image x via a pretrained CNN (ResNet, ViT, CLIP).</div><div class="dims">Shape: d_v (e.g., 2048 for ResNet-101)</div></div>
+                <div class="eq-term-item"><div class="symbol">ψ(y)</div><div class="meaning">Semantic embedding of class y: either hand-crafted attribute vector a_y or learned word embedding.</div><div class="dims">Shape: d_s (e.g., 85 for AWA attributes, 300 for word2vec)</div></div>
+                <div class="eq-term-item"><div class="symbol">W (Bilinear)</div><div class="meaning">Learned compatibility matrix mapping visual features to semantic space. Captures cross-modal relationships.</div><div class="dims">Shape: (d_v × d_s) — high-dimensional but allows rich interactions</div></div>
+                <div class="eq-term-item"><div class="symbol">Y<sub>unseen</sub></div><div class="meaning">Set of class labels never observed during training. The model must infer their semantics from side information alone.</div><div class="dims">Typically 10–50% of total classes (e.g., 10 unseen out of 50 AWA classes)</div></div>
+            </div>
+
+            <h5 style="color:var(--teal);margin-bottom:.8rem;">🔹 Generalized vs. Classical ZSL</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">Classical ZSL</div><div class="meaning">Test set contains ONLY unseen classes. Search space is restricted: ŷ = argmax_{y∈Y_unseen} s(x,y).</div><div class="dims">Optimistic setting — easier to evaluate</div></div>
+                <div class="eq-term-item"><div class="symbol">Generalized ZSL (GZSL)</div><div class="meaning">Test set contains BOTH seen and unseen classes. ŷ = argmax_{y∈Y_seen ∪ Y_unseen} s(x,y).</div><div class="dims">Realistic setting — model must not bias toward seen classes</div></div>
+                <div class="eq-term-item"><div class="symbol">Hubness Problem</div><div class="meaning">In high-dimensional spaces, some classes become "hubs" — nearest to many query points. Biases predictions.</div><div class="dims">Solved via normalized scores, calibrated stacking, or test-time adaptation</div></div>
+                <div class="eq-term-item"><div class="symbol">Harmonic Mean (H)</div><div class="meaning">H = 2·S·U/(S+U) where S = seen accuracy, U = unseen accuracy. Balances both in GZSL evaluation.</div><div class="dims">Single metric capturing the seen-unseen trade-off</div></div>
+            </div>
+
+            <h5 style="color:var(--teal);margin-bottom:.8rem;">🔹 Modern Approaches</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">CLIP-style ZSL</div><div class="meaning">Uses dual encoders (image + text transformer) pretrained on 400M image-text pairs. Zero-shot via cosine similarity.</div><div class="dims">No task-specific training needed — purely zero-shot</div></div>
+                <div class="eq-term-item"><div class="symbol">Generative ZSL</div><div class="meaning">Uses a conditional GAN/VAE to synthesize visual features for unseen classes, then trains a standard classifier.</div><div class="dims">f-GAN, TF-VAEGAN — bridges ZSL to supervised learning</div></div>
+            </div>
+
+            <div style="margin-top:1rem;font-size:.85rem;color:var(--text-muted);background:#e0f2fe;padding:.8rem;border-radius:var(--radius-sm);">
+                💡 <strong>Key insight:</strong> The semantic space is the bridge between seen and unseen classes. Its quality (attribute discrimination, embedding coverage) directly determines ZSL performance — a weak semantic space guarantees poor zero-shot transfer.
+            </div>
+        </div>
+
+        <div class="card-grid" style="margin-top:1rem;">
+            <div class="card"><div class="card-icon">🔍</div><h3>Visual-Semantic Projection</h3><p class="card-desc">Learns a mapping W: φ(x) ↦ ψ(y) that aligns visual features with class semantics. The learned compatibility enables zero-shot inference.</p><div class="tip-box"><span class="box-icon">💡</span>Bilinear models (SJE, LATEM) learn per-class or shared compatibility; ALE and DEVISE use simpler linear projections with ranking loss.</div></div>
+            <div class="card"><div class="card-icon">🔄</div><h3>Transductive ZSL</h3><p class="card-desc">Uses unlabeled unseen-class images during training (without labels) to adapt the model. Improves GZSL performance substantially.</p><div class="good-box"><span class="box-icon">✅</span>Transductive setting uses test images for domain adaptation. Only the labels of unseen classes are withheld, not the images themselves.</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-training">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Process for Zero-Shot Learning</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">ZSL training focuses on learning a transferable visual-semantic mapping that generalizes to unseen classes.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">🎯</div><h3>Ranking Loss Training</h3><p class="card-desc">Trains the model to rank the correct class above all others. Pairwise ranking with margin is the standard ZSL objective.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">rank_loss</span>(vis, sem, labels):<br>    scores = vis @ W @ sem.T  <span class="cm"># (batch, num_classes)</span><br>    pos = scores.gather(<span class="num">1</span>, labels)<br>    loss = (margin - pos + scores).clamp(<span class="fn">min</span>=<span class="num">0</span>).sum(<span class="num">1</span>)<br>    <span class="kw">return</span> loss.mean()</div><div class="good-box"><span class="box-icon">✅</span>Pairwise ranking loss with margin=0.1–1.0. The margin controls how much higher the correct score must be than incorrect ones.</div></div>
+            <div class="card"><div class="card-icon">⚖️</div><h3>Seen/Unseen Calibration</h3><p class="card-desc">GZSL requires calibrating prediction scores to avoid bias toward seen classes. Calibrated stacking reduces this bias.</p><div class="code-snippet"><span class="cm"># Calibrated stacking: subtract seen-class bias</span><br>seen_bias = gamma * s(x, y_seen)<br>unseen_scores = s(x, y_unseen) - seen_bias<br>pred = argmax(cat(seen_scores, unseen_scores))</div><div class="warn-box"><span class="box-icon">⚠️</span>Without calibration, GZSL models often classify 90%+ of unseen samples as seen classes. γ=0.2–0.5 is typical.</div></div>
+            <div class="card"><div class="card-icon">🔬</div><h3>Class-Balanced Sampling</h3><p class="card-desc">Ensures each seen class contributes equally to the batch, preventing dominant classes from skewing the ranking objective.</p><div class="code-snippet"><span class="kw">from</span> torch.utils.data <span class="kw">import</span> WeightedRandomSampler<br>weights = <span class="num">1.0</span> / class_counts<br>sampler = WeightedRandomSampler(weights, num_samples)</div><div class="tip-box"><span class="box-icon">💡</span>Balanced sampling is critical — without it, the model learns to rank frequent seen classes higher, degrading unseen-class performance.</div></div>
+            <div class="card"><div class="card-icon">📊</div><h3>Validation on Unseen Proxy</h3><p class="card-desc">During training, evaluate on held-out seen classes as a proxy for unseen generalization. Track harmonic mean of seen+unseen accuracy.</p><div class="code-snippet"><span class="cm"># Split seen classes into train_seen/val_seen</span><br>val_seen = seen_classes[-<span class="num">20</span>%:]<br>train_seen = seen_classes[:-<span class="num">20</span>%]<br><span class="cm"># val_seen acts as "unseen" proxy for tuning</span></div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-regularization">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning for ZSL</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">ZSL is prone to overfitting on seen classes. These techniques improve generalization to unseen classes.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">📐</div><h3>L2 Regularization on W</h3><p class="card-desc">Regularize the compatibility matrix W to prevent overfitting to seen-class co-occurrence patterns that don't transfer.</p><div class="code-snippet"><span class="cm"># Add L2 penalty to compatibility matrix</span><br>l2_reg = weight_decay * (W.norm(<span class="num">2</span>) ** <span class="num">2</span>)<br>total_loss = rank_loss + l2_reg</div><div class="tip-box"><span class="box-icon">💡</span>Weight decay of 1e-4 to 1e-3 on the projection layers is standard. Stronger L2 (1e-3) helps when seen classes are few.</div></div>
+            <div class="card"><div class="card-icon">🔀</div><h3>Semantic Dropout</h3><p class="card-desc">Randomly drops semantic dimensions during training, forcing the model to use distributed attribute representations.</p><div class="code-snippet"><span class="kw">self</span>.sem_dropout = nn.Dropout(<span class="num">0.3</span>)<br>semantic_vec = <span class="kw">self</span>.sem_dropout(attributes)<br><span class="cm"># Forces distributed use of attributes</span></div><div class="good-box"><span class="box-icon">✅</span>Semantic dropout (0.2–0.5) prevents the model from relying on a few discriminative attributes that may not generalize to unseen classes.</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>Hubness Calibration</h3><p class="card-desc">Mitigates the hubness problem where certain classes dominate nearest-neighbor predictions in high-dimensional embedding spaces.</p><div class="code-snippet"><span class="cm"># Normalize scores to reduce hubness</span><br>scores_norm = (scores - scores.mean(<span class="num">0</span>)) / scores.std(<span class="num">0</span>)<br><span class="cm"># Or use cosine similarity instead of dot product</span><br>scores = F.cosine_similarity(vis, sem.unsqueeze(<span class="num">0</span>))</div><div class="tip-box"><span class="box-icon">💡</span>Cosine similarity implicitly normalizes and reduces hubness. Z-score normalization across classes is another effective approach.</div></div>
+            <div class="card"><div class="card-icon">🧊</div><h3>Freezing the Backbone</h3><p class="card-desc">Keep the pretrained CNN backbone frozen and only train the projection layers. Prevents distortion of general visual features.</p><div class="code-snippet"><span class="cm"># Freeze pretrained backbone</span><br><span class="kw">for</span> param <span class="kw">in</span> backbone.parameters():<br>    param.requires_grad = <span class="kw">False</span><br><span class="cm"># Only train ZSL projection layers</span><br>optimizer = Adam(projection.parameters())</div><div class="good-box"><span class="box-icon">✅</span>Frozen backbone + trainable projection is the simplest effective ZSL strategy. Fine-tuning the backbone can help but risks overfitting.</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-full-code">
+        <h2 style="margin-bottom:.5rem;color:var(--deep-blue);">💻 Full Code – Zero-Shot Learning with Bilinear Compatibility</h2>
+        <p style="color:var(--text-light);margin-bottom:1rem;">A complete ZSL training pipeline using ResNet features, attribute embeddings, and bilinear compatibility. All hyperparameters annotated.</p>
+        <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Zero-Shot Learning with Bilinear Compatibility – all hyperparameters labeled."""</span>
+
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+<span class="kw">import</span> torchvision.models <span class="kw">as</span> models
+
+<span class="cm"># ── Hyperparameters ──</span>
+<span class="anno">VISUAL_DIM</span> = <span class="num">2048</span>        <span class="cm"># ② Visual feature dimension (ResNet-101)</span>
+<span class="anno">ATTR_DIM</span> = <span class="num">85</span>           <span class="cm"># ① Semantic/attribute dimension (AWA dataset)</span>
+<span class="anno">JOINT_DIM</span> = <span class="num">512</span>          <span class="cm"># ③ Joint embedding projection dimension</span>
+<span class="anno">MARGIN</span> = <span class="num">0.5</span>             <span class="cm"># ⑤ Ranking loss margin</span>
+<span class="anno">LR_BACKBONE</span> = <span class="num">1e-5</span>       <span class="cm"># ⑥ Learning rate for pretrained CNN</span>
+<span class="anno">LR_PROJECTION</span> = <span class="num">1e-4</span>     <span class="cm"># ⑥ Learning rate for ZSL projection layers</span>
+<span class="anno">BATCH_SIZE</span> = <span class="num">128</span>          <span class="cm"># ⑦ Batch size</span>
+<span class="anno">EPOCHS</span> = <span class="num">30</span>              <span class="cm"># ⑧ Training epochs</span>
+<span class="anno">WEIGHT_DECAY</span> = <span class="num">1e-4</span>      <span class="cm"># ⑨ Weight decay for optimizer</span>
+<span class="anno">SEM_DROPOUT</span> = <span class="num">0.3</span>        <span class="cm"># Semantic dropout rate</span>
+
+<span class="kw">class</span> <span class="fn">ZSLModel</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>, num_seen_classes, attributes):
+        <span class="kw">super</span>().__init__()
+        <span class="cm"># Pretrained visual backbone (frozen)</span>
+        backbone = models.resnet101(<span class="fn">pretrained</span>=<span class="kw">True</span>)
+        <span class="kw">for</span> p <span class="kw">in</span> backbone.parameters():
+            p.requires_grad = <span class="kw">False</span>
+        <span class="fn">self</span>.visual_encoder = nn.Sequential(*list(backbone.children())[:-<span class="num">1</span>])
+        <span class="fn">self</span>.flatten = nn.Flatten()
+
+        <span class="cm"># ③ Joint embedding projection layers</span>
+        <span class="fn">self</span>.visual_proj = nn.Linear(<span class="anno">VISUAL_DIM</span>, <span class="anno">JOINT_DIM</span>)
+        <span class="fn">self</span>.attr_proj = nn.Linear(<span class="anno">ATTR_DIM</span>, <span class="anno">JOINT_DIM</span>)
+
+        <span class="cm"># ④ Bilinear compatibility matrix: W ∈ R^{d_v × d_s}</span>
+        <span class="fn">self</span>.W = nn.Parameter(torch.randn(<span class="anno">VISUAL_DIM</span>, <span class="anno">ATTR_DIM</span>) * <span class="num">0.01</span>)
+
+        <span class="cm"># Register class attributes (⑩ semantic space)</span>
+        <span class="fn">self</span>.register_buffer(<span class="str">'attributes'</span>, attributes)  <span class="cm"># (num_all_classes, ATTR_DIM)</span>
+        <span class="fn">self</span>.sem_dropout = nn.Dropout(<span class="anno">SEM_DROPOUT</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, images):
+        <span class="cm"># Extract visual features</span>
+        vis_feat = <span class="fn">self</span>.flatten(<span class="fn">self</span>.visual_encoder(images))  <span class="cm"># (batch, 2048)</span>
+
+        <span class="cm"># ④ Bilinear compatibility: s(x,y) = φ(x)ᵀ W ψ(y)</span>
+        semantics = <span class="fn">self</span>.sem_dropout(<span class="fn">self</span>.attributes)  <span class="cm"># (num_classes, ATTR_DIM)</span>
+        scores = vis_feat @ <span class="fn">self</span>.W @ semantics.T  <span class="cm"># (batch, num_classes)</span>
+        <span class="kw">return</span> scores
+
+<span class="cm"># ── Dataset &amp; DataLoader ──</span>
+<span class="cm"># attributes: (num_classes, ATTR_DIM) — all classes, seen + unseen</span>
+<span class="cm"># seen_classes: subset of class indices used for training</span>
+train_loader = DataLoader(seen_dataset, <span class="fn">batch_size</span>=<span class="anno">BATCH_SIZE</span>,
+                          <span class="fn">shuffle</span>=<span class="kw">True</span>, <span class="fn">num_workers</span>=<span class="num">4</span>)
+
+model = ZSLModel(num_seen_classes, all_attributes).to(device)
+
+<span class="cm"># ── ⑥/⑨ Differential learning rates ──</span>
+optimizer = optim.AdamW([
+    {<span class="str">'params'</span>: model.visual_proj.parameters(), <span class="str">'lr'</span>: <span class="anno">LR_PROJECTION</span>},
+    {<span class="str">'params'</span>: model.attr_proj.parameters(), <span class="str">'lr'</span>: <span class="anno">LR_PROJECTION</span>},
+    {<span class="str">'params'</span>: [model.W], <span class="str">'lr'</span>: <span class="anno">LR_PROJECTION</span>}
+], <span class="fn">weight_decay</span>=<span class="anno">WEIGHT_DECAY</span>)
+
+<span class="cm"># ── Training loop ──</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="anno">EPOCHS</span>):
+    model.train()
+    <span class="kw">for</span> images, labels <span class="kw">in</span> train_loader:
+        images, labels = images.to(device), labels.to(device)
+
+        scores = model(images)  <span class="cm"># (batch, num_all_classes)</span>
+
+        <span class="cm"># ⑤ Pairwise ranking loss (only seen classes)</span>
+        pos_scores = scores.gather(<span class="num">1</span>, labels.unsqueeze(<span class="num">1</span>))
+        seen_scores = scores[:, seen_class_indices]
+        loss = (pos_scores - seen_scores + <span class="anno">MARGIN</span>).clamp(<span class="fn">min</span>=<span class="num">0</span>)
+        loss = loss.sum(<span class="num">1</span>).mean()
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    <span class="cm"># ── GZSL evaluation ──</span>
+    model.eval()
+    <span class="kw">with</span> torch.no_grad():
+        all_scores = model(test_features)
+        seen_acc = accuracy(all_scores[:, seen_idx], seen_labels)
+        unseen_acc = accuracy(all_scores[:, unseen_idx], unseen_labels)
+        H = <span class="num">2</span> * seen_acc * unseen_acc / (seen_acc + unseen_acc)
+    <span class="kw">print</span>(<span class="str">f"Epoch {epoch+1}/{EPOCHS} | Loss: {loss:.3f} | H: {H:.3f}"</span>)
+        </div>
+        <p style="margin-top:.75rem;font-size:.85rem;color:var(--text-muted);text-align:center;">⬆️ Complete ZSL pipeline with bilinear compatibility and pairwise ranking loss. All ⑩ hyperparameters annotated.</p>
+    </div>
+
+    <div class="tab-panel" id="tab-summary">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+        <div class="summary-table-wrap">
+            <table class="summary-table">
+                <thead><tr><th>#</th><th>Hyperparameter</th><th>Purpose</th><th>Typical Range</th></tr></thead>
+                <tbody>
+                    <tr><td>①</td><td><strong>Semantic Embedding Dim</strong></td><td>Dimensionality of class attribute/word vectors</td><td>85–312 (attrs), 300–768 (word vecs)</td></tr>
+                    <tr><td>②</td><td><strong>Visual Feature Dim</strong></td><td>Output dimension of pretrained CNN backbone</td><td>2048 (ResNet-101), 768 (ViT), 512 (CLIP)</td></tr>
+                    <tr><td>③</td><td><strong>Joint Embedding Dim</strong></td><td>Shared projection space for visual-semantic alignment</td><td>256–1024</td></tr>
+                    <tr><td>④</td><td><strong>Compatibility Function</strong></td><td>Scoring mechanism between visual and semantic features</td><td>Linear, Bilinear, Cosine</td></tr>
+                    <tr><td>⑤</td><td><strong>Loss Function</strong></td><td>Ranking-based objective for discriminative alignment</td><td>Pairwise hinge (margin 0.1–1.0)</td></tr>
+                    <tr><td>⑥</td><td><strong>Learning Rate</strong></td><td>Differential LRs for backbone vs projection layers</td><td>1e-5 (backbone), 1e-4 to 1e-3 (projection)</td></tr>
+                    <tr><td>⑦</td><td><strong>Batch Size</strong></td><td>Images per update; larger = richer negative sampling</td><td>64–256</td></tr>
+                    <tr><td>⑧</td><td><strong>Training Epochs</strong></td><td>Total training duration; monitor harmonic mean</td><td>10–50</td></tr>
+                    <tr><td>⑨</td><td><strong>Optimizer &amp; Weight Decay</strong></td><td>Adam/AdamW with L2 regularization on projections</td><td>wd=1e-4 to 1e-3</td></tr>
+                    <tr><td>⑩</td><td><strong>Semantic Space Type</strong></td><td>Attributes vs word vectors vs CLIP text embeddings</td><td>Task-dependent choice</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="comparison-grid">
+            <div class="comparison-card params"><h4>🧠 Learned Parameters</h4><p style="font-size:.85rem;color:#475569;margin-bottom:.5rem;">Discovered automatically during ZSL training</p><ul><li>✅ Compatibility matrix W (bilinear model)</li><li>✅ Visual projection weights (W_vis)</li><li>✅ Semantic projection weights (W_sem)</li><li>📌 <em>CNN backbone typically frozen</em></li></ul></div>
+            <div class="comparison-card hyperparams"><h4>⚙️ Hyperparameters</h4><p style="font-size:.85rem;color:#475569;margin-bottom:.5rem;">Set manually before training begins</p><ul><li>🔧 Joint dim, margin, semantic space choice</li><li>🔧 Learning rates (differential), batch size</li><li>🔧 Weight decay, dropout, epochs</li><li>📌 <em>Chosen by the practitioner</em></li></ul></div>
+        </div>
+        <div class="baseline-card">
+            <h3>🚀 Common Starting Configuration (AWA Dataset)</h3><p style="opacity:.85;margin-bottom:1rem;">Use these defaults for attribute-based ZSL:</p>
+            <div class="config-grid">
+                <div class="config-item"><strong>85</strong><span>① Attr Dim (AWA)</span></div><div class="config-item"><strong>2048</strong><span>② Visual Dim</span></div><div class="config-item"><strong>512</strong><span>③ Joint Dim</span></div><div class="config-item"><strong>Bilinear</strong><span>④ Compatibility</span></div><div class="config-item"><strong>0.5 margin</strong><span>⑤ Ranking Loss</span></div><div class="config-item"><strong>1e-4</strong><span>⑥ Projection LR</span></div><div class="config-item"><strong>128</strong><span>⑦ Batch Size</span></div><div class="config-item"><strong>30</strong><span>⑧ Epochs</span></div><div class="config-item"><strong>AdamW 1e-4</strong><span>⑨ Optimizer/WD</span></div><div class="config-item"><strong>Attributes</strong><span>⑩ Semantic Space</span></div>
+            </div>
+            <p style="margin-top:1rem;font-size:.82rem;opacity:.7;">🔬 Tune: adjust margin → batch size → joint dim → semantic dropout. For word vector ZSL, increase joint dim to 1024.</p>
+        </div>
+        <div class="summary-table-wrap" style="margin-top:1.5rem;">
+            <table class="summary-table">
+                <thead><tr><th>Feature</th><th>Classical ZSL</th><th>Generalized ZSL (GZSL)</th><th>CLIP-style ZSL</th></tr></thead>
+                <tbody>
+                    <tr><td>Test Classes</td><td>Unseen only</td><td>Seen + Unseen</td><td>Any (open vocabulary)</td></tr>
+                    <tr><td>Training</td><td>Seen classes only</td><td>Seen classes only</td><td>Pretrained (no task-specific training)</td></tr>
+                    <tr><td>Key Challenge</td><td>Semantic gap</td><td>Seen-class bias + hubness</td><td>Prompt engineering</td></tr>
+                    <tr><td>Semantic Space</td><td>Attributes / word vectors</td><td>Attributes / word vectors</td><td>Text encoder (transformer)</td></tr>
+                    <tr><td>Calibration</td><td>Not needed</td><td>Calibrated stacking required</td><td>Temperature scaling</td></tr>
+                    <tr><td>Best For</td><td>Benchmark evaluation</td><td>Real-world deployment</td><td>Large-scale open-vocabulary tasks</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-quiz">
+        <h2 style="margin-bottom:.5rem;color:var(--deep-blue);">🧠 Zero-Shot Learning – Quiz</h2>
+        <p style="color:var(--text-light);margin-bottom:1.5rem;">Test your knowledge with 25 questions covering ZSL architecture, semantic spaces, training, and evaluation.</p>
+        <div class="quiz-container" id="quizContainer">
+            <div class="quiz-progress">
+                <span style="font-size:1.2rem;">📝</span>
+                <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0;"></div></div>
+                <span class="quiz-progress-text" id="quizProgressText">0 / 25</span>
+            </div>
+            <div id="quizQuestionArea"></div>
+            <div class="quiz-nav-btns" id="quizNavBtns">
+                <button class="quiz-prev-btn" id="quizPrevBtn" style="display:none;">← Previous</button>
+                <button class="quiz-next-btn" id="quizNextBtn">Next →</button>
+                <button class="quiz-submit-btn" id="quizSubmitBtn" style="display:none;">Submit Quiz</button>
+            </div>
+            <div class="quiz-score-card" id="quizScoreCard">
+                <h4 style="font-size:1.5rem;margin-bottom:.5rem;color:#5eead4;">🏆 Quiz Complete!</h4>
+                <div class="score-circle" id="scoreCircle" style="--score-deg:0deg;"><div class="score-inner" id="scoreInner">0%</div></div>
+                <p class="score-grade" id="scoreGrade"></p>
+                <p class="score-breakdown" id="scoreBreakdown"></p>
+                <button class="quiz-restart-btn" id="quizRestartBtn" style="margin-top:1.25rem;">🔄 Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+    const quizQuestions = [
+        { q:"What is the core idea of Zero-Shot Learning?", opts:["Training with zero data","Recognizing classes never seen during training by using semantic descriptions","Using zero hidden layers","Setting all hyperparameters to zero"], ans:1, exp:"ZSL enables models to classify unseen classes by leveraging semantic side information (attributes, word vectors) that bridge seen and unseen concepts." },
+        { q:"What are the three main types of semantic spaces used in ZSL?", opts:["RGB, HSV, LAB","Attributes, Word Vectors, Text Embeddings (CLIP)","CNN, RNN, Transformer","Grayscale, Binary, Float"], ans:1, exp:"Attributes (hand-crafted, 30–312 dims), word vectors (Word2Vec/GloVe, 300d), and CLIP-style text embeddings are the three standard semantic representations." },
+        { q:"What is the typical visual feature dimension from a ResNet-101 backbone?", opts:["512","1024","2048","4096"], ans:2, exp:"ResNet-101 outputs 2048-dimensional features from its final pooling layer. ViT-B/16 outputs 768d and CLIP-ViT outputs 512d." },
+        { q:"What is the bilinear compatibility score equation?", opts:["s(x,y) = x·y","s(x,y) = φ(x)ᵀ W ψ(y)","s(x,y) = softmax(Wx + y)","s(x,y) = ||x - y||²"], ans:1, exp:"The bilinear model computes s(x,y) = φ(x)ᵀ W ψ(y), where W ∈ R^{d_v × d_s} is the learned compatibility matrix between visual and semantic spaces." },
+        { q:"What is the difference between Classical ZSL and Generalized ZSL (GZSL)?", opts:["There is no difference","Classical ZSL tests only on unseen classes; GZSL tests on both seen and unseen","GZSL uses fewer parameters","Classical ZSL is always better"], ans:1, exp:"Classical ZSL restricts the test set to unseen classes. GZSL is harder and more realistic — the test set contains both seen and unseen classes." },
+        { q:"What is the hubness problem in ZSL?", opts:["When model training is too slow","When certain classes become universal nearest neighbors to most query points in high-dimensional spaces","When the loss function diverges","When attributes are not available"], ans:1, exp:"In high-dimensional embedding spaces, some classes become 'hubs' — disproportionately many points' nearest neighbors — biasing ZSL predictions toward those classes." },
+        { q:"Which loss function is standard for training ZSL models?", opts:["Mean squared error","Pairwise ranking loss with margin","Binary cross-entropy","KL divergence"], ans:1, exp:"Pairwise ranking loss: L = Σ max(0, margin − s(x,y_correct) + s(x,y_wrong)) pushes the correct class score above incorrect ones by at least the margin." },
+        { q:"What metric is used to evaluate GZSL performance?", opts:["Accuracy on seen classes only","Accuracy on unseen classes only","Harmonic mean (H) of seen and unseen accuracy","Cross-entropy loss"], ans:2, exp:"H = 2·S·U/(S+U) balances performance on both seen and unseen classes. A model that scores 95% seen but 5% unseen gets H ≈ 9.5%." },
+        { q:"Why is differential learning rate important in ZSL?", opts:["It's not important","The pretrained CNN backbone needs a lower LR to preserve general features; ZSL projections need a higher LR","Both need the same LR","It reduces code complexity"], ans:1, exp:"A high LR on the backbone distorts pretrained visual features. Typically: backbone LR=1e-5, projection LR=1e-4 to 1e-3." },
+        { q:"What is the purpose of semantic dropout?", opts:["To speed up training","To randomly drop semantic dimensions, forcing distributed use of attributes that generalize better","To remove entire classes","To increase accuracy"], ans:1, exp:"Semantic dropout (p=0.2–0.5) prevents the model from over-relying on a few discriminative attributes, encouraging distributed representations that transfer to unseen classes." },
+        { q:"What does calibrated stacking do in GZSL?", opts:["Stacks multiple models","Reduces the bias of seen-class scores by subtracting a calibration factor","Increases model depth","Combines multiple semantic spaces"], ans:1, exp:"Calibrated stacking subtracts γ·s(x, y_seen) from unseen scores to compensate for the model's inherent bias toward seen classes in GZSL." },
+        { q:"Which dataset is commonly used as a benchmark for attribute-based ZSL?", opts:["ImageNet","CIFAR-10","Animals with Attributes (AWA/AWA2)","MNIST"], ans:2, exp:"AWA/AWA2 has 50 animal classes with 85 class-level attributes (e.g., 'has stripes', 'is black'). 40 seen + 10 unseen is the standard split." },
+        { q:"What is the role of the compatibility matrix W in bilinear ZSL?", opts:["It's the input data","It learns cross-modal relationships between visual features and semantic attributes","It normalizes the scores","It's unused during inference"], ans:1, exp:"W ∈ R^{d_v × d_s} captures how each visual dimension relates to each semantic attribute, enabling the model to score any class given its attribute vector." },
+        { q:"Why is cosine similarity often preferred over dot product for ZSL scoring?", opts:["It's faster","Cosine similarity normalizes scores, reducing the hubness problem","It has more parameters","It always gives better accuracy"], ans:1, exp:"Cosine similarity implicitly L2-normalizes both vectors, mitigating the hubness problem where norms of certain class embeddings dominate the scoring." },
+        { q:"What is transductive ZSL?", opts:["Training without any labels","Using unlabeled unseen-class images (without their labels) during training to adapt the model","Using only seen classes","Training on unseen classes directly"], ans:1, exp:"Transductive ZSL uses test images from unseen classes (without labels) for domain adaptation, improving GZSL by aligning the visual feature distribution." },
+        { q:"How does CLIP enable zero-shot classification?", opts:["By training on seen classes only","By matching image embeddings to text embeddings of class names via cosine similarity — no task-specific training needed","Using attributes only","By random guessing"], ans:1, exp:"CLIP's dual encoders (image + text) pretrained on 400M pairs enable zero-shot classification by computing cosine similarity between image embeddings and text prompts like 'a photo of a [class]'." },
+        { q:"What is a typical joint embedding dimension for attribute-based ZSL?", opts:["8–32","256–512","2048–4096","10000+"], ans:1, exp:"256–512 is standard. Smaller dimensions (256) work for attribute spaces (~85 dims); larger (1024) for word vector spaces (~300 dims)." },
+        { q:"What happens if you set the ranking loss margin too high?", opts:["Training is faster","The model becomes overly strict, requiring very large score differences between correct and incorrect classes","Nothing changes","Accuracy improves indefinitely"], ans:1, exp:"A high margin forces the model to push scores far apart, which can hurt generalization. Margin=0.1–1.0 balances discriminativeness and transferability." },
+        { q:"Why is class-balanced sampling important in ZSL training?", opts:["It's not important","Without it, frequent seen classes dominate ranking loss, degrading unseen-class generalization","It reduces GPU memory","It simplifies the code"], ans:1, exp:"Imbalanced sampling causes the ranking loss to focus disproportionately on frequent classes, and the learned compatibility matrix W may not generalize well to rare or unseen classes." },
+        { q:"What is the typical number of training epochs for ZSL with a frozen backbone?", opts:["1–5","10–50","200–500","1000+"], ans:1, exp:"ZSL converges quickly (10–50 epochs) because the backbone is frozen and only the projection layers are learned. Over-training reduces unseen accuracy." },
+        { q:"What is generative ZSL?", opts:["Generating random labels","Using a GAN/VAE to synthesize visual features for unseen classes, then training a standard classifier","Generating new attributes","Using a generative model as the backbone"], ans:1, exp:"Generative ZSL (f-CLSWGAN, TF-VAEGAN) synthesizes visual features for unseen classes using their semantic descriptions, converting ZSL into standard supervised learning." },
+        { q:"Which of the following reduces the hubness problem in ZSL?", opts:["Increasing the batch size","Using cosine similarity, Z-score normalization, or calibrated stacking","Adding more layers","Using a smaller backbone"], ans:1, exp:"Cosine similarity normalizes vectors; Z-score normalization centers and scales scores; calibrated stacking adjusts seen-class bias. All three mitigate hubness." },
+        { q:"What is the typical weight decay for ZSL projection layers?", opts:["0 (no regularization)","1e-4 to 1e-3","0.1–0.5","10–100"], ans:1, exp:"Weight decay of 1e-4 to 1e-3 regularizes the projection layers. Stronger decay (1e-3) helps when seen classes are very few." },
+        { q:"Why should the CNN backbone typically remain frozen in ZSL?", opts:["It saves GPU memory only","Fine-tuning the backbone on seen classes distorts its general visual features, reducing transfer to unseen classes","Frozen backbones are always more accurate","It's required by PyTorch"], ans:1, exp:"Fine-tuning the pretrained backbone adapts it to seen classes, potentially destroying the general visual representations needed for recognizing unseen classes." },
+        { q:"What does the harmonic mean H = 2·S·U/(S+U) measure in GZSL?", opts:["Only seen-class accuracy","Only unseen-class accuracy","The balanced performance across both seen and unseen classes — a low value in either drastically reduces H","Training speed"], ans:2, exp:"The harmonic mean penalizes large disparities. S=90%, U=10% → H=18%. S=60%, U=50% → H≈54.5%. It's the standard GZSL metric." }
+    ];
+
+    let quizState = { currentIndex:0, answers:new Array(quizQuestions.length).fill(null), submitted:false };
+
+    function initQuiz() {
+        quizState = { currentIndex:0, answers:new Array(quizQuestions.length).fill(null), submitted:false };
+        document.getElementById('quizScoreCard').classList.remove('show');
+        document.getElementById('quizQuestionArea').style.display='block';
+        document.getElementById('quizNavBtns').style.display='flex';
+        renderQuizQuestion(); updateQuizUI();
+    }
+    function renderQuizQuestion() {
+        const idx=quizState.currentIndex, q=quizQuestions[idx], area=document.getElementById('quizQuestionArea');
+        const sel=quizState.answers[idx], dis=quizState.submitted;
+        let opts=q.opts.map((o,i)=>{
+            let c='quiz-option';
+            if(dis&&sel===i)c+=(i===q.ans)?' correct':' incorrect';
+            else if(!dis&&sel===i)c+=' selected';
+            return `<div class="${c}" ${!dis?'onclick="selectQuizOption('+i+')"':''}><span class="opt-letter">${'ABCD'[i]}</span>${o}</div>`;
+        }).join('');
+        let fb='';
+        if(dis){const cl=sel===q.ans?'correct-fb':'incorrect-fb';fb=`<div class="quiz-feedback show ${cl}"><strong>${sel===q.ans?'✅':'❌'} ${sel===q.ans?'Correct!':'Incorrect'}</strong> — ${q.exp}</div>`;}
+        area.innerHTML=`<div class="quiz-question-card"><div class="q-number">${idx+1}</div><div class="q-text">${q.q}</div><div class="quiz-options">${opts}</div>${fb}</div>`;
+    }
+    function selectQuizOption(i){if(!quizState.submitted){quizState.answers[quizState.currentIndex]=i;renderQuizQuestion();}}
+    function updateQuizUI(){
+        const t=quizQuestions.length, a=quizState.answers.filter(x=>x!==null).length;
+        document.getElementById('quizProgressFill').style.width=Math.round((a/t)*100)+'%';
+        document.getElementById('quizProgressText').textContent=a+' / '+t;
+        document.getElementById('quizPrevBtn').style.display=quizState.currentIndex>0?'inline-block':'none';
+        if(quizState.currentIndex>=t-1){document.getElementById('quizNextBtn').style.display='none';document.getElementById('quizSubmitBtn').style.display='inline-block';}
+        else{document.getElementById('quizNextBtn').style.display='inline-block';document.getElementById('quizSubmitBtn').style.display='none';}
+    }
+    function goPrev(){if(quizState.currentIndex>0){quizState.currentIndex--;renderQuizQuestion();updateQuizUI();document.querySelector('.quiz-question-card')?.scrollIntoView({behavior:'smooth',block:'center'});}}
+    function goNext(){if(quizState.currentIndex<quizQuestions.length-1){quizState.currentIndex++;renderQuizQuestion();updateQuizUI();document.querySelector('.quiz-question-card')?.scrollIntoView({behavior:'smooth',block:'center'});}}
+    function submitQuiz(){
+        quizState.submitted=true;quizState.currentIndex=0;renderQuizQuestion();updateQuizUI();
+        const c=quizState.answers.reduce((s,a,i)=>s+(a===quizQuestions[i].ans?1:0),0),t=quizQuestions.length,p=Math.round((c/t)*100);
+        document.getElementById('quizQuestionArea').style.display='none';document.getElementById('quizNavBtns').style.display='none';
+        document.getElementById('scoreCircle').style.setProperty('--score-deg',(c/t*360)+'deg');
+        document.getElementById('scoreInner').textContent=p+'%';
+        document.getElementById('scoreBreakdown').textContent=`You scored ${c} out of ${t} questions correctly.`;
+        let g=p>=90?'🌟 Outstanding! You have mastered Zero-Shot Learning.':p>=70?'👍 Great job! Solid understanding of ZSL.':p>=50?'📚 Good effort! Review the cards above and try again.':'📖 Keep studying! Review the visual-semantic mapping and GZSL concepts.';
+        document.getElementById('scoreGrade').textContent=g;
+        const sc=document.getElementById('quizScoreCard');sc.classList.add('show');sc.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+    document.getElementById('quizPrevBtn').addEventListener('click',goPrev);
+    document.getElementById('quizNextBtn').addEventListener('click',goNext);
+    document.getElementById('quizSubmitBtn').addEventListener('click',submitQuiz);
+    document.getElementById('quizRestartBtn').addEventListener('click',initQuiz);
+
+    function handleImageFallback(){const i=document.getElementById('infographicImg'),f=document.getElementById('infographicFallback');if(i&&f){i.style.display='none';f.style.display='block';}}
+    window.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('infographicImg');if(i&&!i.complete){setTimeout(()=>{if(!i.complete||i.naturalWidth===0)handleImageFallback();},3000);}else if(i&&i.naturalWidth===0)handleImageFallback();});
+    const tabNav=document.getElementById('tabNav'),tabBtns=tabNav.querySelectorAll('.tab-btn'),tabPanels=document.querySelectorAll('.tab-panel');
+    tabBtns.forEach(b=>{b.addEventListener('click',()=>{const tid=b.getAttribute('data-tab');tabBtns.forEach(x=>x.classList.remove('active'));tabPanels.forEach(p=>p.classList.remove('active'));b.classList.add('active');const tp=document.getElementById('tab-'+tid);if(tp){tp.classList.add('active');tp.style.animation='none';tp.offsetHeight;tp.style.animation='fadeSlideIn .4s ease';}if(tid==='quiz')initQuiz();if(window.innerWidth<768)tp?.scrollIntoView({behavior:'smooth',block:'start'});})});
+    const b2t=document.getElementById('backToTop');function tBT(){if(window.scrollY>500)b2t.classList.add('visible');else b2t.classList.remove('visible');}window.addEventListener('scroll',tBT,{passive:true});b2t.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});tBT();
+    const iI=document.getElementById('infographicImg');if(iI){iI.addEventListener('load',()=>{const f=document.getElementById('infographicFallback');if(f)f.style.display='none';iI.style.display='block';});iI.addEventListener('error',handleImageFallback);}
+    console.log('✅ Zero-Shot Learning Interactive Study Guide ready!');
+</script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
+</body>
+</html>
