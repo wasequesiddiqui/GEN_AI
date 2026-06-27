@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basics of Sequence to Sequence Models – Complete Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d;
+            --blue: #1e40af;
+            --blue-mid: #2563eb;
+            --teal: #0d9488;
+            --teal-light: #14b8a6;
+            --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-code: #0f172a;
+            --text: #1e293b;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4;
+            --tip-border: #22c55e;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(170deg, #f0f9ff 0%, #f8fafc 30%, #f0fdf4 70%, #ecfeff 100%);
+            color: var(--text); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #1e3a5f 30%, #0f4c5c 70%, #0d3b4e 100%);
+            color: #ffffff; padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -60px; right: -80px; width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: -50px; left: -60px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none;
+        }
+        .header-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+        .header .badge {
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25);
+            padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+        }
+        .header h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .header h1 span {
+            background: linear-gradient(135deg, #5eead4, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .header .tagline { font-size: 1.15rem; opacity: 0.9; margin-bottom: 0.75rem; font-weight: 400; letter-spacing: 0.01em; }
+        .header .intro { font-size: 0.95rem; opacity: 0.75; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .infographic-area {
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: -1.5rem auto 2rem;
+            max-width: 900px; padding: 1.5rem; text-align: center; position: relative; z-index: 2; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .infographic-area img { max-width: 100%; height: auto; border-radius: var(--radius); display: block; margin: 0 auto; }
+        .infographic-fallback {
+            display: none; background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); border-radius: var(--radius); padding: 2rem 1.5rem;
+            color: #e2e8f0; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.8; text-align: left; overflow-x: auto;
+        }
+        .infographic-fallback .gan-diagram { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 1rem 0; }
+        .infographic-fallback .gate-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: center; min-width: 120px;
+        }
+        .infographic-fallback .gate-box strong { display: block; color: #5eead4; font-size: 1rem; margin-bottom: 0.4rem; }
+        .infographic-fallback .gate-box code { color: #fbbf24; font-size: 0.8rem; }
+        .infographic-fallback .arrow-sym { font-size: 1.8rem; color: #94a3b8; }
+        .infographic-area .caption { margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .tab-nav {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 0.5rem;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); position: sticky; top: 12px; z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 auto; min-width: 110px; padding: 0.7rem 1rem; border: none; background: transparent; border-radius: var(--radius);
+            cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-muted); transition: var(--transition); white-space: nowrap; letter-spacing: 0.01em; position: relative;
+        }
+        .tab-btn:hover { color: var(--blue-mid); background: #eff6ff; }
+        .tab-btn.active { background: var(--blue-mid); color: #fff; box-shadow: var(--shadow); }
+        .tab-btn .tab-icon { margin-right: 0.35rem; }
+        .tab-panel { display: none; animation: fadeSlideIn 0.4s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .card:hover { box-shadow: var(--shadow-xl); transform: translateY(-2px); border-color: #cbd5e1; }
+        .card .card-icon { font-size: 2rem; margin-bottom: 0.5rem; display: inline-block; background: #f1f5f9; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.5rem 0 0.35rem; color: var(--deep-blue); }
+        .card .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.75rem; line-height: 1.55; }
+        .code-snippet {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-family: var(--font-mono);
+            font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+        }
+        .code-snippet .kw { color: #c084fc; } .code-snippet .fn { color: #60a5fa; } .code-snippet .str { color: #fbbf24; } .code-snippet .num { color: #fb923c; } .code-snippet .cm { color: #6b7280; font-style: italic; }
+        .tip-box, .warn-box, .good-box {
+            margin-top: 0.75rem; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: 0.5rem;
+        }
+        .tip-box { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .warn-box { background: var(--warning-bg); border-left: 4px solid var(--warning-border); color: #92400e; }
+        .good-box { background: #eff6ff; border-left: 4px solid var(--blue-mid); color: #1e40af; }
+        .tip-box .box-icon, .warn-box .box-icon, .good-box .box-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .arch-visual {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 2rem; color: #e2e8f0; text-align: center; margin-bottom: 1.5rem; overflow-x: auto;
+        }
+        .arch-visual .eq-block {
+            display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 1rem 1.5rem; margin: 0.5rem; text-align: left; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+        }
+        .arch-visual .eq-block .hl { color: #5eead4; font-weight: 700; }
+        .arch-visual .eq-block .hl2 { color: #fbbf24; font-weight: 700; }
+        .full-code-block {
+            background: var(--bg-code); color: #e2e8f0; border-radius: var(--radius-lg); padding: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; word-break: break-word; box-shadow: var(--shadow-lg); max-height: 70vh; overflow-y: auto;
+        }
+        .full-code-block .kw { color: #c084fc; } .full-code-block .fn { color: #60a5fa; } .full-code-block .str { color: #a3e635; } .full-code-block .num { color: #fb923c; } .full-code-block .cm { color: #6b7280; font-style: italic; } .full-code-block .anno { color: #f472b6; font-weight: 700; }
+        .summary-table-wrap { overflow-x: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .summary-table { width: 100%; border-collapse: collapse; background: var(--bg-card); font-size: 0.9rem; }
+        .summary-table thead { background: var(--deep-blue); color: #fff; }
+        .summary-table thead th { padding: 0.85rem 1rem; text-align: left; font-weight: 600; letter-spacing: 0.02em; }
+        .summary-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        .summary-table tbody tr:hover { background: #f8fafc; }
+        .summary-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .comparison-card { border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+        .comparison-card.params { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 2px solid #93c5fd; }
+        .comparison-card.hyperparams { background: linear-gradient(135deg, #f0fdf4, #ccfbf1); border: 2px solid #5eead4; }
+        .comparison-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .comparison-card ul { list-style: none; padding: 0; text-align: left; display: inline-block; }
+        .comparison-card li { padding: 0.2rem 0; font-size: 0.88rem; }
+        .baseline-card {
+            background: linear-gradient(135deg, #1a365d 0%, #0d3b4e 100%); color: #fff; border-radius: var(--radius-xl); padding: 2rem; text-align: center; box-shadow: var(--shadow-xl);
+        }
+        .baseline-card h3 { font-size: 1.3rem; margin-bottom: 1rem; color: #5eead4; }
+        .baseline-card .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        .baseline-card .config-item { background: rgba(255,255,255,0.08); border-radius: var(--radius); padding: 0.75rem; }
+        .baseline-card .config-item strong { display: block; color: #fbbf24; font-size: 1rem; }
+        .baseline-card .config-item span { font-size: 0.78rem; opacity: 0.8; }
+        .back-to-top {
+            position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: var(--blue-mid); color: #fff; border: none;
+            cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); transition: var(--transition); z-index: 99; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; justify-content: center;
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { background: var(--deep-blue); transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        .eq-explanation-card {
+            background: #f8fafc; border-radius: var(--radius-lg); padding: 1.8rem; margin-top: 1.5rem; border: 1px solid #cbd5e1;
+        }
+        .eq-explanation-card h4 { font-size: 1.2rem; color: var(--deep-blue); margin-bottom: 1rem; }
+        .eq-term-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.8rem;
+        }
+        .eq-term-item {
+            background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--teal-light);
+        }
+        .eq-term-item .symbol { font-family: var(--font-mono); font-weight: 700; color: var(--blue-mid); font-size: 1.15rem; }
+        .eq-term-item .meaning { font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem; }
+        .eq-term-item .dims { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; font-style: italic; }
+        .highlight-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .highlight-table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+        .highlight-table tr:last-child td { border-bottom: none; }
+        .quiz-container { max-width: 800px; margin: 0 auto; }
+        .quiz-progress {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem 1.25rem;
+            background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+        .quiz-progress-bar { flex: 1; height: 10px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .quiz-progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--teal-light), var(--blue-mid));
+            border-radius: 10px; transition: width 0.4s ease;
+        }
+        .quiz-progress-text { font-weight: 700; color: var(--deep-blue); font-size: 0.9rem; white-space: nowrap; }
+        .quiz-question-card {
+            background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.75rem;
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border); margin-bottom: 1.25rem;
+            transition: var(--transition); animation: fadeSlideIn 0.35s ease;
+        }
+        .quiz-question-card .q-number {
+            display: inline-block; background: var(--deep-blue); color: #fff; width: 36px; height: 36px;
+            border-radius: 50%; text-align: center; line-height: 36px; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem;
+        }
+        .quiz-question-card .q-text { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 1.25rem; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .quiz-option {
+            display: flex; align-items: center; gap: 0.65rem; padding: 0.8rem 1rem; border: 2px solid var(--border);
+            border-radius: var(--radius); cursor: pointer; transition: var(--transition); font-size: 0.92rem; background: #fafbfc;
+        }
+        .quiz-option:hover { border-color: var(--blue-mid); background: #eff6ff; }
+        .quiz-option.selected { border-color: var(--blue-mid); background: #dbeafe; font-weight: 600; }
+        .quiz-option.correct { border-color: var(--tip-border); background: var(--tip-bg); color: #166534; }
+        .quiz-option.incorrect { border-color: var(--danger-border); background: var(--danger-bg); color: #991b1b; }
+        .quiz-option .opt-letter {
+            width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; transition: var(--transition);
+        }
+        .quiz-option.selected .opt-letter { background: var(--blue-mid); color: #fff; }
+        .quiz-option.correct .opt-letter { background: var(--tip-border); color: #fff; }
+        .quiz-option.incorrect .opt-letter { background: var(--danger-border); color: #fff; }
+        .quiz-feedback {
+            margin-top: 1rem; padding: 0.8rem 1rem; border-radius: var(--radius-sm); font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct-fb { background: var(--tip-bg); border-left: 4px solid var(--tip-border); color: #166534; }
+        .quiz-feedback.incorrect-fb { background: var(--danger-bg); border-left: 4px solid var(--danger-border); color: #991b1b; }
+        .quiz-nav-btns { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+        .quiz-nav-btns button {
+            padding: 0.7rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600;
+            font-size: 0.9rem; transition: var(--transition);
+        }
+        .quiz-prev-btn { background: #e2e8f0; color: var(--text); }
+        .quiz-prev-btn:hover { background: #cbd5e1; }
+        .quiz-next-btn { background: var(--blue-mid); color: #fff; }
+        .quiz-next-btn:hover { background: var(--deep-blue); }
+        .quiz-submit-btn { background: var(--teal); color: #fff; }
+        .quiz-submit-btn:hover { background: #0f766e; }
+        .quiz-restart-btn { background: #f59e0b; color: #fff; }
+        .quiz-restart-btn:hover { background: #d97706; }
+        .quiz-score-card {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, #0d3b4e 100%); color: #fff;
+            border-radius: var(--radius-xl); padding: 2.5rem 2rem; text-align: center; box-shadow: var(--shadow-xl); display: none;
+        }
+        .quiz-score-card.show { display: block; animation: fadeSlideIn 0.5s ease; }
+        .quiz-score-card .score-circle {
+            width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#5eead4 0deg var(--score-deg), rgba(255,255,255,0.15) var(--score-deg) 360deg);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; position: relative;
+        }
+        .quiz-score-card .score-inner {
+            width: 90px; height: 90px; border-radius: 50%; background: var(--deep-blue);
+            display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800;
+        }
+        .quiz-score-card .score-grade { font-size: 1.1rem; margin-top: 0.5rem; opacity: 0.9; }
+        .quiz-score-card .score-breakdown { font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; } .comparison-grid { grid-template-columns: 1fr; }
+            .tab-btn { font-size: 0.76rem; padding: 0.5rem 0.6rem; min-width: auto; flex: 1 1 calc(33% - 0.3rem); }
+            .header { padding: 2rem 1rem 1.5rem; } .header h1 { font-size: 1.6rem; }
+            .eq-term-grid { grid-template-columns: 1fr; }
+            .quiz-question-card { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="badge">🔧 Basics of Sequence to Sequence Models</div>
+        <h1>Basics of Sequence to Sequence Models – <span>Hyperparameters</span></h1>
+        <p class="tagline">Master the encoder-decoder architecture with attention — the backbone of translation, summarization, and multimodal learning.</p>
+        <p class="intro">
+            Sequence-to-Sequence (Seq2Seq) models map an input sequence to an output sequence using an encoder-decoder framework
+            with attention. This guide covers the 10 most important hyperparameters for Seq2Seq models, from hidden sizes and
+            attention mechanisms to teacher forcing and beam search, with practical PyTorch examples and a runnable translation demo.
+        </p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="infographic-area" id="infographicArea">
+        <img id="infographicImg" src="images/MultiModal_Learning.png" alt="Sequence to Sequence Model Nutshell Infographic" loading="lazy" onerror="handleImageFallback()">
+        <div class="infographic-fallback" id="infographicFallback">
+            <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🔄 Seq2Seq with Attention Flow</div>
+            <div class="gan-diagram">
+                <div class="gate-box"><strong>Encoder</strong><code>h₁,h₂,…,h<sub>T</sub></code><br><small style="color:#94a3b8;">Bidirectional RNN / GRU</small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Attention</strong><code>α<sub>t</sub> = softmax(score(s<sub>t</sub>,h<sub>i</sub>))</code><br><small style="color:#94a3b8;">Context vector c<sub>t</sub> = Σ α<sub>t,i</sub>·h<sub>i</sub></small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Decoder</strong><code>s<sub>t</sub> = RNN(y<sub>t-1</sub>,s<sub>t-1</sub>,c<sub>t</sub>)</code><br><small style="color:#94a3b8;">Autoregressive output generation</small></div>
+            </div>
+            <div style="text-align:center;color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">
+                Bahdanau Attention &nbsp;|&nbsp; Luong Attention &nbsp;|&nbsp; Teacher Forcing &nbsp;|&nbsp; Beam Search
+            </div>
+        </div>
+        <p class="caption">📊 Seq2Seq pipeline — encoder hidden states, attention-weighted context, and autoregressive decoder</p>
+    </div>
+</div>
+
+<div class="container">
+    <nav class="tab-nav" id="tabNav">
+        <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>All Hyperparameters</button>
+        <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Architecture</button>
+        <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Training</button>
+        <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Regularization</button>
+        <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+        <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary &amp; Comparison</button>
+        <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+    </nav>
+
+    <div class="tab-panel active" id="tab-all-concepts">
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">🧩</div><h3>① Encoder Hidden Size</h3><p class="card-desc">Dimensionality of the encoder RNN hidden state. Larger sizes capture richer source representations but increase computation.</p><div class="code-snippet"><span class="kw">class</span> <span class="fn">EncoderRNN</span>(nn.Module):<br>    <span class="fn">self</span>.gru = nn.GRU(input_size, <span class="anno">hidden_size</span>=<span class="num">256</span>,<br>                         <span class="fn">bidirectional</span>=<span class="kw">True</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Common range: 256–1024. Bidirectional encoders double the effective hidden size (2× hidden concatenated).</div></div>
+            <div class="card"><div class="card-icon">🔧</div><h3>② Decoder Hidden Size</h3><p class="card-desc">Dimensionality of the decoder RNN hidden state. Must match the encoder's output size when using attention.</p><div class="code-snippet"><span class="kw">class</span> <span class="fn">DecoderRNN</span>(nn.Module):<br>    <span class="fn">self</span>.gru = nn.GRU(embed_dim + enc_hidden,<br>                         <span class="anno">hidden_size</span>=<span class="num">512</span>)</div><div class="good-box"><span class="box-icon">✅</span>For bidirectional encoder (hidden=256 per direction), set decoder hidden=512 to match concatenated encoder output.</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>③ Attention Mechanism (Bahdanau / Luong)</h3><p class="card-desc">Computes alignment scores between decoder state and encoder outputs. Additive (Bahdanau) and dot-product (Luong) are the two main types.</p><div class="code-snippet"><span class="cm"># Bahdanau (additive) attention</span><br>score = v<sup>T</sup>·tanh(W<sub>1</sub>h + W<sub>2</sub>s)<br><span class="cm"># Luong (dot-product) attention</span><br>score = s<sup>T</sup>·h</div><div class="tip-box"><span class="box-icon">💡</span>Bahdanau uses a learnable alignment model. Luong is simpler but requires matching dimensions. Prefer Bahdanau for complex tasks.</div></div>
+            <div class="card"><div class="card-icon">📐</div><h3>④ Embedding Size</h3><p class="card-desc">Dimensionality of the token embedding vectors for source and target vocabularies. Shared embeddings can reduce parameters.</p><div class="code-snippet"><span class="kw">self</span>.src_embed = nn.Embedding(<br>    src_vocab_size, <span class="anno">embed_size</span>=<span class="num">256</span>)<br><span class="kw">self</span>.tgt_embed = nn.Embedding(<br>    tgt_vocab_size, <span class="anno">embed_size</span>=<span class="num">256</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Common range: 128–512. Embedding size should be significantly smaller than vocab size. Tie embeddings when vocab is shared.</div></div>
+            <div class="card"><div class="card-icon">🎲</div><h3>⑤ Dropout Rate</h3><p class="card-desc">Dropout applied to RNN layers and embeddings. Essential for preventing overfitting in Seq2Seq models, especially with small parallel corpora.</p><div class="code-snippet"><span class="kw">self</span>.dropout = nn.Dropout(<span class="anno">p</span>=<span class="num">0.3</span>)<br><span class="cm"># Apply after embedding and between RNN layers</span><br>embedded = <span class="kw">self</span>.dropout(<span class="kw">self</span>.embedding(x))</div><div class="warn-box"><span class="box-icon">⚠️</span>Seq2Seq models with small data (<100k pairs) benefit from higher dropout (0.3–0.5). Reduce for large datasets.</div></div>
+            <div class="card"><div class="card-icon">📈</div><h3>⑥ Learning Rate</h3><p class="card-desc">Seq2Seq models use moderate learning rates. RNN-based models are less sensitive than transformers but still need careful tuning.</p><div class="code-snippet">optimizer = Adam(<br>    model.parameters(),<br>    <span class="fn">lr</span>=<span class="num">0.001</span>)</div><div class="good-box"><span class="box-icon">✅</span>Start with 0.001 (Adam default). Reduce to 5e-4 if loss oscillates. Halve when BLEU plateaus during validation.</div></div>
+            <div class="card"><div class="card-icon">📦</div><h3>⑦ Batch Size</h3><p class="card-desc">Seq2Seq batches contain variable-length sequences. Dynamic batching with bucketing groups similar-length sequences for efficiency.</p><div class="code-snippet"><span class="cm"># Bucket sequences by length for efficient padding</span><br>train_iter = BucketIterator(<br>    dataset, <span class="fn">batch_size</span>=<span class="num">64</span>,<br>    <span class="fn">sort_key</span>=<span class="kw">lambda</span> x: len(x.src))</div><div class="tip-box"><span class="box-icon">💡</span>Use 32–128 depending on GPU memory. Bucketing reduces wasted computation on padding tokens by ~30–50%.</div></div>
+            <div class="card"><div class="card-icon">🏗️</div><h3>⑧ Number of Encoder/Decoder Layers</h3><p class="card-desc">Stacked RNN layers increase representational capacity. Typically 2–4 layers for both encoder and decoder.</p><div class="code-snippet"><span class="kw">self</span>.encoder = nn.GRU(<br>    input_size, hidden_size,<br>    <span class="anno">num_layers</span>=<span class="num">2</span>,<br>    <span class="fn">dropout</span>=<span class="num">0.3</span>, <span class="fn">bidirectional</span>=<span class="kw">True</span>)</div><div class="good-box"><span class="box-icon">✅</span>2–4 layers for most translation tasks. Deeper encoders (>4 layers) risk vanishing gradients without residual connections.</div></div>
+            <div class="card"><div class="card-icon">📏</div><h3>⑨ Sequence Length (Max Input/Output)</h3><p class="card-desc">Maximum token length for source and target sequences. Longer sequences capture more context but increase memory and training time.</p><div class="code-snippet"><span class="cm"># Filter or truncate long sequences</span><br>SRC_MAX_LEN = <span class="num">50</span><br>TGT_MAX_LEN = <span class="num">50</span><br>dataset = [p <span class="kw">for</span> p <span class="kw">in</span> dataset<br>           <span class="kw">if</span> len(p.src) <= SRC_MAX_LEN<br>           <span class="kw">and</span> len(p.tgt) <= TGT_MAX_LEN]</div><div class="warn-box"><span class="box-icon">⚠️</span>RNN training time scales linearly with sequence length (unlike transformer's O(n²)). Use 30–80 tokens for balanced efficiency.</div></div>
+            <div class="card"><div class="card-icon">📉</div><h3>⑩ Loss Function (Cross-Entropy)</h3><p class="card-desc">Next-token cross-entropy with padding ignored. The standard objective for autoregressive Seq2Seq training.</p><div class="code-snippet"><span class="cm"># Ignore <PAD> token in loss</span><br>loss = F.cross_entropy(<br>    output.view(-<span class="num">1</span>, tgt_vocab_size),<br>    target.view(-<span class="num">1</span>),<br>    <span class="fn">ignore_index</span>=PAD_IDX)</div><div class="tip-box"><span class="box-icon">💡</span>Always set ignore_index=PAD_IDX. Without it, the model wastes capacity learning to predict padding tokens.</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-architecture">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ Seq2Seq Architecture &amp; Attention Mechanism</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">
+            A Seq2Seq model has three core components: an encoder that compresses the source sequence into hidden states, an attention
+            mechanism that computes alignment weights, and a decoder that autoregressively generates the target sequence.
+        </p>
+        <div class="arch-visual">
+            <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🔄 Seq2Seq Core Equations</div>
+            <div class="eq-block"><span class="hl">Encoder Recurrence:</span><br>h<sub>t</sub> = RNN<sub>enc</sub>(<span class="hl2">x<sub>t</sub></span>, h<sub>t−1</sub>) &nbsp; t=1,…,T</div>
+            <div class="eq-block"><span class="hl">Attention Score (Bahdanau):</span><br>e<sub>t,i</sub> = <span class="hl2">v<sup>T</sup></span>·tanh(<span class="hl2">W<sub>a</sub></span>·s<sub>t</sub> + <span class="hl2">U<sub>a</sub></span>·h<sub>i</sub>)</div>
+            <div class="eq-block"><span class="hl">Context Vector:</span><br>c<sub>t</sub> = Σ<sub>i=1</sub><sup>T</sup> <span class="hl2">α<sub>t,i</sub></span>·h<sub>i</sub> &nbsp; where &nbsp; α<sub>t,i</sub>=softmax(e<sub>t,i</sub>)</div>
+            <div class="eq-block"><span class="hl">Decoder Recurrence:</span><br>s<sub>t</sub> = RNN<sub>dec</sub>(<span class="hl2">[y<sub>t−1</sub>; c<sub>t</sub>]</span>, s<sub>t−1</sub>)</div>
+        </div>
+
+        <div class="eq-explanation-card">
+            <h4>📖 Equation Element Breakdown – Encoder, Attention &amp; Decoder</h4>
+            <p style="margin-bottom:1.2rem; font-size:0.9rem; color:var(--text-light);">Every symbol in the Seq2Seq architecture explained — from encoder recurrence to attention-weighted decoding.</p>
+
+            <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Encoder Components</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">x<sub>t</sub></div><div class="meaning">Source token embedding at position t. Looked up from the source embedding matrix.</div><div class="dims">Shape: (batch, embed_size)</div></div>
+                <div class="eq-term-item"><div class="symbol">h<sub>t</sub></div><div class="meaning">Encoder hidden state at time t. Bidirectional encoders produce [h<sub>t</sub><sup>→</sup>; h<sub>t</sub><sup>←</sup>] concatenated.</div><div class="dims">Shape: (batch, hidden_size) or (batch, 2×hidden_size)</div></div>
+                <div class="eq-term-item"><div class="symbol">RNN<sub>enc</sub></div><div class="meaning">Recurrent cell (GRU/LSTM). Processes the input token-by-token, building contextualized representations.</div><div class="dims">GRU: 3 gates. LSTM: 4 gates (forget, input, cell, output)</div></div>
+                <div class="eq-term-item"><div class="symbol">h<sub>0</sub> (initial)</div><div class="meaning">Initial encoder hidden state, typically zeros. The decoder's initial state s<sub>0</sub> is set from the final encoder state.</div><div class="dims">Shape: (num_layers×directions, batch, hidden_size)</div></div>
+            </div>
+
+            <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Attention Mechanism</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">e<sub>t,i</sub></div><div class="meaning">Unnormalized attention score — how relevant encoder state h<sub>i</sub> is for decoder step t.</div><div class="dims">Scalar per source position i</div></div>
+                <div class="eq-term-item"><div class="symbol">α<sub>t,i</sub></div><div class="meaning">Normalized attention weight after softmax. Σ<sub>i</sub> α<sub>t,i</sub> = 1. Represents the probability distribution over source positions.</div><div class="dims">Shape: (batch, src_len). Each row sums to 1</div></div>
+                <div class="eq-term-item"><div class="symbol">W<sub>a</sub>, U<sub>a</sub>, v</div><div class="meaning">Learnable parameters of the additive attention model. W<sub>a</sub> projects decoder state; U<sub>a</sub> projects encoder states; v computes the scalar score.</div><div class="dims">W<sub>a</sub>: (attn_dim, dec_hidden); U<sub>a</sub>: (attn_dim, enc_hidden); v: (attn_dim,)</div></div>
+                <div class="eq-term-item"><div class="symbol">c<sub>t</sub> (context)</div><div class="meaning">Weighted sum of encoder hidden states using attention weights α<sub>t</sub>. Provides the decoder with a focused summary of the source.</div><div class="dims">Shape: (batch, enc_hidden_size)</div></div>
+            </div>
+
+            <h5 style="color:var(--teal); margin-bottom:0.8rem;">🔹 Decoder Components</h5>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">y<sub>t−1</sub></div><div class="meaning">Previously generated token embedding. During training, this is the ground-truth token (teacher forcing).</div><div class="dims">Shape: (batch, embed_size)</div></div>
+                <div class="eq-term-item"><div class="symbol">s<sub>t</sub></div><div class="meaning">Decoder hidden state at step t. Updated based on previous token, previous state, and attention context.</div><div class="dims">Shape: (batch, dec_hidden_size)</div></div>
+                <div class="eq-term-item"><div class="symbol">[y<sub>t−1</sub>; c<sub>t</sub>]</div><div class="meaning">Concatenation of the embedded previous token and the attention context vector. Fed as input to the decoder RNN.</div><div class="dims">Shape: (batch, embed_size + enc_hidden_size)</div></div>
+                <div class="eq-term-item"><div class="symbol">Output Projection</div><div class="meaning">Linear layer + softmax: P(y<sub>t</sub>) = softmax(W<sub>out</sub>·s<sub>t</sub> + b). Maps hidden state to vocabulary distribution.</div><div class="dims">W<sub>out</sub>: (vocab_size, dec_hidden_size)</div></div>
+            </div>
+
+            <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted); background: #e0f2fe; padding:0.8rem; border-radius: var(--radius-sm);">
+                💡 <strong>Key insight:</strong> Attention solves the bottleneck problem of fixed-length context vectors. Instead of compressing the entire source into one vector, the decoder dynamically attends to relevant source positions at each generation step.
+            </div>
+        </div>
+
+        <div class="card-grid" style="margin-top:1rem;">
+            <div class="card"><div class="card-icon">🔍</div><h3>Bahdanau (Additive) Attention</h3><p class="card-desc">Uses a learnable feed-forward network to compute alignment scores. More flexible but slightly more parameters than Luong.</p><div class="tip-box"><span class="box-icon">💡</span>Preferred for most Seq2Seq tasks. Works with different encoder and decoder hidden sizes.</div></div>
+            <div class="card"><div class="card-icon">🔄</div><h3>Bidirectional Encoder</h3><p class="card-desc">Processes the source sequence both forward and backward, producing richer context-aware representations at each position.</p><div class="good-box"><span class="box-icon">✅</span>Almost always use bidirectional encoders. They consistently improve BLEU scores by 1–3 points over unidirectional encoders.</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-training">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Training Process for Seq2Seq Models</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">Seq2Seq training uses teacher forcing with scheduled sampling and careful sequence handling for efficient learning.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">📝</div><h3>Teacher Forcing &amp; Scheduled Sampling</h3><p class="card-desc">During training, the ground-truth token (not the model's prediction) is fed as the next input. Scheduled sampling gradually transitions to using model predictions.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">train_step</span>(src, tgt):<br>    enc_out, hidden = encoder(src)<br>    <span class="kw">for</span> t <span class="kw">in</span> range(tgt_len - <span class="num">1</span>):<br>        decoder_input = tgt[:, t]  <span class="cm"># Teacher forcing</span><br>        output, hidden = decoder(<br>            decoder_input, hidden, enc_out)</div><div class="good-box"><span class="box-icon">✅</span>Start with 100% teacher forcing. Introduce scheduled sampling (p=0.05–0.25) to bridge the train-inference mismatch.</div></div>
+            <div class="card"><div class="card-icon">📐</div><h3>Sequence Bucketing / Padding</h3><p class="card-desc">Group sequences of similar length into buckets. Minimizes wasted computation on padding tokens within each batch.</p><div class="code-snippet"><span class="cm"># BucketIterator groups similar-length seqs</span><br>train_iter = BucketIterator(<br>    dataset, <span class="fn">batch_size</span>=<span class="num">64</span>,<br>    <span class="fn">sort_within_batch</span>=<span class="kw">True</span>,<br>    <span class="fn">sort_key</span>=<span class="kw">lambda</span> x: len(x.src))</div><div class="tip-box"><span class="box-icon">💡</span>Bucketing reduces padding overhead by ~30–50%. Essential for efficient training with variable-length sequences.</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>Learning Rate Scheduling</h3><p class="card-desc">Reduce LR when validation BLEU/accuracy plateaus. Seq2Seq models benefit from step-based or plateau-based decay.</p><div class="code-snippet"><span class="kw">from</span> torch.optim.lr_scheduler <span class="kw">import</span> ReduceLROnPlateau<br>scheduler = ReduceLROnPlateau(<br>    optimizer, <span class="fn">mode</span>=<span class="str">'max'</span>, <span class="fn">factor</span>=<span class="num">0.5</span>,<br>    <span class="fn">patience</span>=<span class="num">2</span>)  <span class="cm"># Halve LR if BLEU stalls</span></div><div class="good-box"><span class="box-icon">✅</span>Monitor validation BLEU or loss. Reduce LR by factor 0.5–0.7 when metric plateaus for 2–3 epochs.</div></div>
+            <div class="card"><div class="card-icon">🔍</div><h3>Beam Search Decoding</h3><p class="card-desc">Keeps top-k most probable partial sequences at each decoding step. Beam width trades quality for speed during inference.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">beam_search</span>(encoder_out, beam_width=<span class="num">5</span>):<br>    beams = [([SOS], <span class="num">0.0</span>)]  <span class="cm"># (sequence, log_prob)</span><br>    <span class="kw">for</span> t <span class="kw">in</span> range(max_len):<br>        <span class="cm"># Expand each beam, keep top-k</span><br>        candidates = expand_beams(beams)<br>        beams = top_k(candidates, beam_width)</div><div class="tip-box"><span class="box-icon">💡</span>Beam width 3–5 is standard for translation. Width 1 = greedy decoding. Width > 10 gives diminishing returns.</div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-regularization">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Regularization &amp; Tuning for Seq2Seq</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">RNN-based Seq2Seq models need strong regularization, especially with limited parallel data. These techniques prevent overfitting and improve generalization.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">🎲</div><h3>Dropout (Input &amp; Recurrent)</h3><p class="card-desc">Apply dropout to embedding layers, between RNN layers, and on recurrent connections. Higher rates for smaller datasets.</p><div class="code-snippet"><span class="kw">self</span>.gru = nn.GRU(<br>    input_size, hidden_size,<br>    <span class="fn">dropout</span>=<span class="num">0.3</span>)  <span class="cm"># Between stacked layers</span><br><span class="cm"># Recurrent dropout (Gal &amp; Ghahramani)</span><br><span class="kw">self</span>.rnn_dropout = nn.Dropout(<span class="num">0.2</span>)</div><div class="tip-box"><span class="box-icon">💡</span>Use 0.2–0.3 embedding dropout, 0.2–0.3 RNN dropout, and 0.1–0.2 recurrent dropout for small parallel corpora.</div></div>
+            <div class="card"><div class="card-icon">📏</div><h3>Gradient Clipping</h3><p class="card-desc">Clips gradients to a maximum norm. Essential for RNN-based models to prevent exploding gradients in long sequences.</p><div class="code-snippet"><span class="cm"># Clip gradients before optimizer.step()</span><br>torch.nn.utils.clip_grad_norm_(<br>    model.parameters(),<br>    <span class="fn">max_norm</span>=<span class="num">1.0</span>)</div><div class="warn-box"><span class="box-icon">⚠️</span>Without clipping, RNN gradients can explode to 1000+ during early training. max_norm=1.0 is standard for Seq2Seq.</div></div>
+            <div class="card"><div class="card-icon">🏷️</div><h3>Label Smoothing</h3><p class="card-desc">Softens one-hot targets by reserving probability mass for non-target tokens. Reduces overconfidence in Seq2Seq output distributions.</p><div class="code-snippet"><span class="cm"># Label smoothing with ε=0.1</span><br>loss = F.cross_entropy(<br>    output, target,<br>    <span class="fn">label_smoothing</span>=<span class="num">0.1</span>)</div><div class="good-box"><span class="box-icon">✅</span>ε=0.1 is standard. Improves BLEU by preventing the model from assigning near-zero probability to plausible alternatives.</div></div>
+            <div class="card"><div class="card-icon">⏳</div><h3>Early Stopping &amp; Validation Monitoring</h3><p class="card-desc">Stop training when validation BLEU or loss plateaus. Restore best weights for optimal generalization.</p><div class="code-snippet"><span class="kw">class</span> <span class="fn">EarlyStopping</span>:<br>    <span class="kw">if</span> val_loss < best_loss:<br>        best_loss = val_loss; patience = <span class="num">0</span><br>        save_checkpoint(model)<br>    <span class="kw">else</span>:<br>        patience += <span class="num">1</span><br>        <span class="kw">if</span> patience >= <span class="num">5</span>: <span class="kw">break</span></div></div>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="tab-full-code">
+        <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">💻 Full Code – Seq2Seq with Bahdanau Attention for Translation</h2>
+        <p style="color:var(--text-light);margin-bottom:1rem;">A complete Seq2Seq model with bidirectional GRU encoder, additive attention, and GRU decoder. All hyperparameters annotated.</p>
+        <div class="full-code-block" id="fullCodeBlock">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Seq2Seq with Bahdanau Attention – all hyperparameters labeled."""</span>
+
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+<span class="kw">import</span> random
+
+<span class="cm"># ── Hyperparameters ──</span>
+<span class="anno">ENC_HIDDEN</span> = <span class="num">256</span>         <span class="cm"># ① Encoder hidden size (per direction)</span>
+<span class="anno">DEC_HIDDEN</span> = <span class="num">512</span>         <span class="cm"># ② Decoder hidden size (= 2×ENC_HIDDEN for bidirectional)</span>
+<span class="anno">EMBED_SIZE</span> = <span class="num">256</span>         <span class="cm"># ④ Embedding dimension</span>
+<span class="anno">ATTN_DIM</span> = <span class="num">256</span>           <span class="cm"># ③ Attention projection dimension</span>
+<span class="anno">DROPOUT</span> = <span class="num">0.3</span>            <span class="cm"># ⑤ Dropout rate</span>
+<span class="anno">LEARNING_RATE</span> = <span class="num">0.001</span>    <span class="cm"># ⑥ Learning rate</span>
+<span class="anno">BATCH_SIZE</span> = <span class="num">64</span>          <span class="cm"># ⑦ Batch size</span>
+<span class="anno">NUM_LAYERS</span> = <span class="num">2</span>           <span class="cm"># ⑧ Encoder/Decoder layers</span>
+<span class="anno">MAX_SRC_LEN</span> = <span class="num">50</span>         <span class="cm"># ⑨ Max source sequence length</span>
+<span class="anno">MAX_TGT_LEN</span> = <span class="num">50</span>         <span class="cm"># ⑨ Max target sequence length</span>
+<span class="anno">CLIP</span> = <span class="num">1.0</span>               <span class="cm"># Gradient clipping</span>
+<span class="anno">LABEL_SMOOTH</span> = <span class="num">0.1</span>       <span class="cm"># ⑩ Label smoothing</span>
+
+<span class="kw">class</span> <span class="fn">Encoder</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>, src_vocab):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.embedding = nn.Embedding(src_vocab, <span class="anno">EMBED_SIZE</span>)
+        <span class="fn">self</span>.dropout = nn.Dropout(<span class="anno">DROPOUT</span>)
+        <span class="fn">self</span>.gru = nn.GRU(<span class="anno">EMBED_SIZE</span>, <span class="anno">ENC_HIDDEN</span>,
+                           <span class="fn">num_layers</span>=<span class="anno">NUM_LAYERS</span>,
+                           <span class="fn">bidirectional</span>=<span class="kw">True</span>,
+                           <span class="fn">dropout</span>=<span class="anno">DROPOUT</span> <span class="kw">if</span> <span class="anno">NUM_LAYERS</span> > <span class="num">1</span> <span class="kw">else</span> <span class="num">0</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, src):
+        embedded = <span class="fn">self</span>.dropout(<span class="fn">self</span>.embedding(src))
+        outputs, hidden = <span class="fn">self</span>.gru(embedded)
+        <span class="kw">return</span> outputs, hidden  <span class="cm"># outputs: (src_len, batch, 2×ENC_HIDDEN)</span>
+
+<span class="kw">class</span> <span class="fn">BahdanauAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.W_a = nn.Linear(<span class="anno">DEC_HIDDEN</span>, <span class="anno">ATTN_DIM</span>, <span class="fn">bias</span>=<span class="kw">False</span>)
+        <span class="fn">self</span>.U_a = nn.Linear(<span class="num">2</span> * <span class="anno">ENC_HIDDEN</span>, <span class="anno">ATTN_DIM</span>, <span class="fn">bias</span>=<span class="kw">False</span>)
+        <span class="fn">self</span>.v = nn.Linear(<span class="anno">ATTN_DIM</span>, <span class="num">1</span>, <span class="fn">bias</span>=<span class="kw">False</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, dec_hidden, enc_outputs):
+        <span class="cm"># dec_hidden: (batch, DEC_HIDDEN)</span>
+        <span class="cm"># enc_outputs: (src_len, batch, 2×ENC_HIDDEN)</span>
+        src_len = enc_outputs.shape[<span class="num">0</span>]
+        dec_hidden = dec_hidden.unsqueeze(<span class="num">0</span>).repeat(src_len, <span class="num">1</span>, <span class="num">1</span>)
+        energy = torch.tanh(<span class="fn">self</span>.W_a(dec_hidden) + <span class="fn">self</span>.U_a(enc_outputs))
+        attention = F.softmax(<span class="fn">self</span>.v(energy).squeeze(<span class="num">2</span>), <span class="fn">dim</span>=<span class="num">0</span>)  <span class="cm"># (src_len, batch)</span>
+        <span class="kw">return</span> attention.unsqueeze(<span class="num">1</span>)
+
+<span class="kw">class</span> <span class="fn">Decoder</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>, tgt_vocab):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.embedding = nn.Embedding(tgt_vocab, <span class="anno">EMBED_SIZE</span>)
+        <span class="fn">self</span>.dropout = nn.Dropout(<span class="anno">DROPOUT</span>)
+        <span class="fn">self</span>.attention = BahdanauAttention()
+        self.gru = nn.GRU(<span class="anno">EMBED_SIZE</span> + <span class="num">2</span> * <span class="anno">ENC_HIDDEN</span>, <span class="anno">DEC_HIDDEN</span>,
+                          <span class="fn">num_layers</span>=<span class="anno">NUM_LAYERS</span>,
+                          <span class="fn">dropout</span>=<span class="anno">DROPOUT</span> <span class="kw">if</span> <span class="anno">NUM_LAYERS</span> > <span class="num">1</span> <span class="kw">else</span> <span class="num">0</span>)
+        <span class="fn">self</span>.fc_out = nn.Linear(<span class="anno">DEC_HIDDEN</span> + <span class="anno">EMBED_SIZE</span> + <span class="num">2</span> * <span class="anno">ENC_HIDDEN</span>, tgt_vocab)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, input, hidden, enc_outputs):
+        input = input.unsqueeze(<span class="num">0</span>)  <span class="cm"># (1, batch)</span>
+        embedded = <span class="fn">self</span>.dropout(<span class="fn">self</span>.embedding(input))
+        attn_weights = <span class="fn">self</span>.attention(hidden[-<span class="num">1</span>], enc_outputs)
+        context = attn_weights.bmm(enc_outputs.transpose(<span class="num">0</span>, <span class="num">1</span>)).transpose(<span class="num">0</span>, <span class="num">1</span>)
+        rnn_input = torch.cat([embedded, context], <span class="fn">dim</span>=<span class="num">2</span>)
+        output, hidden = <span class="fn">self</span>.gru(rnn_input, hidden)
+        output = torch.cat([output.squeeze(<span class="num">0</span>), embedded.squeeze(<span class="num">0</span>), context.squeeze(<span class="num">0</span>)], <span class="fn">dim</span>=<span class="num">1</span>)
+        prediction = <span class="fn">self</span>.fc_out(output)
+        <span class="kw">return</span> prediction, hidden, attn_weights
+
+<span class="kw">class</span> <span class="fn">Seq2Seq</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="fn">self</span>, encoder, decoder, device):
+        <span class="kw">super</span>().__init__()
+        <span class="fn">self</span>.encoder = encoder
+        <span class="fn">self</span>.decoder = decoder
+        <span class="fn">self</span>.device = device
+
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="fn">self</span>, src, tgt):
+        <span class="cm"># Teacher forcing: use ground-truth target as decoder input</span>
+        enc_outputs, hidden = <span class="fn">self</span>.encoder(src)
+        outputs = []
+        <span class="kw">for</span> t <span class="kw">in</span> range(tgt.size(<span class="num">1</span>) - <span class="num">1</span>):
+            output, hidden, _ = <span class="fn">self</span>.decoder(tgt[:, t], hidden, enc_outputs)
+            outputs.append(output)
+        <span class="kw">return</span> torch.stack(outputs, <span class="fn">dim</span>=<span class="num">0</span>)
+
+<span class="cm"># ── Training setup ──</span>
+encoder = Encoder(SRC_VOCAB_SIZE).to(device)
+decoder = Decoder(TGT_VOCAB_SIZE).to(device)
+model = Seq2Seq(encoder, decoder, device).to(device)
+
+<span class="anno">optimizer</span> = optim.Adam(model.parameters(), <span class="fn">lr</span>=<span class="anno">LEARNING_RATE</span>)
+scheduler = ReduceLROnPlateau(optimizer, <span class="fn">mode</span>=<span class="str">'min'</span>, <span class="fn">factor</span>=<span class="num">0.5</span>, <span class="fn">patience</span>=<span class="num">2</span>)
+
+<span class="anno">EPOCHS</span> = <span class="num">20</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="anno">EPOCHS</span>):
+    model.train()
+    <span class="kw">for</span> src, tgt <span class="kw">in</span> dataloader:
+        output = model(src, tgt)
+        loss = F.cross_entropy(                            <span class="cm"># ⑩ Loss</span>
+            output.view(-<span class="num">1</span>, TGT_VOCAB_SIZE),
+            tgt[:, <span class="num">1</span>:].reshape(-<span class="num">1</span>),
+            <span class="fn">ignore_index</span>=PAD_IDX,
+            <span class="fn">label_smoothing</span>=<span class="anno">LABEL_SMOOTH</span>)
+
+        optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), <span class="anno">CLIP</span>)  <span class="cm"># Gradient clipping</span>
+        optimizer.step()
+
+    val_loss = evaluate(model, val_dataloader)
+    scheduler.step(val_loss)
+    <span class="kw">print</span>(<span class="str">f"Epoch {epoch+1}/{EPOCHS} | Train Loss: {loss:.3f} | Val Loss: {val_loss:.3f}"</span>)
+        </div>
+        <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);text-align:center;">⬆️ Complete Seq2Seq with Bahdanau attention. All ⑩ hyperparameters annotated. Bidirectional GRU encoder + additive attention + GRU decoder.</p>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- TAB: Summary & Comparison -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-summary">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+        <div class="summary-table-wrap">
+            <table class="summary-table">
+                <thead><tr><th>#</th><th>Hyperparameter</th><th>Purpose</th><th>Typical Range</th></tr></thead>
+                <tbody>
+                    <tr><td>①</td><td><strong>Encoder Hidden Size</strong></td><td>RNN hidden dimensionality for source encoding</td><td>128–1024 (per direction)</td></tr>
+                    <tr><td>②</td><td><strong>Decoder Hidden Size</strong></td><td>RNN hidden dimensionality for target generation</td><td>256–1024 (match encoder output)</td></tr>
+                    <tr><td>③</td><td><strong>Attention Mechanism</strong></td><td>Alignment between decoder and encoder states</td><td>Bahdanau (additive), Luong (dot)</td></tr>
+                    <tr><td>④</td><td><strong>Embedding Size</strong></td><td>Token vector dimensionality for both languages</td><td>128–512</td></tr>
+                    <tr><td>⑤</td><td><strong>Dropout Rate</strong></td><td>Regularization on embeddings, RNN layers, attention</td><td>0.2–0.5</td></tr>
+                    <tr><td>⑥</td><td><strong>Learning Rate</strong></td><td>Step size for Adam optimizer</td><td>5e-4 to 2e-3</td></tr>
+                    <tr><td>⑦</td><td><strong>Batch Size</strong></td><td>Sequences per update; use bucketing for efficiency</td><td>32–128</td></tr>
+                    <tr><td>⑧</td><td><strong>Encoder/Decoder Layers</strong></td><td>Stacked RNN depth for hierarchical patterns</td><td>1–4</td></tr>
+                    <tr><td>⑨</td><td><strong>Max Sequence Length</strong></td><td>Source/target truncation; RNN O(n) scaling</td><td>30–80 tokens</td></tr>
+                    <tr><td>⑩</td><td><strong>Loss Function</strong></td><td>Cross-entropy with PAD ignored + label smoothing</td><td>CE + ignore_index + ε=0.1</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="comparison-grid">
+            <div class="comparison-card params"><h4>🧠 Learned Parameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Discovered automatically during Seq2Seq training</p><ul><li>✅ Encoder GRU/LSTM weights</li><li>✅ Decoder GRU/LSTM weights</li><li>✅ Attention parameters (W_a, U_a, v)</li><li>📌 <em>Updated via teacher forcing + backprop</em></li></ul></div>
+            <div class="comparison-card hyperparams"><h4>⚙️ Hyperparameters</h4><p style="font-size:0.85rem;color:#475569;margin-bottom:0.5rem;">Set manually before training begins</p><ul><li>🔧 Hidden sizes, embedding dim, layers</li><li>🔧 LR, batch size, dropout, clip norm</li><li>🔧 Attention type, max lengths, beam width</li><li>📌 <em>Chosen by the practitioner</em></li></ul></div>
+        </div>
+        <div class="baseline-card">
+            <h3>🚀 Common Starting Configuration (Medium-Scale NMT)</h3><p style="opacity:0.85;margin-bottom:1rem;">Use these defaults as your first experiment baseline:</p>
+            <div class="config-grid">
+                <div class="config-item"><strong>256 (×2)</strong><span>① Encoder Hidden</span></div><div class="config-item"><strong>512</strong><span>② Decoder Hidden</span></div><div class="config-item"><strong>Bahdanau</strong><span>③ Attention</span></div><div class="config-item"><strong>256</strong><span>④ Embedding Size</span></div><div class="config-item"><strong>0.3</strong><span>⑤ Dropout</span></div><div class="config-item"><strong>0.001</strong><span>⑥ Learning Rate</span></div><div class="config-item"><strong>64</strong><span>⑦ Batch Size</span></div><div class="config-item"><strong>2 layers</strong><span>⑧ RNN Depth</span></div><div class="config-item"><strong>50</strong><span>⑨ Max Seq Len</span></div><div class="config-item"><strong>CE + LS 0.1</strong><span>⑩ Loss</span></div>
+            </div>
+            <p style="margin-top:1rem;font-size:0.82rem;opacity:0.7;">🔬 Tune from here: first adjust hidden sizes and dropout, then LR schedule, then experiment with beam width (3→5→10).</p>
+        </div>
+        <div class="summary-table-wrap" style="margin-top:1.5rem;">
+            <table class="summary-table">
+                <thead><tr><th>Feature</th><th>RNN Seq2Seq + Attention</th><th>Transformer (Self-Attention)</th></tr></thead>
+                <tbody>
+                    <tr><td>Encoding</td><td>Sequential (RNN), O(n) time</td><td>Parallel self-attention, O(1) path length</td></tr>
+                    <tr><td>Attention Type</td><td>Cross-attention only (dec→enc)</td><td>Self-attention + cross-attention</td></tr>
+                    <tr><td>Position Encoding</td><td>Implicit in recurrence order</td><td>Explicit sinusoidal/learned</td></tr>
+                    <tr><td>Speed</td><td>Sequential — slower on long sequences</td><td>Parallel — faster on GPU, O(n²) memory</td></tr>
+                    <tr><td>Data Efficiency</td><td>Better with limited data (<100K pairs)</td><td>Needs large datasets (>1M pairs) to shine</td></tr>
+                    <tr><td>Best For</td><td>Low-resource NMT, small parallel corpora</td><td>High-resource NMT, multilingual models</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- TAB: Quiz (25 Questions) -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-quiz">
+        <h2 style="margin-bottom:0.5rem;color:var(--deep-blue);">🧠 Seq2Seq Hyperparameters – Quiz</h2>
+        <p style="color:var(--text-light);margin-bottom:1.5rem;">Test your knowledge with 25 questions covering Seq2Seq architecture, attention mechanisms, and training strategies.</p>
+        <div class="quiz-container" id="quizContainer">
+            <div class="quiz-progress">
+                <span style="font-size:1.2rem;">📝</span>
+                <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%;"></div></div>
+                <span class="quiz-progress-text" id="quizProgressText">0 / 25</span>
+            </div>
+            <div id="quizQuestionArea"></div>
+            <div class="quiz-nav-btns" id="quizNavBtns">
+                <button class="quiz-prev-btn" id="quizPrevBtn" style="display:none;">← Previous</button>
+                <button class="quiz-next-btn" id="quizNextBtn">Next →</button>
+                <button class="quiz-submit-btn" id="quizSubmitBtn" style="display:none;">Submit Quiz</button>
+            </div>
+            <div class="quiz-score-card" id="quizScoreCard">
+                <h4 style="font-size:1.5rem;margin-bottom:0.5rem;color:#5eead4;">🏆 Quiz Complete!</h4>
+                <div class="score-circle" id="scoreCircle" style="--score-deg:0deg;">
+                    <div class="score-inner" id="scoreInner">0%</div>
+                </div>
+                <p class="score-grade" id="scoreGrade"></p>
+                <p class="score-breakdown" id="scoreBreakdown"></p>
+                <button class="quiz-restart-btn" id="quizRestartBtn" style="margin-top:1.25rem;">🔄 Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+    const quizQuestions = [
+        { q:"What are the three core components of a Seq2Seq model with attention?", opts:["Encoder, Classifier, Decoder","Encoder, Attention, Decoder","Embedding, RNN, Softmax","Tokenizer, Model, Generator"], ans:1, exp:"Seq2Seq consists of an encoder (compresses source), attention (aligns source-target), and decoder (autoregressively generates output)." },
+        { q:"Why is a bidirectional encoder preferred over unidirectional in Seq2Seq?", opts:["It's faster to train","It produces context-aware representations from both directions","It uses fewer parameters","It eliminates the need for attention"], ans:1, exp:"Bidirectional encoders process the sequence both forward and backward, concatenating hidden states to capture full context at each position." },
+        { q:"What is teacher forcing in Seq2Seq training?", opts:["A human teacher grading the model","Feeding the ground-truth previous token as decoder input instead of the model's prediction","Using a pretrained model as the teacher","Forcing the model to train longer"], ans:1, exp:"Teacher forcing uses the correct target token as input to the next decoder step, stabilizing training by preventing error accumulation in early epochs." },
+        { q:"What does the Bahdanau (additive) attention score compute?", opts:["e = sᵀ·h","e = vᵀ·tanh(W·s + U·h)","e = softmax(s·h/√d)","e = (s·h) / (||s||·||h||)"], ans:1, exp:"Bahdanau attention uses a learnable feed-forward network: score = vᵀ·tanh(W_a·s_t + U_a·h_i), where W_a, U_a, and v are learned parameters." },
+        { q:"What is the purpose of the context vector c_t in attention?", opts:["To store all encoder states","To provide a weighted summary of encoder states focused on the current decoder step","To initialize the decoder","To replace the decoder hidden state"], ans:1, exp:"c_t = Σ α_{t,i}·h_i is the attention-weighted sum of encoder states, giving the decoder a focused view of relevant source information at each step." },
+        { q:"What is the standard hidden size range for a Seq2Seq encoder?", opts:["16–64","128–1024","2048–4096","1–16"], ans:1, ep:"128–1024 is standard. Bidirectional encoders double the effective output: 2×hidden concatenated from forward and backward passes." },
+        { q:"What happens if you don't set ignore_index=PAD_IDX in the loss function?", opts:["Training is faster","The model wastes capacity learning to predict padding tokens","Nothing — padding is automatically ignored","The model becomes more accurate"], ans:1, exp:"Without ignore_index, the model treats padding as meaningful tokens and wastes capacity trying to predict <PAD>, degrading performance on actual content tokens." },
+        { q:"Why is gradient clipping essential for RNN-based Seq2Seq models?", opts:["To make training faster","To prevent exploding gradients from destabilizing training","To reduce memory usage","To automatically tune the learning rate"], ans:1, exp:"RNN gradients can explode exponentially with sequence length. Clipping to max_norm=1.0 prevents loss divergence, especially in early training." },
+        { q:"What is sequence bucketing in Seq2Seq training?", opts:["Storing sequences in cloud buckets","Grouping similar-length sequences to minimize padding waste","Bucket-based gradient accumulation","A type of attention mechanism"], ans:1, exp:"Bucketing groups sequences of similar length into the same batch, reducing wasted computation on padding tokens by 30–50%." },
+        { q:"What is the typical embedding size range for Seq2Seq NMT models?", opts:["32–64","128–512","1024–2048","4096–8192"], ans:1, exp:"128–512 is standard for NMT embeddings. Embedding size should be significantly smaller than the vocabulary size to avoid overfitting." },
+        { q:"How many RNN layers are typically stacked in a Seq2Seq encoder/decoder?", opts:["1 layer always","2–4 layers","10–20 layers","50+ layers"], ans:1, exp:"2–4 layers provide good representational capacity. Deeper RNNs risk vanishing gradients without residual connections." },
+        { q:"What is the key difference between Bahdanau and Luong attention?", opts:["Bahdanau is faster","Bahdanau uses additive scoring (learned weights); Luong uses dot-product scoring","Luong requires more parameters","There is no difference"], ans:1, exp:"Bahdanau: e = vᵀ·tanh(Ws + Uh) — learnable alignment model. Luong: e = sᵀ·h — simpler dot-product. Bahdanau is more flexible for different encoder/decoder sizes." },
+        { q:"What is the purpose of scheduled sampling?", opts:["To schedule model training at specific times","To gradually transition from teacher forcing to model predictions during training","To sample random batches","To schedule learning rate changes"], ans:1, exp:"Scheduled sampling replaces teacher forcing with model predictions with probability p, bridging the gap between training (teacher forcing) and inference (autoregressive) modes." },
+        { q:"Why do we set the decoder hidden size to 2× the encoder (per-direction) hidden size for bidirectional encoders?", opts:["Because it's tradition","Because the bidirectional encoder output is concatenated (2×hidden per direction), and the decoder input must match","To make the model larger","To reduce overfitting"], ans:1, exp:"A bidirectional encoder produces [h→; h←] concatenated, doubling the output dimension. The decoder hidden size should match this for clean attention computation." },
+        { q:"What does beam search do during inference?", opts:["Always picks the single most likely token","Maintains top-k most probable partial sequences at each decoding step","Randomly samples from the vocabulary","Uses a laser beam to guide predictions"], ans:1, exp:"Beam search keeps the k best partial sequences at each step (k = beam width), exploring multiple hypotheses to find better overall translations." },
+        { q:"What is the typical beam width for NMT inference?", opts:["1 (greedy)","3–5","50–100","1000+"], ans:1, exp:"Beam width 3–5 balances quality and speed. Width 1 = greedy. Width > 10 gives diminishing returns and significantly slower inference." },
+        { q:"Which optimizer is standard for training Seq2Seq models?", opts:["SGD with momentum","Adam","RMSprop only","L-BFGS"], ans:1, exp:"Adam (lr=0.001) is the default for Seq2Seq training. Its adaptive per-parameter learning rates handle the diverse parameter scales in encoder-decoder architectures." },
+        { q:"What does label smoothing do in Seq2Seq training?", opts:["Smooths the input tokens","Distributes ε probability mass to non-target tokens to prevent overconfidence","Smooths attention weights","Averages predictions across beam hypotheses"], ans:1, exp:"Label smoothing (ε=0.1) makes the target distribution P'(w)=(1−ε) if target else ε/(V−1), preventing the model from becoming overconfident and improving BLEU scores." },
+        { q:"How does Seq2Seq RNN training time scale with sequence length?", opts:["O(1) — constant time","O(log n) — logarithmic","O(n) — linear","O(n²) — quadratic"], ans:2, exp:"RNNs process tokens sequentially, giving O(n) time complexity. This is better than transformer's O(n²) attention but can't be parallelized across time steps." },
+        { q:"What is the initial decoder hidden state s₀ typically set to?", opts:["Zeros","Random noise","The final encoder hidden state(s)","The first source token embedding"], ans:2, exp:"The decoder's initial state is usually the encoder's final hidden state. For bidirectional encoders, this may involve a linear projection to match dimensions." },
+        { q:"What is the role of the output projection layer in the Seq2Seq decoder?", opts:["To project embeddings","To map the decoder hidden state to a vocabulary-sized probability distribution","To project attention weights","To initialize the encoder"], ans:1, exp:"The linear layer + softmax maps the decoder's hidden representation to P(y_t) over the target vocabulary: P = softmax(W_out·[s_t; y_{t-1}; c_t] + b)." },
+        { q:"Why do we apply dropout to the embedding layer in Seq2Seq models?", opts:["To reduce vocabulary size","To prevent overfitting on token-level patterns by randomly zeroing embedding dimensions","To speed up embedding lookups","To increase embedding dimensionality"], ans:1, exp:"Embedding dropout randomly zeros embedding dimensions during training, forcing the model to not rely on any single token feature — especially important with small parallel corpora." },
+        { q:"What is the advantage of GRU over LSTM in Seq2Seq models?", opts:["GRU is always more accurate","GRU has fewer parameters (2 gates vs 4) and trains faster with comparable performance","GRU supports bidirectional processing","GRU doesn't need attention"], ans:1, exp:"GRU (reset + update gates) has ~25% fewer parameters than LSTM while often achieving similar BLEU scores, making it a popular choice for Seq2Seq NMT." },
+        { q:"What is a common validation metric for Seq2Seq NMT models?", opts:["Accuracy","BLEU score","F1 score","Mean squared error"], ans:1, exp:"BLEU (Bilingual Evaluation Understudy) measures n-gram overlap between model output and reference translations. It's the standard metric for NMT evaluation." },
+        { q:"What is the main bottleneck that attention solves in basic Seq2Seq models?", opts:["Slow tokenization","The fixed-length context vector bottleneck — forcing the entire source meaning into one vector","Vocabulary size","Embedding initialization"], ans:1, exp:"Without attention, the encoder must compress the entire source sequence into a single fixed-length vector, losing information for long sequences. Attention lets the decoder dynamically access any encoder state." }
+    ];
+
+    let quizState = { currentIndex: 0, answers: new Array(quizQuestions.length).fill(null), submitted: false };
+
+    function initQuiz() {
+        quizState = { currentIndex: 0, answers: new Array(quizQuestions.length).fill(null), submitted: false };
+        document.getElementById('quizScoreCard').classList.remove('show');
+        document.getElementById('quizQuestionArea').style.display = 'block';
+        document.getElementById('quizNavBtns').style.display = 'flex';
+        renderQuizQuestion(); updateQuizUI();
+    }
+
+    function renderQuizQuestion() {
+        const idx = quizState.currentIndex;
+        const q = quizQuestions[idx];
+        const area = document.getElementById('quizQuestionArea');
+        const selected = quizState.answers[idx];
+        const disabled = quizState.submitted;
+        let optsHTML = q.opts.map((opt, i) => {
+            let cls = 'quiz-option';
+            if (quizState.submitted && selected === i) cls += (i === q.ans) ? ' correct' : ' incorrect';
+            else if (!quizState.submitted && selected === i) cls += ' selected';
+            return `<div class="${cls}" data-opt="${i}" ${!disabled ? 'onclick="selectQuizOption(' + i + ')"' : ''}>
+                <span class="opt-letter">${'ABCD'[i]}</span>${opt}</div>`;
+        }).join('');
+        let fb = '';
+        if (quizState.submitted) {
+            const fbClass = selected === q.ans ? 'correct-fb' : 'incorrect-fb';
+            fb = `<div class="quiz-feedback show ${fbClass}"><strong>${selected===q.ans?'✅':'❌'} ${selected===q.ans?'Correct!':'Incorrect'}</strong> — ${q.exp}</div>`;
+        }
+        area.innerHTML = `<div class="quiz-question-card"><div class="q-number">${idx+1}</div><div class="q-text">${q.q}</div><div class="quiz-options">${optsHTML}</div>${fb}</div>`;
+    }
+
+    function selectQuizOption(i) { if (!quizState.submitted) { quizState.answers[quizState.currentIndex] = i; renderQuizQuestion(); } }
+
+    function updateQuizUI() {
+        const total = quizQuestions.length;
+        const answered = quizState.answers.filter(a => a !== null).length;
+        document.getElementById('quizProgressFill').style.width = Math.round((answered/total)*100)+'%';
+        document.getElementById('quizProgressText').textContent = answered + ' / ' + total;
+        document.getElementById('quizPrevBtn').style.display = quizState.currentIndex > 0 ? 'inline-block' : 'none';
+        if (quizState.currentIndex >= total-1) { document.getElementById('quizNextBtn').style.display='none'; document.getElementById('quizSubmitBtn').style.display='inline-block'; }
+        else { document.getElementById('quizNextBtn').style.display='inline-block'; document.getElementById('quizSubmitBtn').style.display='none'; }
+    }
+
+    function goPrev() { if (quizState.currentIndex>0) { quizState.currentIndex--; renderQuizQuestion(); updateQuizUI(); document.querySelector('.quiz-question-card')?.scrollIntoView({behavior:'smooth',block:'center'}); } }
+    function goNext() { if (quizState.currentIndex<quizQuestions.length-1) { quizState.currentIndex++; renderQuizQuestion(); updateQuizUI(); document.querySelector('.quiz-question-card')?.scrollIntoView({behavior:'smooth',block:'center'}); } }
+
+    function submitQuiz() {
+        quizState.submitted=true; quizState.currentIndex=0; renderQuizQuestion(); updateQuizUI();
+        const correct = quizState.answers.reduce((s,a,i)=>s+(a===quizQuestions[i].ans?1:0),0);
+        const total = quizQuestions.length, pct = Math.round((correct/total)*100);
+        document.getElementById('quizQuestionArea').style.display='none';
+        document.getElementById('quizNavBtns').style.display='none';
+        document.getElementById('scoreCircle').style.setProperty('--score-deg',(correct/total*360)+'deg');
+        document.getElementById('scoreInner').textContent=pct+'%';
+        document.getElementById('scoreBreakdown').textContent=`You scored ${correct} out of ${total} questions correctly.`;
+        let grade = pct>=90?'🌟 Outstanding! You have mastered Seq2Seq with attention.':pct>=70?'👍 Great job! Solid understanding of Seq2Seq architecture.':pct>=50?'📚 Good effort! Review the cards above and try again.':'📖 Keep studying! Review the encoder-decoder architecture and attention mechanism.';
+        document.getElementById('scoreGrade').textContent=grade;
+        const sc = document.getElementById('quizScoreCard'); sc.classList.add('show'); sc.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+
+    document.getElementById('quizPrevBtn').addEventListener('click',goPrev);
+    document.getElementById('quizNextBtn').addEventListener('click',goNext);
+    document.getElementById('quizSubmitBtn').addEventListener('click',submitQuiz);
+    document.getElementById('quizRestartBtn').addEventListener('click',initQuiz);
+
+    function handleImageFallback() {
+        const img=document.getElementById('infographicImg'), fb=document.getElementById('infographicFallback');
+        if(img&&fb){img.style.display='none';fb.style.display='block';}
+    }
+    window.addEventListener('DOMContentLoaded',()=>{
+        const img=document.getElementById('infographicImg');
+        if(img&&!img.complete){setTimeout(()=>{if(!img.complete||img.naturalWidth===0)handleImageFallback();},3000);}
+        else if(img&&img.naturalWidth===0)handleImageFallback();
+    });
+    const tabNav=document.getElementById('tabNav'), tabBtns=tabNav.querySelectorAll('.tab-btn'), tabPanels=document.querySelectorAll('.tab-panel');
+    tabBtns.forEach(btn=>{btn.addEventListener('click',()=>{
+        const tid=btn.getAttribute('data-tab');
+        tabBtns.forEach(b=>b.classList.remove('active')); tabPanels.forEach(p=>p.classList.remove('active'));
+        btn.classList.add('active');
+        const tp=document.getElementById('tab-'+tid);
+        if(tp){tp.classList.add('active');tp.style.animation='none';tp.offsetHeight;tp.style.animation='fadeSlideIn 0.4s ease';}
+        if(tid==='quiz')initQuiz();
+        if(window.innerWidth<768)tp?.scrollIntoView({behavior:'smooth',block:'start'});
+    })});
+    const b2t=document.getElementById('backToTop');
+    function toggleB2T(){if(window.scrollY>500)b2t.classList.add('visible');else b2t.classList.remove('visible');}
+    window.addEventListener('scroll',toggleB2T,{passive:true});
+    b2t.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});
+    toggleB2T();
+    const iImg=document.getElementById('infographicImg');
+    if(iImg){iImg.addEventListener('load',()=>{const fb=document.getElementById('infographicFallback');if(fb)fb.style.display='none';iImg.style.display='block';});iImg.addEventListener('error',handleImageFallback);}
+    console.log('✅ Seq2Seq with Attention Interactive Study Guide ready!');
+</script>
+<div class="back-to-hub">
+  <a href="index.html">← Back to Study Hub</a>
+</div>
+</body>
+</html>
