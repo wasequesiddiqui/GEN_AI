@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importance of Bias and Fairness in AI – Complete Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --deep-blue: #1a365d; --blue: #1e40af; --blue-mid: #2563eb;
+            --teal: #0d9488; --teal-light: #14b8a6; --teal-pale: #ccfbf1;
+            --bg-light: #f8fafc; --bg-card: #ffffff; --bg-code: #0f172a;
+            --text: #1e293b; --text-light: #475569; --text-muted: #64748b;
+            --border: #e2e8f0; --warning-bg: #fffbeb; --warning-border: #f59e0b;
+            --tip-bg: #f0fdf4; --tip-border: #22c55e; --danger-bg: #fef2f2; --danger-border: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.05); --shadow: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,.1); --shadow-xl: 0 20px 40px rgba(0,0,0,.12);
+            --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+            --font-mono: 'SF Mono','Fira Code','JetBrains Mono','Consolas',monospace;
+            --font-sans: 'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth;font-size:16px}
+        body{font-family:var(--font-sans);background:linear-gradient(170deg,#f0f9ff 0%,#f8fafc 30%,#f0fdf4 70%,#ecfeff 100%);color:var(--text);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+        .header{background:linear-gradient(135deg,var(--deep-blue) 0%,#1e3a5f 30%,#0f4c5c 70%,#0d3b4e 100%);color:#fff;padding:3rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-60px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(20,184,166,.25) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+        .header::after{content:'';position:absolute;bottom:-50px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,.2) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+        .header-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+        .header .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);padding:.35rem 1rem;border-radius:50px;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1rem;font-weight:500}
+        .header h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+        .header h1 span{background:linear-gradient(135deg,#5eead4,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header .tagline{font-size:1.15rem;opacity:.9;margin-bottom:.75rem;font-weight:400;letter-spacing:.01em}
+        .header .intro{font-size:.95rem;opacity:.75;max-width:600px;margin:0 auto;line-height:1.7}
+        .container{max-width:1100px;margin:0 auto;padding:1.5rem 1.25rem}
+        .infographic-area{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);margin:-1.5rem auto 2rem;max-width:900px;padding:1.5rem;text-align:center;position:relative;z-index:2;border:1px solid var(--border)}
+        .infographic-area img{max-width:100%;height:auto;border-radius:var(--radius);display:block;margin:0 auto}
+        .infographic-fallback{display:none;background:linear-gradient(135deg,#1a365d 0%,#0d3b4e 100%);border-radius:var(--radius);padding:2rem 1.5rem;color:#e2e8f0;font-family:var(--font-mono);font-size:.9rem;line-height:1.8;text-align:left;overflow-x:auto}
+        .infographic-fallback .gru-diagram{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:1rem 0}
+        .infographic-fallback .gate-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:1rem 1.25rem;text-align:center;min-width:120px}
+        .infographic-fallback .gate-box strong{display:block;color:#5eead4;font-size:1rem;margin-bottom:.4rem}
+        .infographic-fallback .gate-box code{color:#fbbf24;font-size:.8rem}
+        .infographic-fallback .arrow-sym{font-size:1.8rem;color:#94a3b8}
+        .infographic-area .caption{margin-top:.75rem;font-size:.85rem;color:var(--text-muted);font-style:italic}
+        .tab-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;background:var(--bg-card);padding:.5rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);position:sticky;top:12px;z-index:10}
+        .tab-btn{flex:1 1 auto;min-width:110px;padding:.7rem 1rem;border:none;background:transparent;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.88rem;color:var(--text-muted);transition:var(--transition);white-space:nowrap}
+        .tab-btn:hover{color:var(--blue-mid);background:#eff6ff}
+        .tab-btn.active{background:var(--blue-mid);color:#fff;box-shadow:var(--shadow)}
+        .tab-panel{display:none;animation:fadeSlideIn .4s ease}
+        .tab-panel.active{display:block}
+        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+        .card{background:var(--bg-card);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:var(--transition);position:relative;overflow:hidden}
+        .card:hover{box-shadow:var(--shadow-xl);transform:translateY(-2px);border-color:#cbd5e1}
+        .card .card-icon{font-size:2rem;background:#f1f5f9;width:48px;height:48px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:.5rem}
+        .card h3{font-size:1.15rem;font-weight:700;margin:.5rem 0 .35rem;color:var(--deep-blue)}
+        .card .card-desc{font-size:.9rem;color:var(--text-light);margin-bottom:.75rem;line-height:1.55}
+        .code-snippet{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-sm);padding:.75rem 1rem;font-family:var(--font-mono);font-size:.8rem;overflow-x:auto;margin:.5rem 0;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+        .code-snippet .kw{color:#c084fc}.code-snippet .fn{color:#60a5fa}.code-snippet .str{color:#fbbf24}.code-snippet .num{color:#fb923c}.code-snippet .cm{color:#6b7280;font-style:italic}
+        .tip-box,.warn-box,.good-box{margin-top:.75rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;display:flex;align-items:flex-start;gap:.5rem}
+        .tip-box{background:var(--tip-bg);border-left:4px solid var(--tip-border);color:#166534}
+        .warn-box{background:var(--warning-bg);border-left:4px solid var(--warning-border);color:#92400e}
+        .good-box{background:#eff6ff;border-left:4px solid var(--blue-mid);color:#1e40af}
+        .arch-visual{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:var(--radius-lg);padding:2rem;color:#e2e8f0;text-align:center;margin-bottom:1.5rem;overflow-x:auto}
+        .arch-visual .eq-block{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:1rem 1.5rem;margin:.5rem;text-align:left;font-family:var(--font-mono);font-size:.85rem;line-height:1.7}
+        .arch-visual .eq-block .hl{color:#5eead4;font-weight:700}
+        .arch-visual .eq-block .hl2{color:#fbbf24;font-weight:700}
+        .full-code-block{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-lg);padding:1.5rem;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word;box-shadow:var(--shadow-lg);max-height:70vh;overflow-y:auto}
+        .full-code-block .kw{color:#c084fc}.full-code-block .fn{color:#60a5fa}.full-code-block .str{color:#a3e635}.full-code-block .num{color:#fb923c}.full-code-block .cm{color:#6b7280;font-style:italic}.full-code-block .anno{color:#f472b6;font-weight:700}
+        .summary-table-wrap{overflow-x:auto;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem}
+        .summary-table{width:100%;border-collapse:collapse;background:var(--bg-card);font-size:.9rem}
+        .summary-table thead{background:var(--deep-blue);color:#fff}
+        .summary-table thead th{padding:.85rem 1rem;text-align:left;font-weight:600}
+        .summary-table tbody td{padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+        .summary-table tbody tr:hover{background:#f8fafc}
+        .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+        .comparison-card{border-radius:var(--radius-lg);padding:1.5rem;text-align:center;box-shadow:var(--shadow)}
+        .comparison-card.params{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd}
+        .comparison-card.hyperparams{background:linear-gradient(135deg,#f0fdf4,#ccfbf1);border:2px solid #5eead4}
+        .comparison-card h4{font-size:1.1rem;margin-bottom:.5rem}
+        .comparison-card ul{list-style:none;padding:0;text-align:left;display:inline-block}
+        .comparison-card li{padding:.2rem 0;font-size:.88rem}
+        .baseline-card{background:linear-gradient(135deg,#1a365d 0%,#0d3b4e 100%);color:#fff;border-radius:var(--radius-xl);padding:2rem;text-align:center;box-shadow:var(--shadow-xl)}
+        .baseline-card h3{font-size:1.3rem;margin-bottom:1rem;color:#5eead4}
+        .baseline-card .config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-top:1rem}
+        .baseline-card .config-item{background:rgba(255,255,255,.08);border-radius:var(--radius);padding:.75rem}
+        .baseline-card .config-item strong{display:block;color:#fbbf24;font-size:1rem}
+        .baseline-card .config-item span{font-size:.78rem;opacity:.8}
+        .back-to-top{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:var(--blue-mid);color:#fff;border:none;cursor:pointer;font-size:1.3rem;box-shadow:var(--shadow-lg);z-index:99;opacity:0;transform:translateY(20px);pointer-events:none;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+        .back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+        .eq-explanation-card{background:#f8fafc;border-radius:var(--radius-lg);padding:1.8rem;margin-top:1.5rem;border:1px solid #cbd5e1}
+        .eq-explanation-card h4{font-size:1.2rem;color:var(--deep-blue);margin-bottom:1rem}
+        .eq-term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.8rem}
+        .eq-term-item{background:#fff;border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow-sm);border-left:5px solid var(--teal-light)}
+        .eq-term-item .symbol{font-family:var(--font-mono);font-weight:700;color:var(--blue-mid);font-size:1.15rem}
+        .eq-term-item .meaning{font-size:.85rem;color:var(--text-light);margin-top:.25rem}
+        /* Quiz */
+        .quiz-wrap{max-width:780px;margin:0 auto}
+        .quiz-progress-bar{background:var(--border);border-radius:999px;height:8px;margin-bottom:1.5rem;overflow:hidden}
+        .quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue-mid),var(--teal-light));border-radius:999px;transition:width .4s ease}
+        .quiz-question-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
+        .quiz-q-num{font-size:.82rem;color:var(--text-muted);font-weight:600;margin-bottom:.5rem;text-transform:uppercase}
+        .quiz-q-text{font-size:1.1rem;font-weight:700;color:var(--deep-blue);margin-bottom:1.25rem;line-height:1.5}
+        .quiz-options{display:flex;flex-direction:column;gap:.6rem}
+        .quiz-opt{padding:.85rem 1.1rem;border-radius:var(--radius);border:2px solid var(--border);background:var(--bg-card);cursor:pointer;font-size:.9rem;text-align:left;font-family:var(--font-sans);transition:var(--transition);display:flex;align-items:center;gap:.6rem}
+        .quiz-opt:hover:not(:disabled){border-color:var(--blue-mid);background:#eff6ff}
+        .quiz-opt.selected{border-color:var(--blue-mid);background:#dbeafe}
+        .quiz-opt.correct{border-color:var(--tip-border);background:var(--tip-bg);color:#166534}
+        .quiz-opt.incorrect{border-color:var(--danger-border);background:var(--danger-bg);color:#991b1b}
+        .quiz-opt:disabled{cursor:default}
+        .quiz-opt-letter{width:30px;height:30px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0}
+        .quiz-opt.selected .quiz-opt-letter{background:var(--blue-mid);color:#fff}
+        .quiz-opt.correct .quiz-opt-letter{background:var(--tip-border);color:#fff}
+        .quiz-opt.incorrect .quiz-opt-letter{background:var(--danger-border);color:#fff}
+        .quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:.75rem}
+        .quiz-nav-btn{padding:.65rem 1.4rem;border-radius:999px;border:none;cursor:pointer;font-weight:600;font-size:.85rem;transition:var(--transition)}
+        .quiz-nav-btn.prev{background:var(--border);color:var(--text)}.quiz-nav-btn.prev:hover{background:#cbd5e1}
+        .quiz-nav-btn.next{background:var(--blue-mid);color:#fff}.quiz-nav-btn.next:hover{background:var(--deep-blue)}
+        .quiz-nav-btn:disabled{opacity:.4;cursor:not-allowed}
+        .quiz-submit-btn{display:block;margin:1.5rem auto 0;padding:.8rem 2.5rem;border-radius:999px;border:none;cursor:pointer;font-weight:700;font-size:.95rem;background:var(--teal);color:#fff}
+        .quiz-submit-btn:hover{background:#0f766e}
+        .quiz-explanation{display:none;margin-top:1rem;padding:.9rem 1.1rem;border-radius:var(--radius-sm);font-size:.85rem;line-height:1.55;background:#fefce8;border-left:4px solid #eab308;color:#713f12}
+        .quiz-explanation.show{display:block}
+        .quiz-score-panel{display:none;text-align:center;padding:2rem}
+        .quiz-score-panel.show{display:block}
+        .quiz-score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--teal) calc(var(--score-pct)*1%),var(--border) 0);position:relative}
+        .quiz-score-inner{width:110px;height:110px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .quiz-score-num{font-size:2.2rem;font-weight:800;color:var(--deep-blue)}
+        .quiz-score-label{font-size:.75rem;color:var(--text-muted)}
+        .quiz-grade{display:inline-block;padding:.45rem 1.5rem;border-radius:999px;font-weight:700;font-size:1rem;margin:.75rem 0}
+        .quiz-grade.pass{background:var(--tip-bg);color:#166534}.quiz-grade.fail{background:var(--danger-bg);color:#991b1b}
+        .quiz-retake-btn{display:inline-block;padding:.7rem 2rem;border-radius:999px;border:none;cursor:pointer;font-weight:600;font-size:.9rem;background:var(--blue-mid);color:#fff;margin-top:.75rem}
+        @media(max-width:768px){.card-grid{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr}.tab-btn{font-size:.76rem;padding:.5rem .6rem;min-width:auto;flex:1 1 calc(33% - .3rem)}.header{padding:2rem 1rem 1.5rem}.header h1{font-size:1.6rem}.eq-term-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="badge">🔧 Importance of Bias and Fairness in AI</div>
+        <h1>Importance of Bias and Fairness in <span>AI</span></h1>
+        <p class="tagline">Importance of Bias and Fairness in AI</p>
+        <p class="intro">
+            Why do bias and fairness matter in AI? Because biased algorithms already affect who gets hired, who receives loans,
+            who is flagged by law enforcement, and what medical treatment patients receive. This guide examines the 10 most
+            critical reasons why bias and fairness must be at the center of every AI project — with real-world case studies,
+            measurement frameworks, and CGAI exam-focused practice questions.
+        </p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="infographic-area" id="infographicArea">
+        <img id="infographicImg" src="images/BIAS_FAIRNESS_AI.png" alt="Importance of Bias and Fairness in AI Infographic" loading="lazy" onerror="handleImageFallback()">
+        <div class="infographic-fallback" id="infographicFallback">
+            <div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">⚖️ Why Bias &amp; Fairness Matter</div>
+            <div class="gru-diagram">
+                <div class="gate-box"><strong>Biased AI</strong><code>Unfair outcomes</code><br><small style="color:#94a3b8;">Discrimination, harm</small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Erosion of Trust</strong><code>Users abandon AI</code><br><small style="color:#94a3b8;">Reputation damage</small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Regulatory Action</strong><code>Fines, restrictions</code><br><small style="color:#94a3b8;">Legal consequences</small></div>
+                <span class="arrow-sym">⟶</span>
+                <div class="gate-box"><strong>Fair AI</strong><code>Equitable, trusted</code><br><small style="color:#94a3b8;">Sustainable adoption</small></div>
+            </div>
+        </div>
+        <p class="caption">📊 The causal chain: biased AI → eroded trust → regulation → the imperative for fair AI</p>
+    </div>
+</div>
+
+<div class="container">
+    <nav class="tab-nav" id="tabNav">
+        <button class="tab-btn active" data-tab="all-concepts"><span class="tab-icon">📋</span>Why It Matters</button>
+        <button class="tab-btn" data-tab="architecture"><span class="tab-icon">🏗️</span>Case Studies</button>
+        <button class="tab-btn" data-tab="training"><span class="tab-icon">⚡</span>Measurement</button>
+        <button class="tab-btn" data-tab="regularization"><span class="tab-icon">🛡️</span>Solutions</button>
+        <button class="tab-btn" data-tab="full-code"><span class="tab-icon">💻</span>Full Code</button>
+        <button class="tab-btn" data-tab="summary"><span class="tab-icon">📊</span>Summary</button>
+        <button class="tab-btn" data-tab="quiz"><span class="tab-icon">🧠</span>Quiz</button>
+    </nav>
+
+    <!-- TAB: Why It Matters (10 cards) -->
+    <div class="tab-panel active" id="tab-all-concepts">
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">⚖️</div><h3>① Legal &amp; Regulatory Compliance</h3><p class="card-desc">The EU AI Act, GDPR, NYC Local Law 144, and emerging regulations worldwide mandate fairness. Non-compliance means fines up to 6% of global revenue.</p><div class="code-snippet"><span class="cm"># EU AI Act: penalties by tier</span><br>penalties = {<span class="str">'unacceptable'</span>: <span class="str">'€35M or 6% of global turnover'</span>, <span class="str">'high-risk'</span>: <span class="str">'€15M or 3%'</span>, <span class="str">'limited'</span>: <span class="str">'€7.5M or 1.5%'</span>}</div><div class="warn-box"><span class="box-icon">⚠️</span>Legal mandates are not optional. Organizations deploying biased AI face existential financial risk.</div></div>
+            <div class="card"><div class="card-icon">🤝</div><h3>② Trust &amp; Adoption</h3><p class="card-desc">Users abandon untrustworthy AI. A 2024 Pew study found 68% of users are concerned about AI bias. Trust is the currency of AI adoption.</p><div class="code-snippet"><span class="cm"># Trust correlates with adoption</span><br><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt<br><span class="cm"># Survey data: 68% concerned about AI bias</span><br><span class="cm"># 52% say bias would stop them from using AI</span></div><div class="good-box"><span class="box-icon">✅</span>Transparent, fair AI systems see 3x higher user retention and adoption rates.</div></div>
+            <div class="card"><div class="card-icon">🏥</div><h3>③ Real-World Harm</h3><p class="card-desc">Biased healthcare algorithms have denied care to Black patients. Biased hiring tools have systematically excluded women. The harm is not theoretical.</p><div class="code-snippet"><span class="cm"># Obermeyer et al. (2019) — healthcare bias</span><br><span class="cm"># Algorithm used healthcare costs as proxy for need</span><br><span class="cm"># Black patients had lower costs due to access barriers</span><br><span class="cm"># Result: Black patients received less care despite greater need</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Real people are harmed by biased AI every day. This is the most urgent reason to prioritize fairness.</div></div>
+            <div class="card"><div class="card-icon">💰</div><h3>④ Business &amp; Reputation Risk</h3><p class="card-desc">Companies face boycotts, PR crises, and lost revenue when biased AI makes headlines. Amazon scrapped its biased hiring tool in 2018 after public backlash.</p><div class="code-snippet"><span class="cm"># Amazon hiring tool (2014-2017)</span><br><span class="cm"># Trained on 10 years of resumes — mostly male</span><br><span class="cm"># Learned to penalize resumes containing "women's"</span><br><span class="cm"># Project scrapped. Cost: years of R&D + reputation</span></div><div class="tip-box"><span class="box-icon">💡</span>The cost of fixing bias during development is ~100x less than the cost of fixing it after deployment.</div></div>
+            <div class="card"><div class="card-icon">📊</div><h3>⑤ Model Performance Degradation</h3><p class="card-desc">Biased models perform worse on underrepresented groups, limiting their market and utility. Fair models generalize better.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">accuracy_by_group</span>(model, X, y, groups):<br>    <span class="kw">for</span> g <span class="kw">in</span> set(groups):<br>        mask = groups == g<br>        acc = accuracy_score(y[mask], model.predict(X[mask]))<br>        <span class="kw">print</span>(<span class="str">f"Group {g}: accuracy = {acc:.3f}"</span>)</div><div class="good-box"><span class="box-icon">✅</span>Debiased models often achieve better overall accuracy by learning more robust features.</div></div>
+            <div class="card"><div class="card-icon">🌍</div><h3>⑥ Amplification of Social Inequality</h3><p class="card-desc">AI can amplify existing inequalities at scale. A biased loan algorithm deployed across millions of users can systematically exclude entire communities.</p><div class="code-snippet"><span class="cm"># Feedback loop of bias amplification</span><br><span class="cm"># Biased loan model → fewer loans to Group A</span><br><span class="cm"># → Less economic activity in Group A communities</span><br><span class="cm"># → Data reflects worsened inequality → model becomes more biased</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Bias in AI creates feedback loops that worsen inequality over time unless actively disrupted.</div></div>
+            <div class="card"><div class="card-icon">🔬</div><h3>⑦ Scientific Validity</h3><p class="card-desc">Biased models produce unreliable research conclusions. In medical AI, biased training data leads to incorrect diagnoses and flawed clinical studies.</p><div class="code-snippet"><span class="cm"># Example: dermatology AI trained mostly on light skin</span><br><span class="cm"># Accuracy on light skin: 95%</span><br><span class="cm"># Accuracy on dark skin: 72%</span><br><span class="cm"># FDA now requires diverse clinical trial data for AI medical devices</span></div><div class="good-box"><span class="box-icon">✅</span>Diverse training data improves scientific validity and generalizability across populations.</div></div>
+            <div class="card"><div class="card-icon">🏛️</div><h3>⑧ Democratic &amp; Civic Integrity</h3><p class="card-desc">Biased generative AI can spread targeted misinformation, manipulate voters, and undermine democratic processes. Fairness is a democratic safeguard.</p><div class="code-snippet"><span class="cm"># Deepfake & synthetic media risks</span><br>risks = [<span class="str">'Voter manipulation via targeted disinformation'</span>, <span class="str">'Amplification of extremist content'</span>, <span class="str">'Erosion of shared factual reality'</span>]</div><div class="warn-box"><span class="box-icon">⚠️</span>The 2024 Global Risks Report ranks AI-driven misinformation as the #1 short-term global risk.</div></div>
+            <div class="card"><div class="card-icon">👥</div><h3>⑨ Workforce &amp; Economic Equity</h3><p class="card-desc">AI hiring and promotion tools that exhibit bias create systemic barriers to employment and career advancement for protected groups.</p><div class="code-snippet"><span class="cm"># NYC Local Law 144 (enforced July 2023)</span><br><span class="cm"># Requires bias audits for automated employment tools</span><br><span class="cm"># Employers must publish audit results publicly</span><br><span class="cm"># Penalties: $500-$1500 per violation per day</span></div><div class="tip-box"><span class="box-icon">💡</span>NYC Local Law 144 is a model for how cities can regulate AI fairness in employment.</div></div>
+            <div class="card"><div class="card-icon">🌱</div><h3>⑩ Long-Term AI Sustainability</h3><p class="card-desc">Without fairness, AI cannot be sustainably deployed. Ethical AI is not a constraint — it's the only viable path to long-term AI integration into society.</p><div class="code-snippet"><span class="cm"># Sustainable AI = Fair + Transparent + Accountable</span><br><span class="kw">class</span> <span class="fn">SustainableAI</span>:<br>    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):<br>        <span class="kw">self</span>.principles = [<span class="str">'Fairness'</span>, <span class="str">'Transparency'</span>, <span class="str">'Accountability'</span>, <span class="str">'Privacy'</span>, <span class="str">'Safety'</span>]</div><div class="good-box"><span class="box-icon">✅</span>Organizations that embed fairness from day one build AI that lasts — avoiding costly retrofits and earning lasting user trust.</div></div>
+        </div>
+    </div>
+
+    <!-- TAB: Case Studies -->
+    <div class="tab-panel" id="tab-architecture">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ Real-World Bias Case Studies</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">These documented cases demonstrate why bias and fairness in AI demand urgent attention.</p>
+        <div class="arch-visual">
+            <div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">📋 Documented AI Bias Incidents</div>
+            <div class="eq-block"><span class="hl">COMPAS Recidivism (2016)</span><br>Algorithm flagged Black defendants as <span class="hl2">2x more likely</span> to re-offend than white defendants with same profile. False positive rate: <span class="hl2">45% vs 23%</span>.</div>
+            <div class="eq-block"><span class="hl">Amazon Hiring Tool (2014–17)</span><br>Trained on male-dominated resume data. Penalized resumes containing <span class="hl2">"women's"</span>. Scrapped after <span class="hl2">3 years of development</span>.</div>
+            <div class="eq-block"><span class="hl">Apple Card Gender Bias (2019)</span><br>Algorithm offered <span class="hl2">10-20x lower credit limits</span> to women with identical financial profiles. Regulatory investigation followed.</div>
+            <div class="eq-block"><span class="hl">Healthcare Algorithm (2019)</span><br>Used healthcare costs as proxy for need. Black patients had <span class="hl2">lower costs due to access barriers</span>, received less care despite <span class="hl2">26% greater need</span>.</div>
+        </div>
+        <div class="eq-explanation-card">
+            <h4>📖 Lessons Learned — Key Takeaways</h4>
+            <div class="eq-term-grid">
+                <div class="eq-term-item"><div class="symbol">Proxy Variables</div><div class="meaning">Using proxies like "healthcare cost" for "health need" introduces systemic bias. Always validate that proxies don't encode historical discrimination.</div></div>
+                <div class="eq-term-item"><div class="symbol">Training Data</div><div class="meaning">Historical data reflects historical bias. Amazon's hiring tool learned from 10 years of male-dominated hiring — the data itself was the problem.</div></div>
+                <div class="eq-term-item"><div class="symbol">Auditing</div><div class="meaning">None of these cases had pre-deployment bias audits. Post-deployment discovery caused far greater damage than upfront testing would have.</div></div>
+                <div class="eq-term-item"><div class="symbol">Reproducibility</div><div class="meaning">ProPublica's COMPAS analysis was independently reproducible. This transparency forced accountability. Build auditable systems.</div></div>
+            </div>
+            <div style="margin-top:1rem;font-size:.85rem;color:var(--text-muted);background:#e0f2fe;padding:.8rem;border-radius:var(--radius-sm);">
+                💡 <strong>Key insight:</strong> Every major AI bias incident shares a common root cause — the failure to test for fairness before deployment. Pre-deployment auditing is not optional.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Measurement -->
+    <div class="tab-panel" id="tab-training">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Measuring Bias &amp; Fairness</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">You cannot fix what you cannot measure. These quantitative frameworks put fairness into practice.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">📏</div><h3>Demographic Parity Difference</h3><p class="card-desc">Measures the gap in positive prediction rates between groups. The simplest and most widely used fairness metric.</p><div class="code-snippet"><span class="kw">from</span> fairlearn.metrics <span class="kw">import</span> demographic_parity_difference<br>gap = demographic_parity_difference(y_true, y_pred, <span class="fn">sensitive_features</span>=groups)<br><span class="kw">print</span>(<span class="str">f"DP gap: {gap:.4f}  (target: ≤ 0.05)"</span>)</div></div>
+            <div class="card"><div class="card-icon">🎯</div><h3>Equalized Odds Difference</h3><p class="card-desc">Measures the maximum gap in TPR and FPR between groups. More nuanced than demographic parity.</p><div class="code-snippet"><span class="kw">from</span> fairlearn.metrics <span class="kw">import</span> equalized_odds_difference<br>eod = equalized_odds_difference(y_true, y_pred, <span class="fn">sensitive_features</span>=groups)<br><span class="kw">print</span>(<span class="str">f"Equalized odds diff: {eod:.4f}"</span>)</div></div>
+            <div class="card"><div class="card-icon">📊</div><h3>Disparate Impact Ratio</h3><p class="card-desc">Ratio of positive prediction rates: P(ŷ|minority) / P(ŷ|majority). Values below 0.8 (the "four-fifths rule") indicate potential discrimination.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">disparate_impact</span>(preds, groups, majority=<span class="num">0</span>, minority=<span class="num">1</span>):<br>    maj_rate = preds[groups==majority].mean()<br>    min_rate = preds[groups==minority].mean()<br>    <span class="kw">return</span> min_rate / maj_rate  <span class="cm"># ≥ 0.8 is acceptable</span></div></div>
+            <div class="card"><div class="card-icon">📈</div><h3>Fairness Monitoring Dashboard</h3><p class="card-desc">Track fairness metrics over time in production. Drift detection triggers automated alerts when bias exceeds thresholds.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">fairness_monitor</span>(preds, groups, window=<span class="num">1000</span>):<br>    dp = demographic_parity_difference(preds[-window:], groups[-window:])<br>    <span class="kw">if</span> dp > <span class="num">0.05</span>: alert(<span class="str">f"Fairness drift detected: DP gap = {dp:.3f}"</span>)</div></div>
+        </div>
+    </div>
+
+    <!-- TAB: Solutions -->
+    <div class="tab-panel" id="tab-regularization">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Solutions &amp; Best Practices</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">Practical, proven approaches to building fairer AI systems at every stage of the pipeline.</p>
+        <div class="card-grid">
+            <div class="card"><div class="card-icon">📋</div><h3>Pre-Deployment Bias Audit</h3><p class="card-desc">Test across all protected groups before launch. If any group has significantly worse outcomes, the model should not be deployed.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">pre_deploy_audit</span>(model, test_data, groups):<br>    <span class="kw">for</span> metric <span class="kw">in</span> [demographic_parity, equalized_odds]:<br>        gap = metric(model, test_data, groups)<br>        <span class="kw">assert</span> gap < <span class="num">0.05</span>, <span class="str">f"FAIL: {metric.__name__} gap={gap:.3f}"</span><br>    <span class="kw">return</span> <span class="str">"✅ Ready for deployment"</span></div></div>
+            <div class="card"><div class="card-icon">🔄</div><h3>Diverse Data Collection</h3><p class="card-desc">Ensure training data represents all demographic groups proportionally. Undersampling majority groups or oversampling minorities can help.</p><div class="code-snippet"><span class="kw">from</span> imblearn.over_sampling <span class="kw">import</span> SMOTE<br><span class="kw">from</span> imblearn.under_sampling <span class="kw">import</span> RandomUnderSampler<br><span class="cm"># Balance training data across groups</span></div></div>
+            <div class="card"><div class="card-icon">🧪</div><h3>Adversarial Debiasing</h3><p class="card-desc">Train the model to make accurate predictions while an adversary tries to predict protected attributes. The model learns group-invariant features.</p><div class="code-snippet">total_loss = task_loss - λ * adversary_loss<br><span class="cm"># Gradient reversal: encoder learns to hide group info</span><br><span class="cm"># Adversary cannot predict group → fair representations</span></div></div>
+            <div class="card"><div class="card-icon">📝</div><h3>Model Cards &amp; Documentation</h3><p class="card-desc">Publish standardized documentation detailing training data, evaluation metrics across groups, intended uses, and known limitations.</p><div class="code-snippet">model_card = {<br>    <span class="str">'training_data'</span>: <span class="str">'... (with demographic breakdown)'</span>,<br>    <span class="str">'fairness_eval'</span>: {<span class="str">'dp_gap'</span>: <span class="num">0.03</span>, <span class="str">'eod'</span>: <span class="num">0.04</span>},<br>    <span class="str">'limitations'</span>: [<span class="str">'Not tested on population X'</span>],<br>    <span class="str">'recommended_use'</span>: <span class="str">'...'</span><br>}</div></div>
+        </div>
+    </div>
+
+    <!-- TAB: Full Code -->
+    <div class="tab-panel" id="tab-full-code">
+        <h2 style="margin-bottom:.5rem;color:var(--deep-blue);">💻 Full Code — Fairness Assessment Pipeline</h2>
+        <p style="color:var(--text-light);margin-bottom:1rem;">Complete pipeline for auditing and improving fairness in any classification model.</p>
+        <div class="full-code-block">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Complete Fairness Assessment & Mitigation Pipeline."""</span>
+
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> accuracy_score, confusion_matrix
+<span class="kw">from</span> fairlearn.metrics <span class="kw">import</span> (
+    demographic_parity_difference,
+    equalized_odds_difference,
+    MetricFrame
+)
+<span class="kw">from</span> fairlearn.reductions <span class="kw">import</span> ExponentiatedGradient, DemographicParity
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 1. DATA LOADING & AUDIT</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">audit_data</span>(X, y, sensitive_features):
+    <span class="kw">print</span>(<span class="str">"="</span> * <span class="num">60</span>)
+    <span class="kw">print</span>(<span class="str">"📊 DATA AUDIT — Demographic Representation"</span>)
+    <span class="kw">print</span>(<span class="str">"="</span> * <span class="num">60</span>)
+    <span class="kw">for</span> group <span class="kw">in</span> np.unique(sensitive_features):
+        mask = sensitive_features == group
+        pos_rate = y[mask].mean()
+        <span class="kw">print</span>(<span class="str">f"  Group {group}: {mask.sum():,} samples, "</span>
+              <span class="str">f"positive rate = {pos_rate:.3f} ({pos_rate*100:.1f}%)"</span>)
+    <span class="kw">print</span>()
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 2. FAIRNESS EVALUATION</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">evaluate_fairness</span>(model, X_test, y_test, sensitive_features):
+    y_pred = model.predict(X_test)
+    <span class="kw">print</span>(<span class="str">"="</span> * <span class="num">60</span>)
+    <span class="kw">print</span>(<span class="str">"⚖️  FAIRNESS EVALUATION"</span>)
+    <span class="kw">print</span>(<span class="str">"="</span> * <span class="num">60</span>)
+
+    dp_gap = demographic_parity_difference(y_test, y_pred, <span class="fn">sensitive_features</span>=sensitive_features)
+    eo_gap = equalized_odds_difference(y_test, y_pred, <span class="fn">sensitive_features</span>=sensitive_features)
+    <span class="kw">print</span>(<span class="str">f"  Demographic Parity Difference: {dp_gap:.4f}  (target: ≤ 0.05)"</span>)
+    <span class="kw">print</span>(<span class="str">f"  Equalized Odds Difference:    {eo_gap:.4f}  (target: ≤ 0.05)"</span>)
+
+    <span class="kw">for</span> group <span class="kw">in</span> np.unique(sensitive_features):
+        mask = sensitive_features == group
+        acc = accuracy_score(y_test[mask], y_pred[mask])
+        tn, fp, fn, tp = confusion_matrix(y_test[mask], y_pred[mask]).ravel()
+        tpr = tp / (tp + fn) <span class="kw">if</span> (tp + fn) > <span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
+        fpr = fp / (fp + tn) <span class="kw">if</span> (fp + tn) > <span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
+        <span class="kw">print</span>(<span class="str">f"  Group {group}: acc={acc:.3f}, TPR={tpr:.3f}, FPR={fpr:.3f}"</span>)
+    <span class="kw">print</span>()
+
+    passed = dp_gap <= <span class="num">0.05</span> <span class="kw">and</span> eo_gap <= <span class="num">0.05</span>
+    <span class="kw">print</span>(<span class="str">f"  {'✅ PASSED' if passed else '❌ FAILED'} fairness check"</span>)
+    <span class="kw">return</span> {<span class="str">'dp_gap'</span>: dp_gap, <span class="str">'eo_gap'</span>: eo_gap, <span class="str">'passed'</span>: passed}
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 3. FAIRNESS MITIGATION (if needed)</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">mitigate_fairness</span>(X_train, y_train, sensitive_features):
+    <span class="kw">print</span>(<span class="str">"🔧 Applying fairness constraint via Exponentiated Gradient..."</span>)
+
+    base_estimator = LogisticRegression(<span class="fn">max_iter</span>=<span class="num">1000</span>)
+    constraint = DemographicParity()
+
+    mitigator = ExponentiatedGradient(
+        <span class="fn">estimator</span>=base_estimator,
+        <span class="fn">constraints</span>=constraint,
+        <span class="fn">eps</span>=<span class="num">0.05</span>  <span class="cm"># allowable fairness violation</span>
+    )
+
+    mitigator.fit(X_train, y_train, <span class="fn">sensitive_features</span>=sensitive_features)
+    <span class="kw">print</span>(<span class="str">"✅ Fairness-constrained model trained."</span>)
+    <span class="kw">return</span> mitigator
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 4. MAIN PIPELINE</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">if</span> __name__ == <span class="str">'__main__'</span>:
+    <span class="cm"># --- Load your data here ---</span>
+    <span class="cm"># X_train, X_test, y_train, y_test, sensitive_train, sensitive_test = ...</span>
+
+    audit_data(X_train, y_train, sensitive_train)
+    model = LogisticRegression().fit(X_train, y_train)
+    results = evaluate_fairness(model, X_test, y_test, sensitive_test)
+
+    <span class="kw">if</span> <span class="kw">not</span> results[<span class="str">'passed'</span>]:
+        model = mitigate_fairness(X_train, y_train, sensitive_train)
+        results = evaluate_fairness(model, X_test, y_test, sensitive_test)
+
+    <span class="kw">print</span>(<span class="str">"🏁 Pipeline complete."</span>)
+        </div>
+        <p style="margin-top:.75rem;font-size:.85rem;color:var(--text-muted);text-align:center;">⬆️ Production-ready fairness pipeline: audit → evaluate → mitigate → deploy.</p>
+    </div>
+
+    <!-- TAB: Summary -->
+    <div class="tab-panel" id="tab-summary">
+        <h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+        <div class="summary-table-wrap">
+            <table class="summary-table">
+                <thead><tr><th>#</th><th>Why Fairness Matters</th><th>Consequence of Ignoring</th><th>Action Required</th></tr></thead>
+                <tbody>
+                    <tr><td>①</td><td><strong>Legal Compliance</strong></td><td>Fines up to 6% of global revenue</td><td>Build EU AI Act compliance program</td></tr>
+                    <tr><td>②</td><td><strong>User Trust</strong></td><td>68% abandonment risk</td><td>Transparent model cards, explanations</td></tr>
+                    <tr><td>③</td><td><strong>Real-World Harm</strong></td><td>Denied healthcare, jobs, loans</td><td>Pre-deployment bias audits mandatory</td></tr>
+                    <tr><td>④</td><td><strong>Reputation Risk</strong></td><td>PR crises, boycotts, revenue loss</td><td>Proactive fairness testing</td></tr>
+                    <tr><td>⑤</td><td><strong>Model Performance</strong></td><td>Poor accuracy on minorities</td><td>Balanced training data</td></tr>
+                    <tr><td>⑥</td><td><strong>Social Inequality</strong></td><td>Amplified at scale</td><td>Feedback loop disruption</td></tr>
+                    <tr><td>⑦</td><td><strong>Scientific Validity</strong></td><td>Flawed research conclusions</td><td>Diverse validation datasets</td></tr>
+                    <tr><td>⑧</td><td><strong>Civic Integrity</strong></td><td>Democratic process erosion</td><td>Misinformation safeguards</td></tr>
+                    <tr><td>⑨</td><td><strong>Workforce Equity</strong></td><td>Systemic employment barriers</td><td>NYC Law 144 compliance</td></tr>
+                    <tr><td>⑩</td><td><strong>Sustainability</strong></td><td>AI adoption stalls</td><td>Embed fairness into AI lifecycle</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="comparison-grid">
+            <div class="comparison-card params"><h4>🔴 Cost of Ignoring Fairness</h4><ul><li>❌ Regulatory fines (€35M+)</li><li>❌ User abandonment & boycotts</li><li>❌ PR crises & reputation damage</li><li>❌ Lawsuits & class actions</li><li>📌 <em>Existential business risk</em></li></ul></div>
+            <div class="comparison-card hyperparams"><h4>🟢 Value of Prioritizing Fairness</h4><ul><li>✅ Regulatory compliance</li><li>✅ Higher user trust & retention</li><li>✅ Better model generalization</li><li>✅ Competitive differentiation</li><li>📌 <em>Sustainable AI advantage</em></li></ul></div>
+        </div>
+        <div class="baseline-card">
+            <h3>🚀 Fairness-First Development Checklist</h3>
+            <div class="config-grid">
+                <div class="config-item"><strong>①</strong><span>Diverse data collection</span></div><div class="config-item"><strong>②</strong><span>Pre-deployment bias audit</span></div><div class="config-item"><strong>③</strong><span>Fairness metric defined</span></div><div class="config-item"><strong>④</strong><span>Model card published</span></div><div class="config-item"><strong>⑤</strong><span>Human oversight plan</span></div><div class="config-item"><strong>⑥</strong><span>Continuous monitoring</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Quiz -->
+    <div class="tab-panel" id="tab-quiz">
+        <h2 style="margin-bottom:.5rem;color:var(--deep-blue);">🧠 Quiz — Why Bias &amp; Fairness Matter</h2>
+        <p style="color:var(--text-light);margin-bottom:1.25rem;">20 questions covering the importance of AI fairness, real-world case studies, regulations, and mitigation strategies.</p>
+        <div class="quiz-wrap" id="quizWrap">
+            <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgress" style="width:0%"></div></div>
+            <div class="quiz-question-card" id="quizCard">
+                <div class="quiz-q-num" id="quizQNum"></div><div class="quiz-q-text" id="quizQText"></div>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div class="quiz-explanation" id="quizExplanation"></div>
+                <div class="quiz-nav">
+                    <button class="quiz-nav-btn prev" id="quizPrev" disabled>← Previous</button>
+                    <span style="font-size:.85rem;color:var(--text-muted);" id="quizCounter"></span>
+                    <button class="quiz-nav-btn next" id="quizNext">Next →</button>
+                </div>
+            </div>
+            <button class="quiz-submit-btn" id="quizSubmit">📝 Submit Quiz</button>
+            <div class="quiz-score-panel" id="quizScorePanel">
+                <div class="quiz-score-circle" id="quizScoreCircle" style="--score-pct:0"><div class="quiz-score-inner"><span class="quiz-score-num" id="quizScoreNum">0</span><span class="quiz-score-label">/ 20</span></div></div>
+                <div class="quiz-grade" id="quizGrade"></div>
+                <p style="font-size:.9rem;color:var(--text-light);margin-bottom:.75rem;" id="quizMsg"></p>
+                <button class="quiz-retake-btn" id="quizRetake">🔄 Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Back to top">↑</button>
+
+<script>
+function handleImageFallback(){const i=document.getElementById('infographicImg'),f=document.getElementById('infographicFallback');if(i&&f){i.style.display='none';f.style.display='block'}}
+window.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('infographicImg');if(i&&!i.complete)setTimeout(()=>{if(!i.complete||i.naturalWidth===0)handleImageFallback()},3000);else if(i&&i.naturalWidth===0)handleImageFallback()});
+const tabNav=document.getElementById('tabNav'),tabBtns=tabNav.querySelectorAll('.tab-btn'),tabPanels=document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{const t=b.getAttribute('data-tab');tabBtns.forEach(x=>x.classList.remove('active'));tabPanels.forEach(p=>p.classList.remove('active'));b.classList.add('active');const p=document.getElementById('tab-'+t);if(p){p.classList.add('active');p.style.animation='none';p.offsetHeight;p.style.animation='fadeSlideIn 0.4s ease';if(t==='quiz')initQuiz()}if(window.innerWidth<768)p?.scrollIntoView({behavior:'smooth',block:'start'})}));
+const btt=document.getElementById('backToTop');window.addEventListener('scroll',()=>btt.classList.toggle('visible',window.scrollY>500));btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+const quizData=[
+{q:"What is the maximum fine under the EU AI Act for unacceptable-risk AI systems?",opts:["€1M or 1% of revenue","€10M or 2% of revenue","€35M or 6% of global turnover","€50M or 10% of revenue"],ans:2,exp:"The EU AI Act imposes fines up to €35 million or 6% of global annual turnover for unacceptable-risk AI violations."},
+{q:"What happened with Amazon's AI hiring tool (2014-2017)?",opts:["It was highly successful","It learned to penalize resumes containing 'women's' and was scrapped","It improved diversity","It was never built"],ans:1,exp:"Amazon's tool was trained on 10 years of predominantly male resumes and learned to penalize resumes mentioning women's activities. It was scrapped after 3 years."},
+{q:"What did the Obermeyer et al. (2019) study reveal about healthcare AI?",opts:["AI was perfectly fair","Using healthcare costs as a proxy for need caused Black patients to receive less care despite greater need","AI reduced healthcare costs","The algorithm was unbiased"],ans:1,exp:"The algorithm used healthcare costs as a proxy for health need. Due to systemic access barriers, Black patients had lower costs but 26% greater health need."},
+{q:"What is the 'four-fifths rule' for disparate impact?",opts:["Models must be 80% accurate","The positive prediction rate for minority groups must be at least 80% of the majority group's rate","Models must train on 80% of data","80% of users must approve the model"],ans:1,exp:"The four-fifths rule: P(ŷ|minority) / P(ŷ|majority) ≥ 0.8. Below this threshold indicates potential discrimination."},
+{q:"What percentage of users are concerned about AI bias (2024 Pew study)?",opts:["10%","35%","52%","68%"],ans:3,exp:"A 2024 Pew Research study found 68% of users are concerned about AI bias, and 52% say bias would stop them from using AI systems."},
+{q:"What does NYC Local Law 144 require?",opts:["All AI must be open-source","Bias audits for automated employment decision tools","AI must be trained in NYC","AI cannot be used in NYC"],ans:1,exp:"NYC Local Law 144 (enforced July 2023) requires bias audits for automated employment tools, with penalties of $500-$1500 per violation per day."},
+{q:"What is a proxy variable problem in AI fairness?",opts:["Using a GPU instead of CPU","Using a variable like 'healthcare cost' that indirectly encodes protected attributes like race","Using too many variables","Using cloud computing"],ans:1,exp:"Proxy variables indirectly encode protected attributes. Healthcare cost as a proxy for health need encoded racial bias because Black patients had lower costs due to access barriers."},
+{q:"What was the COMPAS recidivism algorithm criticized for?",opts:["Being too accurate","Flagging Black defendants as 2x more likely to re-offend than white defendants with identical profiles","Being too slow","Not being used enough"],ans:1,exp:"ProPublica's 2016 investigation found COMPAS had 45% false positive rate for Black defendants vs 23% for white defendants with identical risk profiles."},
+{q:"What is the primary benefit of pre-deployment bias auditing?",opts:["It makes models faster","It catches fairness issues before they harm real people — and costs ~100x less than post-deployment fixes","It reduces model size","It's required by all countries"],ans:1,exp:"Pre-deployment auditing catches bias early when fixes are cheap. Post-deployment fixes cost approximately 100x more and damage has already occurred."},
+{q:"What does demographic parity measure?",opts:["Model accuracy","The gap in positive prediction rates between protected groups","Training time","Model size"],ans:1,exp:"Demographic parity: |P(ŷ=1|G=a) - P(ŷ=1|G=b)|. It measures whether different groups receive positive predictions at similar rates."},
+{q:"What happened with Apple Card's credit limit algorithm in 2019?",opts:["It was perfectly fair","It offered women 10-20x lower credit limits than men with identical financial profiles","It increased all credit limits","It was never investigated"],ans:1,exp:"Apple Card's algorithm offered significantly lower credit limits to women, including Steve Wozniak's wife despite shared assets. A regulatory investigation followed."},
+{q:"Why does bias in AI create feedback loops?",opts:["Because AI uses loops in code","Biased decisions change the real world, which creates data that reinforces the bias","Because GPUs are circular","Feedback loops don't exist in AI"],ans:1,exp:"A biased loan algorithm denies loans to a community → that community has less economic activity → future data shows worse metrics → the bias worsens."},
+{q:"What is the cost ratio of fixing bias pre-deployment vs post-deployment?",opts:["Same cost","~2x more post-deployment","~10x more post-deployment","~100x more post-deployment"],ans:3,exp:"Fixing bias during development costs approximately 100x less than fixing it after deployment, when real harm has already occurred and reputations are damaged."},
+{q:"Which is NOT a valid fairness metric?",opts:["Demographic parity","Equalized odds","Equal opportunity","Model profitability"],ans:3,exp:"Model profitability is a business metric, not a fairness metric. Core fairness metrics include demographic parity, equalized odds, and equal opportunity."},
+{q:"What did the 2024 Global Risks Report rank as the #1 short-term global risk?",opts:["Climate change","AI-driven misinformation","Nuclear war","Pandemic"],ans:1,exp:"The 2024 Global Risks Report ranked AI-driven misinformation and disinformation as the #1 short-term global risk, highlighting the importance of fair and trustworthy AI."},
+{q:"What is the purpose of a fairness monitoring dashboard?",opts:["To track GPU usage","To detect when fairness metrics drift beyond acceptable thresholds in production","To count users","To reduce cloud costs"],ans:1,exp:"Fairness monitoring dashboards track metrics like demographic parity over time and trigger alerts when bias exceeds predefined thresholds."},
+{q:"What is adversarial debiasing?",opts:["Attacking the model with hackers","Training an adversary to predict protected attributes while the main model learns to hide that information","Making the model adversarial to users","Removing all data"],ans:1,exp:"Adversarial debiasing uses a gradient reversal layer: the encoder learns representations that are useful for the task but uninformative about protected attributes."},
+{q:"Which of the following is an example of in-processing bias mitigation?",opts:["Data reweighting","Threshold adjustment","Adversarial debiasing during training","Post-deployment monitoring"],ans:2,exp:"Adversarial debiasing modifies the training objective — it's an in-processing technique. Data reweighting is pre-processing; threshold adjustment is post-processing."},
+{q:"What does equalized odds require?",opts:["Equal accuracy for all groups","Equal TPR and FPR across protected groups","Equal model size per group","Equal training time"],ans:1,exp:"Equalized odds: |P(ŷ=1|Y=y,G=a) - P(ŷ=1|Y=y,G=b)| ≤ ε for all y. Both TPR and FPR must be equal across groups."},
+{q:"What is the key lesson from all major AI bias incidents?",opts:["AI is inherently evil","Every major bias incident could have been prevented by pre-deployment fairness testing","Bias is impossible to fix","Only small models have bias"],ans:1,exp:"COMPAS, Amazon hiring, Apple Card, healthcare algorithm — all share one root cause: no pre-deployment fairness audit was conducted. Testing before launch prevents harm."},
+];
+
+let qs={ci:0,an:new Array(quizData.length).fill(-1),su:false,in:false};
+function rq(){const q=quizData[qs.ci];document.getElementById('quizQNum').textContent=`Question ${qs.ci+1} of ${quizData.length}`;document.getElementById('quizQText').textContent=q.q;document.getElementById('quizCounter').textContent=`${qs.ci+1} / ${quizData.length}`;const L=['A','B','C','D'];let o='';q.opts.forEach((opt,i)=>{let c='quiz-opt';if(qs.su){if(i===q.ans)c+=' correct';else if(i===qs.an[qs.ci])c+=' incorrect'}else if(i===qs.an[qs.ci])c+=' selected';o+=`<button class="${c}" data-idx="${i}" ${qs.su?'disabled':''}><span class="quiz-opt-letter">${L[i]}</span>${opt}</button>`});document.getElementById('quizOptions').innerHTML=o;const ex=document.getElementById('quizExplanation');if(qs.su){ex.textContent='💡 '+q.exp;ex.classList.add('show')}else ex.classList.remove('show');document.getElementById('quizPrev').disabled=qs.ci===0;document.getElementById('quizNext').disabled=qs.ci===quizData.length-1;const an=qs.an.filter(a=>a>=0).length;document.getElementById('quizProgress').style.width=((an/quizData.length)*100)+'%';document.getElementById('quizSubmit').style.display=qs.su?'none':'block';document.getElementById('quizCard').style.display=qs.su?'none':'block';document.querySelector('.quiz-progress-bar').style.display=qs.su?'none':'block';document.getElementById('quizScorePanel').classList.toggle('show',qs.su)}
+function sa(i){if(qs.su)return;qs.an[qs.ci]=i;rq()}
+function nq(d){const n=qs.ci+d;if(n>=0&&n<quizData.length){qs.ci=n;rq()}}
+function sq(){const u=qs.an.filter(a=>a<0).length;if(u>0&&!confirm(`You have ${u} unanswered. Submit anyway?`))return;qs.su=true;qs.ci=0;const s=qs.an.reduce((a,v,i)=>a+(v===quizData[i].ans?1:0),0);const p=Math.round((s/quizData.length)*100);document.getElementById('quizScoreNum').textContent=s;document.getElementById('quizScoreCircle').style.setProperty('--score-pct',p);const g=document.getElementById('quizGrade');if(p>=70){g.textContent='✅ PASS';g.className='quiz-grade pass';document.getElementById('quizMsg').textContent=`${s}/${quizData.length} (${p}%). You understand why bias & fairness matter.`}else{g.textContent='❌ NEEDS REVIEW';g.className='quiz-grade fail';document.getElementById('quizMsg').textContent=`${s}/${quizData.length} (${p}%). Review the case studies and try again.`}rq()}
+function rk(){qs={ci:0,an:new Array(quizData.length).fill(-1),su:false,in:true};rq()}
+function iq(){if(qs.in)return;qs.in=true;rq();document.getElementById('quizOptions').addEventListener('click',e=>{const b=e.target.closest('.quiz-opt');if(b&&!qs.su)sa(parseInt(b.dataset.idx))});document.getElementById('quizPrev').addEventListener('click',()=>nq(-1));document.getElementById('quizNext').addEventListener('click',()=>nq(1));document.getElementById('quizSubmit').addEventListener('click',sq);document.getElementById('quizRetake').addEventListener('click',rk)}
+console.log('✅ Importance_Bias_Fairness_AI.html ready. 7 tabs + 20-question quiz.');
+</script>
+</body>
+</html>

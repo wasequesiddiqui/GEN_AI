@@ -102,14 +102,13 @@ Use the same visual styling, layout, and class names as `RNN.html`, but replace 
 
 ## Example usage
 
-Create an HTML study guide for "Introduction to Ethics in AI and Generative Models" — a topic relevant to the **CGAI exam**. Follow the same structure as `RNN.html`. Use:
-- badge: "🔧 Basics of Sequence to Sequence Models"
-- title: "Basics of Sequence to Sequence Models"
-- tagline: one concise sentence about tuning attention models
+Create an HTML study guide for "Importance of a responsible AI" — a topic relevant to the **CGAI exam**. Follow the same structure as `RNN.html`. Use:
+- badge: "🔧 Importance of a responsible AI"
+- title: "Importance of a responsible AI"
+- tagline: Importance of a responsible AI
 - intro paragraph describing the topic and guide scope
-- infographic image filename: `ETHICS_AI_INTRO.png`  in the images folder
-- 10 cards covering attention heads, model depth, embedding size, dropout, learning rate, batch size, warmup steps, optimizer, sequence length, loss
-- architecture section with attention equations and term breakdown
-- training and regularization sections with Transformer-specific advice
+- infographic image filename: `RESPONSIBLE_AI.png`  in the images folder
+- 10 cards covering important factors responsible Implications of Ethics in AI
+- Implications of a responsible AI
 - summary and comparison tables
 - 20+ quiz questions covering all hyperparameters, architecture concepts, and training best practices

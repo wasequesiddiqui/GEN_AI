@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Importance of a Responsible AI – Complete Guide</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{--deep-blue:#1a365d;--blue:#1e40af;--blue-mid:#2563eb;--teal:#0d9488;--teal-light:#14b8a6;--bg-card:#fff;--bg-code:#0f172a;--text:#1e293b;--text-light:#475569;--text-muted:#64748b;--border:#e2e8f0;--warning-bg:#fffbeb;--warning-border:#f59e0b;--tip-bg:#f0fdf4;--tip-border:#22c55e;--danger-bg:#fef2f2;--danger-border:#ef4444;--shadow:0 4px 6px rgba(0,0,0,.07);--shadow-lg:0 10px 25px rgba(0,0,0,.1);--shadow-xl:0 20px 40px rgba(0,0,0,.12);--radius:12px;--radius-lg:16px;--radius-xl:20px;--radius-sm:8px;--trans:.3s cubic-bezier(.4,0,.2,1);--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace;--font-sans:'Inter','Segoe UI',system-ui,-apple-system,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:linear-gradient(170deg,#f0f9ff,#f8fafc 30%,#f0fdf4 70%,#ecfeff);color:var(--text);line-height:1.6;min-height:100vh}
+.header{background:linear-gradient(135deg,var(--deep-blue),#1e3a5f 30%,#0f4c5c 70%,#0d3b4e);color:#fff;padding:3rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-60px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(20,184,166,.25),transparent 70%);border-radius:50%;pointer-events:none}
+.header::after{content:'';position:absolute;bottom:-50px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,.2),transparent 70%);border-radius:50%;pointer-events:none}
+.header-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.header .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);padding:.35rem 1rem;border-radius:50px;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1rem;font-weight:500}
+.header h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+.header h1 span{background:linear-gradient(135deg,#5eead4,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .tagline{font-size:1.15rem;opacity:.9;margin-bottom:.75rem;font-weight:400}
+.header .intro{font-size:.95rem;opacity:.75;max-width:600px;margin:0 auto;line-height:1.7}
+.container{max-width:1100px;margin:0 auto;padding:1.5rem 1.25rem}
+.infographic-area{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);margin:-1.5rem auto 2rem;max-width:900px;padding:1.5rem;text-align:center;position:relative;z-index:2;border:1px solid var(--border)}
+.infographic-area img{max-width:100%;height:auto;border-radius:var(--radius);display:block;margin:0 auto}
+.infographic-fallback{display:none;background:linear-gradient(135deg,#1a365d,#0d3b4e);border-radius:var(--radius);padding:2rem 1.5rem;color:#e2e8f0;font-family:var(--font-mono);font-size:.9rem;line-height:1.8;overflow-x:auto}
+.infographic-fallback .gru-diagram{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:1rem 0}
+.infographic-fallback .gate-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:1rem 1.25rem;text-align:center;min-width:120px}
+.infographic-fallback .gate-box strong{display:block;color:#5eead4;font-size:1rem;margin-bottom:.4rem}
+.infographic-fallback .gate-box code{color:#fbbf24;font-size:.8rem}
+.infographic-fallback .arrow-sym{font-size:1.8rem;color:#94a3b8}
+.infographic-area .caption{margin-top:.75rem;font-size:.85rem;color:var(--text-muted);font-style:italic}
+.tab-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;background:var(--bg-card);padding:.5rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);position:sticky;top:12px;z-index:10}
+.tab-btn{flex:1 1 auto;min-width:110px;padding:.7rem 1rem;border:none;background:0 0;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.88rem;color:var(--text-muted);transition:var(--trans);white-space:nowrap}
+.tab-btn:hover{color:var(--blue-mid);background:#eff6ff}
+.tab-btn.active{background:var(--blue-mid);color:#fff;box-shadow:var(--shadow)}
+.tab-panel{display:none;animation:fadeSlideIn .4s ease}.tab-panel.active{display:block}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+.card{background:var(--bg-card);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:var(--trans)}
+.card:hover{box-shadow:var(--shadow-xl);transform:translateY(-2px)}
+.card .card-icon{font-size:2rem;background:#f1f5f9;width:48px;height:48px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:.5rem}
+.card h3{font-size:1.15rem;font-weight:700;margin:.5rem 0 .35rem;color:var(--deep-blue)}
+.card .card-desc{font-size:.9rem;color:var(--text-light);margin-bottom:.75rem;line-height:1.55}
+.code-snippet{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-sm);padding:.75rem 1rem;font-family:var(--font-mono);font-size:.8rem;overflow-x:auto;margin:.5rem 0;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.code-snippet .kw{color:#c084fc}.code-snippet .fn{color:#60a5fa}.code-snippet .str{color:#fbbf24}.code-snippet .num{color:#fb923c}.code-snippet .cm{color:#6b7280;font-style:italic}
+.tip-box,.warn-box,.good-box{margin-top:.75rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;display:flex;align-items:flex-start;gap:.5rem}
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--tip-border);color:#166534}
+.warn-box{background:var(--warning-bg);border-left:4px solid var(--warning-border);color:#92400e}
+.good-box{background:#eff6ff;border-left:4px solid var(--blue-mid);color:#1e40af}
+.arch-visual{background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:var(--radius-lg);padding:2rem;color:#e2e8f0;text-align:center;margin-bottom:1.5rem;overflow-x:auto}
+.arch-visual .eq-block{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:1rem 1.5rem;margin:.5rem;text-align:left;font-family:var(--font-mono);font-size:.85rem;line-height:1.7}
+.arch-visual .eq-block .hl{color:#5eead4;font-weight:700}.arch-visual .eq-block .hl2{color:#fbbf24;font-weight:700}
+.full-code-block{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-lg);padding:1.5rem;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;box-shadow:var(--shadow-lg);max-height:70vh;overflow-y:auto}
+.full-code-block .kw{color:#c084fc}.full-code-block .fn{color:#60a5fa}.full-code-block .str{color:#a3e635}.full-code-block .num{color:#fb923c}.full-code-block .cm{color:#6b7280;font-style:italic}.full-code-block .anno{color:#f472b6;font-weight:700}
+.summary-table-wrap{overflow-x:auto;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem}
+.summary-table{width:100%;border-collapse:collapse;background:var(--bg-card);font-size:.9rem}
+.summary-table thead{background:var(--deep-blue);color:#fff}.summary-table thead th{padding:.85rem 1rem;text-align:left;font-weight:600}
+.summary-table tbody td{padding:.75rem 1rem;border-bottom:1px solid var(--border)}.summary-table tbody tr:hover{background:#f8fafc}
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.comparison-card{border-radius:var(--radius-lg);padding:1.5rem;text-align:center;box-shadow:var(--shadow)}
+.comparison-card.params{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd}
+.comparison-card.hyperparams{background:linear-gradient(135deg,#f0fdf4,#ccfbf1);border:2px solid #5eead4}
+.comparison-card h4{font-size:1.1rem;margin-bottom:.5rem}.comparison-card ul{list-style:none;padding:0;text-align:left;display:inline-block}.comparison-card li{padding:.2rem 0;font-size:.88rem}
+.baseline-card{background:linear-gradient(135deg,#1a365d,#0d3b4e);color:#fff;border-radius:var(--radius-xl);padding:2rem;text-align:center;box-shadow:var(--shadow-xl)}
+.baseline-card h3{font-size:1.3rem;margin-bottom:1rem;color:#5eead4}
+.baseline-card .config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-top:1rem}
+.baseline-card .config-item{background:rgba(255,255,255,.08);border-radius:var(--radius);padding:.75rem}
+.baseline-card .config-item strong{display:block;color:#fbbf24;font-size:1rem}.baseline-card .config-item span{font-size:.78rem;opacity:.8}
+.back-to-top{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:var(--blue-mid);color:#fff;border:none;cursor:pointer;font-size:1.3rem;box-shadow:var(--shadow-lg);z-index:99;opacity:0;transform:translateY(20px);pointer-events:none;display:flex;align-items:center;justify-content:center;transition:var(--trans)}
+.back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.eq-explanation-card{background:#f8fafc;border-radius:var(--radius-lg);padding:1.8rem;margin-top:1.5rem;border:1px solid #cbd5e1}
+.eq-explanation-card h4{font-size:1.2rem;color:var(--deep-blue);margin-bottom:1rem}
+.eq-term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.8rem}
+.eq-term-item{background:#fff;border-radius:var(--radius);padding:1rem;box-shadow:0 1px 2px rgba(0,0,0,.05);border-left:5px solid var(--teal-light)}
+.eq-term-item .symbol{font-family:var(--font-mono);font-weight:700;color:var(--blue-mid);font-size:1.15rem}
+.eq-term-item .meaning{font-size:.85rem;color:var(--text-light);margin-top:.25rem}
+/* Quiz */
+.quiz-wrap{max-width:780px;margin:0 auto}
+.quiz-progress-bar{background:var(--border);border-radius:999px;height:8px;margin-bottom:1.5rem;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue-mid),var(--teal-light));border-radius:999px;transition:width .4s}
+.quiz-question-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
+.quiz-q-num{font-size:.82rem;color:var(--text-muted);font-weight:600;margin-bottom:.5rem;text-transform:uppercase}
+.quiz-q-text{font-size:1.1rem;font-weight:700;color:var(--deep-blue);margin-bottom:1.25rem;line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:.6rem}
+.quiz-opt{padding:.85rem 1.1rem;border-radius:var(--radius);border:2px solid var(--border);background:var(--bg-card);cursor:pointer;font-size:.9rem;text-align:left;font-family:var(--font-sans);transition:var(--trans);display:flex;align-items:center;gap:.6rem}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue-mid);background:#eff6ff}
+.quiz-opt.selected{border-color:var(--blue-mid);background:#dbeafe}
+.quiz-opt.correct{border-color:var(--tip-border);background:var(--tip-bg);color:#166534}
+.quiz-opt.incorrect{border-color:var(--danger-border);background:var(--danger-bg);color:#991b1b}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt-letter{width:30px;height:30px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0}
+.quiz-opt.selected .quiz-opt-letter{background:var(--blue-mid);color:#fff}
+.quiz-opt.correct .quiz-opt-letter{background:var(--tip-border);color:#fff}
+.quiz-opt.incorrect .quiz-opt-letter{background:var(--danger-border);color:#fff}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:.75rem}
+.quiz-nav-btn{padding:.65rem 1.4rem;border-radius:999px;border:none;cursor:pointer;font-weight:600;font-size:.85rem;transition:var(--trans)}
+.quiz-nav-btn.prev{background:var(--border);color:var(--text)}.quiz-nav-btn.prev:hover{background:#cbd5e1}
+.quiz-nav-btn.next{background:var(--blue-mid);color:#fff}.quiz-nav-btn.next:hover{background:var(--deep-blue)}
+.quiz-nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.quiz-submit-btn{display:block;margin:1.5rem auto 0;padding:.8rem 2.5rem;border-radius:999px;border:none;cursor:pointer;font-weight:700;font-size:.95rem;background:var(--teal);color:#fff}.quiz-submit-btn:hover{background:#0f766e}
+.quiz-explanation{display:none;margin-top:1rem;padding:.9rem 1.1rem;border-radius:var(--radius-sm);font-size:.85rem;line-height:1.55;background:#fefce8;border-left:4px solid #eab308;color:#713f12}
+.quiz-explanation.show{display:block}
+.quiz-score-panel{display:none;text-align:center;padding:2rem}.quiz-score-panel.show{display:block}
+.quiz-score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--teal) calc(var(--score-pct)*1%),var(--border) 0)}
+.quiz-score-inner{width:110px;height:110px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.quiz-score-num{font-size:2.2rem;font-weight:800;color:var(--deep-blue)}
+.quiz-score-label{font-size:.75rem;color:var(--text-muted)}
+.quiz-grade{display:inline-block;padding:.45rem 1.5rem;border-radius:999px;font-weight:700;font-size:1rem;margin:.75rem 0}
+.quiz-grade.pass{background:var(--tip-bg);color:#166534}.quiz-grade.fail{background:var(--danger-bg);color:#991b1b}
+.quiz-retake-btn{display:inline-block;padding:.7rem 2rem;border-radius:999px;border:none;cursor:pointer;font-weight:600;font-size:.9rem;background:var(--blue-mid);color:#fff;margin-top:.75rem}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr}.tab-btn{font-size:.76rem;padding:.5rem .6rem;min-width:auto;flex:1 1 calc(33% - .3rem)}.header{padding:2rem 1rem 1.5rem}.header h1{font-size:1.6rem}.eq-term-grid{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header class="header"><div class="header-content">
+<div class="badge">🔧 Importance of a Responsible AI</div>
+<h1>Importance of a Responsible <span>AI</span></h1>
+<p class="tagline">Importance of a Responsible AI</p>
+<p class="intro">Responsible AI is not a feature — it's the foundation for sustainable, trusted, and compliant AI deployment. This guide examines the 10 pillars of responsible AI: governance, principles, risk management, organizational accountability, transparency, human-centered design, continuous monitoring, regulatory alignment, stakeholder engagement, and culture — with actionable frameworks and CGAI exam-focused practice questions.</p>
+</div></header>
+
+<div class="container"><div class="infographic-area" id="infographicArea">
+<img id="infographicImg" src="images/RESPONSIBLE_AI.png" alt="Responsible AI Infographic" loading="lazy" onerror="handleImageFallback()">
+<div class="infographic-fallback" id="infographicFallback"><div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🏛️ Responsible AI Framework</div>
+<div class="gru-diagram">
+<div class="gate-box"><strong>Governance</strong><code>Ethics Board + Policies</code><br><small style="color:#94a3b8;">Top-down commitment</small></div>
+<span class="arrow-sym">⟶</span>
+<div class="gate-box"><strong>Development</strong><code>Fairness + Transparency</code><br><small style="color:#94a3b8;">Built into the pipeline</small></div>
+<span class="arrow-sym">⟶</span>
+<div class="gate-box"><strong>Deployment</strong><code>Audit + Monitor</code><br><small style="color:#94a3b8;">Continuous oversight</small></div>
+<span class="arrow-sym">⟶</span>
+<div class="gate-box"><strong>Trust</strong><code>Sustainable AI Adoption</code><br><small style="color:#94a3b8;">Enduring value</small></div>
+</div><div style="text-align:center;color:#94a3b8;font-size:.78rem;margin-top:.75rem;">Governance → Development → Deployment → Trust: The responsible AI lifecycle</div></div>
+<p class="caption">📊 The responsible AI lifecycle: governance drives development, deployment, and lasting trust</p>
+</div></div>
+
+<div class="container"><nav class="tab-nav" id="tabNav">
+<button class="tab-btn active" data-tab="all-concepts">📋 Pillars</button>
+<button class="tab-btn" data-tab="architecture">🏗️ Frameworks</button>
+<button class="tab-btn" data-tab="training">⚡ Implementation</button>
+<button class="tab-btn" data-tab="regularization">🛡️ Governance</button>
+<button class="tab-btn" data-tab="full-code">💻 Code</button>
+<button class="tab-btn" data-tab="summary">📊 Summary</button>
+<button class="tab-btn" data-tab="quiz">🧠 Quiz</button>
+</nav>
+
+<div class="tab-panel active" id="tab-all-concepts"><div class="card-grid">
+<div class="card"><div class="card-icon">🏛️</div><h3>① AI Governance Structure</h3><p class="card-desc">Establish an AI ethics board, clear decision-making hierarchy, escalation paths, and accountability chains. Governance is the backbone of responsible AI.</p><div class="code-snippet"><span class="cm"># Governance roles</span>
+roles = {<span class="str">'ethics_board'</span>: <span class="str">'Sets principles & policy'</span>, <span class="str">'review_committee'</span>: <span class="str">'Approves high-risk deployments'</span>, <span class="str">'audit_team'</span>: <span class="str">'Independent fairness testing'</span>}</div><div class="good-box"><span class="box-icon">✅</span>Top organizations have a Chief AI Ethics Officer reporting directly to the board.</div></div>
+<div class="card"><div class="card-icon">📜</div><h3>② Responsible AI Principles</h3><p class="card-desc">Codify core principles: fairness, transparency, accountability, privacy, safety, inclusiveness. Google, Microsoft, and the EU all publish AI principles.</p><div class="code-snippet"><span class="cm"># Core AI Principles (widely adopted)</span>
+principles = [<span class="str">'Fairness'</span>, <span class="str">'Reliability & Safety'</span>, <span class="str">'Privacy & Security'</span>, <span class="str">'Inclusiveness'</span>, <span class="str">'Transparency'</span>, <span class="str">'Accountability'</span>]</div><div class="tip-box"><span class="box-icon">💡</span>Principles must be operationalized — translated into concrete engineering requirements, not just aspirational statements.</div></div>
+<div class="card"><div class="card-icon">⚠️</div><h3>③ Risk Assessment &amp; Management</h3><p class="card-desc">Classify AI systems by risk level. High-risk applications (healthcare, hiring, lending) require enhanced scrutiny, documentation, and human oversight.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">risk_assessment</span>(use_case):
+    <span class="kw">if</span> use_case <span class="kw">in</span> [<span class="str">'healthcare'</span>, <span class="str">'hiring'</span>, <span class="str">'lending'</span>, <span class="str">'criminal_justice'</span>]:
+        <span class="kw">return</span> <span class="str">'HIGH RISK — requires: audit, documentation, human oversight, conformity assessment'</span>
+    <span class="kw">return</span> <span class="str">'STANDARD — requires: transparency, fairness testing'</span></div><div class="warn-box"><span class="box-icon">⚠️</span>EU AI Act requires conformity assessments for all high-risk AI before market placement.</div></div>
+<div class="card"><div class="card-icon">👤</div><h3>④ Organizational Accountability</h3><p class="card-desc">Clear ownership of AI outcomes. Every model must have a named responsible individual or team. No orphaned models in production.</p><div class="code-snippet"><span class="cm"># Model ownership record</span>
+model_owner = {<span class="str">'model_id'</span>: <span class="str">'v2.3'</span>, <span class="str">'owner'</span>: <span class="str">'Jane Doe'</span>, <span class="str">'team'</span>: <span class="str">'ML Engineering'</span>, <span class="str">'last_audit'</span>: <span class="str">'2026-06-15'</span>, <span class="str">'review_cadence'</span>: <span class="str">'quarterly'</span>}</div><div class="good-box"><span class="box-icon">✅</span>Accountability without ownership is meaningless. Every deployed model must have a human responsible for its outcomes.</div></div>
+<div class="card"><div class="card-icon">🔍</div><h3>⑤ Transparency by Design</h3><p class="card-desc">Build explainability into the system from day one. Users and regulators need to understand how decisions are made. Use model cards, fact sheets, and explanations.</p><div class="code-snippet"><span class="cm"># Transparency deliverables</span>
+deliverables = {<span class="str">'model_card'</span>: <span class="str">'Intended use + limitations + eval results'</span>, <span class="str">'datasheet'</span>: <span class="str">'Data provenance + composition + biases'</span>, <span class="str">'factsheet'</span>: <span class="str">'Performance characteristics + safety'</span>}</div><div class="tip-box"><span class="box-icon">💡</span>Transparency builds trust. Publish model cards even for internal models — it forces teams to confront limitations.</div></div>
+<div class="card"><div class="card-icon">🧑‍🤝‍🧑</div><h3>⑥ Human-Centered Design</h3><p class="card-desc">Design AI systems around human needs, not just technical capabilities. Include affected communities in design, testing, and feedback loops.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">human_centered_checklist</span>():
+    <span class="kw">return</span> [<span class="str">'☐ Affected community consultation complete'</span>, <span class="str">'☐ Usability tested with diverse users'</span>, <span class="str">'☐ Appeal mechanism in place'</span>, <span class="str">'☐ Accessibility reviewed'</span>, <span class="str">'☐ Consent flows validated'</span>]</div><div class="good-box"><span class="box-icon">✅</span>AI should augment human capability, not replace human judgment. Maintain meaningful human control.</div></div>
+<div class="card"><div class="card-icon">📊</div><h3>⑦ Continuous Monitoring &amp; Feedback</h3><p class="card-desc">AI behavior drifts over time. Implement automated monitoring for accuracy, fairness, safety, and data drift. Act on feedback before harm occurs.</p><div class="code-snippet"><span class="kw">class</span> <span class="fn">ProductionMonitor</span>:
+    <span class="kw">def</span> <span class="fn">check</span>(<span class="kw">self</span>):
+        metrics = {<span class="str">'accuracy'</span>: <span class="kw">self</span>.compute_accuracy(), <span class="str">'fairness_gap'</span>: <span class="kw">self</span>.compute_dp_gap(), <span class="str">'data_drift'</span>: <span class="kw">self</span>.detect_drift()}
+        <span class="kw">for</span> k, v <span class="kw">in</span> metrics.items():
+            <span class="kw">if</span> v > <span class="kw">self</span>.thresholds[k]: <span class="kw">self</span>.alert(k, v)</div><div class="warn-box"><span class="box-icon">⚠️</span>Models that worked perfectly at launch can become biased within months due to data and world changes.</div></div>
+<div class="card"><div class="card-icon">📋</div><h3>⑧ Regulatory Alignment</h3><p class="card-desc">Proactively align with current and emerging regulations: EU AI Act, GDPR, NYC 144, Colorado AI Act, and upcoming legislation worldwide.</p><div class="code-snippet"><span class="cm"># Key global AI regulations</span>
+regulations = {<span class="str">'EU'</span>: <span class="str">'AI Act (2024) — risk-based framework'</span>, <span class="str">'US'</span>: <span class="str">'Executive Order 14110 + state laws'</span>, <span class="str">'UK'</span>: <span class="str">'Pro-innovation approach + AI Standards Hub'</span>, <span class="str">'Global'</span>: <span class="str">'ISO/IEC 42001 — AI management system'</span>}</div><div class="tip-box"><span class="box-icon">💡</span>Build once for the strictest regulation (usually EU). It's easier to relax than to retrofit compliance.</div></div>
+<div class="card"><div class="card-icon">🤝</div><h3>⑨ Multi-Stakeholder Engagement</h3><p class="card-desc">Involve diverse stakeholders: engineers, ethicists, legal, domain experts, affected communities, and end-users. No single perspective catches all risks.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">stakeholder_review</span>(model, stage):
+    reviewers = {<span class="str">'design'</span>: [<span class="str">'Product'</span>, <span class="str">'Ethics'</span>, <span class="str">'UX Research'</span>], <span class="str">'development'</span>: [<span class="str">'Engineering'</span>, <span class="str">'Security'</span>, <span class="str">'Legal'</span>], <span class="str">'pre_deploy'</span>: [<span class="str">'Audit'</span>, <span class="str">'Compliance'</span>, <span class="str">'External Review'</span>]}
+    <span class="kw">return</span> reviewers.get(stage, [])</div><div class="good-box"><span class="box-icon">✅</span>External red-teaming and adversarial review catch issues internal teams miss due to blind spots.</div></div>
+<div class="card"><div class="card-icon">🌱</div><h3>⑩ Ethics-First Culture</h3><p class="card-desc">Responsible AI requires cultural change, not just technical fixes. Train every team member on ethics. Reward raising concerns. Normalize saying "we shouldn't build this."</p><div class="code-snippet"><span class="kw">class</span> <span class="fn">EthicsCulture</span>:
+    practices = [<span class="str">'Mandatory ethics training (quarterly)'</span>, <span class="str">'Anonymous ethics hotline'</span>, <span class="str">'Ethics KPIs in performance reviews'</span>, <span class="str">'"Stop work" authority for ethics concerns'</span>, <span class="str">'Celebrate responsible decisions, not just launches'</span>]</div><div class="good-box"><span class="box-icon">✅</span>The strongest technical safeguards fail without a culture where people feel safe raising ethical concerns.</div></div>
+</div></div>
+
+<div class="tab-panel" id="tab-architecture"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ Responsible AI Frameworks</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">Major frameworks provide structured approaches to implementing responsible AI at organizational scale.</p>
+<div class="arch-visual"><div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🏛️ Key Responsible AI Equations &amp; Models</div>
+<div class="eq-block"><span class="hl">NIST AI Risk Management Framework:</span><br>Responsible AI = <span class="hl2">Govern</span> + <span class="hl2">Map</span> + <span class="hl2">Measure</span> + <span class="hl2">Manage</span></div>
+<div class="eq-block"><span class="hl">ISO/IEC 42001 (AI Management):</span><br>Plan → Do → <span class="hl2">Check</span> → Act<br>(Continuous improvement cycle)</div>
+<div class="eq-block"><span class="hl">Responsible AI Maturity Model:</span><br>Ad Hoc → Defined → <span class="hl2">Managed</span> → Optimizing<br>(Organizational progression)</div>
+<div class="eq-block"><span class="hl">Total Cost of AI:</span><br>TCAI = DevCost + <span class="hl2">EthicsCost</span> + RiskCost + MaintenanceCost</div></div>
+<div class="eq-explanation-card"><h4>📖 Framework Components Breakdown</h4>
+<div class="eq-term-grid">
+<div class="eq-term-item"><div class="symbol">NIST AI RMF</div><div class="meaning">Four functions: Govern (policies, culture), Map (context, risks), Measure (metrics, evaluation), Manage (mitigation, monitoring). Adopted by US government.</div></div>
+<div class="eq-term-item"><div class="symbol">ISO/IEC 42001</div><div class="meaning">First global AI management system standard. Plan-Do-Check-Act cycle for continuous AI governance improvement. Certifiable.</div></div>
+<div class="eq-term-item"><div class="symbol">EU AI Act</div><div class="meaning">Risk-based regulation: Unacceptable → High → Limited → Minimal. High-risk AI requires conformity assessment before deployment.</div></div>
+<div class="eq-term-item"><div class="symbol">OECD AI Principles</div><div class="meaning">First intergovernmental standard: inclusive growth, human-centered values, transparency, robustness, accountability. Adopted by 40+ nations.</div></div>
+</div></div></div>
+
+<div class="tab-panel" id="tab-training"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ Implementing Responsible AI</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">Practical steps to embed responsible AI into the development lifecycle.</p>
+<div class="card-grid">
+<div class="card"><div class="card-icon">📋</div><h3>AI Impact Assessment</h3><p class="card-desc">Conduct an impact assessment before any AI project begins. Evaluate societal, ethical, and human rights implications.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">ai_impact_assessment</span>(project):
+    dimensions = {<span class="str">'human_rights'</span>: <span class="str">'Does this affect fundamental rights?'</span>, <span class="str">'fairness'</span>: <span class="str">'Could this discriminate?'</span>, <span class="str">'privacy'</span>: <span class="str">'What data is collected?'</span>, <span class="str">'safety'</span>: <span class="str">'Could this cause harm?'</span>, <span class="str">'transparency'</span>: <span class="str">'Can decisions be explained?'</span>}
+    <span class="kw">return</span> {k: assess(v) <span class="kw">for</span> k, v <span class="kw">in</span> dimensions.items()}</div></div>
+<div class="card"><div class="card-icon">🔄</div><h3>Ethics Review Gate</h3><p class="card-desc">Integrate an ethics review checkpoint into the development pipeline. Models cannot proceed to deployment without passing ethics review.</p><div class="code-snippet"><span class="cm"># CI/CD pipeline with ethics gate</span>
+stages = [<span class="str">'data_collection'</span>, <span class="str">'model_training'</span>, <span class="str">'ETHICS_REVIEW ⬅️ gate'</span>, <span class="str">'deployment'</span>]
+<span class="kw">if</span> <span class="kw">not</span> pass_ethics_review(model): raise Exception(<span class="str">"Deployment blocked by ethics gate"</span>)</div></div>
+<div class="card"><div class="card-icon">📝</div><h3>Documentation Requirements</h3><p class="card-desc">Maintain comprehensive documentation: training data provenance, model architecture decisions, fairness evaluation results, and known limitations.</p><div class="code-snippet">required_docs = [<span class="str">'Data Card (source, biases, composition)'</span>, <span class="str">'Model Card (performance, fairness, limits)'</span>, <span class="str">'Impact Assessment'</span>, <span class="str">'Risk Register'</span>, <span class="str">'Ethics Review Sign-off'</span>]</div></div>
+<div class="card"><div class="card-icon">🎓</div><h3>Training &amp; Enablement</h3><p class="card-desc">Every team member — engineers, PMs, designers, executives — needs responsible AI training. Ethics is everyone's job, not just the ethics team's.</p><div class="code-snippet">training_modules = [<span class="str">'AI Ethics 101 (all roles)'</span>, <span class="str">'Fairness in ML (engineers)'</span>, <span class="str">'Responsible Product Design (PMs)'</span>, <span class="str">'AI Governance for Leaders (executives)'</span>, <span class="str">'Bias Detection Workshop (data scientists)'</span>]</div></div>
+</div></div>
+
+<div class="tab-panel" id="tab-regularization"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Governance &amp; Oversight Mechanisms</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">Strong governance turns principles into practice. These mechanisms ensure accountability at every level.</p>
+<div class="card-grid">
+<div class="card"><div class="card-icon">🏛️</div><h3>AI Ethics Board</h3><p class="card-desc">Cross-functional committee with authority to approve or block AI deployments. Includes engineering, legal, ethics, product, and external advisors.</p><div class="code-snippet">board = {<span class="str">'members'</span>: [<span class="str">'Chief Ethics Officer (chair)'</span>, <span class="str">'VP Engineering'</span>, <span class="str">'General Counsel'</span>, <span class="str">'Head of Product'</span>, <span class="str">'External Ethicist'</span>, <span class="str">'Community Representative'</span>], <span class="str">'meets'</span>: <span class="str">'Monthly'</span>, <span class="str">'authority'</span>: <span class="str">'Can block any AI deployment'</span>}</div></div>
+<div class="card"><div class="card-icon">📊</div><h3>KPI Dashboards</h3><p class="card-desc">Track responsible AI metrics alongside business metrics. Fairness gaps, transparency scores, and incident rates should be as visible as revenue.</p><div class="code-snippet">responsible_ai_kpis = {<span class="str">'fairness_gap'</span>: <span class="str">'≤ 0.05 across all groups'</span>, <span class="str">'model_card_coverage'</span>: <span class="str">'100% of production models'</span>, <span class="str">'bias_incidents'</span>: <span class="str">'0 open high-severity'</span>, <span class="str">'ethics_training_completion'</span>: <span class="str">'100% of staff'</span>}</div></div>
+<div class="card"><div class="card-icon">🚨</div><h3>Incident Response Plan</h3><p class="card-desc">Pre-established protocol for when AI causes harm. Includes rollback procedures, communication templates, regulatory notification, and root cause analysis.</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">ai_incident_response</span>(severity):
+    <span class="kw">if</span> severity == <span class="str">'critical'</span>:
+        rollback_model()  <span class="cm"># Immediate takedown</span>
+        notify_ethics_board()
+        notify_affected_users()
+        notify_regulators(within=<span class="str">'72 hours'</span>)
+        initiate_root_cause_analysis()</div></div>
+<div class="card"><div class="card-icon">🔍</div><h3>Independent Auditing</h3><p class="card-desc">Regular third-party audits validate internal fairness assessments. External auditors bring objectivity and catch blind spots.</p><div class="code-snippet">audit_schedule = {<span class="str">'internal'</span>: <span class="str">'Quarterly fairness review'</span>, <span class="str">'external'</span>: <span class="str">'Annual independent audit'</span>, <span class="str">'triggered'</span>: <span class="str">'After any bias incident'</span>, <span class="str">'regulatory'</span>: <span class="str">'As required by jurisdiction'</span>}</div></div>
+</div></div>
+
+<div class="tab-panel" id="tab-full-code"><h2 style="margin-bottom:.5rem;color:var(--deep-blue);">💻 Full Code — Responsible AI Governance Pipeline</h2>
+<p style="color:var(--text-light);margin-bottom:1rem;">Automated governance checks integrated into the ML pipeline.</p>
+<div class="full-code-block">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Responsible AI Governance — Automated Pipeline Checks."""</span>
+
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+<span class="kw">from</span> typing <span class="kw">import</span> List, Dict
+<span class="kw">from</span> enum <span class="kw">import</span> Enum
+
+<span class="kw">class</span> <span class="fn">RiskLevel</span>(Enum):
+    MINIMAL = <span class="str">'minimal'</span>
+    LIMITED = <span class="str">'limited'</span>
+    HIGH = <span class="str">'high'</span>
+    UNACCEPTABLE = <span class="str">'unacceptable'</span>
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">AIModel</span>:
+    name: str; version: str; owner: str
+    use_case: str; risk_level: RiskLevel
+    has_model_card: bool; has_impact_assessment: bool
+    fairness_gap: float; last_audit: str
+
+<span class="kw">class</span> <span class="fn">ResponsibleAIGate</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.checks = []
+
+    <span class="kw">def</span> <span class="fn">check_model_card</span>(<span class="kw">self</span>, model: AIModel):
+        <span class="kw">if</span> <span class="kw">not</span> model.has_model_card:
+            <span class="kw">self</span>.checks.append(<span class="str">f"❌ {model.name}: Missing model card"</span>)
+        <span class="kw">return</span> <span class="kw">self</span>
+
+    <span class="kw">def</span> <span class="fn">check_fairness</span>(<span class="kw">self</span>, model: AIModel):
+        <span class="kw">if</span> model.fairness_gap > <span class="num">0.05</span>:
+            <span class="kw">self</span>.checks.append(<span class="str">f"❌ {model.name}: Fairness gap {model.fairness_gap:.3f} exceeds 0.05"</span>)
+        <span class="kw">return</span> <span class="kw">self</span>
+
+    <span class="kw">def</span> <span class="fn">check_impact_assessment</span>(<span class="kw">self</span>, model: AIModel):
+        <span class="kw">if</span> model.risk_level == RiskLevel.HIGH <span class="kw">and</span> <span class="kw">not</span> model.has_impact_assessment:
+            <span class="kw">self</span>.checks.append(<span class="str">f"❌ {model.name}: High-risk model lacks impact assessment"</span>)
+        <span class="kw">return</span> <span class="kw">self</span>
+
+    <span class="kw">def</span> <span class="fn">check_ownership</span>(<span class="kw">self</span>, model: AIModel):
+        <span class="kw">if</span> <span class="kw">not</span> model.owner:
+            <span class="kw">self</span>.checks.append(<span class="str">f"❌ {model.name}: No assigned owner"</span>)
+        <span class="kw">return</span> <span class="kw">self</span>
+
+    <span class="kw">def</span> <span class="fn">evaluate</span>(<span class="kw">self</span>, model: AIModel):
+        <span class="kw">self</span>.checks = []
+        (<span class="kw">self</span>.check_model_card(model).check_fairness(model)
+         .check_impact_assessment(model).check_ownership(model))
+        <span class="kw">if</span> <span class="kw">self</span>.checks:
+            <span class="kw">print</span>(<span class="str">"🚫 DEPLOYMENT BLOCKED"</span>)
+            <span class="kw">for</span> c <span class="kw">in</span> <span class="kw">self</span>.checks: <span class="kw">print</span>(<span class="str">f"  {c}"</span>)
+            <span class="kw">return</span> <span class="kw">False</span>
+        <span class="kw">print</span>(<span class="str">f"✅ {model.name} v{model.version} — Responsible AI checks passed"</span>)
+        <span class="kw">return</span> <span class="kw">True</span>
+
+<span class="cm"># ── Usage ──</span>
+gate = ResponsibleAIGate()
+model = AIModel(<span class="fn">name</span>=<span class="str">'LoanApproval'</span>, <span class="fn">version</span>=<span class="str">'v2.1'</span>, <span class="fn">owner</span>=<span class="str">'Jane Doe'</span>, <span class="fn">use_case</span>=<span class="str">'lending'</span>, <span class="fn">risk_level</span>=RiskLevel.HIGH, <span class="fn">has_model_card</span>=<span class="kw">True</span>, <span class="fn">has_impact_assessment</span>=<span class="kw">True</span>, <span class="fn">fairness_gap</span>=<span class="num">0.03</span>, <span class="fn">last_audit</span>=<span class="str">'2026-06-15'</span>)
+gate.evaluate(model)
+</div>
+<p style="margin-top:.75rem;font-size:.85rem;color:var(--text-muted);text-align:center;">⬆️ Automated governance gate — blocks deployment if responsible AI requirements are not met.</p>
+</div>
+
+<div class="tab-panel" id="tab-summary"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+<div class="summary-table-wrap"><table class="summary-table">
+<thead><tr><th>#</th><th>Pillar</th><th>Key Practice</th><th>Measure of Success</th></tr></thead>
+<tbody>
+<tr><td>①</td><td><strong>Governance</strong></td><td>Ethics board, clear ownership</td><td>100% models have named owner</td></tr>
+<tr><td>②</td><td><strong>Principles</strong></td><td>Codified, operationalized principles</td><td>Principles translated to engineering requirements</td></tr>
+<tr><td>③</td><td><strong>Risk Management</strong></td><td>Risk classification, enhanced scrutiny</td><td>All high-risk models pass conformity assessment</td></tr>
+<tr><td>④</td><td><strong>Accountability</strong></td><td>Named owners, audit trails</td><td>No orphaned models in production</td></tr>
+<tr><td>⑤</td><td><strong>Transparency</strong></td><td>Model cards, explainability</td><td>100% model card coverage</td></tr>
+<tr><td>⑥</td><td><strong>Human-Centered</strong></td><td>Stakeholder consultation, appeals</td><td>Appeal mechanism exists for all user-facing AI</td></tr>
+<tr><td>⑦</td><td><strong>Monitoring</strong></td><td>Automated drift and fairness tracking</td><td>Alert triggered within 24h of threshold breach</td></tr>
+<tr><td>⑧</td><td><strong>Regulatory</strong></td><td>Proactive compliance program</td><td>Zero regulatory findings or penalties</td></tr>
+<tr><td>⑨</td><td><strong>Stakeholders</strong></td><td>Diverse review at every stage</td><td>External review for all high-risk models</td></tr>
+<tr><td>⑩</td><td><strong>Culture</strong></td><td>Training, safe reporting, incentives</td><td>100% ethics training, upward trend in concerns raised</td></tr>
+</tbody></table></div>
+<div class="comparison-grid">
+<div class="comparison-card params"><h4>🔴 Irresponsible AI</h4><ul><li>❌ No governance structure</li><li>❌ No fairness testing before launch</li><li>❌ Black-box decisions, no explanations</li><li>❌ No owner assigned to models</li><li>📌 <em>Regulatory penalties &amp; lost trust</em></li></ul></div>
+<div class="comparison-card hyperparams"><h4>🟢 Responsible AI</h4><ul><li>✅ Governance board with authority</li><li>✅ Fairness tested at every stage</li><li>✅ Transparent, explainable decisions</li><li>✅ Every model has a named owner</li><li>📌 <em>Sustainable, trusted AI deployment</em></li></ul></div>
+</div>
+<div class="baseline-card"><h3>🚀 Responsible AI Maturity Roadmap</h3>
+<div class="config-grid">
+<div class="config-item"><strong>Level 1</strong><span>Ad Hoc: Informal practices</span></div><div class="config-item"><strong>Level 2</strong><span>Defined: Documented principles</span></div><div class="config-item"><strong>Level 3</strong><span>Managed: Systematic reviews</span></div><div class="config-item"><strong>Level 4</strong><span>Optimizing: Continuous improvement</span></div>
+</div></div></div>
+
+<div class="tab-panel" id="tab-quiz"><h2 style="margin-bottom:.5rem;color:var(--deep-blue);">🧠 Quiz — Responsible AI</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">20 questions on governance, frameworks, risk management, and responsible AI principles.</p>
+<div class="quiz-wrap" id="quizWrap">
+<div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgress" style="width:0%"></div></div>
+<div class="quiz-question-card" id="quizCard">
+<div class="quiz-q-num" id="quizQNum"></div><div class="quiz-q-text" id="quizQText"></div>
+<div class="quiz-options" id="quizOptions"></div><div class="quiz-explanation" id="quizExplanation"></div>
+<div class="quiz-nav"><button class="quiz-nav-btn prev" id="quizPrev" disabled>← Previous</button><span style="font-size:.85rem;color:var(--text-muted)" id="quizCounter"></span><button class="quiz-nav-btn next" id="quizNext">Next →</button></div>
+</div>
+<button class="quiz-submit-btn" id="quizSubmit">📝 Submit Quiz</button>
+<div class="quiz-score-panel" id="quizScorePanel"><div class="quiz-score-circle" id="quizScoreCircle" style="--score-pct:0"><div class="quiz-score-inner"><span class="quiz-score-num" id="quizScoreNum">0</span><span class="quiz-score-label">/ 20</span></div></div><div class="quiz-grade" id="quizGrade"></div><p style="font-size:.9rem;color:var(--text-light);margin-bottom:.75rem" id="quizMsg"></p><button class="quiz-retake-btn" id="quizRetake">🔄 Retake Quiz</button></div>
+</div></div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Back to top">↑</button>
+<script>
+function hif(){const i=document.getElementById('infographicImg'),f=document.getElementById('infographicFallback');if(i&&f){i.style.display='none';f.style.display='block'}}
+window.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('infographicImg');if(i&&!i.complete)setTimeout(()=>{if(!i.complete||i.naturalWidth===0)hif()},3000);else if(i&&i.naturalWidth===0)hif()});
+const tn=document.getElementById('tabNav'),tb=tn.querySelectorAll('.tab-btn'),tp=document.querySelectorAll('.tab-panel');
+tb.forEach(b=>b.addEventListener('click',()=>{const t=b.getAttribute('data-tab');tb.forEach(x=>x.classList.remove('active'));tp.forEach(p=>p.classList.remove('active'));b.classList.add('active');const p=document.getElementById('tab-'+t);if(p){p.classList.add('active');p.style.animation='none';p.offsetHeight;p.style.animation='fadeSlideIn 0.4s ease';if(t==='quiz')iq()}if(window.innerWidth<768)p?.scrollIntoView({behavior:'smooth',block:'start'})}));
+const bt=document.getElementById('backToTop');window.addEventListener('scroll',()=>bt.classList.toggle('visible',window.scrollY>500));bt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const qd=[
+{q:"What are the four functions of the NIST AI Risk Management Framework?",opts:["Build, Test, Deploy, Monitor","Govern, Map, Measure, Manage","Plan, Code, Test, Ship","Collect, Train, Evaluate, Deploy"],ans:1,exp:"NIST AI RMF has four core functions: Govern (establish policies), Map (understand context and risks), Measure (assess with metrics), Manage (mitigate and monitor)."},
+{q:"Which ISO standard is the first global AI management system standard?",opts:["ISO 9001","ISO 27001","ISO/IEC 42001","ISO 14001"],ans:2,exp:"ISO/IEC 42001 is the first global AI management system standard, using Plan-Do-Check-Act for continuous AI governance improvement."},
+{q:"What is the maximum fine under the EU AI Act for unacceptable-risk violations?",opts:["€1M or 1%","€10M or 2%","€35M or 6% of global turnover","€50M or 10%"],ans:2,exp:"The EU AI Act imposes fines up to €35 million or 6% of global annual turnover for unacceptable-risk AI violations."},
+{q:"What is the purpose of an AI ethics board?",opts:["Writing code","Cross-functional governance with authority to approve or block AI deployments","Marketing AI products","Reducing model size"],ans:1,exp:"An AI ethics board is a cross-functional committee (engineering, legal, ethics, product, external advisors) with authority to block deployments."},
+{q:"What does 'accountability' mean in responsible AI?",opts:["The model is accurate","Every deployed model has a named human owner responsible for its outcomes","The model is fast","The model uses the cloud"],ans:1,exp:"Accountability means every AI model has a named responsible individual or team. No orphaned models in production."},
+{q:"What is a model card?",opts:["A credit card for AI","Standardized documentation covering intended use, limitations, fairness evaluations, and ethical considerations","A GPU specification","A training script"],ans:1,exp:"Model cards provide transparency: training data, evaluation results, fairness metrics, intended use, limitations, and recommended deployment scenarios."},
+{q:"Which of these is NOT a core responsible AI principle?",opts:["Fairness","Transparency","Accountability","Profit maximization"],ans:3,exp:"Core principles are fairness, transparency, accountability, privacy, safety, inclusiveness, and reliability — not profit maximization."},
+{q:"What is the purpose of an AI impact assessment?",opts:["Measuring GPU speed","Evaluating societal, ethical, and human rights implications before development begins","Counting users","Reducing cloud costs"],ans:1,exp:"Impact assessments evaluate potential effects on human rights, fairness, privacy, and safety before the project starts — not after deployment."},
+{q:"What is an ethics review gate in the ML pipeline?",opts:["A firewall","A checkpoint that prevents models from deploying until they pass ethics review","A type of GPU","A database query"],ans:1,exp:"An ethics review gate is integrated into CI/CD pipelines. Models cannot proceed to deployment without passing ethics review."},
+{q:"What does the NIST AI RMF's 'Map' function involve?",opts:["Drawing a map of the data center","Understanding the AI system's context, stakeholders, risks, and potential impacts","Geographic mapping","GPU memory mapping"],ans:1,exp:"The Map function establishes context: who is affected, what are the risks, what are the legal/regulatory requirements, and what could go wrong."},
+{q:"Why is continuous monitoring critical for responsible AI?",opts:["To track GPU usage","Model behavior drifts over time — fairness and accuracy degrade without monitoring","To count API calls","To bill users"],ans:1,exp:"AI behavior drifts as data distributions change. Without continuous monitoring, a fair model at launch can become biased within months."},
+{q:"What role do external auditors play in responsible AI?",opts:["They write the code","They provide independent, objective validation of internal fairness assessments","They manage cloud infrastructure","They design the UI"],ans:1,exp:"External auditors catch blind spots that internal teams miss. Annual independent audits are a best practice for responsible AI governance."},
+{q:"According to the OECD AI Principles, what is required of AI systems?",opts:["Only accuracy","Inclusive growth, human-centered values, transparency, robustness, and accountability","Only speed","Only low cost"],ans:1,exp:"The OECD AI Principles (adopted by 40+ nations) require: inclusive growth, human-centered values, transparency, robustness, and accountability."},
+{q:"What should happen when an AI incident occurs in production?",opts:["Ignore it","Follow a pre-established incident response plan: rollback, notify stakeholders, investigate root cause","Just restart the server","Blame the data scientists"],ans:1,exp:"A responsible AI incident response plan includes: immediate rollback if critical, notifying affected users, informing regulators within specified timeframes, and root cause analysis."},
+{q:"What is the 'ethics-first culture' principle?",opts:["Only ethics team cares about ethics","Every team member is trained on ethics, feels safe raising concerns, and is rewarded for responsible decisions","Ethics is outsourced","Ethics is only for executives"],ans:1,exp:"Responsible AI requires cultural change: mandatory training for all roles, anonymous reporting channels, ethics KPIs in reviews, and normalizing 'we shouldn't build this.'"},
+{q:"What is the ISO/IEC 42001 Plan-Do-Check-Act cycle?",opts:["A coding pattern","Continuous improvement: Plan (establish objectives) → Do (implement) → Check (monitor) → Act (improve)","A deployment strategy","A model architecture"],ans:1,exp:"PDCA is the continuous improvement cycle at the heart of ISO 42001: Plan AI governance objectives, Do implement them, Check via monitoring, Act on findings."},
+{q:"What distinguishes high-risk AI under the EU AI Act?",opts:["It's expensive","It requires conformity assessment, documentation, human oversight, and registration before deployment","It's faster","It uses more GPUs"],ans:1,exp:"High-risk AI (healthcare, hiring, lending, law enforcement) requires: conformity assessment, technical documentation, human oversight, and EU database registration."},
+{q:"What is the relationship between responsible AI and business value?",opts:["They conflict","Responsible AI builds trust, which drives adoption, reduces regulatory risk, and creates sustainable competitive advantage","There is no relationship","Responsible AI only costs money"],ans:1,exp:"Responsible AI is not a cost center — it's a trust builder. Users adopt and stick with AI they trust. It also avoids costly regulatory penalties."},
+{q:"How should AI principles be operationalized?",opts:["Post them on the company website","Translate them into concrete engineering requirements, testing protocols, and governance processes","Ignore them","Only apply them to large models"],ans:1,exp:"Principles without operationalization are just words. Fairness becomes concrete metrics and tests. Transparency becomes model cards. Accountability becomes named owners."},
+{q:"What is the most common reason responsible AI initiatives fail?",opts:["Technical limitations","Lack of governance authority — ethics boards without real power to block deployments","Too much funding","Too many principles"],ans:1,exp:"The #1 failure mode: ethics boards or review processes that lack real authority. If the board can't actually stop a deployment, responsible AI is performative."},
+];
+let qs={ci:0,an:new Array(qd.length).fill(-1),su:false,in:false};
+function rq(){const q=qd[qs.ci];document.getElementById('quizQNum').textContent=`Question ${qs.ci+1} of ${qd.length}`;document.getElementById('quizQText').textContent=q.q;document.getElementById('quizCounter').textContent=`${qs.ci+1} / ${qd.length}`;const L=['A','B','C','D'];let o='';q.opts.forEach((opt,i)=>{let c='quiz-opt';if(qs.su){if(i===q.ans)c+=' correct';else if(i===qs.an[qs.ci])c+=' incorrect'}else if(i===qs.an[qs.ci])c+=' selected';o+=`<button class="${c}" data-idx="${i}" ${qs.su?'disabled':''}><span class="quiz-opt-letter">${L[i]}</span>${opt}</button>`});document.getElementById('quizOptions').innerHTML=o;const ex=document.getElementById('quizExplanation');if(qs.su){ex.textContent='💡 '+q.exp;ex.classList.add('show')}else ex.classList.remove('show');document.getElementById('quizPrev').disabled=qs.ci===0;document.getElementById('quizNext').disabled=qs.ci===qd.length-1;const an=qs.an.filter(a=>a>=0).length;document.getElementById('quizProgress').style.width=((an/qd.length)*100)+'%';document.getElementById('quizSubmit').style.display=qs.su?'none':'block';document.getElementById('quizCard').style.display=qs.su?'none':'block';document.querySelector('.quiz-progress-bar').style.display=qs.su?'none':'block';document.getElementById('quizScorePanel').classList.toggle('show',qs.su)}
+function sa(i){if(qs.su)return;qs.an[qs.ci]=i;rq()}
+function nq(d){const n=qs.ci+d;if(n>=0&&n<qd.length){qs.ci=n;rq()}}
+function sq(){const u=qs.an.filter(a=>a<0).length;if(u>0&&!confirm(`You have ${u} unanswered. Submit anyway?`))return;qs.su=true;qs.ci=0;const s=qs.an.reduce((a,v,i)=>a+(v===qd[i].ans?1:0),0);const p=Math.round((s/qd.length)*100);document.getElementById('quizScoreNum').textContent=s;document.getElementById('quizScoreCircle').style.setProperty('--score-pct',p);const g=document.getElementById('quizGrade');if(p>=70){g.textContent='✅ PASS';g.className='quiz-grade pass';document.getElementById('quizMsg').textContent=`${s}/${qd.length} (${p}%). You understand responsible AI governance.`}else{g.textContent='❌ NEEDS REVIEW';g.className='quiz-grade fail';document.getElementById('quizMsg').textContent=`${s}/${qd.length} (${p}%). Review the frameworks and principles.`}rq()}
+function rk(){qs={ci:0,an:new Array(qd.length).fill(-1),su:false,in:true};rq()}
+function iq(){if(qs.in)return;qs.in=true;rq();document.getElementById('quizOptions').addEventListener('click',e=>{const b=e.target.closest('.quiz-opt');if(b&&!qs.su)sa(parseInt(b.dataset.idx))});document.getElementById('quizPrev').addEventListener('click',()=>nq(-1));document.getElementById('quizNext').addEventListener('click',()=>nq(1));document.getElementById('quizSubmit').addEventListener('click',sq);document.getElementById('quizRetake').addEventListener('click',rk)}
+console.log('✅ Responsible_AI.html ready. 7 tabs + 20-question quiz.');
+</script></body></html>
