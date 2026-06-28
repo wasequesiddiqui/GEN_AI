@@ -102,13 +102,13 @@ Use the same visual styling, layout, and class names as `RNN.html`, but replace 
 
 ## Example usage
 
-Create an HTML study guide for "Importance of a responsible AI" — a topic relevant to the **CGAI exam**. Follow the same structure as `RNN.html`. Use:
-- badge: "🔧 Importance of a responsible AI"
-- title: "Importance of a responsible AI"
-- tagline: Importance of a responsible AI
+Create an HTML study guide for "Importance of Privacy and Security AI" — a topic relevant to the **CGAI exam**. Follow the same structure as `RNN.html`. Use:
+- badge: "🔧 Importance of Privacy and Security AI"
+- title: "Importance of Privacy and Security AI"
+- tagline: Importance of Privacy and Security AI
 - intro paragraph describing the topic and guide scope
-- infographic image filename: `RESPONSIBLE_AI.png`  in the images folder
-- 10 cards covering important factors responsible Implications of Ethics in AI
-- Implications of a responsible AI
+- infographic image filename: `PRIVACY_SECURITY_AI.png`  in the images folder
+- 10 cards covering important factors responsible Importance of Privacy and Security AI
+- Implications of Importance of Privacy and Security AI
 - summary and comparison tables
 - 20+ quiz questions covering all hyperparameters, architecture concepts, and training best practices

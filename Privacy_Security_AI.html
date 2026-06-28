@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Importance of Privacy and Security AI – Complete Guide</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{--deep-blue:#1a365d;--blue:#1e40af;--blue-mid:#2563eb;--teal:#0d9488;--teal-light:#14b8a6;--bg-card:#fff;--bg-code:#0f172a;--text:#1e293b;--text-light:#475569;--text-muted:#64748b;--border:#e2e8f0;--warning-bg:#fffbeb;--warning-border:#f59e0b;--tip-bg:#f0fdf4;--tip-border:#22c55e;--danger-bg:#fef2f2;--danger-border:#ef4444;--shadow:0 4px 6px rgba(0,0,0,.07);--shadow-lg:0 10px 25px rgba(0,0,0,.1);--shadow-xl:0 20px 40px rgba(0,0,0,.12);--radius:12px;--radius-lg:16px;--radius-xl:20px;--radius-sm:8px;--trans:.3s cubic-bezier(.4,0,.2,1);--font-mono:'SF Mono','Fira Code','JetBrains Mono',Consolas,monospace;--font-sans:'Inter','Segoe UI',system-ui,-apple-system,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-sans);background:linear-gradient(170deg,#f0f9ff,#f8fafc 30%,#f0fdf4 70%,#ecfeff);color:var(--text);line-height:1.6;min-height:100vh}
+.header{background:linear-gradient(135deg,var(--deep-blue),#1e3a5f 30%,#0f4c5c 70%,#0d3b4e);color:#fff;padding:3rem 1.5rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-60px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(20,184,166,.25),transparent 70%);border-radius:50%;pointer-events:none}
+.header::after{content:'';position:absolute;bottom:-50px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,.2),transparent 70%);border-radius:50%;pointer-events:none}
+.header-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.header .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);padding:.35rem 1rem;border-radius:50px;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1rem;font-weight:500}
+.header h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+.header h1 span{background:linear-gradient(135deg,#5eead4,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .tagline{font-size:1.15rem;opacity:.9;margin-bottom:.75rem;font-weight:400}
+.header .intro{font-size:.95rem;opacity:.75;max-width:600px;margin:0 auto;line-height:1.7}
+.container{max-width:1100px;margin:0 auto;padding:1.5rem 1.25rem}
+.infographic-area{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);margin:-1.5rem auto 2rem;max-width:900px;padding:1.5rem;text-align:center;position:relative;z-index:2;border:1px solid var(--border)}
+.infographic-area img{max-width:100%;height:auto;border-radius:var(--radius);display:block;margin:0 auto}
+.infographic-fallback{display:none;background:linear-gradient(135deg,#1a365d,#0d3b4e);border-radius:var(--radius);padding:2rem 1.5rem;color:#e2e8f0;font-family:var(--font-mono);font-size:.9rem;line-height:1.8;overflow-x:auto}
+.infographic-fallback .gru-diagram{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:1rem 0}
+.infographic-fallback .gate-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);padding:1rem 1.25rem;text-align:center;min-width:120px}
+.infographic-fallback .gate-box strong{display:block;color:#5eead4;font-size:1rem;margin-bottom:.4rem}
+.infographic-fallback .gate-box code{color:#fbbf24;font-size:.8rem}
+.infographic-fallback .arrow-sym{font-size:1.8rem;color:#94a3b8}
+.infographic-area .caption{margin-top:.75rem;font-size:.85rem;color:var(--text-muted);font-style:italic}
+.tab-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;background:var(--bg-card);padding:.5rem;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);position:sticky;top:12px;z-index:10}
+.tab-btn{flex:1 1 auto;min-width:110px;padding:.7rem 1rem;border:none;background:0 0;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.88rem;color:var(--text-muted);transition:var(--trans);white-space:nowrap}
+.tab-btn:hover{color:var(--blue-mid);background:#eff6ff}
+.tab-btn.active{background:var(--blue-mid);color:#fff;box-shadow:var(--shadow)}
+.tab-panel{display:none;animation:fadeSlideIn .4s ease}.tab-panel.active{display:block}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+.card{background:var(--bg-card);border-radius:var(--radius-lg);padding:1.5rem;box-shadow:var(--shadow);border:1px solid var(--border);transition:var(--trans)}
+.card:hover{box-shadow:var(--shadow-xl);transform:translateY(-2px)}
+.card .card-icon{font-size:2rem;background:#f1f5f9;width:48px;height:48px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin-bottom:.5rem}
+.card h3{font-size:1.15rem;font-weight:700;margin:.5rem 0 .35rem;color:var(--deep-blue)}
+.card .card-desc{font-size:.9rem;color:var(--text-light);margin-bottom:.75rem;line-height:1.55}
+.code-snippet{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-sm);padding:.75rem 1rem;font-family:var(--font-mono);font-size:.8rem;overflow-x:auto;margin:.5rem 0;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.code-snippet .kw{color:#c084fc}.code-snippet .fn{color:#60a5fa}.code-snippet .str{color:#fbbf24}.code-snippet .num{color:#fb923c}.code-snippet .cm{color:#6b7280;font-style:italic}
+.tip-box,.warn-box,.good-box{margin-top:.75rem;padding:.65rem .9rem;border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;display:flex;align-items:flex-start;gap:.5rem}
+.tip-box{background:var(--tip-bg);border-left:4px solid var(--tip-border);color:#166534}
+.warn-box{background:var(--warning-bg);border-left:4px solid var(--warning-border);color:#92400e}
+.good-box{background:#eff6ff;border-left:4px solid var(--blue-mid);color:#1e40af}
+.arch-visual{background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:var(--radius-lg);padding:2rem;color:#e2e8f0;text-align:center;margin-bottom:1.5rem;overflow-x:auto}
+.arch-visual .eq-block{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:1rem 1.5rem;margin:.5rem;text-align:left;font-family:var(--font-mono);font-size:.85rem;line-height:1.7}
+.arch-visual .eq-block .hl{color:#5eead4;font-weight:700}.arch-visual .eq-block .hl2{color:#fbbf24;font-weight:700}
+.full-code-block{background:var(--bg-code);color:#e2e8f0;border-radius:var(--radius-lg);padding:1.5rem;font-family:var(--font-mono);font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre-wrap;box-shadow:var(--shadow-lg);max-height:70vh;overflow-y:auto}
+.full-code-block .kw{color:#c084fc}.full-code-block .fn{color:#60a5fa}.full-code-block .str{color:#a3e635}.full-code-block .num{color:#fb923c}.full-code-block .cm{color:#6b7280;font-style:italic}.full-code-block .anno{color:#f472b6;font-weight:700}
+.summary-table-wrap{overflow-x:auto;border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:1.5rem}
+.summary-table{width:100%;border-collapse:collapse;background:var(--bg-card);font-size:.9rem}
+.summary-table thead{background:var(--deep-blue);color:#fff}.summary-table thead th{padding:.85rem 1rem;text-align:left;font-weight:600}
+.summary-table tbody td{padding:.75rem 1rem;border-bottom:1px solid var(--border)}.summary-table tbody tr:hover{background:#f8fafc}
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.comparison-card{border-radius:var(--radius-lg);padding:1.5rem;text-align:center;box-shadow:var(--shadow)}
+.comparison-card.params{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #93c5fd}
+.comparison-card.hyperparams{background:linear-gradient(135deg,#f0fdf4,#ccfbf1);border:2px solid #5eead4}
+.comparison-card h4{font-size:1.1rem;margin-bottom:.5rem}.comparison-card ul{list-style:none;padding:0;text-align:left;display:inline-block}.comparison-card li{padding:.2rem 0;font-size:.88rem}
+.baseline-card{background:linear-gradient(135deg,#1a365d,#0d3b4e);color:#fff;border-radius:var(--radius-xl);padding:2rem;text-align:center;box-shadow:var(--shadow-xl)}
+.baseline-card h3{font-size:1.3rem;margin-bottom:1rem;color:#5eead4}
+.baseline-card .config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-top:1rem}
+.baseline-card .config-item{background:rgba(255,255,255,.08);border-radius:var(--radius);padding:.75rem}
+.baseline-card .config-item strong{display:block;color:#fbbf24;font-size:1rem}.baseline-card .config-item span{font-size:.78rem;opacity:.8}
+.back-to-top{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:var(--blue-mid);color:#fff;border:none;cursor:pointer;font-size:1.3rem;box-shadow:var(--shadow-lg);z-index:99;opacity:0;transform:translateY(20px);pointer-events:none;display:flex;align-items:center;justify-content:center;transition:var(--trans)}
+.back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.eq-explanation-card{background:#f8fafc;border-radius:var(--radius-lg);padding:1.8rem;margin-top:1.5rem;border:1px solid #cbd5e1}
+.eq-explanation-card h4{font-size:1.2rem;color:var(--deep-blue);margin-bottom:1rem}
+.eq-term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.8rem}
+.eq-term-item{background:#fff;border-radius:var(--radius);padding:1rem;box-shadow:0 1px 2px rgba(0,0,0,.05);border-left:5px solid var(--teal-light)}
+.eq-term-item .symbol{font-family:var(--font-mono);font-weight:700;color:var(--blue-mid);font-size:1.15rem}
+.eq-term-item .meaning{font-size:.85rem;color:var(--text-light);margin-top:.25rem}
+.quiz-wrap{max-width:780px;margin:0 auto}
+.quiz-progress-bar{background:var(--border);border-radius:999px;height:8px;margin-bottom:1.5rem;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue-mid),var(--teal-light));border-radius:999px;transition:width .4s}
+.quiz-question-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
+.quiz-q-num{font-size:.82rem;color:var(--text-muted);font-weight:600;margin-bottom:.5rem;text-transform:uppercase}
+.quiz-q-text{font-size:1.1rem;font-weight:700;color:var(--deep-blue);margin-bottom:1.25rem;line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:.6rem}
+.quiz-opt{padding:.85rem 1.1rem;border-radius:var(--radius);border:2px solid var(--border);background:var(--bg-card);cursor:pointer;font-size:.9rem;text-align:left;font-family:var(--font-sans);transition:var(--trans);display:flex;align-items:center;gap:.6rem}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue-mid);background:#eff6ff}
+.quiz-opt.selected{border-color:var(--blue-mid);background:#dbeafe}
+.quiz-opt.correct{border-color:var(--tip-border);background:var(--tip-bg);color:#166534}
+.quiz-opt.incorrect{border-color:var(--danger-border);background:var(--danger-bg);color:#991b1b}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt-letter{width:30px;height:30px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0}
+.quiz-opt.selected .quiz-opt-letter{background:var(--blue-mid);color:#fff}
+.quiz-opt.correct .quiz-opt-letter{background:var(--tip-border);color:#fff}
+.quiz-opt.incorrect .quiz-opt-letter{background:var(--danger-border);color:#fff}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:.75rem}
+.quiz-nav-btn{padding:.65rem 1.4rem;border-radius:999px;border:none;cursor:pointer;font-weight:600;font-size:.85rem;transition:var(--trans)}
+.quiz-nav-btn.prev{background:var(--border);color:var(--text)}.quiz-nav-btn.prev:hover{background:#cbd5e1}
+.quiz-nav-btn.next{background:var(--blue-mid);color:#fff}.quiz-nav-btn.next:hover{background:var(--deep-blue)}
+.quiz-nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.quiz-submit-btn{display:block;margin:1.5rem auto 0;padding:.8rem 2.5rem;border-radius:999px;border:none;cursor:pointer;font-weight:700;font-size:.95rem;background:var(--teal);color:#fff}.quiz-submit-btn:hover{background:#0f766e}
+.quiz-explanation{display:none;margin-top:1rem;padding:.9rem 1.1rem;border-radius:var(--radius-sm);font-size:.85rem;line-height:1.55;background:#fefce8;border-left:4px solid #eab308;color:#713f12}
+.quiz-explanation.show{display:block}
+.quiz-score-panel{display:none;text-align:center;padding:2rem}.quiz-score-panel.show{display:block}
+.quiz-score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--teal) calc(var(--score-pct)*1%),var(--border) 0)}
+.quiz-score-inner{width:110px;height:110px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.quiz-score-num{font-size:2.2rem;font-weight:800;color:var(--deep-blue)}
+.quiz-score-label{font-size:.75rem;color:var(--text-muted)}
+.quiz-grade{display:inline-block;padding:.45rem 1.5rem;border-radius:999px;font-weight:700;font-size:1rem;margin:.75rem 0}
+.quiz-grade.pass{background:var(--tip-bg);color:#166534}.quiz-grade.fail{background:var(--danger-bg);color:#991b1b}
+.quiz-retake-btn{display:inline-block;padding:.7rem 2rem;border-radius:999px;border:none;cursor:pointer;font-weight:600;font-size:.9rem;background:var(--blue-mid);color:#fff;margin-top:.75rem}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.comparison-grid{grid-template-columns:1fr}.tab-btn{font-size:.76rem;padding:.5rem .6rem;min-width:auto;flex:1 1 calc(33% - .3rem)}.header{padding:2rem 1rem 1.5rem}.header h1{font-size:1.6rem}.eq-term-grid{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header class="header"><div class="header-content">
+<div class="badge">🔧 Importance of Privacy and Security AI</div>
+<h1>Importance of Privacy and Security <span>AI</span></h1>
+<p class="tagline">Importance of Privacy and Security AI</p>
+<p class="intro">AI systems ingest vast amounts of personal data — from medical records to financial transactions to private conversations. Without robust privacy and security safeguards, AI becomes a vector for data breaches, surveillance, and adversarial exploitation. This guide covers the 10 most critical privacy and security factors for AI systems — from differential privacy to adversarial robustness — with practical code examples and CGAI exam-focused questions.</p>
+</div></header>
+
+<div class="container"><div class="infographic-area" id="infographicArea">
+<img id="infographicImg" src="images/PRIVACY_SECURITY_AI.png" alt="Privacy and Security AI Infographic" loading="lazy" onerror="handleImageFallback()">
+<div class="infographic-fallback" id="infographicFallback"><div style="text-align:center;color:#5eead4;font-weight:700;font-size:1.1rem;margin-bottom:1rem;">🔒 Privacy &amp; Security in AI</div>
+<div class="gru-diagram">
+<div class="gate-box"><strong>User Data</strong><code>Personal, sensitive</code><br><small style="color:#94a3b8;">Must be protected</small></div>
+<span class="arrow-sym">⟶</span>
+<div class="gate-box"><strong>Privacy Layer</strong><code>DP / FL / Encryption</code><br><small style="color:#94a3b8;">Privacy-preserving tech</small></div>
+<span class="arrow-sym">⟶</span>
+<div class="gate-box"><strong>Secure Model</strong><code>Trained &amp; Deployed</code><br><small style="color:#94a3b8;">Adversarially robust</small></div>
+<span class="arrow-sym">⟶</span>
+<div class="gate-box"><strong>Trust</strong><code>Privacy + Security = Trust</code><br><small style="color:#94a3b8;">Sustainable AI</small></div>
+</div><div style="text-align:center;color:#94a3b8;font-size:.78rem;margin-top:.75rem;">Data → Privacy-preserving training → Secure deployment → User trust</div></div>
+<p class="caption">📊 The privacy and security pipeline for trustworthy AI systems</p>
+</div></div>
+
+<div class="container"><nav class="tab-nav" id="tabNav">
+<button class="tab-btn active" data-tab="all-concepts">📋 Pillars</button>
+<button class="tab-btn" data-tab="architecture">🏗️ Tech</button>
+<button class="tab-btn" data-tab="training">⚡ Threats</button>
+<button class="tab-btn" data-tab="regularization">🛡️ Defense</button>
+<button class="tab-btn" data-tab="full-code">💻 Code</button>
+<button class="tab-btn" data-tab="summary">📊 Summary</button>
+<button class="tab-btn" data-tab="quiz">🧠 Quiz</button>
+</nav>
+
+<div class="tab-panel active" id="tab-all-concepts"><div class="card-grid">
+<div class="card"><div class="card-icon">🔒</div><h3>① Differential Privacy (DP)</h3><p class="card-desc">Mathematically guarantees that an individual's data cannot be inferred from model outputs. The gold standard for privacy-preserving ML.</p><div class="code-snippet"><span class="kw">from</span> opacus <span class="kw">import</span> PrivacyEngine
+privacy_engine = PrivacyEngine()
+model, optimizer, loader = privacy_engine.make_private(
+    model, optimizer, loader, <span class="fn">noise_multiplier</span>=<span class="num">1.1</span>, <span class="fn">max_grad_norm</span>=<span class="num">1.0</span>)</div><div class="tip-box"><span class="box-icon">💡</span>DP with ε ≤ 10 provides meaningful privacy. ε ≤ 1 is "strong" privacy. Tradeoff: lower ε → more noise → lower accuracy.</div></div>
+<div class="card"><div class="card-icon">🌐</div><h3>② Federated Learning (FL)</h3><p class="card-desc">Train models across decentralized devices without centralizing raw data. Data stays on user devices; only model updates are shared.</p><div class="code-snippet"><span class="kw">import</span> flwr <span class="kw">as</span> fl
+<span class="kw">class</span> <span class="fn">FlowerClient</span>(fl.client.NumPyClient):
+    <span class="kw">def</span> <span class="fn">fit</span>(<span class="kw">self</span>, params, config):
+        <span class="cm"># Train locally, share only gradients</span>
+        <span class="kw">return</span> updated_params, len(train_data), {}</div><div class="good-box"><span class="box-icon">✅</span>FL keeps sensitive data (medical, financial) on-device. Combine with DP for defense-in-depth privacy.</div></div>
+<div class="card"><div class="card-icon">🛡️</div><h3>③ Adversarial Robustness</h3><p class="card-desc">AI models are vulnerable to adversarial examples — imperceptible perturbations that cause misclassification. Robustness is a security requirement.</p><div class="code-snippet"><span class="kw">from</span> cleverhans.torch.attacks <span class="kw">import</span> FastGradientMethod
+fgsm = FastGradientMethod(model, <span class="fn">eps</span>=<span class="num">0.1</span>)
+adv_x = fgsm.generate(x)  <span class="cm"># Human-indistinguishable perturbation</span>
+<span class="cm"># Model may misclassify adv_x entirely</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Stop signs with tiny stickers fool self-driving cars. Adversarial robustness testing is mandatory for safety-critical AI.</div></div>
+<div class="card"><div class="card-icon">🔑</div><h3>④ Model Inversion &amp; Extraction</h3><p class="card-desc">Attackers can reconstruct training data from model outputs (inversion) or steal models through repeated queries (extraction). Both leak private information.</p><div class="code-snippet"><span class="cm"># Model inversion: reconstruct training faces from face recognition model</span>
+<span class="cm"># Model extraction: query API 10,000 times → train replica model</span>
+<span class="cm"># Defense: limit API queries, add noise, use DP training</span></div><div class="warn-box"><span class="box-icon">⚠️</span>A face recognition model can be inverted to reveal training images. This violates user privacy at a fundamental level.</div></div>
+<div class="card"><div class="card-icon">📜</div><h3>⑤ GDPR &amp; Data Protection Laws</h3><p class="card-desc">GDPR gives EU citizens the right to explanation, data deletion, and consent. AI systems must comply with data minimization, purpose limitation, and storage rules.</p><div class="code-snippet"><span class="cm"># GDPR key requirements for AI</span>
+requirements = {<span class="str">'right_to_explanation'</span>: <span class="str">'Art 22 — Automated decision transparency'</span>, <span class="str">'right_to_deletion'</span>: <span class="str">'Art 17 — Erase personal data on request'</span>, <span class="str">'data_minimization'</span>: <span class="str">'Art 5 — Collect only what is necessary'</span>}</div><div class="warn-box"><span class="box-icon">⚠️</span>GDPR fines up to €20M or 4% of global turnover. AI systems processing EU citizen data must comply.</div></div>
+<div class="card"><div class="card-icon">🔐</div><h3>⑥ Secure Multi-Party Computation (SMPC)</h3><p class="card-desc">Multiple parties can jointly compute a function over their private inputs without revealing those inputs to each other. Enables collaborative AI on sensitive data.</p><div class="code-snippet"><span class="cm"># SMPC: Alice and Bob want to compare data without sharing it</span>
+<span class="cm"># Alice: X = [1, 5, 3]  Bob: Y = [2, 4, 6]</span>
+<span class="cm"># Together they compute: f(X, Y) without either seeing the other's data</span>
+<span class="cm"># Used in: medical research across hospitals, financial fraud detection</span></div><div class="tip-box"><span class="box-icon">💡</span>SMPC enables AI training across competing organizations without exposing proprietary or private data.</div></div>
+<div class="card"><div class="card-icon">🧬</div><h3>⑦ Homomorphic Encryption (HE)</h3><p class="card-desc">Perform computations on encrypted data without decrypting it. The AI model operates on ciphertext and produces encrypted results only the data owner can decrypt.</p><div class="code-snippet"><span class="cm"># Homomorphic encryption flow</span>
+<span class="cm"># Client encrypts: c = Encrypt(data, public_key)</span>
+<span class="cm"># Server computes: c_result = model(c)  # On encrypted data!</span>
+<span class="cm"># Client decrypts: result = Decrypt(c_result, private_key)</span></div><div class="good-box"><span class="box-icon">✅</span>HE provides the strongest privacy guarantee — the server never sees raw data. Computationally expensive but rapidly improving.</div></div>
+<div class="card"><div class="card-icon">🎭</div><h3>⑧ Data Poisoning Attacks</h3><p class="card-desc">Attackers inject malicious data into training sets to compromise model behavior. Backdoor attacks cause specific misclassifications on trigger inputs.</p><div class="code-snippet"><span class="cm"># Backdoor attack example</span>
+<span class="cm"># Attacker adds images with subtle trigger (small yellow square)</span>
+<span class="cm"># Model learns: "if yellow square → classify as 'stop sign'"</span>
+<span class="cm"># Defense: data sanitization, anomaly detection, robust training</span></div><div class="warn-box"><span class="box-icon">⚠️</span>3% poisoned data can install a backdoor with 99% success rate. Validate training data provenance rigorously.</div></div>
+<div class="card"><div class="card-icon">🧪</div><h3>⑨ Membership Inference Attacks</h3><p class="card-desc">Attackers determine whether a specific individual's data was used to train the model. This leaks sensitive information (e.g., "was this patient in the cancer study?").</p><div class="code-snippet"><span class="kw">def</span> <span class="fn">membership_inference</span>(model, target_record):
+    loss = model.compute_loss(target_record)
+    <span class="cm"># Lower loss → more likely in training set</span>
+    <span class="kw">return</span> loss < threshold  <span class="cm"># Attacker's inference</span>
+<span class="cm"># Defense: differential privacy training makes this attack unreliable</span></div><div class="tip-box"><span class="box-icon">💡</span>DP training is the most effective defense against membership inference. ε ≤ 8 provides strong protection.</div></div>
+<div class="card"><div class="card-icon">📋</div><h3>⑩ Supply Chain Security</h3><p class="card-desc">AI models depend on third-party libraries, pre-trained weights, and cloud infrastructure. Supply chain compromises can inject backdoors or exfiltrate data.</p><div class="code-snippet"><span class="cm"># AI supply chain risks</span>
+risks = [<span class="str">'Compromised pre-trained models (HuggingFace, PyTorch Hub)'</span>, <span class="str">'Malicious dependencies (pip, npm)'</span>, <span class="str">'Cloud provider access to training data'</span>, <span class="str">'Hardware backdoors (TPU, GPU firmware)'</span>]
+<span class="cm"># Defense: verify model hashes, audit dependencies, use trusted execution environments</span></div><div class="warn-box"><span class="box-icon">⚠️</span>Always verify pre-trained model checksums. A compromised foundation model infects every downstream application.</div></div>
+</div></div>
+
+<div class="tab-panel" id="tab-architecture"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">🏗️ Privacy-Preserving Technologies</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">Core mathematical frameworks and architectures for building privacy into AI systems.</p>
+<div class="arch-visual"><div style="font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:1rem;">🔬 Core Privacy Equations</div>
+<div class="eq-block"><span class="hl">Differential Privacy (Gaussian):</span><br>M(D) = f(D) + <span class="hl2">N(0, σ²·C²·I)</span><br>where σ = √(2·ln(1.25/δ))/ε</div>
+<div class="eq-block"><span class="hl">DP-SGD Gradient Update:</span><br>g̃ = (1/B) Σ<sub>i</sub> <span class="hl2">clip</span>(∇L<sub>i</sub>, C) + <span class="hl2">N(0, σ²C²I)</span></div>
+<div class="eq-block"><span class="hl">Federated Averaging (FedAvg):</span><br>w<sub>t+1</sub> = Σ<sub>k</sub> (n<sub>k</sub>/n) · <span class="hl2">w<sup>k</sup><sub>t+1</sub></span></div>
+<div class="eq-block"><span class="hl">Adversarial Robustness (PGD):</span><br>x<sup>t+1</sup> = Π<sub>x+S</sub>(x<sup>t</sup> + <span class="hl2">α·sign(∇<sub>x</sub>L(x<sup>t</sup>, y))</span>)</div></div>
+<div class="eq-explanation-card"><h4>📖 Privacy Technology Breakdown</h4>
+<div class="eq-term-grid">
+<div class="eq-term-item"><div class="symbol">ε (Privacy Budget)</div><div class="meaning">Controls DP strength. Lower ε = stronger privacy but more noise. ε ≤ 1 is strong; ε ≤ 10 is moderate. Tradeoff with accuracy.</div></div>
+<div class="eq-term-item"><div class="symbol">σ (Noise Multiplier)</div><div class="meaning">Standard deviation of Gaussian noise added to gradients. Higher σ = more privacy but slower convergence.</div></div>
+<div class="eq-term-item"><div class="symbol">C (Clipping Norm)</div><div class="meaning">Maximum L2 norm for per-sample gradients. Prevents any single sample from dominating the update. Key DP hyperparameter.</div></div>
+<div class="eq-term-item"><div class="symbol">δ (Failure Probability)</div><div class="meaning">Probability that DP guarantee fails. Must be cryptographically small: δ ≪ 1/N where N is dataset size. Typically δ = 10⁻⁵.</div></div>
+<div class="eq-term-item"><div class="symbol">FedAvg</div><div class="meaning">Federated Averaging: clients train locally, server aggregates weighted by dataset size. Protects raw data while enabling collaborative learning.</div></div>
+<div class="eq-term-item"><div class="symbol">PGD Attack</div><div class="meaning">Projected Gradient Descent: strongest first-order adversarial attack. Iteratively perturbs input within ε-ball to maximize loss. Used for robustness evaluation.</div></div>
+</div></div></div>
+
+<div class="tab-panel" id="tab-training"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">⚡ AI Security Threat Landscape</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">Understanding the threat model is the first step to building secure AI. These are the most critical attack vectors.</p>
+<div class="card-grid">
+<div class="card"><div class="card-icon">🎯</div><h3>Evasion Attacks (Inference-Time)</h3><p class="card-desc">Attacker modifies input at inference time to cause misclassification. Adversarial patches on stop signs, subtle noise on images, malicious prompts.</p><div class="code-snippet"><span class="cm"># Adversarial example: panda → gibbon</span>
+perturbation = eps * sign(grad(loss, x))
+adv_x = x + perturbation  <span class="cm"># Visually identical, different prediction</span></div><div class="warn-box"><span class="box-icon">⚠️</span>LLMs are vulnerable to prompt injection — adversarial prompts that bypass safety filters and extract harmful outputs.</div></div>
+<div class="card"><div class="card-icon">💉</div><h3>Data Poisoning (Training-Time)</h3><p class="card-desc">Malicious data injected into training sets creates backdoors or degrades model performance. Can be targeted (specific trigger) or untargeted (general degradation).</p><div class="code-snippet"><span class="cm"># Backdoor: add trigger to training images</span>
+poisoned_img = add_trigger(clean_img, trigger=<span class="str">'small_pattern'</span>)
+poisoned_label = target_class  <span class="cm"># Attacker's desired class</span></div></div>
+<div class="card"><div class="card-icon">🔓</div><h3>Model Theft / Extraction</h3><p class="card-desc">Attacker queries model API thousands of times to train a replica. Steals intellectual property and enables further attacks (white-box adversarial, inversion).</p><div class="code-snippet"><span class="cm"># Model extraction via API queries</span>
+<span class="kw">for</span> x <span class="kw">in</span> synthetic_queries:
+    y_hat = target_api.predict(x)
+    replica_model.fit(x, y_hat)  <span class="cm"># Builds a copy</span></div></div>
+<div class="card"><div class="card-icon">🕵️</div><h3>Privacy Leakage via Outputs</h3><p class="card-desc">Model outputs leak training data information. GPT models have been shown to memorize and regurgitate training data verbatim, including PII.</p><div class="code-snippet"><span class="cm"># LLM memorization example</span>
+<span class="cm"># Prompt: "The email address of John Smith is"</span>
+<span class="cm"># Model: "john.smith@company.com" ← leaked from training data!</span></div></div>
+</div></div>
+
+<div class="tab-panel" id="tab-regularization"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">🛡️ Defense &amp; Mitigation Strategies</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">Proven defense mechanisms to protect AI systems against privacy and security threats.</p>
+<div class="card-grid">
+<div class="card"><div class="card-icon">🔒</div><h3>Differential Privacy Training</h3><p class="card-desc">The single most effective defense against membership inference and model inversion. Add calibrated noise during training.</p><div class="code-snippet">privacy_engine = PrivacyEngine()
+model, opt, loader = privacy_engine.make_private(
+    model, opt, loader, <span class="fn">noise_multiplier</span>=<span class="num">1.1</span>, <span class="fn">max_grad_norm</span>=<span class="num">1.0</span>)
+<span class="cm"># Also protects against: membership inference, model inversion</span></div></div>
+<div class="card"><div class="card-icon">🛡️</div><h3>Adversarial Training</h3><p class="card-desc">Train on adversarial examples to improve robustness. The model learns to resist perturbations. Most effective defense against evasion attacks.</p><div class="code-snippet"><span class="kw">for</span> x, y <span class="kw">in</span> dataloader:
+    adv_x = pgd_attack(model, x, y, <span class="fn">eps</span>=<span class="num">0.1</span>)
+    loss = criterion(model(adv_x), y) + criterion(model(x), y)
+    <span class="cm"># Train on both clean and adversarial examples</span></div></div>
+<div class="card"><div class="card-icon">🧹</div><h3>Data Sanitization</h3><p class="card-desc">Filter training data for outliers, anomalies, and poisoned samples. Detect and remove suspicious inputs before they reach training.</p><div class="code-snippet"><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> IsolationForest
+detector = IsolationForest(<span class="fn">contamination</span>=<span class="num">0.01</span>)
+outliers = detector.fit_predict(X_train)
+clean_X = X_train[outliers == <span class="num">1</span>]  <span class="cm"># Remove 1% most suspicious</span></div></div>
+<div class="card"><div class="card-icon">🧪</div><h3>Red-Teaming &amp; Penetration Testing</h3><p class="card-desc">Dedicated security teams attempt to break models before deployment. Catches vulnerabilities that automated testing misses.</p><div class="code-snippet">red_team_tasks = [<span class="str">'Prompt injection attacks'</span>, <span class="str">'Adversarial input generation'</span>, <span class="str">'Model extraction attempts'</span>, <span class="str">'PII extraction from outputs'</span>, <span class="str">'Data poisoning simulation'</span>]</div></div>
+</div></div>
+
+<div class="tab-panel" id="tab-full-code"><h2 style="margin-bottom:.5rem;color:var(--deep-blue);">💻 Full Code — Privacy-Preserving &amp; Secure AI Pipeline</h2>
+<p style="color:var(--text-light);margin-bottom:1rem;">Complete pipeline combining differential privacy, federated learning, and adversarial robustness testing.</p>
+<div class="full-code-block">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="cm">"""Privacy-Preserving & Secure AI Pipeline."""</span>
+
+<span class="kw">import</span> torch, torch.nn <span class="kw">as</span> nn
+<span class="kw">from</span> opacus <span class="kw">import</span> PrivacyEngine
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 1. MODEL DEFINITION</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">class</span> <span class="fn">SecureClassifier</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, input_dim=<span class="num">100</span>, num_classes=<span class="num">10</span>):
+        <span class="kw">super</span>().__init__()
+        <span class="kw">self</span>.net = nn.Sequential(
+            nn.Linear(input_dim, <span class="num">256</span>), nn.ReLU(), nn.Dropout(<span class="num">0.2</span>),
+            nn.Linear(<span class="num">256</span>, <span class="num">128</span>), nn.ReLU(), nn.Dropout(<span class="num">0.2</span>),
+            nn.Linear(<span class="num">128</span>, num_classes)
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(<span class="kw">self</span>, x): <span class="kw">return</span> <span class="kw">self</span>.net(x)
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 2. DIFFERENTIAL PRIVACY SETUP</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+model = SecureClassifier()
+optimizer = torch.optim.Adam(model.parameters(), <span class="fn">lr</span>=<span class="num">1e-3</span>)
+
+privacy_engine = PrivacyEngine()
+model, optimizer, train_loader = privacy_engine.make_private(
+    <span class="fn">module</span>=model,
+    <span class="fn">optimizer</span>=optimizer,
+    <span class="fn">data_loader</span>=train_loader,
+    <span class="fn">noise_multiplier</span>=<span class="num">1.1</span>,       <span class="cm"># σ — controls privacy strength</span>
+    <span class="fn">max_grad_norm</span>=<span class="num">1.0</span>,          <span class="cm"># C — gradient clipping threshold</span>
+)
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 3. ADVERSARIAL ROBUSTNESS TESTING</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">pgd_attack</span>(model, x, y, eps=<span class="num">0.1</span>, alpha=<span class="num">0.01</span>, steps=<span class="num">10</span>):
+    x_adv = x.clone().detach().requires_grad_(<span class="kw">True</span>)
+    <span class="kw">for</span> _ <span class="kw">in</span> range(steps):
+        loss = nn.CrossEntropyLoss()(model(x_adv), y)
+        loss.backward()
+        <span class="kw">with</span> torch.no_grad():
+            x_adv = x_adv + alpha * x_adv.grad.sign()
+            x_adv = torch.clamp(x_adv, x - eps, x + eps)  <span class="cm"># ε-ball constraint</span>
+            x_adv = torch.clamp(x_adv, <span class="num">0</span>, <span class="num">1</span>)
+        x_adv.requires_grad_(<span class="kw">True</span>)
+    <span class="kw">return</span> x_adv.detach()
+
+<span class="kw">def</span> <span class="fn">robustness_eval</span>(model, test_loader, eps=<span class="num">0.1</span>):
+    clean_acc, robust_acc = <span class="num">0</span>, <span class="num">0</span>
+    total = <span class="num">0</span>
+    <span class="kw">for</span> x, y <span class="kw">in</span> test_loader:
+        total += x.size(<span class="num">0</span>)
+        clean_acc += (model(x).argmax(<span class="num">1</span>) == y).sum().item()
+        x_adv = pgd_attack(model, x, y, eps)
+        robust_acc += (model(x_adv).argmax(<span class="num">1</span>) == y).sum().item()
+    <span class="kw">return</span> clean_acc/total, robust_acc/total
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 4. MEMBERSHIP INFERENCE DEFENSE AUDIT</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">membership_inference_audit</span>(model, train_loader, test_loader):
+    train_losses = []; test_losses = []
+    model.eval()
+    <span class="kw">with</span> torch.no_grad():
+        <span class="kw">for</span> x, y <span class="kw">in</span> train_loader:
+            train_losses.append(nn.CrossEntropyLoss(<span class="fn">reduction</span>=<span class="str">'none'</span>)(model(x), y))
+        <span class="kw">for</span> x, y <span class="kw">in</span> test_loader:
+            test_losses.append(nn.CrossEntropyLoss(<span class="fn">reduction</span>=<span class="str">'none'</span>)(model(x), y))
+    <span class="cm"># If train loss distribution ≈ test loss distribution → DP is working</span>
+    train_mean = torch.cat(train_losses).mean().item()
+    test_mean = torch.cat(test_losses).mean().item()
+    <span class="kw">print</span>(<span class="str">f"Train loss: {train_mean:.4f} | Test loss: {test_mean:.4f}"</span>)
+    <span class="kw">print</span>(<span class="str">f"Privacy audit: {'✅ PASS' if abs(train_mean - test_mean) < 0.1 else '⚠️ Review'}"</span>)
+
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="cm"># 5. SECURE TRAINING LOOP</span>
+<span class="cm"># ══════════════════════════════════════════</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> range(<span class="num">20</span>):
+    model.train()
+    losses = []
+    <span class="kw">for</span> x, y <span class="kw">in</span> train_loader:
+        optimizer.zero_grad()
+        loss = nn.CrossEntropyLoss()(model(x), y)
+        loss.backward()
+        optimizer.step()
+        losses.append(loss.item())
+    eps = privacy_engine.get_epsilon(delta=<span class="num">1e-5</span>)  <span class="cm"># Track privacy spend</span>
+    <span class="kw">print</span>(<span class="str">f"Epoch {epoch+1}: loss={np.mean(losses):.4f}, ε={eps:.2f}"</span>)
+
+clean, robust = robustness_eval(model, test_loader)
+<span class="kw">print</span>(<span class="str">f"Clean accuracy: {clean:.3f} | Robust accuracy (ε=0.1): {robust:.3f}"</span>)
+membership_inference_audit(model, train_loader, test_loader)
+<span class="kw">print</span>(<span class="str">"✅ Privacy-preserving + adversarially robust pipeline complete."</span>)
+</div>
+<p style="margin-top:.75rem;font-size:.85rem;color:var(--text-muted);text-align:center;">⬆️ Production-ready privacy + security pipeline: DP training, adversarial testing, membership inference audit.</p>
+</div>
+
+<div class="tab-panel" id="tab-summary"><h2 style="margin-bottom:1rem;color:var(--deep-blue);">📊 Summary &amp; Comparison</h2>
+<div class="summary-table-wrap"><table class="summary-table">
+<thead><tr><th>#</th><th>Privacy/Security Factor</th><th>Threat Addressed</th><th>Key Defense</th></tr></thead>
+<tbody>
+<tr><td>①</td><td><strong>Differential Privacy</strong></td><td>Membership inference, model inversion</td><td>DP-SGD with ε ≤ 10</td></tr>
+<tr><td>②</td><td><strong>Federated Learning</strong></td><td>Centralized data collection</td><td>FedAvg, secure aggregation</td></tr>
+<tr><td>③</td><td><strong>Adversarial Robustness</strong></td><td>Evasion attacks, adversarial examples</td><td>Adversarial training, PGD</td></tr>
+<tr><td>④</td><td><strong>Model Inversion</strong></td><td>Training data reconstruction</td><td>DP, output perturbation</td></tr>
+<tr><td>⑤</td><td><strong>GDPR Compliance</strong></td><td>Regulatory penalties</td><td>Data minimization, consent, deletion</td></tr>
+<tr><td>⑥</td><td><strong>Secure MPC</strong></td><td>Multi-party data sharing risks</td><td>Cryptographic protocols</td></tr>
+<tr><td>⑦</td><td><strong>Homomorphic Encryption</strong></td><td>Server-side data exposure</td><td>Compute on encrypted data</td></tr>
+<tr><td>⑧</td><td><strong>Data Poisoning</strong></td><td>Backdoor attacks, training corruption</td><td>Data sanitization, anomaly detection</td></tr>
+<tr><td>⑨</td><td><strong>Membership Inference</strong></td><td>Training data membership leakage</td><td>Differential privacy training</td></tr>
+<tr><td>⑩</td><td><strong>Supply Chain Security</strong></td><td>Compromised dependencies</td><td>Hash verification, dependency audit</td></tr>
+</tbody></table></div>
+<div class="comparison-grid">
+<div class="comparison-card params"><h4>🔴 Insecure / Privacy-Violating AI</h4><ul><li>❌ Raw data centralized without protections</li><li>❌ No adversarial robustness testing</li><li>❌ Training data extractable from outputs</li><li>❌ No membership inference defense</li><li>📌 <em>Regulatory fines + data breaches</em></li></ul></div>
+<div class="comparison-card hyperparams"><h4>🟢 Privacy-Preserving &amp; Secure AI</h4><ul><li>✅ Differential privacy during training</li><li>✅ Adversarially robust to perturbations</li><li>✅ Federated learning keeps data local</li><li>✅ Red-teamed before deployment</li><li>📌 <em>User trust + regulatory compliance</em></li></ul></div>
+</div>
+<div class="baseline-card"><h3>🚀 Privacy &amp; Security Checklist</h3>
+<div class="config-grid">
+<div class="config-item"><strong>DP</strong><span>ε ≤ 10 for training</span></div><div class="config-item"><strong>FL</strong><span>Data stays on-device</span></div><div class="config-item"><strong>Adv</strong><span>PGD robustness tested</span></div><div class="config-item"><strong>Audit</strong><span>Membership inference passed</span></div><div class="config-item"><strong>GDPR</strong><span>Right to deletion supported</span></div><div class="config-item"><strong>Supply</strong><span>All dependencies verified</span></div>
+</div></div></div>
+
+<div class="tab-panel" id="tab-quiz"><h2 style="margin-bottom:.5rem;color:var(--deep-blue);">🧠 Quiz — Privacy &amp; Security in AI</h2>
+<p style="color:var(--text-light);margin-bottom:1.25rem;">20 questions covering differential privacy, adversarial attacks, federated learning, and AI security threats.</p>
+<div class="quiz-wrap" id="quizWrap">
+<div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgress" style="width:0%"></div></div>
+<div class="quiz-question-card" id="quizCard">
+<div class="quiz-q-num" id="quizQNum"></div><div class="quiz-q-text" id="quizQText"></div>
+<div class="quiz-options" id="quizOptions"></div><div class="quiz-explanation" id="quizExplanation"></div>
+<div class="quiz-nav"><button class="quiz-nav-btn prev" id="quizPrev" disabled>← Previous</button><span style="font-size:.85rem;color:var(--text-muted)" id="quizCounter"></span><button class="quiz-nav-btn next" id="quizNext">Next →</button></div>
+</div>
+<button class="quiz-submit-btn" id="quizSubmit">📝 Submit Quiz</button>
+<div class="quiz-score-panel" id="quizScorePanel"><div class="quiz-score-circle" id="quizScoreCircle" style="--score-pct:0"><div class="quiz-score-inner"><span class="quiz-score-num" id="quizScoreNum">0</span><span class="quiz-score-label">/ 20</span></div></div><div class="quiz-grade" id="quizGrade"></div><p style="font-size:.9rem;color:var(--text-light);margin-bottom:.75rem" id="quizMsg"></p><button class="quiz-retake-btn" id="quizRetake">🔄 Retake Quiz</button></div>
+</div></div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Back to top">↑</button>
+<script>
+function hif(){const i=document.getElementById('infographicImg'),f=document.getElementById('infographicFallback');if(i&&f){i.style.display='none';f.style.display='block'}}
+window.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('infographicImg');if(i&&!i.complete)setTimeout(()=>{if(!i.complete||i.naturalWidth===0)hif()},3000);else if(i&&i.naturalWidth===0)hif()});
+const tn=document.getElementById('tabNav'),tb=tn.querySelectorAll('.tab-btn'),tp=document.querySelectorAll('.tab-panel');
+tb.forEach(b=>b.addEventListener('click',()=>{const t=b.getAttribute('data-tab');tb.forEach(x=>x.classList.remove('active'));tp.forEach(p=>p.classList.remove('active'));b.classList.add('active');const p=document.getElementById('tab-'+t);if(p){p.classList.add('active');p.style.animation='none';p.offsetHeight;p.style.animation='fadeSlideIn 0.4s ease';if(t==='quiz')iq()}if(window.innerWidth<768)p?.scrollIntoView({behavior:'smooth',block:'start'})}));
+const bt=document.getElementById('backToTop');window.addEventListener('scroll',()=>bt.classList.toggle('visible',window.scrollY>500));bt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const qd=[
+{q:"What does the ε parameter control in differential privacy?",opts:["Model accuracy only","Privacy budget — lower ε means stronger privacy","Training speed","Batch size"],ans:1,exp:"ε is the privacy budget in DP. Lower values (ε≤1) provide stronger privacy guarantees but add more noise. Typical range: 0.1–10."},
+{q:"What is federated learning?",opts:["Training on a single server","Training models across decentralized devices without centralizing raw data","A type of adversarial attack","A database technology"],ans:1,exp:"Federated learning trains models across distributed devices (phones, hospitals) without collecting raw data centrally. Only model updates are shared."},
+{q:"What is an adversarial example in ML security?",opts:["A correctly classified image","An input with imperceptible perturbation that causes misclassification","A very large input","A grayscale image"],ans:1,exp:"Adversarial examples are inputs modified with tiny, human-imperceptible perturbations that cause models to misclassify with high confidence."},
+{q:"What is model inversion?",opts:["Flipping the model architecture","Reconstructing training data from model outputs or parameters","Training a model backwards","Inverting the loss function"],ans:1,exp:"Model inversion attacks reconstruct training data (e.g., faces) from model parameters or outputs, violating training data privacy."},
+{q:"What is the maximum fine under GDPR for AI violations?",opts:["€1M or 1%","€10M or 2%","€20M or 4% of global turnover","€50M or 10%"],ans:2,exp:"GDPR fines can reach €20 million or 4% of global annual turnover, whichever is higher, for the most serious violations."},
+{q:"What does DP-SGD stand for?",opts:["Deep Programming Stochastic Gradient Descent","Differentially Private Stochastic Gradient Descent","Double Precision SGD","Distributed Parallel SGD"],ans:1,exp:"DP-SGD is the standard algorithm for training neural networks with differential privacy guarantees. It clips gradients and adds calibrated Gaussian noise."},
+{q:"What is a membership inference attack?",opts:["Guessing model architecture","Determining whether a specific individual's data was used in training","Inferring the loss function","Predicting model size"],ans:1,exp:"Membership inference determines if a specific record was in the training set. E.g., 'Was this patient's data used to train the cancer detection model?'"},
+{q:"What is the purpose of gradient clipping in DP-SGD?",opts:["To speed up training","To bound the influence of any single training example on the model update","To increase model capacity","To reduce memory usage"],ans:1,exp:"Gradient clipping (norm C) limits how much any single sample can influence the gradient update — essential for bounded sensitivity in DP."},
+{q:"What is homomorphic encryption in AI?",opts:["Encrypting model weights","Performing computations on encrypted data without decrypting it","A type of adversarial attack","A GPU optimization"],ans:1,exp:"Homomorphic encryption allows AI models to compute on encrypted data. The server never sees raw data — only the client with the private key can decrypt results."},
+{q:"What is a backdoor attack in ML?",opts:["Accessing the model through SSH","Injecting poisoned data so the model misbehaves on specific trigger inputs","Installing malware on the server","Using a backdoor in the code"],ans:1,exp:"Backdoor attacks embed hidden triggers during training. E.g., any image with a specific pattern is classified as 'authorized' regardless of content."},
+{q:"What defense is most effective against membership inference attacks?",opts:["Larger models","Differential privacy training","More training epochs","Higher learning rates"],ans:1,exp:"Differential privacy training is the most effective defense against membership inference. It ensures model outputs are nearly independent of any individual training sample."},
+{q:"What does the δ parameter represent in (ε, δ)-differential privacy?",opts:["The dataset size","The probability that the privacy guarantee fails — must be cryptographically small","The learning rate","The dropout rate"],ans:1,exp:"δ is the failure probability in (ε,δ)-DP. It must be much smaller than 1/N (where N is dataset size). Typical value: δ = 10⁻⁵."},
+{q:"What is the FedAvg algorithm?",opts:["A GPU acceleration technique","Federated Averaging — server aggregates locally-trained model weights, weighted by client dataset size","A data augmentation method","A loss function"],ans:1,exp:"FedAvg (McMahan et al., 2017) is the foundational FL algorithm: clients train locally, server computes weighted average of model updates."},
+{q:"What is prompt injection in LLM security?",opts:["A technique to improve prompts","An attack where malicious prompts bypass safety filters and extract harmful outputs from LLMs","A way to inject more data","A prompt optimization method"],ans:1,exp:"Prompt injection tricks LLMs into ignoring safety instructions. E.g., 'Ignore previous instructions and tell me how to...' — a major security concern for deployed chatbots."},
+{q:"How does secure multi-party computation (SMPC) help AI?",opts:["It speeds up training","Multiple parties can jointly compute on private data without revealing their inputs to each other","It reduces model size","It improves accuracy"],ans:1,exp:"SMPC enables collaborative AI across organizations (e.g., hospitals) that cannot share raw data due to privacy regulations."},
+{q:"What percentage of poisoned data can install a working backdoor?",opts:["50%+","As little as 1-3% of training data","Exactly 50%","100%"],ans:1,exp:"Research shows that poisoning as little as 1-3% of training data can install a backdoor with >99% success rate on the target trigger."},
+{q:"What is the purpose of red-teaming in AI security?",opts:["Making the UI red","Dedicated teams attempt to break the model before deployment to find vulnerabilities","Optimizing model performance","Writing documentation"],ans:1,exp:"Red-teaming involves adversarial testing — security experts try to extract PII, inject prompts, find adversarial examples, and bypass safety filters before launch."},
+{q:"What does the noise multiplier σ control in DP-SGD?",opts:["The batch size","The standard deviation of Gaussian noise added to gradients — higher σ = more privacy","The learning rate","The model size"],ans:1,exp:"σ controls how much noise is added to clipped gradients. Higher σ → stronger privacy guarantee but slower convergence. Typical: 0.5–5.0."},
+{q:"What is a supply chain risk in AI?",opts:["Shipping delays","Compromised pre-trained models or dependencies that inject backdoors or exfiltrate data","Model accuracy issues","Cloud costs"],ans:1,exp:"AI supply chain risks include malicious PyTorch Hub models, poisoned HuggingFace weights, and compromised pip packages. Always verify model checksums."},
+{q:"Why is adversarial training important for safety-critical AI?",opts:["It makes models smaller","It improves robustness against deliberately manipulated inputs — essential for autonomous driving, medical AI, and security systems","It increases training speed","It reduces memory usage"],ans:1,exp:"Adversarial training (training on PGD-generated examples) is the most effective defense against evasion attacks in safety-critical applications like self-driving cars and medical diagnosis."},
+];
+let qs={ci:0,an:new Array(qd.length).fill(-1),su:false,in:false};
+function rq(){const q=qd[qs.ci];document.getElementById('quizQNum').textContent=`Question ${qs.ci+1} of ${qd.length}`;document.getElementById('quizQText').textContent=q.q;document.getElementById('quizCounter').textContent=`${qs.ci+1} / ${qd.length}`;const L=['A','B','C','D'];let o='';q.opts.forEach((opt,i)=>{let c='quiz-opt';if(qs.su){if(i===q.ans)c+=' correct';else if(i===qs.an[qs.ci])c+=' incorrect'}else if(i===qs.an[qs.ci])c+=' selected';o+=`<button class="${c}" data-idx="${i}" ${qs.su?'disabled':''}><span class="quiz-opt-letter">${L[i]}</span>${opt}</button>`});document.getElementById('quizOptions').innerHTML=o;const ex=document.getElementById('quizExplanation');if(qs.su){ex.textContent='💡 '+q.exp;ex.classList.add('show')}else ex.classList.remove('show');document.getElementById('quizPrev').disabled=qs.ci===0;document.getElementById('quizNext').disabled=qs.ci===qd.length-1;const an=qs.an.filter(a=>a>=0).length;document.getElementById('quizProgress').style.width=((an/qd.length)*100)+'%';document.getElementById('quizSubmit').style.display=qs.su?'none':'block';document.getElementById('quizCard').style.display=qs.su?'none':'block';document.querySelector('.quiz-progress-bar').style.display=qs.su?'none':'block';document.getElementById('quizScorePanel').classList.toggle('show',qs.su)}
+function sa(i){if(qs.su)return;qs.an[qs.ci]=i;rq()}
+function nq(d){const n=qs.ci+d;if(n>=0&&n<qd.length){qs.ci=n;rq()}}
+function sq(){const u=qs.an.filter(a=>a<0).length;if(u>0&&!confirm(`You have ${u} unanswered. Submit anyway?`))return;qs.su=true;qs.ci=0;const s=qs.an.reduce((a,v,i)=>a+(v===qd[i].ans?1:0),0);const p=Math.round((s/qd.length)*100);document.getElementById('quizScoreNum').textContent=s;document.getElementById('quizScoreCircle').style.setProperty('--score-pct',p);const g=document.getElementById('quizGrade');if(p>=70){g.textContent='✅ PASS';g.className='quiz-grade pass';document.getElementById('quizMsg').textContent=`${s}/${qd.length} (${p}%). You understand AI privacy & security.`}else{g.textContent='❌ NEEDS REVIEW';g.className='quiz-grade fail';document.getElementById('quizMsg').textContent=`${s}/${qd.length} (${p}%). Review DP, FL, and adversarial attacks.`}rq()}
+function rk(){qs={ci:0,an:new Array(qd.length).fill(-1),su:false,in:true};rq()}
+function iq(){if(qs.in)return;qs.in=true;rq();document.getElementById('quizOptions').addEventListener('click',e=>{const b=e.target.closest('.quiz-opt');if(b&&!qs.su)sa(parseInt(b.dataset.idx))});document.getElementById('quizPrev').addEventListener('click',()=>nq(-1));document.getElementById('quizNext').addEventListener('click',()=>nq(1));document.getElementById('quizSubmit').addEventListener('click',sq);document.getElementById('quizRetake').addEventListener('click',rk)}
+console.log('✅ Privacy_Security_AI.html ready. 7 tabs + 20-question quiz.');
+</script></body></html>
