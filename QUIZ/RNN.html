@@ -1,0 +1,2747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RNN & Transformers – Practice Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>RNN & Transformers · 150+ questions</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  150+ QUESTIONS — based on RNN and Transformer documents
+        //  Topics: RNNs, LSTMs, GRUs, Bidirectional RNNs, Transformers,
+        //  Attention, Self-Attention, Positional Encoding, BERT, GPT,
+        //  Sentiment Analysis, Weather Forecasting, Music Generation,
+        //  Stock Market Prediction
+        // ============================================================
+        const QUESTIONS = [
+            // ---- RNN BASICS (1–25) ----
+            {
+                id: 1,
+                category: 'RNN Basics',
+                question: 'What are Recurrent Neural Networks (RNNs) primarily designed for?',
+                options: [
+                    'Sequential data with temporal dependencies',
+                    'Image data only',
+                    'Tabular data',
+                    'Unstructured text only'
+                ],
+                correct: 0,
+                explanation: 'RNNs are designed for sequential data and have memory cells to capture temporal information.【4†L2】'
+            }, {
+                id: 2,
+                category: 'RNN Basics',
+                question: 'Which of the following is a key feature of RNNs?',
+                options: [
+                    'Memory cells to capture temporal information',
+                    'Convolutional filters',
+                    'Feedforward connections only',
+                    'No memory of past inputs'
+                ],
+                correct: 0,
+                explanation: 'RNNs have memory cells that allow them to capture temporal information and context from previous inputs.【4†L2】'
+            }, {
+                id: 3,
+                category: 'RNN Basics',
+                question: 'RNNs are commonly used in which of the following applications?',
+                options: [
+                    'Natural Language Processing (NLP)',
+                    'Image classification only',
+                    'Object detection',
+                    'Only regression tasks'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in NLP, time series analysis, and other sequential data applications.【4†L2】'
+            }, {
+                id: 4,
+                category: 'RNN Basics',
+                question: 'What type of data is RNNs particularly well-suited for?',
+                options: [
+                    'Time-series data, text, video frames, and audio signals',
+                    'Only images',
+                    'Only tabular data',
+                    'Only unstructured text'
+                ],
+                correct: 0,
+                explanation: 'RNNs are designed for sequential data including time-series, natural language text, video frames, and audio signals.【5†L3】'
+            }, {
+                id: 5,
+                category: 'RNN Basics',
+                question: 'Why is sequential memory important in RNNs?',
+                options: [
+                    'To retain context and learn temporal dependencies',
+                    'To increase model complexity',
+                    'To reduce training time',
+                    'To eliminate the need for activation functions'
+                ],
+                correct: 0,
+                explanation: 'Sequential memory allows RNNs to retain context, capture temporal dependencies, and learn from past to predict future.【5†L4】'
+            }, {
+                id: 6,
+                category: 'RNN Basics',
+                question: 'How do RNNs process sequences?',
+                options: [
+                    'Using loops in their architecture that allow information persistence',
+                    'Using a feedforward approach without loops',
+                    'Using only convolutional layers',
+                    'Using a single pass through the data'
+                ],
+                correct: 0,
+                explanation: 'RNNs use loops in their architecture that allow information to persist and be passed from one step to the next.【5†L5】'
+            }, {
+                id: 7,
+                category: 'RNN Basics',
+                question: 'What are memory cells in RNNs?',
+                options: [
+                    'Building blocks that take current input and previous state to produce a new state and output',
+                    'Components that store all training data',
+                    'Layers that only process current input',
+                    'Filters that extract features from images'
+                ],
+                correct: 0,
+                explanation: 'Memory cells are the building blocks of RNN memory that take the current input and previous state to produce a new state and output.【5†L6】'
+            }, {
+                id: 8,
+                category: 'RNN Basics',
+                question: 'What is a major challenge when training RNNs?',
+                options: [
+                    'Vanishing and exploding gradients',
+                    'Lack of sequential data',
+                    'Too many parameters',
+                    'Inability to process text'
+                ],
+                correct: 0,
+                explanation: 'RNNs suffer from vanishing and exploding gradients, difficulty with long sequences, and computational intensity.【5†L8】'
+            }, {
+                id: 9,
+                category: 'RNN Basics',
+                question: 'What is the vanishing gradient problem in RNNs?',
+                options: [
+                    'Gradients become very small, making it difficult to update weights in early layers',
+                    'Gradients become very large, causing unstable training',
+                    'Gradients are not computed at all',
+                    'Gradients oscillate wildly'
+                ],
+                correct: 0,
+                explanation: 'The vanishing gradient problem occurs when gradients become very small, making it difficult to update weights in early layers and learn long-term dependencies.【5†L9】'
+            }, {
+                id: 10,
+                category: 'RNN Basics',
+                question: 'What is the exploding gradient problem in RNNs?',
+                options: [
+                    'Gradients become very large, causing drastic weight updates and training instability',
+                    'Gradients become very small',
+                    'Gradients are constant',
+                    'Gradients are not computed'
+                ],
+                correct: 0,
+                explanation: 'The exploding gradient problem occurs when gradients become very large, leading to drastic weight updates and training instability.【5†L8】'
+            }, {
+                id: 11,
+                category: 'RNN Basics',
+                question: 'Which architecture was developed to address the vanishing gradient problem in RNNs?',
+                options: [
+                    'Long Short-Term Memory (LSTM)',
+                    'Convolutional Neural Network (CNN)',
+                    'Feedforward Neural Network',
+                    'Autoencoder'
+                ],
+                correct: 0,
+                explanation: 'LSTMs are a specialized RNN architecture designed to overcome the vanishing gradient problem and learn long sequences.【5†L10】'
+            }, {
+                id: 12,
+                category: 'RNN Basics',
+                question: 'What is a Gated Recurrent Unit (GRU)?',
+                options: [
+                    'A variation of LSTMs with a simplified architecture and comparable performance',
+                    'A type of CNN',
+                    'A feedforward network',
+                    'A type of activation function'
+                ],
+                correct: 0,
+                explanation: 'GRUs are a variation of LSTMs with a simplified architecture and comparable performance, often with faster training.【5†L11】'
+            }, {
+                id: 13,
+                category: 'RNN Basics',
+                question: 'What is a Bidirectional RNN?',
+                options: [
+                    'An RNN that processes sequences from both ends to capture overlooked patterns',
+                    'An RNN with two hidden layers',
+                    'An RNN that only processes forward',
+                    'An RNN that only processes backward'
+                ],
+                correct: 0,
+                explanation: 'Bidirectional RNNs process sequences from both ends, capturing overlooked patterns and enhancing sequence understanding.【5†L12】'
+            }, {
+                id: 14,
+                category: 'RNN Basics',
+                question: 'Which of the following is a common use case for RNNs?',
+                options: [
+                    'Text generation and machine translation',
+                    'Image classification',
+                    'Object detection',
+                    'Clustering'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used for text generation, machine translation, sentiment analysis, and time-series forecasting.【5†L13】'
+            }, {
+                id: 15,
+                category: 'RNN Basics',
+                question: 'What is the significance of RNNs in sequence-based tasks?',
+                options: [
+                    'They are essential for handling sequential data and capturing temporal dependencies',
+                    'They are only useful for image data',
+                    'They are outdated and no longer used',
+                    'They are only used for regression'
+                ],
+                correct: 0,
+                explanation: 'RNNs and their variants are essential for sequence-based tasks due to their ability to capture temporal dependencies.【5†L14】'
+            }, {
+                id: 16,
+                category: 'RNN Basics',
+                question: 'What does the "recurrent" in Recurrent Neural Network refer to?',
+                options: [
+                    'The loops in the architecture that allow information to persist',
+                    'The use of recurrent activation functions',
+                    'The repeated use of the same data',
+                    'The recurrence of errors'
+                ],
+                correct: 0,
+                explanation: 'The "recurrent" refers to the loops in the architecture that allow information to persist from one step to the next.【5†L5】'
+            }, {
+                id: 17,
+                category: 'RNN Basics',
+                question: 'What is the role of the hidden state in an RNN?',
+                options: [
+                    'To store information from previous time steps and pass it to the next',
+                    'To store the final output only',
+                    'To store the input data',
+                    'To store the loss function'
+                ],
+                correct: 0,
+                explanation: 'The hidden state in an RNN stores information from previous time steps and passes it to the next step, enabling memory.【5†L6】'
+            }, {
+                id: 18,
+                category: 'RNN Basics',
+                question: 'What is the main difference between RNNs and feedforward neural networks?',
+                options: [
+                    'RNNs have loops that allow information to persist; feedforward networks do not',
+                    'RNNs are only for images; feedforward networks are for text',
+                    'RNNs have no hidden layers; feedforward networks do',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'RNNs have loops in their architecture that allow information to persist, while feedforward networks have no loops.【5†L5】'
+            }, {
+                id: 19,
+                category: 'RNN Basics',
+                question: 'What is the purpose of the "state" in an RNN?',
+                options: [
+                    'To capture and retain information from previous inputs',
+                    'To store the final output',
+                    'To store the loss function',
+                    'To store the activation function'
+                ],
+                correct: 0,
+                explanation: 'The state in an RNN captures and retains information from previous inputs, allowing the network to have memory.【5†L6】'
+            }, {
+                id: 20,
+                category: 'RNN Basics',
+                question: 'Which of the following is NOT a type of RNN variant?',
+                options: [
+                    'Convolutional Neural Network (CNN)',
+                    'Long Short-Term Memory (LSTM)',
+                    'Gated Recurrent Unit (GRU)',
+                    'Bidirectional RNN'
+                ],
+                correct: 0,
+                explanation: 'CNNs are not RNN variants; they are a different type of neural network for image data. LSTMs, GRUs, and Bidirectional RNNs are RNN variants.【5†L10-L12】'
+            }, {
+                id: 21,
+                category: 'RNN Basics',
+                question: 'What is the primary advantage of LSTMs over standard RNNs?',
+                options: [
+                    'They can learn long-term dependencies more effectively',
+                    'They are faster to train',
+                    'They require less data',
+                    'They are simpler to implement'
+                ],
+                correct: 0,
+                explanation: 'LSTMs are designed to overcome the vanishing gradient problem and can learn long-term dependencies more effectively than standard RNNs.【5†L10】'
+            }, {
+                id: 22,
+                category: 'RNN Basics',
+                question: 'What is the primary advantage of GRUs over LSTMs?',
+                options: [
+                    'They have fewer parameters and are computationally more efficient',
+                    'They are more accurate',
+                    'They can handle longer sequences',
+                    'They are easier to understand'
+                ],
+                correct: 0,
+                explanation: 'GRUs have fewer parameters than LSTMs, making them computationally more efficient and faster to train.【7†L10】'
+            }, {
+                id: 23,
+                category: 'RNN Basics',
+                question: 'What is the role of the cell state in an LSTM?',
+                options: [
+                    'To store long-term information and carry it across time steps',
+                    'To store the current input',
+                    'To store the output',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The cell state in an LSTM stores long-term information and carries it across time steps, allowing the network to remember important information.【6†L9】'
+            }, {
+                id: 24,
+                category: 'RNN Basics',
+                question: 'What is the role of the forget gate in an LSTM?',
+                options: [
+                    'To decide which information to discard from the cell state',
+                    'To decide which new information to store',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The forget gate in an LSTM decides which information to discard from the cell state, filtering out irrelevant information.【6†L6】【7†L9】'
+            }, {
+                id: 25,
+                category: 'RNN Basics',
+                question: 'What is the role of the input gate in an LSTM?',
+                options: [
+                    'To decide which new information to store in the cell state',
+                    'To decide which information to discard',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The input gate in an LSTM decides which new information to store in the cell state and updates the cell state accordingly.【6†L6】【7†L9】'
+            },
+
+            // ---- LSTM & GRU DETAILS (26–50) ----
+            {
+                id: 26,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the output gate in an LSTM?',
+                options: [
+                    'To determine the next hidden state based on the updated cell state',
+                    'To decide which information to discard',
+                    'To decide which new information to store',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate in an LSTM determines the next hidden state based on the current input, previous hidden state, and updated cell state.【6†L8】【7†L9】'
+            }, {
+                id: 27,
+                category: 'LSTM & GRU',
+                question: 'How many gates does an LSTM have?',
+                options: [
+                    'Three: forget gate, input gate, and output gate',
+                    'Two: forget gate and input gate',
+                    'One: forget gate',
+                    'Four: forget, input, output, and update gate'
+                ],
+                correct: 0,
+                explanation: 'An LSTM has three gates: the forget gate, input gate, and output gate.【6†L5】'
+            }, {
+                id: 28,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the forget gate in an LSTM?',
+                options: [
+                    'It filters out irrelevant information from the cell state',
+                    'It decides what new information to store',
+                    'It determines the next hidden state',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The forget gate filters out irrelevant information from the cell state.【7†L9】'
+            }, {
+                id: 29,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the input gate in an LSTM?',
+                options: [
+                    'It decides what new information to store and updates the cell state',
+                    'It filters out irrelevant information',
+                    'It determines the next hidden state',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The input gate decides what new information to store and updates the cell state.【7†L9】'
+            }, {
+                id: 30,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the output gate in an LSTM?',
+                options: [
+                    'It determines the next hidden state based on the updated cell state',
+                    'It filters out irrelevant information',
+                    'It decides what new information to store',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate determines the next hidden state based on the updated cell state.【7†L9】'
+            }, {
+                id: 31,
+                category: 'LSTM & GRU',
+                question: 'What is a key difference between LSTMs and GRUs?',
+                options: [
+                    'GRUs do not have a separate cell state, unlike LSTMs',
+                    'GRUs have more gates than LSTMs',
+                    'LSTMs are simpler than GRUs',
+                    'GRUs cannot handle long-term dependencies'
+                ],
+                correct: 0,
+                explanation: 'A key difference is that GRUs do not have a separate cell state, unlike LSTMs.【7†L11】'
+            }, {
+                id: 32,
+                category: 'LSTM & GRU',
+                question: 'What are the two gates in a GRU?',
+                options: [
+                    'Update gate and reset gate',
+                    'Forget gate and input gate',
+                    'Input gate and output gate',
+                    'Forget gate and output gate'
+                ],
+                correct: 0,
+                explanation: 'GRUs have two gates: the update gate and the reset gate.【7†L11】'
+            }, {
+                id: 33,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the update gate in a GRU?',
+                options: [
+                    'It balances between retaining old memory and accepting new input',
+                    'It filters out irrelevant information',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The update gate in a GRU balances between retaining old memory and accepting new input.【7†L12】'
+            }, {
+                id: 34,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the reset gate in a GRU?',
+                options: [
+                    'It controls the amount of past information to discard',
+                    'It balances between retaining old memory and accepting new input',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The reset gate in a GRU controls the amount of past information to discard.【7†L13】'
+            }, {
+                id: 35,
+                category: 'LSTM & GRU',
+                question: 'What is the advantage of GRUs over LSTMs?',
+                options: [
+                    'They are computationally more efficient due to fewer parameters',
+                    'They are always more accurate',
+                    'They can handle longer sequences',
+                    'They are easier to tune'
+                ],
+                correct: 0,
+                explanation: 'GRUs have fewer parameters than LSTMs, making them computationally more efficient and faster to train.【7†L10】'
+            }, {
+                id: 36,
+                category: 'LSTM & GRU',
+                question: 'What is the advantage of LSTMs over GRUs?',
+                options: [
+                    'They have more capacity to capture complex long-term dependencies',
+                    'They are faster to train',
+                    'They require less data',
+                    'They are simpler to implement'
+                ],
+                correct: 0,
+                explanation: 'LSTMs have more capacity to capture complex long-term dependencies due to their additional gate and cell state.【7†L15】'
+            }, {
+                id: 37,
+                category: 'LSTM & GRU',
+                question: 'What is the "memory manager" in an LSTM?',
+                options: [
+                    'The forget gate, which uses a sigmoid function to decide what to forget',
+                    'The input gate, which decides what to store',
+                    'The output gate, which decides the output',
+                    'The cell state, which stores information'
+                ],
+                correct: 0,
+                explanation: 'The forget gate acts as a "memory manager" in the LSTM architecture, using a sigmoid function to decide what to forget.【6†L6】'
+            }, {
+                id: 38,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the sigmoid function in LSTM gates?',
+                options: [
+                    'To output a value between 0 and 1, controlling how much information to pass through',
+                    'To output a value between -1 and 1',
+                    'To output a value between 0 and infinity',
+                    'To output a value between -infinity and infinity'
+                ],
+                correct: 0,
+                explanation: 'The sigmoid function in LSTM gates outputs a value between 0 and 1, controlling how much information to pass through.【6†L6】'
+            }, {
+                id: 39,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the tanh function in LSTM?',
+                options: [
+                    'To generate new candidate values for updates in the input gate',
+                    'To decide what to forget',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The tanh function is used in the input gate to generate new candidate values for updates.【6†L7】'
+            }, {
+                id: 40,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the reset gate in a GRU?',
+                options: [
+                    'It selectively forgets irrelevant past information',
+                    'It balances between retaining old memory and accepting new input',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The reset gate in a GRU selectively forgets irrelevant past information.【7†L14】'
+            }, {
+                id: 41,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the update gate in a GRU?',
+                options: [
+                    'It acts as a gatekeeper for memory retention',
+                    'It selectively forgets irrelevant past information',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The update gate in a GRU acts as a gatekeeper for memory retention.【7†L14】'
+            }, {
+                id: 42,
+                category: 'LSTM & GRU',
+                question: 'What is the main difference between the cell state in LSTM and the hidden state in GRU?',
+                options: [
+                    'LSTM has a separate cell state; GRU combines cell state and hidden state',
+                    'GRU has a separate cell state; LSTM does not',
+                    'Both have separate cell states',
+                    'Neither has a cell state'
+                ],
+                correct: 0,
+                explanation: 'LSTM has a separate cell state and hidden state, while GRU combines them into a single state.【7†L11】'
+            }, {
+                id: 43,
+                category: 'LSTM & GRU',
+                question: 'What is the purpose of the cell state in an LSTM?',
+                options: [
+                    'To carry information across time steps with minimal modification',
+                    'To store the current input',
+                    'To store the output',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The cell state in an LSTM carries information across time steps with minimal modification, allowing long-term memory.【6†L9】'
+            }, {
+                id: 44,
+                category: 'LSTM & GRU',
+                question: 'What is the purpose of the hidden state in an LSTM?',
+                options: [
+                    'To provide the output and pass information to the next time step',
+                    'To store long-term information',
+                    'To store the current input',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The hidden state in an LSTM provides the output and passes information to the next time step.【6†L8】'
+            }, {
+                id: 45,
+                category: 'LSTM & GRU',
+                question: 'What is the main advantage of using LSTMs for stock market prediction?',
+                options: [
+                    'They can capture long-term dependencies in stock price movements',
+                    'They are faster than other models',
+                    'They require less data',
+                    'They are simpler to implement'
+                ],
+                correct: 0,
+                explanation: 'LSTMs and GRUs are capable of capturing long-term dependencies in stock price movements, making them suitable for financial forecasting.【8†L5】'
+            }, {
+                id: 46,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the forget gate in preventing vanishing gradients?',
+                options: [
+                    'It allows the network to reset the cell state when necessary, preventing gradients from vanishing',
+                    'It increases the learning rate',
+                    'It reduces the number of parameters',
+                    'It speeds up training'
+                ],
+                correct: 0,
+                explanation: 'The forget gate allows the network to reset the cell state when necessary, helping to prevent vanishing gradients.【6†L9】'
+            }, {
+                id: 47,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the input gate in preventing vanishing gradients?',
+                options: [
+                    'It allows the network to add new information to the cell state, keeping gradients flowing',
+                    'It resets the cell state',
+                    'It increases the learning rate',
+                    'It reduces the number of parameters'
+                ],
+                correct: 0,
+                explanation: 'The input gate allows the network to add new information to the cell state, helping to keep gradients flowing.【6†L7】'
+            }, {
+                id: 48,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the output gate in an LSTM?',
+                options: [
+                    'It determines the next hidden state based on the updated cell state',
+                    'It decides what to forget',
+                    'It decides what to store',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate determines the next hidden state based on the updated cell state.【6†L8】'
+            }, {
+                id: 49,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the reset gate in a GRU?',
+                options: [
+                    'It controls the amount of past information to discard',
+                    'It balances between retaining old memory and accepting new input',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The reset gate in a GRU controls the amount of past information to discard.【7†L13】'
+            }, {
+                id: 50,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the update gate in a GRU?',
+                options: [
+                    'It balances between retaining old memory and accepting new input',
+                    'It controls the amount of past information to discard',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The update gate in a GRU balances between retaining old memory and accepting new input.【7†L12】'
+            },
+
+            // ---- RNN USE CASES (51–80) ----
+            {
+                id: 51,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in stock market prediction?',
+                options: [
+                    'To provide more accurate, efficient, and real-time forecasts',
+                    'To only analyze historical data',
+                    'To replace all human traders',
+                    'To only predict short-term trends'
+                ],
+                correct: 0,
+                explanation: 'RNNs provide more accurate, efficient, and real-time forecasts for stock market prediction.【8†L2】'
+            }, {
+                id: 52,
+                category: 'RNN Use Cases',
+                question: 'What is the inherent nature of financial markets that makes RNNs suitable?',
+                options: [
+                    'The sequential nature and temporal dependencies',
+                    'The lack of data',
+                    'The simplicity of the data',
+                    'The static nature of the data'
+                ],
+                correct: 0,
+                explanation: 'Financial markets have an inherent sequential nature, and RNNs have unique capabilities in capturing temporal dependencies.【8†L3】'
+            }, {
+                id: 53,
+                category: 'RNN Use Cases',
+                question: 'What is a challenge in stock market prediction?',
+                options: [
+                    'Multifaceted influences on stock prices, including news, global events, and market sentiment',
+                    'The lack of data',
+                    'The simplicity of the data',
+                    'The static nature of the data'
+                ],
+                correct: 0,
+                explanation: 'Stock prices are influenced by multifaceted factors including news, global events, and market sentiment, making prediction challenging.【8†L4】'
+            }, {
+                id: 54,
+                category: 'RNN Use Cases',
+                question: 'How do RNNs handle the volatile nature of the stock market?',
+                options: [
+                    'Through adaptability and the ability to capture complex patterns',
+                    'By ignoring volatility',
+                    'By using only linear models',
+                    'By using only historical data'
+                ],
+                correct: 0,
+                explanation: 'RNNs are adaptable and can capture complex patterns, helping to handle the volatile nature of the stock market.【8†L5】'
+            }, {
+                id: 55,
+                category: 'RNN Use Cases',
+                question: 'What is algorithmic trading?',
+                options: [
+                    'Using automation and AI to guide trading decisions',
+                    'Manual trading',
+                    'Trading without any data',
+                    'Trading only on weekends'
+                ],
+                correct: 0,
+                explanation: 'Algorithmic trading uses automation and AI, including RNNs, to guide informed trading decisions.【8†L6】'
+            }, {
+                id: 56,
+                category: 'RNN Use Cases',
+                question: 'What is the first step in stock market prediction with RNNs?',
+                options: [
+                    'Data collection: historical stock prices and external factors',
+                    'Model building',
+                    'Model training',
+                    'Model evaluation'
+                ],
+                correct: 0,
+                explanation: 'The first step is data collection, including historical stock prices and external factors.【8†L7】'
+            }, {
+                id: 57,
+                category: 'RNN Use Cases',
+                question: 'What is the purpose of feature engineering in stock market prediction?',
+                options: [
+                    'To create lagged variables and combine datasets',
+                    'To collect data',
+                    'To train the model',
+                    'To evaluate the model'
+                ],
+                correct: 0,
+                explanation: 'Feature engineering involves creating lagged variables and combining datasets to improve model performance.【8†L7】'
+            }, {
+                id: 58,
+                category: 'RNN Use Cases',
+                question: 'What is a common loss function used for training RNNs in stock market prediction?',
+                options: [
+                    'Mean Squared Error (MSE)',
+                    'Cross-Entropy',
+                    'Hinge Loss',
+                    'Kullback-Leibler Divergence'
+                ],
+                correct: 0,
+                explanation: 'Mean Squared Error (MSE) is commonly used for training RNNs in stock market prediction.【8†L8】'
+            }, {
+                id: 59,
+                category: 'RNN Use Cases',
+                question: 'What is a common metric for evaluating RNNs in stock market prediction?',
+                options: [
+                    'Root Mean Squared Error (RMSE)',
+                    'Accuracy',
+                    'Precision',
+                    'Recall'
+                ],
+                correct: 0,
+                explanation: 'Root Mean Squared Error (RMSE) is a common metric for evaluating RNNs in stock market prediction.【8†L8】'
+            }, {
+                id: 60,
+                category: 'RNN Use Cases',
+                question: 'What is the final step in stock market prediction with RNNs?',
+                options: [
+                    'Live trading with real-time buy/sell decisions',
+                    'Data collection',
+                    'Model training',
+                    'Model evaluation'
+                ],
+                correct: 0,
+                explanation: 'The final step is live trading, where the model makes real-time buy/sell decisions.【8†L9】'
+            }, {
+                id: 61,
+                category: 'RNN Use Cases',
+                question: 'What is the importance of continuous monitoring in stock market prediction?',
+                options: [
+                    'To retrain the model with new data and adapt to market changes',
+                    'To stop the model from trading',
+                    'To reduce the model\'s accuracy',
+                    'To increase the model\'s complexity'
+                ],
+                correct: 0,
+                explanation: 'Continuous monitoring allows the model to be retrained with new data and adapt to market changes.【8†L10】'
+            }, {
+                id: 62,
+                category: 'RNN Use Cases',
+                question: 'What is sentiment analysis?',
+                options: [
+                    'Determining sentiment or emotion from text data',
+                    'Analyzing stock prices',
+                    'Predicting weather patterns',
+                    'Generating music'
+                ],
+                correct: 0,
+                explanation: 'Sentiment analysis involves determining sentiment or emotion from text data, such as customer feedback or social media.【9†L2】'
+            }, {
+                id: 63,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in sentiment analysis?',
+                options: [
+                    'To handle sequential data and capture context, including negations and sarcasm',
+                    'To only classify positive sentiment',
+                    'To only classify negative sentiment',
+                    'To ignore context'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in sentiment analysis to handle sequential data and capture context, including negations and sarcasm.【9†L3】'
+            }, {
+                id: 64,
+                category: 'RNN Use Cases',
+                question: 'What is the first step in sentiment analysis with RNNs?',
+                options: [
+                    'Data collection: text and sentiment labels',
+                    'Data preprocessing',
+                    'Feature extraction',
+                    'Model selection'
+                ],
+                correct: 0,
+                explanation: 'The first step is data collection, gathering text data with corresponding sentiment labels.【9†L4】'
+            }, {
+                id: 65,
+                category: 'RNN Use Cases',
+                question: 'What is the purpose of text cleaning in sentiment analysis?',
+                options: [
+                    'To remove noise and prepare text for tokenization',
+                    'To collect more data',
+                    'To train the model',
+                    'To evaluate the model'
+                ],
+                correct: 0,
+                explanation: 'Text cleaning removes noise and prepares text for tokenization and sequence padding.【9†L5】'
+            }, {
+                id: 66,
+                category: 'RNN Use Cases',
+                question: 'What is the purpose of tokenization in sentiment analysis?',
+                options: [
+                    'To convert text into sequences of tokens (words or subwords)',
+                    'To clean the text',
+                    'To collect more data',
+                    'To train the model'
+                ],
+                correct: 0,
+                explanation: 'Tokenization converts text into sequences of tokens (words or subwords) for processing by the RNN.【9†L5】'
+            }, {
+                id: 67,
+                category: 'RNN Use Cases',
+                question: 'What is the purpose of sequence padding in sentiment analysis?',
+                options: [
+                    'To ensure all sequences have the same length for batch processing',
+                    'To clean the text',
+                    'To collect more data',
+                    'To train the model'
+                ],
+                correct: 0,
+                explanation: 'Sequence padding ensures all sequences have the same length for batch processing in the RNN.【9†L5】'
+            }, {
+                id: 68,
+                category: 'RNN Use Cases',
+                question: 'What is the purpose of feature extraction in sentiment analysis?',
+                options: [
+                    'To transform text into numerical vectors (e.g., using word embeddings)',
+                    'To clean the text',
+                    'To collect more data',
+                    'To train the model'
+                ],
+                correct: 0,
+                explanation: 'Feature extraction transforms text into numerical vectors, such as using word embeddings, for the RNN.【9†L6】'
+            }, {
+                id: 69,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in weather forecasting?',
+                options: [
+                    'To handle time-series data and capture complex dependencies for short-term and long-term forecasts',
+                    'To only predict temperature',
+                    'To only predict humidity',
+                    'To ignore temporal dependencies'
+                ],
+                correct: 0,
+                explanation: 'RNNs handle time-series data and capture complex dependencies for short-term and long-term weather forecasts.【9†L11】'
+            }, {
+                id: 70,
+                category: 'RNN Use Cases',
+                question: 'What types of weather data are used in RNN-based forecasting?',
+                options: [
+                    'Temperature, humidity, wind speed, and air pressure with timestamps',
+                    'Only temperature',
+                    'Only humidity',
+                    'Only wind speed'
+                ],
+                correct: 0,
+                explanation: 'Weather data includes temperature, humidity, wind speed, and air pressure with timestamps.【9†L12】'
+            }, {
+                id: 71,
+                category: 'RNN Use Cases',
+                question: 'What is the importance of continuous monitoring in weather forecasting with RNNs?',
+                options: [
+                    'To feed real-time data into the model for timely updates and adaptability',
+                    'To stop the model from making predictions',
+                    'To reduce the model\'s accuracy',
+                    'To increase the model\'s complexity'
+                ],
+                correct: 0,
+                explanation: 'Continuous monitoring allows real-time data to be fed into the model for timely updates and adaptability.【9†L14】'
+            }, {
+                id: 72,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in music generation?',
+                options: [
+                    'To capture temporal musical patterns for melody and rhythm creation',
+                    'To only generate lyrics',
+                    'To only generate chords',
+                    'To ignore musical structure'
+                ],
+                correct: 0,
+                explanation: 'RNNs capture temporal musical patterns and are used for melody and rhythm creation in music generation.【9†L16】'
+            }, {
+                id: 73,
+                category: 'RNN Use Cases',
+                question: 'What is the role of AI in democratizing music production?',
+                options: [
+                    'By making music creation more accessible through AI-assisted tools',
+                    'By replacing all human musicians',
+                    'By making music more expensive',
+                    'By limiting music creation to professionals'
+                ],
+                correct: 0,
+                explanation: 'AI, including RNNs, helps democratize music production by making music creation more accessible.【9†L15】'
+            }, {
+                id: 74,
+                category: 'RNN Use Cases',
+                question: 'What is the importance of context in sentiment analysis with RNNs?',
+                options: [
+                    'To handle negations and detect sarcasm, which require understanding the surrounding text',
+                    'To only look at individual words',
+                    'To ignore the order of words',
+                    'To only consider the first word'
+                ],
+                correct: 0,
+                explanation: 'Context is important in sentiment analysis to handle negations (e.g., "not bad") and detect sarcasm.【9†L3】'
+            }, {
+                id: 75,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in customer feedback analysis?',
+                options: [
+                    'To analyze the sentiment of customer feedback for business intelligence',
+                    'To only collect feedback',
+                    'To only store feedback',
+                    'To ignore feedback'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used to analyze the sentiment of customer feedback, providing valuable business intelligence.【9†L2】'
+            }, {
+                id: 76,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in social media monitoring?',
+                options: [
+                    'To analyze sentiment and trends from social media posts',
+                    'To only collect posts',
+                    'To only store posts',
+                    'To ignore posts'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used to analyze sentiment and trends from social media posts for various applications.【9†L2】'
+            }, {
+                id: 77,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in predictive analytics?',
+                options: [
+                    'To forecast future trends and outcomes based on historical data',
+                    'To only analyze past data',
+                    'To ignore future predictions',
+                    'To only predict short-term trends'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in predictive analytics to forecast future trends and outcomes based on historical data.【9†L2】'
+            }, {
+                id: 78,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in algorithmic trading?',
+                options: [
+                    'To enable faster and more accurate trading decisions',
+                    'To slow down trading',
+                    'To make random decisions',
+                    'To ignore market data'
+                ],
+                correct: 0,
+                explanation: 'RNNs enable faster and more accurate trading decisions in algorithmic trading.【8†L6】'
+            }, {
+                id: 79,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in personalized music generation?',
+                options: [
+                    'To create adaptive and personalized music based on user preferences',
+                    'To only generate generic music',
+                    'To ignore user preferences',
+                    'To only generate classical music'
+                ],
+                correct: 0,
+                explanation: 'RNNs can create adaptive and personalized music based on user preferences.【9†L16】'
+            }, {
+                id: 80,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in predicting heatwaves?',
+                options: [
+                    'To use historical weather data to forecast extreme temperature events',
+                    'To only predict normal weather',
+                    'To ignore extreme events',
+                    'To only predict rainfall'
+                ],
+                correct: 0,
+                explanation: 'RNNs can be used to predict heatwaves by analyzing historical weather data and capturing complex patterns.【9†L13】'
+            },
+
+            // ---- TRANSFORMERS & ATTENTION (81–110) ----
+            {
+                id: 81,
+                category: 'Transformers',
+                question: 'What is the impact of Transformers in NLP?',
+                options: [
+                    'They have been game-changing and represent a paradigm shift from RNNs and LSTMs',
+                    'They have had no impact',
+                    'They are only used for image processing',
+                    'They are less effective than RNNs'
+                ],
+                correct: 0,
+                explanation: 'Transformers have been game-changing in NLP and represent a paradigm shift from RNNs and LSTMs.【10†L2】'
+            }, {
+                id: 82,
+                category: 'Transformers',
+                question: 'What are the main mechanisms of a Transformer?',
+                options: [
+                    'Positional encoding, attention, and self-attention',
+                    'Convolution and pooling',
+                    'Recurrent connections and memory cells',
+                    'Feedforward layers only'
+                ],
+                correct: 0,
+                explanation: 'The main Transformer mechanisms are positional encoding, attention, and self-attention.【10†L3】'
+            }, {
+                id: 83,
+                category: 'Transformers',
+                question: 'What is positional encoding in Transformers?',
+                options: [
+                    'A technique to add information about the position of words in a sequence',
+                    'A technique to encode the meaning of words',
+                    'A technique to reduce the sequence length',
+                    'A technique to increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Positional encoding adds information about the position of words in a sequence to the word embeddings.【10†L3】'
+            }, {
+                id: 84,
+                category: 'Transformers',
+                question: 'How is positional encoding typically implemented?',
+                options: [
+                    'Using sine and cosine functions to create unique encodings for each position',
+                    'Using random numbers',
+                    'Using a single value for all positions',
+                    'Using only zeros'
+                ],
+                correct: 0,
+                explanation: 'Positional encoding uses sine and cosine functions to create unique encodings for each position.【10†L5】'
+            }, {
+                id: 85,
+                category: 'Transformers',
+                question: 'What is the purpose of positional encoding?',
+                options: [
+                    'To provide contextual understanding by adding position information to word embeddings',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Positional encoding adds position information to word embeddings for contextual understanding.【10†L5】'
+            }, {
+                id: 86,
+                category: 'Transformers',
+                question: 'What is the attention mechanism in Transformers?',
+                options: [
+                    'A core component that allows models to focus on specific parts of the input, analogous to human attention',
+                    'A mechanism to reduce the sequence length',
+                    'A mechanism to increase the sequence length',
+                    'A mechanism to ignore parts of the input'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism allows models to focus on specific parts of the input, analogous to human attention.【10†L6】'
+            }, {
+                id: 87,
+                category: 'Transformers',
+                question: 'What does the attention mechanism compute?',
+                options: [
+                    'A weighted sum of input elements, focusing on the most relevant parts',
+                    'A simple average of input elements',
+                    'A sum of all input elements',
+                    'A product of input elements'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism computes a weighted sum of input elements, focusing on the most relevant parts.【10†L7】'
+            }, {
+                id: 88,
+                category: 'Transformers',
+                question: 'What problem does the attention mechanism help overcome?',
+                options: [
+                    'Long-range dependencies in sequences',
+                    'The vanishing gradient problem',
+                    'The exploding gradient problem',
+                    'The need for large datasets'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism helps overcome the challenge of long-range dependencies in sequences.【10†L7】'
+            }, {
+                id: 89,
+                category: 'Transformers',
+                question: 'What is self-attention in Transformers?',
+                options: [
+                    'A mechanism that enables each element to focus on all other elements in the same sequence',
+                    'A mechanism that focuses only on the current element',
+                    'A mechanism that focuses only on the next element',
+                    'A mechanism that ignores other elements'
+                ],
+                correct: 0,
+                explanation: 'Self-attention enables each element to focus on all other elements in the same sequence, capturing relationships between them.【10†L8】'
+            }, {
+                id: 90,
+                category: 'Transformers',
+                question: 'What is an example of self-attention capturing relationships?',
+                options: [
+                    'In "The cat sat on the mat," self-attention captures the relationship between "cat" and "sat," and "mat" and "on"',
+                    'Self-attention only captures relationships between adjacent words',
+                    'Self-attention does not capture relationships',
+                    'Self-attention only captures relationships in the first sentence'
+                ],
+                correct: 0,
+                explanation: 'Self-attention captures relationships between words, such as "cat" and "sat," and "mat" and "on" in the sentence.【10†L8】'
+            }, {
+                id: 91,
+                category: 'Transformers',
+                question: 'What is the advantage of self-attention over RNNs?',
+                options: [
+                    'It allows parallel processing and captures deeper contextual relationships',
+                    'It is slower than RNNs',
+                    'It cannot capture long-range dependencies',
+                    'It requires more parameters'
+                ],
+                correct: 0,
+                explanation: 'Self-attention allows parallel processing and captures deeper contextual relationships, outperforming RNNs in depth of understanding.【10†L10】'
+            }, {
+                id: 92,
+                category: 'Transformers',
+                question: 'What is BERT?',
+                options: [
+                    'A Transformer-based model that uses bidirectional context for nuanced language understanding',
+                    'A model that only processes text forward',
+                    'A model that only processes text backward',
+                    'A model that does not use attention'
+                ],
+                correct: 0,
+                explanation: 'BERT is a Transformer-based model that uses bidirectional context for nuanced language understanding.【10†L11】'
+            }, {
+                id: 93,
+                category: 'Transformers',
+                question: 'What is GPT?',
+                options: [
+                    'A Transformer-based model that excels in unidirectional text prediction',
+                    'A model that uses bidirectional context',
+                    'A model that does not use attention',
+                    'A model that only processes images'
+                ],
+                correct: 0,
+                explanation: 'GPT is a Transformer-based model that excels in unidirectional (left-to-right) text prediction.【10†L11】'
+            }, {
+                id: 94,
+                category: 'Transformers',
+                question: 'What is the key difference between BERT and GPT?',
+                options: [
+                    'BERT uses bidirectional context; GPT uses unidirectional context',
+                    'BERT uses unidirectional context; GPT uses bidirectional context',
+                    'Both use bidirectional context',
+                    'Both use unidirectional context'
+                ],
+                correct: 0,
+                explanation: 'BERT uses bidirectional context, while GPT uses unidirectional (left-to-right) context.【10†L11】'
+            }, {
+                id: 95,
+                category: 'Transformers',
+                question: 'What is a key application of Transformers?',
+                options: [
+                    'Language translation, text generation, and question-answering systems',
+                    'Only image classification',
+                    'Only object detection',
+                    'Only speech recognition'
+                ],
+                correct: 0,
+                explanation: 'Transformers are used in language translation, text generation, and question-answering systems.【10†L12】'
+            }, {
+                id: 96,
+                category: 'Transformers',
+                question: 'What is the significance of Transformers in NLP?',
+                options: [
+                    'They have achieved state-of-the-art performance in many NLP tasks',
+                    'They have had no impact on NLP',
+                    'They are only used for research',
+                    'They are less effective than RNNs'
+                ],
+                correct: 0,
+                explanation: 'Transformers have achieved state-of-the-art performance in language translation, text generation, and other NLP tasks.【10†L12】'
+            }, {
+                id: 97,
+                category: 'Transformers',
+                question: 'What is the role of the attention mechanism in machine translation?',
+                options: [
+                    'To focus on relevant parts of the source sentence when generating the target sentence',
+                    'To translate word by word without context',
+                    'To ignore the source sentence',
+                    'To only focus on the first word'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism allows the model to focus on relevant parts of the source sentence when generating the target sentence.【10†L7】'
+            }, {
+                id: 98,
+                category: 'Transformers',
+                question: 'What is the role of self-attention in semantic clustering?',
+                options: [
+                    'To enable rich language understanding by capturing nuances and sentiments',
+                    'To cluster words by their position',
+                    'To cluster words by their length',
+                    'To cluster words randomly'
+                ],
+                correct: 0,
+                explanation: 'Self-attention enables semantic clustering for rich language understanding, capturing nuances and sentiments.【10†L10】'
+            }, {
+                id: 99,
+                category: 'Transformers',
+                question: 'What is the role of positional encoding in Transformers?',
+                options: [
+                    'To provide information about the order of words in the sequence',
+                    'To provide information about the meaning of words',
+                    'To reduce the sequence length',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Positional encoding provides information about the order of words in the sequence, since Transformers do not have inherent sequential processing.【10†L3】'
+            }, {
+                id: 100,
+                category: 'Transformers',
+                question: 'What is the role of the attention mechanism in Transformers?',
+                options: [
+                    'To allow the model to focus on the most relevant parts of the input',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism allows the model to focus on the most relevant parts of the input, improving performance.【10†L6】'
+            }, {
+                id: 101,
+                category: 'Transformers',
+                question: 'What is the role of self-attention in Transformers?',
+                options: [
+                    'To allow each element to attend to all other elements in the sequence',
+                    'To allow each element to attend only to itself',
+                    'To allow each element to attend only to the next element',
+                    'To allow each element to attend only to the previous element'
+                ],
+                correct: 0,
+                explanation: 'Self-attention allows each element to attend to all other elements in the sequence, capturing relationships between them.【10†L8】'
+            }, {
+                id: 102,
+                category: 'Transformers',
+                question: 'What is the advantage of Transformers over RNNs for long sequences?',
+                options: [
+                    'Transformers can process sequences in parallel and capture long-range dependencies more effectively',
+                    'Transformers are slower than RNNs',
+                    'Transformers cannot handle long sequences',
+                    'Transformers require more memory'
+                ],
+                correct: 0,
+                explanation: 'Transformers can process sequences in parallel and capture long-range dependencies more effectively than RNNs.【10†L10】'
+            }, {
+                id: 103,
+                category: 'Transformers',
+                question: 'What is the role of the softmax function in the attention mechanism?',
+                options: [
+                    'To convert attention scores into a probability distribution',
+                    'To compute the weighted sum',
+                    'To reduce the sequence length',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The softmax function converts attention scores into a probability distribution, determining the importance of each element.【10†L7】'
+            }, {
+                id: 104,
+                category: 'Transformers',
+                question: 'What is the role of the feedforward layers in a Transformer?',
+                options: [
+                    'To process the output of the attention mechanism and apply non-linear transformations',
+                    'To compute attention scores',
+                    'To compute positional encoding',
+                    'To reduce the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Feedforward layers process the output of the attention mechanism and apply non-linear transformations.【10†L12】'
+            }, {
+                id: 105,
+                category: 'Transformers',
+                question: 'What is the role of layer normalization in Transformers?',
+                options: [
+                    'To normalize the outputs of each layer for stable training',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Layer normalization normalizes the outputs of each layer for stable training in Transformers.【10†L12】'
+            }, {
+                id: 106,
+                category: 'Transformers',
+                question: 'What is the role of residual connections in Transformers?',
+                options: [
+                    'To allow gradients to flow more easily and prevent vanishing gradients',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Residual connections allow gradients to flow more easily and help prevent vanishing gradients in deep Transformers.【10†L12】'
+            }, {
+                id: 107,
+                category: 'Transformers',
+                question: 'What is the key innovation of the Transformer architecture?',
+                options: [
+                    'The use of attention and self-attention mechanisms instead of recurrence',
+                    'The use of convolutional layers',
+                    'The use of recurrent connections',
+                    'The use of memory cells'
+                ],
+                correct: 0,
+                explanation: 'The key innovation of the Transformer is the use of attention and self-attention mechanisms instead of recurrence.【10†L2】'
+            }, {
+                id: 108,
+                category: 'Transformers',
+                question: 'What is the role of the encoder in a Transformer?',
+                options: [
+                    'To process the input sequence and produce a representation',
+                    'To generate the output sequence',
+                    'To compute the loss',
+                    'To reduce the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The encoder in a Transformer processes the input sequence and produces a representation.【10†L12】'
+            }, {
+                id: 109,
+                category: 'Transformers',
+                question: 'What is the role of the decoder in a Transformer?',
+                options: [
+                    'To generate the output sequence based on the encoder\'s representation',
+                    'To process the input sequence',
+                    'To compute the loss',
+                    'To reduce the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The decoder in a Transformer generates the output sequence based on the encoder\'s representation.【10†L12】'
+            }, {
+                id: 110,
+                category: 'Transformers',
+                question: 'What is the role of multi-head attention in Transformers?',
+                options: [
+                    'To allow the model to focus on different parts of the input simultaneously from different representation subspaces',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Multi-head attention allows the model to focus on different parts of the input simultaneously from different representation subspaces.【10†L12】'
+            },
+
+            // ---- ADDITIONAL QUESTIONS (111–160) ----
+            {
+                id: 111,
+                category: 'RNN Basics',
+                question: 'What is the main challenge with standard RNNs for long sequences?',
+                options: [
+                    'They struggle to capture long-term dependencies due to vanishing gradients',
+                    'They are too fast',
+                    'They require too much data',
+                    'They are too simple'
+                ],
+                correct: 0,
+                explanation: 'Standard RNNs struggle to capture long-term dependencies due to the vanishing gradient problem.【5†L8】'
+            }, {
+                id: 112,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the cell state in an LSTM?',
+                options: [
+                    'To carry information across time steps with minimal modification',
+                    'To store the current input',
+                    'To store the output',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The cell state in an LSTM carries information across time steps with minimal modification, allowing long-term memory.【6†L9】'
+            }, {
+                id: 113,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the hidden state in an LSTM?',
+                options: [
+                    'To provide the output and pass information to the next time step',
+                    'To store long-term information',
+                    'To store the current input',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The hidden state in an LSTM provides the output and passes information to the next time step.【6†L8】'
+            }, {
+                id: 114,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in machine translation?',
+                options: [
+                    'To translate text from one language to another by processing sequences',
+                    'To only translate individual words',
+                    'To ignore the context of the sentence',
+                    'To only translate short phrases'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in machine translation to translate text from one language to another by processing sequences.【5†L13】'
+            }, {
+                id: 115,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in text generation?',
+                options: [
+                    'To generate new text based on learned patterns from training data',
+                    'To only copy existing text',
+                    'To ignore the context',
+                    'To only generate random text'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in text generation to generate new text based on learned patterns from training data.【5†L13】'
+            }, {
+                id: 116,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in time-series forecasting?',
+                options: [
+                    'To predict future values based on historical time-series data',
+                    'To only analyze past values',
+                    'To ignore temporal patterns',
+                    'To only predict short-term values'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in time-series forecasting to predict future values based on historical time-series data.【5†L13】'
+            }, {
+                id: 117,
+                category: 'Transformers',
+                question: 'What is the role of the attention mechanism in Transformers?',
+                options: [
+                    'To allow the model to focus on the most relevant parts of the input',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism allows the model to focus on the most relevant parts of the input, improving performance.【10†L6】'
+            }, {
+                id: 118,
+                category: 'Transformers',
+                question: 'What is the role of self-attention in Transformers?',
+                options: [
+                    'To allow each element to attend to all other elements in the sequence',
+                    'To allow each element to attend only to itself',
+                    'To allow each element to attend only to the next element',
+                    'To allow each element to attend only to the previous element'
+                ],
+                correct: 0,
+                explanation: 'Self-attention allows each element to attend to all other elements in the sequence, capturing relationships between them.【10†L8】'
+            }, {
+                id: 119,
+                category: 'Transformers',
+                question: 'What is the advantage of Transformers over RNNs for long sequences?',
+                options: [
+                    'Transformers can process sequences in parallel and capture long-range dependencies more effectively',
+                    'Transformers are slower than RNNs',
+                    'Transformers cannot handle long sequences',
+                    'Transformers require more memory'
+                ],
+                correct: 0,
+                explanation: 'Transformers can process sequences in parallel and capture long-range dependencies more effectively than RNNs.【10†L10】'
+            }, {
+                id: 120,
+                category: 'Transformers',
+                question: 'What is the role of the softmax function in the attention mechanism?',
+                options: [
+                    'To convert attention scores into a probability distribution',
+                    'To compute the weighted sum',
+                    'To reduce the sequence length',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The softmax function converts attention scores into a probability distribution, determining the importance of each element.【10†L7】'
+            }, {
+                id: 121,
+                category: 'RNN Basics',
+                question: 'What is the role of the hidden state in an RNN?',
+                options: [
+                    'To store information from previous time steps and pass it to the next',
+                    'To store the final output only',
+                    'To store the input data',
+                    'To store the loss function'
+                ],
+                correct: 0,
+                explanation: 'The hidden state in an RNN stores information from previous time steps and passes it to the next step, enabling memory.【5†L6】'
+            }, {
+                id: 122,
+                category: 'RNN Basics',
+                question: 'What is the main difference between RNNs and feedforward neural networks?',
+                options: [
+                    'RNNs have loops that allow information to persist; feedforward networks do not',
+                    'RNNs are only for images; feedforward networks are for text',
+                    'RNNs have no hidden layers; feedforward networks do',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'RNNs have loops in their architecture that allow information to persist, while feedforward networks have no loops.【5†L5】'
+            }, {
+                id: 123,
+                category: 'RNN Basics',
+                question: 'What is the purpose of the "state" in an RNN?',
+                options: [
+                    'To capture and retain information from previous inputs',
+                    'To store the final output',
+                    'To store the loss function',
+                    'To store the activation function'
+                ],
+                correct: 0,
+                explanation: 'The state in an RNN captures and retains information from previous inputs, allowing the network to have memory.【5†L6】'
+            }, {
+                id: 124,
+                category: 'RNN Basics',
+                question: 'What is the role of the cell state in an LSTM?',
+                options: [
+                    'To store long-term information and carry it across time steps',
+                    'To store the current input',
+                    'To store the output',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The cell state in an LSTM stores long-term information and carries it across time steps, allowing the network to remember important information.【6†L9】'
+            }, {
+                id: 125,
+                category: 'RNN Basics',
+                question: 'What is the role of the forget gate in an LSTM?',
+                options: [
+                    'To decide which information to discard from the cell state',
+                    'To decide which new information to store',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The forget gate in an LSTM decides which information to discard from the cell state, filtering out irrelevant information.【6†L6】【7†L9】'
+            }, {
+                id: 126,
+                category: 'RNN Basics',
+                question: 'What is the role of the input gate in an LSTM?',
+                options: [
+                    'To decide which new information to store in the cell state',
+                    'To decide which information to discard',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The input gate in an LSTM decides which new information to store in the cell state and updates the cell state accordingly.【6†L6】【7†L9】'
+            }, {
+                id: 127,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the output gate in an LSTM?',
+                options: [
+                    'To determine the next hidden state based on the updated cell state',
+                    'To decide which information to discard',
+                    'To decide which new information to store',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate in an LSTM determines the next hidden state based on the current input, previous hidden state, and updated cell state.【6†L8】【7†L9】'
+            }, {
+                id: 128,
+                category: 'LSTM & GRU',
+                question: 'How many gates does an LSTM have?',
+                options: [
+                    'Three: forget gate, input gate, and output gate',
+                    'Two: forget gate and input gate',
+                    'One: forget gate',
+                    'Four: forget, input, output, and update gate'
+                ],
+                correct: 0,
+                explanation: 'An LSTM has three gates: the forget gate, input gate, and output gate.【6†L5】'
+            }, {
+                id: 129,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the forget gate in an LSTM?',
+                options: [
+                    'It filters out irrelevant information from the cell state',
+                    'It decides what new information to store',
+                    'It determines the next hidden state',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The forget gate filters out irrelevant information from the cell state.【7†L9】'
+            }, {
+                id: 130,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the input gate in an LSTM?',
+                options: [
+                    'It decides what new information to store and updates the cell state',
+                    'It filters out irrelevant information',
+                    'It determines the next hidden state',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The input gate decides what new information to store and updates the cell state.【7†L9】'
+            }, {
+                id: 131,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the output gate in an LSTM?',
+                options: [
+                    'It determines the next hidden state based on the updated cell state',
+                    'It filters out irrelevant information',
+                    'It decides what new information to store',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate determines the next hidden state based on the updated cell state.【7†L9】'
+            }, {
+                id: 132,
+                category: 'LSTM & GRU',
+                question: 'What is a key difference between LSTMs and GRUs?',
+                options: [
+                    'GRUs do not have a separate cell state, unlike LSTMs',
+                    'GRUs have more gates than LSTMs',
+                    'LSTMs are simpler than GRUs',
+                    'GRUs cannot handle long-term dependencies'
+                ],
+                correct: 0,
+                explanation: 'A key difference is that GRUs do not have a separate cell state, unlike LSTMs.【7†L11】'
+            }, {
+                id: 133,
+                category: 'LSTM & GRU',
+                question: 'What are the two gates in a GRU?',
+                options: [
+                    'Update gate and reset gate',
+                    'Forget gate and input gate',
+                    'Input gate and output gate',
+                    'Forget gate and output gate'
+                ],
+                correct: 0,
+                explanation: 'GRUs have two gates: the update gate and the reset gate.【7†L11】'
+            }, {
+                id: 134,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the update gate in a GRU?',
+                options: [
+                    'It balances between retaining old memory and accepting new input',
+                    'It filters out irrelevant information',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The update gate in a GRU balances between retaining old memory and accepting new input.【7†L12】'
+            }, {
+                id: 135,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the reset gate in a GRU?',
+                options: [
+                    'It controls the amount of past information to discard',
+                    'It balances between retaining old memory and accepting new input',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The reset gate in a GRU controls the amount of past information to discard.【7†L13】'
+            }, {
+                id: 136,
+                category: 'Transformers',
+                question: 'What is the role of positional encoding in Transformers?',
+                options: [
+                    'To provide information about the order of words in the sequence',
+                    'To provide information about the meaning of words',
+                    'To reduce the sequence length',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Positional encoding provides information about the order of words in the sequence, since Transformers do not have inherent sequential processing.【10†L3】'
+            }, {
+                id: 137,
+                category: 'Transformers',
+                question: 'What is the role of the attention mechanism in Transformers?',
+                options: [
+                    'To allow the model to focus on the most relevant parts of the input',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism allows the model to focus on the most relevant parts of the input, improving performance.【10†L6】'
+            }, {
+                id: 138,
+                category: 'Transformers',
+                question: 'What is the role of self-attention in Transformers?',
+                options: [
+                    'To allow each element to attend to all other elements in the sequence',
+                    'To allow each element to attend only to itself',
+                    'To allow each element to attend only to the next element',
+                    'To allow each element to attend only to the previous element'
+                ],
+                correct: 0,
+                explanation: 'Self-attention allows each element to attend to all other elements in the sequence, capturing relationships between them.【10†L8】'
+            }, {
+                id: 139,
+                category: 'Transformers',
+                question: 'What is the advantage of Transformers over RNNs for long sequences?',
+                options: [
+                    'Transformers can process sequences in parallel and capture long-range dependencies more effectively',
+                    'Transformers are slower than RNNs',
+                    'Transformers cannot handle long sequences',
+                    'Transformers require more memory'
+                ],
+                correct: 0,
+                explanation: 'Transformers can process sequences in parallel and capture long-range dependencies more effectively than RNNs.【10†L10】'
+            }, {
+                id: 140,
+                category: 'Transformers',
+                question: 'What is the role of the softmax function in the attention mechanism?',
+                options: [
+                    'To convert attention scores into a probability distribution',
+                    'To compute the weighted sum',
+                    'To reduce the sequence length',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'The softmax function converts attention scores into a probability distribution, determining the importance of each element.【10†L7】'
+            }, {
+                id: 141,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in sentiment analysis?',
+                options: [
+                    'To determine the sentiment of text by capturing context and sequential patterns',
+                    'To only classify positive sentiment',
+                    'To only classify negative sentiment',
+                    'To ignore the order of words'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in sentiment analysis to determine the sentiment of text by capturing context and sequential patterns.【9†L3】'
+            }, {
+                id: 142,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in weather forecasting?',
+                options: [
+                    'To predict weather patterns by analyzing time-series data',
+                    'To only predict temperature',
+                    'To only predict humidity',
+                    'To ignore temporal dependencies'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in weather forecasting to predict weather patterns by analyzing time-series data.【9†L11】'
+            }, {
+                id: 143,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in music generation?',
+                options: [
+                    'To generate music by learning patterns from existing compositions',
+                    'To only generate lyrics',
+                    'To only generate chords',
+                    'To ignore musical structure'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in music generation to generate music by learning patterns from existing compositions.【9†L16】'
+            }, {
+                id: 144,
+                category: 'RNN Use Cases',
+                question: 'What is the role of RNNs in stock market prediction?',
+                options: [
+                    'To predict stock prices by analyzing historical data and capturing temporal patterns',
+                    'To only predict short-term trends',
+                    'To ignore market sentiment',
+                    'To only use linear models'
+                ],
+                correct: 0,
+                explanation: 'RNNs are used in stock market prediction to predict stock prices by analyzing historical data and capturing temporal patterns.【8†L2】'
+            }, {
+                id: 145,
+                category: 'RNN Basics',
+                question: 'What is the role of the hidden state in an RNN?',
+                options: [
+                    'To store information from previous time steps and pass it to the next',
+                    'To store the final output only',
+                    'To store the input data',
+                    'To store the loss function'
+                ],
+                correct: 0,
+                explanation: 'The hidden state in an RNN stores information from previous time steps and passes it to the next step, enabling memory.【5†L6】'
+            }, {
+                id: 146,
+                category: 'RNN Basics',
+                question: 'What is the main difference between RNNs and feedforward neural networks?',
+                options: [
+                    'RNNs have loops that allow information to persist; feedforward networks do not',
+                    'RNNs are only for images; feedforward networks are for text',
+                    'RNNs have no hidden layers; feedforward networks do',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'RNNs have loops in their architecture that allow information to persist, while feedforward networks have no loops.【5†L5】'
+            }, {
+                id: 147,
+                category: 'RNN Basics',
+                question: 'What is the purpose of the "state" in an RNN?',
+                options: [
+                    'To capture and retain information from previous inputs',
+                    'To store the final output',
+                    'To store the loss function',
+                    'To store the activation function'
+                ],
+                correct: 0,
+                explanation: 'The state in an RNN captures and retains information from previous inputs, allowing the network to have memory.【5†L6】'
+            }, {
+                id: 148,
+                category: 'RNN Basics',
+                question: 'What is the role of the cell state in an LSTM?',
+                options: [
+                    'To store long-term information and carry it across time steps',
+                    'To store the current input',
+                    'To store the output',
+                    'To store the loss'
+                ],
+                correct: 0,
+                explanation: 'The cell state in an LSTM stores long-term information and carries it across time steps, allowing the network to remember important information.【6†L9】'
+            }, {
+                id: 149,
+                category: 'RNN Basics',
+                question: 'What is the role of the forget gate in an LSTM?',
+                options: [
+                    'To decide which information to discard from the cell state',
+                    'To decide which new information to store',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The forget gate in an LSTM decides which information to discard from the cell state, filtering out irrelevant information.【6†L6】【7†L9】'
+            }, {
+                id: 150,
+                category: 'RNN Basics',
+                question: 'What is the role of the input gate in an LSTM?',
+                options: [
+                    'To decide which new information to store in the cell state',
+                    'To decide which information to discard',
+                    'To determine the output',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The input gate in an LSTM decides which new information to store in the cell state and updates the cell state accordingly.【6†L6】【7†L9】'
+            }, {
+                id: 151,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the output gate in an LSTM?',
+                options: [
+                    'To determine the next hidden state based on the updated cell state',
+                    'To decide which information to discard',
+                    'To decide which new information to store',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate in an LSTM determines the next hidden state based on the current input, previous hidden state, and updated cell state.【6†L8】【7†L9】'
+            }, {
+                id: 152,
+                category: 'LSTM & GRU',
+                question: 'How many gates does an LSTM have?',
+                options: [
+                    'Three: forget gate, input gate, and output gate',
+                    'Two: forget gate and input gate',
+                    'One: forget gate',
+                    'Four: forget, input, output, and update gate'
+                ],
+                correct: 0,
+                explanation: 'An LSTM has three gates: the forget gate, input gate, and output gate.【6†L5】'
+            }, {
+                id: 153,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the forget gate in an LSTM?',
+                options: [
+                    'It filters out irrelevant information from the cell state',
+                    'It decides what new information to store',
+                    'It determines the next hidden state',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The forget gate filters out irrelevant information from the cell state.【7†L9】'
+            }, {
+                id: 154,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the input gate in an LSTM?',
+                options: [
+                    'It decides what new information to store and updates the cell state',
+                    'It filters out irrelevant information',
+                    'It determines the next hidden state',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The input gate decides what new information to store and updates the cell state.【7†L9】'
+            }, {
+                id: 155,
+                category: 'LSTM & GRU',
+                question: 'What is the function of the output gate in an LSTM?',
+                options: [
+                    'It determines the next hidden state based on the updated cell state',
+                    'It filters out irrelevant information',
+                    'It decides what new information to store',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The output gate determines the next hidden state based on the updated cell state.【7†L9】'
+            }, {
+                id: 156,
+                category: 'LSTM & GRU',
+                question: 'What is a key difference between LSTMs and GRUs?',
+                options: [
+                    'GRUs do not have a separate cell state, unlike LSTMs',
+                    'GRUs have more gates than LSTMs',
+                    'LSTMs are simpler than GRUs',
+                    'GRUs cannot handle long-term dependencies'
+                ],
+                correct: 0,
+                explanation: 'A key difference is that GRUs do not have a separate cell state, unlike LSTMs.【7†L11】'
+            }, {
+                id: 157,
+                category: 'LSTM & GRU',
+                question: 'What are the two gates in a GRU?',
+                options: [
+                    'Update gate and reset gate',
+                    'Forget gate and input gate',
+                    'Input gate and output gate',
+                    'Forget gate and output gate'
+                ],
+                correct: 0,
+                explanation: 'GRUs have two gates: the update gate and the reset gate.【7†L11】'
+            }, {
+                id: 158,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the update gate in a GRU?',
+                options: [
+                    'It balances between retaining old memory and accepting new input',
+                    'It filters out irrelevant information',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The update gate in a GRU balances between retaining old memory and accepting new input.【7†L12】'
+            }, {
+                id: 159,
+                category: 'LSTM & GRU',
+                question: 'What is the role of the reset gate in a GRU?',
+                options: [
+                    'It controls the amount of past information to discard',
+                    'It balances between retaining old memory and accepting new input',
+                    'It determines the output',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'The reset gate in a GRU controls the amount of past information to discard.【7†L13】'
+            }, {
+                id: 160,
+                category: 'Transformers',
+                question: 'What is the role of positional encoding in Transformers?',
+                options: [
+                    'To provide information about the order of words in the sequence',
+                    'To provide information about the meaning of words',
+                    'To reduce the sequence length',
+                    'To increase the sequence length'
+                ],
+                correct: 0,
+                explanation: 'Positional encoding provides information about the order of words in the sequence, since Transformers do not have inherent sequential processing.【10†L3】'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(.option-item[data-qindex=""][data-optindex=""]);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(You've answered  of  questions. Please answer all questions to see results.);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

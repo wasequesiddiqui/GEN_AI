@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certified Gen AI Specialist – Practice Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+            .container {
+                padding: 1.5rem 1.2rem;
+                border-radius: 2rem;
+            }
+            .quiz-title-group h1 {
+                font-size: 1.4rem;
+            }
+            .score-display {
+                padding: 0.4rem 1rem;
+                min-width: 100px;
+            }
+            .score-display .score-number {
+                font-size: 1.2rem;
+            }
+            .question-card {
+                padding: 1.2rem 1.2rem;
+                border-radius: 1.4rem;
+            }
+            .question-text {
+                font-size: 1.05rem;
+            }
+            .option-item {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+                gap: 0.7rem;
+            }
+            .option-item .letter {
+                width: 1.7rem;
+                height: 1.7rem;
+                font-size: 0.7rem;
+            }
+            .nav-btn {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.8rem;
+            }
+            .results-score {
+                font-size: 3rem;
+            }
+            .container {
+                backdrop-filter: blur(2px);
+            }
+        }
+
+        @media (max-width: 450px) {
+            .quiz-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .score-display {
+                text-align: left;
+                width: 100%;
+            }
+            .nav-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-btn {
+                justify-content: center;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e6edf6;
+            border-radius: 100px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b0c8e0;
+            border-radius: 100px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8aacd0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>Certification prep · 150+ questions</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  150+ QUESTIONS — based on all uploaded documents
+        // ============================================================
+        const QUESTIONS = [
+            // ---- ACTIVATION FUNCTIONS (1–35) ----
+            {
+                id: 1,
+                category: 'Activation Functions',
+                question: 'What is the primary purpose of an activation function in a neural network?',
+                options: [
+                    'To introduce non-linearity and determine the neuron\'s output',
+                    'To store weights between layers',
+                    'To reduce the number of parameters',
+                    'To speed up training by skipping layers'
+                ],
+                correct: 0,
+                explanation: 'Activation functions introduce non-linearity and determine the neuron\'s output, enabling the network to learn complex patterns.'
+            }, {
+                id: 2,
+                category: 'Activation Functions',
+                question: 'Which of the following is a key reason for using non-linear activation functions in deep learning?',
+                options: [
+                    'To capture complex patterns beyond straight lines',
+                    'To make the network faster',
+                    'To reduce the number of neurons',
+                    'To eliminate the need for bias'
+                ],
+                correct: 0,
+                explanation: 'Non-linearity allows neural networks to capture complex patterns that linear functions cannot represent.'
+            }, {
+                id: 3,
+                category: 'Activation Functions',
+                question: 'What is the range of the Sigmoid activation function?',
+                options: [
+                    '(-∞, ∞)',
+                    '(0, 1)',
+                    '(-1, 1)',
+                    '[0, ∞)'
+                ],
+                correct: 1,
+                explanation: 'The Sigmoid function outputs values between 0 and 1, making it suitable for binary classification.'
+            }, {
+                id: 4,
+                category: 'Activation Functions',
+                question: 'For what type of task is the Sigmoid activation function commonly used?',
+                options: [
+                    'Multi-class classification',
+                    'Binary classification',
+                    'Regression',
+                    'Dimensionality reduction'
+                ],
+                correct: 1,
+                explanation: 'Sigmoid is used in binary classification because its output can be interpreted as a probability between 0 and 1.'
+            }, {
+                id: 5,
+                category: 'Activation Functions',
+                question: 'What is the range of the Tanh activation function?',
+                options: [
+                    '(0, 1)',
+                    '(-1, 1)',
+                    '(-∞, ∞)',
+                    '[0, ∞)'
+                ],
+                correct: 1,
+                explanation: 'Tanh outputs values between -1 and 1, centering the data around zero.'
+            }, {
+                id: 6,
+                category: 'Activation Functions',
+                question: 'For an input of 2, what is the approximate output of the Tanh activation function?',
+                options: [
+                    '0.8808',
+                    '0.964',
+                    '2.0',
+                    '0.1192'
+                ],
+                correct: 1,
+                explanation: 'Tanh(2) ≈ 0.964, as shown in the document examples.'
+            }, {
+                id: 7,
+                category: 'Activation Functions',
+                question: 'What does the ReLU (Rectified Linear Unit) activation function output for a negative input?',
+                options: [
+                    'The input value itself',
+                    'Zero',
+                    'A small negative value',
+                    'The absolute value'
+                ],
+                correct: 1,
+                explanation: 'ReLU outputs zero for negative inputs and the input value for positive inputs.'
+            }, {
+                id: 8,
+                category: 'Activation Functions',
+                question: 'For an input of -2, what does ReLU output?',
+                options: [
+                    '-2',
+                    '0',
+                    '2',
+                    '-0.02'
+                ],
+                correct: 1,
+                explanation: 'ReLU outputs 0 for any negative input, including -2.'
+            }, {
+                id: 9,
+                category: 'Activation Functions',
+                question: 'What is the main advantage of Leaky ReLU over standard ReLU?',
+                options: [
+                    'It allows small negative values for negative inputs, avoiding dead neurons',
+                    'It is faster to compute',
+                    'It has a wider range',
+                    'It works only for binary classification'
+                ],
+                correct: 0,
+                explanation: 'Leaky ReLU allows a small gradient for negative inputs, which helps avoid dead neurons during training.'
+            }, {
+                id: 10,
+                category: 'Activation Functions',
+                question: 'For an input of -2, what does Leaky ReLU typically output (with alpha = 0.01)?',
+                options: [
+                    '0',
+                    '-2',
+                    '-0.02',
+                    '0.02'
+                ],
+                correct: 2,
+                explanation: 'Leaky ReLU with alpha=0.01 outputs -0.02 for an input of -2 (alpha * input).'
+            }, {
+                id: 11,
+                category: 'Activation Functions',
+                question: 'What is the key difference between PReLU and Leaky ReLU?',
+                options: [
+                    'PReLU introduces a learnable parameter to control the slope for negative values',
+                    'PReLU is always linear',
+                    'PReLU only works for positive inputs',
+                    'PReLU has no activation function'
+                ],
+                correct: 0,
+                explanation: 'PReLU (Parametric ReLU) generalizes ReLU by introducing a learnable parameter that controls the slope for negative values.'
+            }, {
+                id: 12,
+                category: 'Activation Functions',
+                question: 'What does the Softmax activation function do?',
+                options: [
+                    'Converts a vector of numbers into a probability distribution summing to 1',
+                    'Outputs only 0 or 1',
+                    'Squares the input values',
+                    'Takes the absolute value of each input'
+                ],
+                correct: 0,
+                explanation: 'Softmax converts a vector of logits into a probability distribution where all outputs sum to 1, making it ideal for multi-class classification.'
+            }, {
+                id: 13,
+                category: 'Activation Functions',
+                question: 'Which activation function is typically used in the output layer for multi-class classification?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'ReLU',
+                    'Softmax'
+                ],
+                correct: 3,
+                explanation: 'Softmax is used for multi-class classification because it produces a probability distribution over multiple classes.'
+            }, {
+                id: 14,
+                category: 'Activation Functions',
+                question: 'What is the output of Softmax across all classes?',
+                options: [
+                    'It sums to 0',
+                    'It sums to 1',
+                    'It sums to the number of classes',
+                    'It sums to infinity'
+                ],
+                correct: 1,
+                explanation: 'Softmax outputs a probability distribution where the sum of all outputs is exactly 1.'
+            }, {
+                id: 15,
+                category: 'Activation Functions',
+                question: 'Which of the following is a linear activation function?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'Linear (identity)',
+                    'ReLU'
+                ],
+                correct: 2,
+                explanation: 'The linear activation function (identity function) is linear, while Sigmoid, Tanh, and ReLU are non-linear.'
+            }, {
+                id: 16,
+                category: 'Activation Functions',
+                question: 'Why is non-linearity essential in deep learning?',
+                options: [
+                    'It allows the network to learn complex patterns and non-linear relationships',
+                    'It makes the network faster',
+                    'It reduces memory usage',
+                    'It eliminates the need for bias'
+                ],
+                correct: 0,
+                explanation: 'Non-linearity is essential because real-world problems are often non-linear; without it, deep networks would just be linear transformations.'
+            }, {
+                id: 17,
+                category: 'Activation Functions',
+                question: 'What is the "vanishing gradient" problem?',
+                options: [
+                    'Gradients become very small and training slows or stops',
+                    'Gradients become extremely large',
+                    'Gradients vanish after the first epoch',
+                    'Gradients are not computed at all'
+                ],
+                correct: 0,
+                explanation: 'The vanishing gradient problem occurs when gradients become very small, making it difficult for the network to update weights effectively.'
+            }, {
+                id: 18,
+                category: 'Activation Functions',
+                question: 'Which activation function is most effective at mitigating the vanishing gradient problem?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'ReLU',
+                    'Softmax'
+                ],
+                correct: 2,
+                explanation: 'ReLU mitigates the vanishing gradient problem because its gradient is 1 for positive inputs, allowing gradients to flow more freely.'
+            }, {
+                id: 19,
+                category: 'Activation Functions',
+                question: 'For an input of 2, what does ReLU output?',
+                options: [
+                    '0',
+                    '1',
+                    '2',
+                    '0.8808'
+                ],
+                correct: 2,
+                explanation: 'ReLU outputs the input value for positive inputs, so ReLU(2) = 2.'
+            }, {
+                id: 20,
+                category: 'Activation Functions',
+                question: 'For an input of -1.5, what does Tanh output?',
+                options: [
+                    '0.964',
+                    '-0.905',
+                    '-1.5',
+                    '0'
+                ],
+                correct: 1,
+                explanation: 'Tanh(-1.5) ≈ -0.905, as shown in the document examples.'
+            }, {
+                id: 21,
+                category: 'Activation Functions',
+                question: 'Which activation function is best for regression tasks predicting continuous values?',
+                options: [
+                    'Sigmoid',
+                    'Linear',
+                    'Softmax',
+                    'Tanh'
+                ],
+                correct: 1,
+                explanation: 'A linear activation function (or ReLU) is typically used for regression tasks where the output is a continuous value.'
+            }, {
+                id: 22,
+                category: 'Activation Functions',
+                question: 'What should you consider when choosing an activation function?',
+                options: [
+                    'Problem type, nature of data, gradient issues, and computational efficiency',
+                    'Only the color of the output',
+                    'Only the number of neurons',
+                    'Only the training speed'
+                ],
+                correct: 0,
+                explanation: 'Choosing the right activation function depends on the problem type, data nature, gradient issues, and computational efficiency.'
+            }, {
+                id: 23,
+                category: 'Activation Functions',
+                question: 'For binary classification, which activation function is commonly used in the output layer?',
+                options: [
+                    'Softmax',
+                    'ReLU',
+                    'Sigmoid',
+                    'Tanh'
+                ],
+                correct: 2,
+                explanation: 'Sigmoid is commonly used for binary classification because its output is between 0 and 1, interpreted as a probability.'
+            }, {
+                id: 24,
+                category: 'Activation Functions',
+                question: 'What is the "exploding gradient" problem?',
+                options: [
+                    'Gradients become extremely large during training',
+                    'Gradients become extremely small',
+                    'Gradients are not computed',
+                    'Gradients oscillate wildly'
+                ],
+                correct: 0,
+                explanation: 'The exploding gradient problem occurs when gradients become extremely large, causing unstable training.'
+            }, {
+                id: 25,
+                category: 'Activation Functions',
+                question: 'Which of the following is NOT a non-linear activation function?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'ReLU',
+                    'Linear'
+                ],
+                correct: 3,
+                explanation: 'The linear activation function is linear; Sigmoid, Tanh, and ReLU are all non-linear.'
+            }, {
+                id: 26,
+                category: 'Activation Functions',
+                question: 'What is the output range of the Sigmoid function for input 2?',
+                options: [
+                    '0.8808',
+                    '0.964',
+                    '2',
+                    '0.1192'
+                ],
+                correct: 0,
+                explanation: 'Sigmoid(2) ≈ 0.8808, as shown in the document examples.'
+            }, {
+                id: 27,
+                category: 'Activation Functions',
+                question: 'What is the output of Sigmoid for input -2?',
+                options: [
+                    '0.8808',
+                    '0.964',
+                    '0.1192',
+                    '-0.1192'
+                ],
+                correct: 2,
+                explanation: 'Sigmoid(-2) ≈ 0.1192, which is 1 - Sigmoid(2).'
+            }, {
+                id: 28,
+                category: 'Activation Functions',
+                question: 'Which activation function is best for multi-class classification?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'ReLU',
+                    'Softmax'
+                ],
+                correct: 3,
+                explanation: 'Softmax is the standard choice for multi-class classification as it produces a probability distribution across all classes.'
+            }, {
+                id: 29,
+                category: 'Activation Functions',
+                question: 'What is the primary benefit of using Leaky ReLU over ReLU?',
+                options: [
+                    'It avoids the "dead neuron" problem',
+                    'It is always faster',
+                    'It has a wider range',
+                    'It works for regression only'
+                ],
+                correct: 0,
+                explanation: 'Leaky ReLU avoids the dead neuron problem by allowing a small gradient for negative inputs, keeping neurons alive.'
+            }, {
+                id: 30,
+                category: 'Activation Functions',
+                question: 'What is the output of PReLU for input -2 if the learnable parameter α is 0.2?',
+                options: [
+                    '0',
+                    '-2',
+                    '-0.4',
+                    '0.4'
+                ],
+                correct: 2,
+                explanation: 'PReLU outputs α * input for negative values, so with α = 0.2, PReLU(-2) = -0.4.'
+            }, {
+                id: 31,
+                category: 'Activation Functions',
+                question: 'Which activation function is most commonly used in hidden layers of deep neural networks?',
+                options: [
+                    'Sigmoid',
+                    'Tanh',
+                    'ReLU',
+                    'Softmax'
+                ],
+                correct: 2,
+                explanation: 'ReLU is the most commonly used activation function in hidden layers due to its simplicity and effectiveness.'
+            }, {
+                id: 32,
+                category: 'Activation Functions',
+                question: 'What is the main limitation of the Sigmoid activation function?',
+                options: [
+                    'It suffers from vanishing gradient and is not zero-centered',
+                    'It is too fast to train',
+                    'It only works for regression',
+                    'It has no derivative'
+                ],
+                correct: 0,
+                explanation: 'Sigmoid suffers from vanishing gradient problems and its outputs are not zero-centered, which can slow down training.'
+            }, {
+                id: 33,
+                category: 'Activation Functions',
+                question: 'What is the main advantage of Tanh over Sigmoid?',
+                options: [
+                    'It is zero-centered, which can help with training',
+                    'It is always positive',
+                    'It has a narrower range',
+                    'It is linear'
+                ],
+                correct: 0,
+                explanation: 'Tanh is zero-centered (outputs between -1 and 1), which can make optimization easier compared to Sigmoid.'
+            }, {
+                id: 34,
+                category: 'Activation Functions',
+                question: 'In the context of activation functions, what does "non-linear separability" refer to?',
+                options: [
+                    'Problems that cannot be solved with a single straight line',
+                    'Problems that are always solvable',
+                    'Problems that require no activation function',
+                    'Problems that are linear'
+                ],
+                correct: 0,
+                explanation: 'Non-linearly separable problems require non-linear activation functions to capture complex decision boundaries.'
+            }, {
+                id: 35,
+                category: 'Activation Functions',
+                question: 'Which of the following is true about the Softmax activation function?',
+                options: [
+                    'It is used for binary classification',
+                    'It is used for multi-class classification',
+                    'It outputs values greater than 1',
+                    'It is a linear function'
+                ],
+                correct: 1,
+                explanation: 'Softmax is specifically designed for multi-class classification, producing a probability distribution over multiple classes.'
+            },
+
+            // ---- NEURONS AND LAYERS (36–70) ----
+            {
+                id: 36,
+                category: 'Neurons & Layers',
+                question: 'What is the fundamental unit of a neural network?',
+                options: [
+                    'A layer',
+                    'A neuron',
+                    'A weight',
+                    'A bias'
+                ],
+                correct: 1,
+                explanation: 'The neuron is the fundamental building block of a neural network, processing inputs and producing outputs.'
+            }, {
+                id: 37,
+                category: 'Neurons & Layers',
+                question: 'Which of the following is NOT a component of a neuron?',
+                options: [
+                    'Inputs',
+                    'Weights',
+                    'Bias',
+                    'Dataset'
+                ],
+                correct: 3,
+                explanation: 'A neuron consists of inputs, weights, a bias, and an activation function. The dataset is external to the neuron.'
+            }, {
+                id: 38,
+                category: 'Neurons & Layers',
+                question: 'What role does the bias play in a neuron?',
+                options: [
+                    'It shifts the activation function, allowing the neuron to learn more complex patterns',
+                    'It stores the input data',
+                    'It connects to the next layer',
+                    'It reduces the number of parameters'
+                ],
+                correct: 0,
+                explanation: 'The bias allows the neuron to shift the activation function, enabling it to learn more complex decision boundaries.'
+            }, {
+                id: 39,
+                category: 'Neurons & Layers',
+                question: 'What is the role of weights in a neural network?',
+                options: [
+                    'They determine the strength of connections between neurons',
+                    'They store the training data',
+                    'They are the output of the network',
+                    'They are the activation functions'
+                ],
+                correct: 0,
+                explanation: 'Weights determine the strength of connections between neurons and are adjusted during training to minimize error.'
+            }, {
+                id: 40,
+                category: 'Neurons & Layers',
+                question: 'What is the first point of contact for raw data in a neural network?',
+                options: [
+                    'The hidden layer',
+                    'The output layer',
+                    'The input layer',
+                    'The activation function'
+                ],
+                correct: 2,
+                explanation: 'The input layer is the first point of contact, receiving the raw data and passing it to the hidden layers.'
+            }, {
+                id: 41,
+                category: 'Neurons & Layers',
+                question: 'What is the primary role of hidden layers in a neural network?',
+                options: [
+                    'To produce the final prediction',
+                    'To learn different features and patterns from the data',
+                    'To store the training data',
+                    'To apply the activation function'
+                ],
+                correct: 1,
+                explanation: 'Hidden layers are the workhorses of neural networks, learning different features and patterns from the data hierarchically.'
+            }, {
+                id: 42,
+                category: 'Neurons & Layers',
+                question: 'What does the output layer produce in a neural network?',
+                options: [
+                    'The final prediction for classification or regression tasks',
+                    'The raw input data',
+                    'The weights of the network',
+                    'The hidden features'
+                ],
+                correct: 0,
+                explanation: 'The output layer produces the final prediction, which can be a class label (classification) or a continuous value (regression).'
+            }, {
+                id: 43,
+                category: 'Neurons & Layers',
+                question: 'What is hierarchical learning in neural networks?',
+                options: [
+                    'Learning features at different levels of abstraction across layers',
+                    'Learning only one feature at a time',
+                    'Learning without any structure',
+                    'Learning only the final output'
+                ],
+                correct: 0,
+                explanation: 'Hierarchical learning means that different layers learn features at different levels of abstraction, from simple to complex.'
+            }, {
+                id: 44,
+                category: 'Neurons & Layers',
+                question: 'In a neural network, what type of data does the input layer receive for image processing?',
+                options: [
+                    'Pixels as data points',
+                    'Audio waveforms',
+                    'Encoded text',
+                    'Direct numerical values'
+                ],
+                correct: 0,
+                explanation: 'For images, the input layer receives pixels as data points, which are then processed through the network.'
+            }, {
+                id: 45,
+                category: 'Neurons & Layers',
+                question: 'What type of data does the input layer receive for audio processing?',
+                options: [
+                    'Pixels',
+                    'Waveforms and frequencies',
+                    'Encoded words',
+                    'Direct numerical values'
+                ],
+                correct: 1,
+                explanation: 'For audio processing, the input layer receives waveforms and frequencies as data points.'
+            }, {
+                id: 46,
+                category: 'Neurons & Layers',
+                question: 'What type of data does the input layer receive for text processing?',
+                options: [
+                    'Pixels',
+                    'Waveforms',
+                    'Encoded words or characters',
+                    'Direct numerical values'
+                ],
+                correct: 2,
+                explanation: 'For text processing, the input layer receives encoded words or characters (e.g., word embeddings or one-hot vectors).'
+            }, {
+                id: 47,
+                category: 'Neurons & Layers',
+                question: 'What determines the depth of a neural network?',
+                options: [
+                    'The number of hidden layers',
+                    'The number of neurons in each layer',
+                    'The amount of training data',
+                    'The activation function'
+                ],
+                correct: 0,
+                explanation: 'The depth of a neural network is determined by the number of hidden layers it contains.'
+            }, {
+                id: 48,
+                category: 'Neurons & Layers',
+                question: 'What is the role of the activation function in a neuron?',
+                options: [
+                    'To decide the neuron\'s output and introduce non-linearity',
+                    'To store the weights',
+                    'To connect to the next layer',
+                    'To receive the input data'
+                ],
+                correct: 0,
+                explanation: 'The activation function decides the neuron\'s output by processing the combined inputs and introducing non-linearity.'
+            }, {
+                id: 49,
+                category: 'Neurons & Layers',
+                question: 'Which of the following is a component of a neuron?',
+                options: [
+                    'Inputs, weights, bias, and activation function',
+                    'Only inputs and outputs',
+                    'Only weights and bias',
+                    'Only activation function'
+                ],
+                correct: 0,
+                explanation: 'A neuron consists of inputs, weights, a bias, and an activation function that processes the weighted sum.'
+            }, {
+                id: 50,
+                category: 'Neurons & Layers',
+                question: 'What is the main difference between classification and regression tasks in the output layer?',
+                options: [
+                    'Classification predicts discrete labels; regression predicts continuous values',
+                    'Classification uses ReLU; regression uses Sigmoid',
+                    'Classification has no output layer; regression has one',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'Classification predicts discrete class labels, while regression predicts continuous numerical values.'
+            }, {
+                id: 51,
+                category: 'Neurons & Layers',
+                question: 'What is the "complexity and depth" concept in neural networks?',
+                options: [
+                    'The idea that deeper networks can learn more complex features',
+                    'The idea that all networks have the same depth',
+                    'The idea that depth does not affect performance',
+                    'The idea that only shallow networks work'
+                ],
+                correct: 0,
+                explanation: 'Deeper networks (more hidden layers) can learn more complex and abstract features, enabling them to solve harder problems.'
+            }, {
+                id: 52,
+                category: 'Neurons & Layers',
+                question: 'What is the purpose of the input layer?',
+                options: [
+                    'To receive raw data and pass it to the hidden layers',
+                    'To produce the final output',
+                    'To store the weights',
+                    'To apply the activation function'
+                ],
+                correct: 0,
+                explanation: 'The input layer receives raw data and passes it forward to the hidden layers for processing.'
+            }, {
+                id: 53,
+                category: 'Neurons & Layers',
+                question: 'What is the purpose of the output layer?',
+                options: [
+                    'To produce the final prediction or output of the network',
+                    'To receive the raw data',
+                    'To store the training data',
+                    'To learn features'
+                ],
+                correct: 0,
+                explanation: 'The output layer produces the final prediction, which is the result of the network\'s computation.'
+            }, {
+                id: 54,
+                category: 'Neurons & Layers',
+                question: 'What are "hidden layers" called hidden?',
+                options: [
+                    'Because they are not directly visible in the input or output',
+                    'Because they are hidden from the user interface',
+                    'Because they store data secretly',
+                    'Because they are optional'
+                ],
+                correct: 0,
+                explanation: 'Hidden layers are called "hidden" because they are not directly exposed to the input or output of the network.'
+            }, {
+                id: 55,
+                category: 'Neurons & Layers',
+                question: 'Which layer of a neural network is responsible for feature extraction?',
+                options: [
+                    'The input layer',
+                    'The hidden layers',
+                    'The output layer',
+                    'All layers equally'
+                ],
+                correct: 1,
+                explanation: 'Hidden layers are responsible for feature extraction, learning increasingly complex features from the input data.'
+            }, {
+                id: 56,
+                category: 'Neurons & Layers',
+                question: 'What is a perceptron?',
+                options: [
+                    'A type of neural network with a single layer and no hidden layers',
+                    'A deep neural network with many hidden layers',
+                    'A type of activation function',
+                    'A type of training algorithm'
+                ],
+                correct: 0,
+                explanation: 'A perceptron is a simple neural network with a single layer and no hidden layers, capable of solving linearly separable problems.'
+            }, {
+                id: 57,
+                category: 'Neurons & Layers',
+                question: 'What is the XOR problem in the context of neural networks?',
+                options: [
+                    'A classic example of a problem that a single-layer perceptron cannot solve',
+                    'A simple problem that any network can solve',
+                    'A problem with only one solution',
+                    'A problem that requires no training'
+                ],
+                correct: 0,
+                explanation: 'The XOR problem is a classic example of a non-linearly separable problem that a single-layer perceptron cannot solve.'
+            }, {
+                id: 58,
+                category: 'Neurons & Layers',
+                question: 'What is the main limitation of single-layer perceptrons?',
+                options: [
+                    'They can only solve linearly separable problems',
+                    'They are too slow',
+                    'They require too much data',
+                    'They have too many parameters'
+                ],
+                correct: 0,
+                explanation: 'Single-layer perceptrons can only solve linearly separable problems and struggle with complex, non-linear problems like XOR.'
+            }, {
+                id: 59,
+                category: 'Neurons & Layers',
+                question: 'What does "linearly separable" mean?',
+                options: [
+                    'That data points can be separated by a single straight line or hyperplane',
+                    'That data points cannot be separated',
+                    'That data points are all mixed together',
+                    'That data points are always circular'
+                ],
+                correct: 0,
+                explanation: 'Linearly separable means that data points can be separated by a single straight line (in 2D) or hyperplane (in higher dimensions).'
+            }, {
+                id: 60,
+                category: 'Neurons & Layers',
+                question: 'What is the role of weights and biases in a neural network?',
+                options: [
+                    'They are parameters adjusted during training to minimize the error',
+                    'They are fixed and never change',
+                    'They are only used in the input layer',
+                    'They are only used in the output layer'
+                ],
+                correct: 0,
+                explanation: 'Weights and biases are learnable parameters that are adjusted during training to minimize the prediction error.'
+            }, {
+                id: 61,
+                category: 'Neurons & Layers',
+                question: 'What is the "weighted sum" in a neuron?',
+                options: [
+                    'The sum of inputs multiplied by their corresponding weights, plus the bias',
+                    'The sum of all inputs without weights',
+                    'The product of all inputs',
+                    'The average of all inputs'
+                ],
+                correct: 0,
+                explanation: 'The weighted sum is the sum of each input multiplied by its weight, plus the bias. This value is then passed through the activation function.'
+            }, {
+                id: 62,
+                category: 'Neurons & Layers',
+                question: 'In a neural network, what is a "batch"?',
+                options: [
+                    'A subset of the training data used to update weights in one iteration',
+                    'The entire training dataset',
+                    'A single data point',
+                    'The output of the network'
+                ],
+                correct: 0,
+                explanation: 'A batch is a subset of the training data used in one forward/backward pass to update the weights efficiently.'
+            }, {
+                id: 63,
+                category: 'Neurons & Layers',
+                question: 'What is an "epoch" in neural network training?',
+                options: [
+                    'One complete pass of the entire training dataset through the network',
+                    'A single forward pass',
+                    'A single backward pass',
+                    'A single data point processed'
+                ],
+                correct: 0,
+                explanation: 'An epoch is one complete pass of the entire training dataset through the network, including both forward and backward passes.'
+            }, {
+                id: 64,
+                category: 'Neurons & Layers',
+                question: 'What does "forward propagation" refer to in neural networks?',
+                options: [
+                    'Passing input data through the network from input to output layer',
+                    'Passing error gradients backward through the network',
+                    'Storing weights in memory',
+                    'Loading training data'
+                ],
+                correct: 0,
+                explanation: 'Forward propagation is the process of passing input data through the network from the input layer to the output layer to compute predictions.'
+            }, {
+                id: 65,
+                category: 'Neurons & Layers',
+                question: 'What does "backpropagation" refer to in neural networks?',
+                options: [
+                    'Passing error gradients backward through the network to update weights',
+                    'Passing data forward through the network',
+                    'Loading data from the dataset',
+                    'Saving trained weights'
+                ],
+                correct: 0,
+                explanation: 'Backpropagation is the process of computing gradients of the loss with respect to weights and passing them backward to update weights.'
+            }, {
+                id: 66,
+                category: 'Neurons & Layers',
+                question: 'What is the "learning rate" in neural network training?',
+                options: [
+                    'A hyperparameter that controls how much to update weights during training',
+                    'The speed at which data is processed',
+                    'The number of layers in the network',
+                    'The number of neurons in each layer'
+                ],
+                correct: 0,
+                explanation: 'The learning rate is a hyperparameter that controls the step size during weight updates, balancing speed and stability.'
+            }, {
+                id: 67,
+                category: 'Neurons & Layers',
+                question: 'What is "overfitting" in neural networks?',
+                options: [
+                    'When the model learns the training data too well but fails to generalize to new data',
+                    'When the model fails to learn any patterns',
+                    'When the model trains too slowly',
+                    'When the model has too few parameters'
+                ],
+                correct: 0,
+                explanation: 'Overfitting occurs when the model memorizes the training data instead of learning generalizable patterns, leading to poor performance on new data.'
+            }, {
+                id: 68,
+                category: 'Neurons & Layers',
+                question: 'What is "regularization" in the context of neural networks?',
+                options: [
+                    'Techniques used to prevent overfitting by penalizing complex models',
+                    'Techniques to make training faster',
+                    'Techniques to increase the dataset size',
+                    'Techniques to change the activation function'
+                ],
+                correct: 0,
+                explanation: 'Regularization techniques (like L2, dropout) help prevent overfitting by penalizing model complexity or randomly dropping neurons.'
+            }, {
+                id: 69,
+                category: 'Neurons & Layers',
+                question: 'What is "dropout" in neural networks?',
+                options: [
+                    'A regularization technique where random neurons are ignored during training',
+                    'A technique to increase the dataset size',
+                    'A technique to speed up training',
+                    'A technique to change activation functions'
+                ],
+                correct: 0,
+                explanation: 'Dropout is a regularization technique where random neurons are dropped (ignored) during training to prevent co-adaptation and overfitting.'
+            }, {
+                id: 70,
+                category: 'Neurons & Layers',
+                question: 'What is the "loss function" in a neural network?',
+                options: [
+                    'A function that measures the difference between predicted and actual outputs',
+                    'A function that determines the activation',
+                    'A function that stores weights',
+                    'A function that loads data'
+                ],
+                correct: 0,
+                explanation: 'The loss function measures how far the network\'s predictions are from the actual targets, providing a signal for training.'
+            },
+
+            // ---- SUPERVISED & UNSUPERVISED LEARNING (71–95) ----
+            {
+                id: 71,
+                category: 'Supervised Learning',
+                question: 'What is supervised learning?',
+                options: [
+                    'Learning with labeled training data to map inputs to outputs',
+                    'Learning without any labels',
+                    'Learning by interacting with an environment',
+                    'Learning through trial and error'
+                ],
+                correct: 0,
+                explanation: 'Supervised learning uses labeled training data where each input has a known output, allowing the model to learn the mapping from inputs to outputs.'
+            }, {
+                id: 72,
+                category: 'Supervised Learning',
+                question: 'What is the goal of supervised learning?',
+                options: [
+                    'To minimize prediction error on the training data',
+                    'To find patterns without labels',
+                    'To maximize cumulative reward',
+                    'To reduce data complexity'
+                ],
+                correct: 0,
+                explanation: 'The goal of supervised learning is to minimize the prediction error, enabling the model to accurately map inputs to outputs.'
+            }, {
+                id: 73,
+                category: 'Supervised Learning',
+                question: 'Which of the following is a supervised learning task?',
+                options: [
+                    'Image classification',
+                    'Clustering',
+                    'Dimensionality reduction',
+                    'Association rule learning'
+                ],
+                correct: 0,
+                explanation: 'Image classification is a supervised learning task because it requires labeled images (e.g., "cat" or "dog").'
+            }, {
+                id: 74,
+                category: 'Supervised Learning',
+                question: 'What is regression in supervised learning?',
+                options: [
+                    'Predicting a continuous value based on input features',
+                    'Classifying data into discrete categories',
+                    'Grouping similar data points',
+                    'Finding associations between variables'
+                ],
+                correct: 0,
+                explanation: 'Regression predicts continuous values (e.g., house prices, temperatures) based on input features.'
+            }, {
+                id: 75,
+                category: 'Supervised Learning',
+                question: 'What is sentiment analysis in supervised learning?',
+                options: [
+                    'Determining sentiment (positive, negative, neutral) from text',
+                    'Classifying images into categories',
+                    'Predicting continuous values',
+                    'Grouping data into clusters'
+                ],
+                correct: 0,
+                explanation: 'Sentiment analysis is a supervised learning task where the model learns to classify text into sentiments like positive, negative, or neutral.'
+            }, {
+                id: 76,
+                category: 'Supervised Learning',
+                question: 'What is the essence of image classification in supervised learning?',
+                options: [
+                    'Assigning predefined categories to images based on learned features',
+                    'Predicting continuous values from images',
+                    'Grouping images by similarity',
+                    'Finding patterns in unlabeled images'
+                ],
+                correct: 0,
+                explanation: 'Image classification assigns predefined categories (e.g., cat, dog) to images based on features learned from labeled training data.'
+            }, {
+                id: 77,
+                category: 'Supervised Learning',
+                question: 'What is the essence of regression in supervised learning?',
+                options: [
+                    'Predicting a continuous value based on the relationship between features and output',
+                    'Assigning categories to data points',
+                    'Grouping data points into clusters',
+                    'Finding associations between variables'
+                ],
+                correct: 0,
+                explanation: 'Regression models learn the relationship between features and output values to predict continuous values for new data.'
+            }, {
+                id: 78,
+                category: 'Supervised Learning',
+                question: 'What type of data does supervised learning require?',
+                options: [
+                    'Labeled data',
+                    'Unlabeled data',
+                    'Only numerical data',
+                    'Only image data'
+                ],
+                correct: 0,
+                explanation: 'Supervised learning requires labeled training data, where each input has a known target output.'
+            }, {
+                id: 79,
+                category: 'Unsupervised Learning',
+                question: 'What is unsupervised learning?',
+                options: [
+                    'Learning with unlabeled data to find patterns or structures',
+                    'Learning with labeled data',
+                    'Learning through interaction with an environment',
+                    'Learning by trial and error'
+                ],
+                correct: 0,
+                explanation: 'Unsupervised learning works with unlabeled data, focusing on finding patterns or structures without explicit output mapping.'
+            }, {
+                id: 80,
+                category: 'Unsupervised Learning',
+                question: 'What is the goal of unsupervised learning?',
+                options: [
+                    'To find patterns or structures in unlabeled data',
+                    'To minimize prediction error',
+                    'To maximize cumulative reward',
+                    'To classify data into categories'
+                ],
+                correct: 0,
+                explanation: 'The goal of unsupervised learning is to discover inherent patterns, structures, or relationships in unlabeled data.'
+            }, {
+                id: 81,
+                category: 'Unsupervised Learning',
+                question: 'What is clustering in unsupervised learning?',
+                options: [
+                    'Grouping similar data points based on inherent structures',
+                    'Reducing data dimensions',
+                    'Discovering associations between variables',
+                    'Classifying data into categories'
+                ],
+                correct: 0,
+                explanation: 'Clustering groups similar data points into clusters based on inherent structures or similarities in the data.'
+            }, {
+                id: 82,
+                category: 'Unsupervised Learning',
+                question: 'What is dimensionality reduction in unsupervised learning?',
+                options: [
+                    'Simplifying data by reducing its dimensions while retaining essential information',
+                    'Grouping similar data points',
+                    'Discovering associations between variables',
+                    'Classifying data into categories'
+                ],
+                correct: 0,
+                explanation: 'Dimensionality reduction simplifies data by reducing the number of features while preserving the most important information.'
+            }, {
+                id: 83,
+                category: 'Unsupervised Learning',
+                question: 'What is association rule learning in unsupervised learning?',
+                options: [
+                    'Discovering interesting relations and patterns between variables in large datasets',
+                    'Grouping similar data points',
+                    'Reducing data dimensions',
+                    'Classifying data into categories'
+                ],
+                correct: 0,
+                explanation: 'Association rule learning discovers interesting relations and patterns between variables, such as market basket analysis.'
+            }, {
+                id: 84,
+                category: 'Unsupervised Learning',
+                question: 'What is a real-world application of clustering?',
+                options: [
+                    'Customer segmentation in marketing',
+                    'Predicting house prices',
+                    'Classifying emails as spam',
+                    'Determining sentiment from text'
+                ],
+                correct: 0,
+                explanation: 'Customer segmentation in marketing uses clustering to group customers with similar behaviors or characteristics.'
+            }, {
+                id: 85,
+                category: 'Unsupervised Learning',
+                question: 'What is a real-world application of dimensionality reduction?',
+                options: [
+                    'Visualizing high-dimensional data in 2D or 3D space',
+                    'Customer segmentation',
+                    'Market basket analysis',
+                    'Sentiment analysis'
+                ],
+                correct: 0,
+                explanation: 'Dimensionality reduction is used to visualize high-dimensional data by reducing it to 2D or 3D while preserving structure.'
+            }, {
+                id: 86,
+                category: 'Unsupervised Learning',
+                question: 'What is a real-world application of association rule learning?',
+                options: [
+                    'Market basket analysis in retail',
+                    'Image classification',
+                    'Sentiment analysis',
+                    'Regression'
+                ],
+                correct: 0,
+                explanation: 'Market basket analysis uses association rule learning to discover products that are frequently bought together.'
+            }, {
+                id: 87,
+                category: 'Unsupervised Learning',
+                question: 'Which of the following is an unsupervised learning task?',
+                options: [
+                    'Clustering',
+                    'Image classification',
+                    'Sentiment analysis',
+                    'Regression'
+                ],
+                correct: 0,
+                explanation: 'Clustering is an unsupervised learning task, while image classification, sentiment analysis, and regression are supervised.'
+            }, {
+                id: 88,
+                category: 'Unsupervised Learning',
+                question: 'What is the main difference between supervised and unsupervised learning?',
+                options: [
+                    'Supervised uses labeled data; unsupervised uses unlabeled data',
+                    'Supervised uses unlabeled data; unsupervised uses labeled data',
+                    'Supervised is for regression; unsupervised is for classification',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'Supervised learning uses labeled data with known outputs, while unsupervised learning works with unlabeled data to find patterns.'
+            }, {
+                id: 89,
+                category: 'Supervised Learning',
+                question: 'What is the outcome of supervised learning?',
+                options: [
+                    'A model that predicts outputs for new inputs',
+                    'Clusters of similar data points',
+                    'Reduced data dimensions',
+                    'Association rules between variables'
+                ],
+                correct: 0,
+                explanation: 'Supervised learning produces a model that can predict outputs for new, unseen inputs based on what it learned from labeled data.'
+            }, {
+                id: 90,
+                category: 'Supervised Learning',
+                question: 'What is the outcome of unsupervised learning?',
+                options: [
+                    'Patterns, clusters, or structures in the data',
+                    'A model that predicts outputs for new inputs',
+                    'A model that maximizes cumulative reward',
+                    'A model that maps inputs to outputs'
+                ],
+                correct: 0,
+                explanation: 'Unsupervised learning reveals patterns, clusters, or structures in the data without any labeled outputs.'
+            }, {
+                id: 91,
+                category: 'Supervised Learning',
+                question: 'Which of the following is a supervised learning application?',
+                options: [
+                    'Spam detection in emails',
+                    'Customer segmentation',
+                    'Market basket analysis',
+                    'Dimensionality reduction'
+                ],
+                correct: 0,
+                explanation: 'Spam detection is a supervised learning task that requires labeled emails (spam vs. not spam).'
+            }, {
+                id: 92,
+                category: 'Unsupervised Learning',
+                question: 'Which of the following is an unsupervised learning application?',
+                options: [
+                    'Customer segmentation',
+                    'Spam detection',
+                    'Sentiment analysis',
+                    'Image classification'
+                ],
+                correct: 0,
+                explanation: 'Customer segmentation uses clustering, which is an unsupervised learning technique.'
+            }, {
+                id: 93,
+                category: 'Supervised Learning',
+                question: 'What is "label" in supervised learning?',
+                options: [
+                    'The known output or target value for a training example',
+                    'A category used for grouping data',
+                    'A feature used as input',
+                    'A weight in the neural network'
+                ],
+                correct: 0,
+                explanation: 'A label is the known output or target value for a training example, used to train supervised models.'
+            }, {
+                id: 94,
+                category: 'Unsupervised Learning',
+                question: 'What is "cluster" in unsupervised learning?',
+                options: [
+                    'A group of similar data points identified by clustering',
+                    'A label assigned to data',
+                    'A feature in the dataset',
+                    'A weight in the network'
+                ],
+                correct: 0,
+                explanation: 'A cluster is a group of data points that are similar to each other, discovered through clustering algorithms.'
+            }, {
+                id: 95,
+                category: 'Unsupervised Learning',
+                question: 'What is "association" in association rule learning?',
+                options: [
+                    'A relationship or pattern between variables in the data',
+                    'A group of similar data points',
+                    'A reduced dimension of the data',
+                    'A label assigned to data'
+                ],
+                correct: 0,
+                explanation: 'An association is a relationship or pattern between variables, such as products frequently bought together.'
+            },
+
+            // ---- SEMI-SUPERVISED & REINFORCEMENT LEARNING (96–120) ----
+            {
+                id: 96,
+                category: 'Semi-Supervised Learning',
+                question: 'What is semi-supervised learning?',
+                options: [
+                    'Learning with both labeled and unlabeled data',
+                    'Learning only with labeled data',
+                    'Learning only with unlabeled data',
+                    'Learning through interaction with an environment'
+                ],
+                correct: 0,
+                explanation: 'Semi-supervised learning combines a small amount of labeled data with a large amount of unlabeled data to improve learning.'
+            }, {
+                id: 97,
+                category: 'Semi-Supervised Learning',
+                question: 'Why is semi-supervised learning useful?',
+                options: [
+                    'Because labeling data is often costly or time-consuming',
+                    'Because unlabeled data is always better',
+                    'Because it requires no training',
+                    'Because it works without any data'
+                ],
+                correct: 0,
+                explanation: 'Semi-supervised learning is useful when labeling data is expensive or time-consuming, allowing the use of abundant unlabeled data.'
+            }, {
+                id: 98,
+                category: 'Semi-Supervised Learning',
+                question: 'What is a key characteristic of semi-supervised learning?',
+                options: [
+                    'It utilizes large amounts of unlabeled data with a small amount of labeled data',
+                    'It uses only labeled data',
+                    'It uses only unlabeled data',
+                    'It requires no data'
+                ],
+                correct: 0,
+                explanation: 'Semi-supervised learning leverages large amounts of unlabeled data along with a small set of labeled data to improve learning.'
+            }, {
+                id: 99,
+                category: 'Semi-Supervised Learning',
+                question: 'What is a use case of semi-supervised learning?',
+                options: [
+                    'Image annotation with a few labeled images for a larger set of unlabeled images',
+                    'Market basket analysis',
+                    'Customer segmentation',
+                    'Dimensionality reduction'
+                ],
+                correct: 0,
+                explanation: 'In image annotation, a few labeled images can help annotate a larger set of unlabeled images, which is a semi-supervised approach.'
+            }, {
+                id: 100,
+                category: 'Semi-Supervised Learning',
+                question: 'What is a use case of semi-supervised learning in speech analysis?',
+                options: [
+                    'Leveraging a small set of transcribed audio to analyze a larger set of untranscribed audio',
+                    'Predicting stock prices',
+                    'Classifying images',
+                    'Segmentation in marketing'
+                ],
+                correct: 0,
+                explanation: 'In speech analysis, a small set of transcribed audio can be used to analyze a larger set of untranscribed audio using semi-supervised learning.'
+            }, {
+                id: 101,
+                category: 'Semi-Supervised Learning',
+                question: 'What is a use case of semi-supervised learning in web content classification?',
+                options: [
+                    'Classifying web pages with minimal manual labeling',
+                    'Predicting continuous values',
+                    'Grouping similar customers',
+                    'Discovering association rules'
+                ],
+                correct: 0,
+                explanation: 'Web content classification can use semi-supervised learning to classify web pages with minimal manual labeling.'
+            }, {
+                id: 102,
+                category: 'Semi-Supervised Learning',
+                question: 'What is the main advantage of semi-supervised learning over supervised learning?',
+                options: [
+                    'It can leverage abundant unlabeled data when labeled data is scarce',
+                    'It is always more accurate',
+                    'It requires more labeled data',
+                    'It is faster to train'
+                ],
+                correct: 0,
+                explanation: 'Semi-supervised learning leverages abundant unlabeled data, which is often available, to improve performance when labeled data is limited.'
+            }, {
+                id: 103,
+                category: 'Reinforcement Learning',
+                question: 'What is reinforcement learning?',
+                options: [
+                    'Learning by interacting with an environment and receiving rewards or penalties',
+                    'Learning with labeled data',
+                    'Learning with unlabeled data',
+                    'Learning without any data'
+                ],
+                correct: 0,
+                explanation: 'Reinforcement learning involves an agent interacting with an environment, taking actions, and receiving rewards or penalties.'
+            }, {
+                id: 104,
+                category: 'Reinforcement Learning',
+                question: 'What are the key components of reinforcement learning?',
+                options: [
+                    'Agent, State, Action, and Reward',
+                    'Input, Output, Weights, and Bias',
+                    'Labels, Features, Classes, and Categories',
+                    'Clusters, Associations, Dimensions, and Patterns'
+                ],
+                correct: 0,
+                explanation: 'Reinforcement learning is built around the Agent, State, Action, and Reward framework.'
+            }, {
+                id: 105,
+                category: 'Reinforcement Learning',
+                question: 'What is the goal of reinforcement learning?',
+                options: [
+                    'To maximize cumulative reward over time',
+                    'To minimize prediction error',
+                    'To find patterns in unlabeled data',
+                    'To classify data into categories'
+                ],
+                correct: 0,
+                explanation: 'The goal of reinforcement learning is to maximize cumulative reward through trial and error interactions with the environment.'
+            }, {
+                id: 106,
+                category: 'Reinforcement Learning',
+                question: 'What is a "policy" in reinforcement learning?',
+                options: [
+                    'A strategy or set of rules the agent follows to decide its actions',
+                    'The reward received after each action',
+                    'The state of the environment',
+                    'The action taken by the agent'
+                ],
+                correct: 0,
+                explanation: 'A policy is the strategy or set of rules that guides the agent\'s decision-making process for choosing actions.'
+            }, {
+                id: 107,
+                category: 'Reinforcement Learning',
+                question: 'What is the "value function" in reinforcement learning?',
+                options: [
+                    'The expected cumulative reward from a given state or action',
+                    'The immediate reward received after an action',
+                    'The state of the environment',
+                    'The action taken by the agent'
+                ],
+                correct: 0,
+                explanation: 'The value function estimates the expected cumulative reward from a given state or action, guiding the agent\'s decisions.'
+            }, {
+                id: 108,
+                category: 'Reinforcement Learning',
+                question: 'What is the "exploration vs. exploitation" trade-off in reinforcement learning?',
+                options: [
+                    'The balance between trying new actions (exploration) and using known good actions (exploitation)',
+                    'The balance between labeled and unlabeled data',
+                    'The balance between classification and regression',
+                    'The balance between clustering and dimensionality reduction'
+                ],
+                correct: 0,
+                explanation: 'Exploration involves trying new actions to discover better rewards, while exploitation uses known good actions to maximize reward.'
+            }, {
+                id: 109,
+                category: 'Reinforcement Learning',
+                question: 'What is a "reward" in reinforcement learning?',
+                options: [
+                    'Feedback from the environment indicating the success of an action',
+                    'A label in supervised learning',
+                    'A cluster in unsupervised learning',
+                    'A weight in neural network'
+                ],
+                correct: 0,
+                explanation: 'A reward is feedback from the environment that indicates the success or failure of an action, guiding the agent\'s learning.'
+            }, {
+                id: 110,
+                category: 'Reinforcement Learning',
+                question: 'What is a "state" in reinforcement learning?',
+                options: [
+                    'The current situation or configuration of the environment',
+                    'The action taken by the agent',
+                    'The reward received after an action',
+                    'The policy of the agent'
+                ],
+                correct: 0,
+                explanation: 'The state represents the current situation or configuration of the environment at a given time step.'
+            }, {
+                id: 111,
+                category: 'Reinforcement Learning',
+                question: 'What is an "agent" in reinforcement learning?',
+                options: [
+                    'The entity that takes actions in the environment based on a policy',
+                    'The environment itself',
+                    'The reward received after an action',
+                    'The state of the environment'
+                ],
+                correct: 0,
+                explanation: 'The agent is the decision-maker that takes actions in the environment to maximize cumulative reward.'
+            }, {
+                id: 112,
+                category: 'Reinforcement Learning',
+                question: 'What is an "action" in reinforcement learning?',
+                options: [
+                    'A decision or move made by the agent in the environment',
+                    'The state of the environment',
+                    'The reward received after a decision',
+                    'The policy followed by the agent'
+                ],
+                correct: 0,
+                explanation: 'An action is a decision or move made by the agent that affects the state of the environment.'
+            }, {
+                id: 113,
+                category: 'Reinforcement Learning',
+                question: 'What is a real-world application of reinforcement learning?',
+                options: [
+                    'Training models to play games like Chess or Go',
+                    'Image classification',
+                    'Sentiment analysis',
+                    'Customer segmentation'
+                ],
+                correct: 0,
+                explanation: 'Reinforcement learning is used to train game-playing agents (like AlphaGo) that learn strategies through self-play and rewards.'
+            }, {
+                id: 114,
+                category: 'Reinforcement Learning',
+                question: 'What is a real-world application of reinforcement learning in robotics?',
+                options: [
+                    'Robots learning to navigate complex terrains',
+                    'Classifying images',
+                    'Segmenting customers',
+                    'Analyzing sentiment'
+                ],
+                correct: 0,
+                explanation: 'Reinforcement learning is used to train robots to navigate complex terrains through trial and error interactions.'
+            }, {
+                id: 115,
+                category: 'Reinforcement Learning',
+                question: 'What is a real-world application of reinforcement learning in finance?',
+                options: [
+                    'Algorithms learning to trade stocks to maximize profit',
+                    'Classifying loan applications',
+                    'Segmenting customers',
+                    'Analyzing market sentiment'
+                ],
+                correct: 0,
+                explanation: 'Reinforcement learning is used in algorithmic trading to learn strategies that maximize profit through reward-based learning.'
+            }, {
+                id: 116,
+                category: 'Reinforcement Learning',
+                question: 'In reinforcement learning for stock trading, what is the "environment"?',
+                options: [
+                    'The stock market with dynamic prices and financial indicators',
+                    'The trading algorithm',
+                    'The portfolio',
+                    'The reward function'
+                ],
+                correct: 0,
+                explanation: 'In stock trading, the environment is the stock market, including prices, volumes, and other financial indicators.'
+            }, {
+                id: 117,
+                category: 'Reinforcement Learning',
+                question: 'In reinforcement learning for stock trading, what is the "agent"?',
+                options: [
+                    'The trading algorithm',
+                    'The stock market',
+                    'The portfolio',
+                    'The reward function'
+                ],
+                correct: 0,
+                explanation: 'The agent is the trading algorithm that makes decisions to buy, sell, or hold stocks based on the current state.'
+            }, {
+                id: 118,
+                category: 'Reinforcement Learning',
+                question: 'What is the "feedback loop" in reinforcement learning?',
+                options: [
+                    'After each action, the agent receives a reward or penalty, updating the state',
+                    'The process of backpropagation',
+                    'The forward pass through the network',
+                    'The training loop in supervised learning'
+                ],
+                correct: 0,
+                explanation: 'In the feedback loop, the agent takes an action, receives a reward or penalty, and the environment state updates accordingly.'
+            }, {
+                id: 119,
+                category: 'Reinforcement Learning',
+                question: 'What is the main difference between reinforcement learning and supervised learning?',
+                options: [
+                    'RL uses rewards and trial-error; supervised uses labeled data',
+                    'RL uses labeled data; supervised uses rewards',
+                    'RL is unsupervised; supervised is semi-supervised',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'Reinforcement learning uses rewards and trial-error interactions, while supervised learning uses labeled data for training.'
+            }, {
+                id: 120,
+                category: 'Reinforcement Learning',
+                question: 'What is the "policy" in the context of reinforcement learning for stock trading?',
+                options: [
+                    'The strategy for deciding to buy, sell, or hold stocks',
+                    'The price of stocks',
+                    'The portfolio value',
+                    'The market trend'
+                ],
+                correct: 0,
+                explanation: 'The policy is the strategy the trading agent follows to decide actions (buy, sell, hold) based on the current state.'
+            },
+
+            // ---- INTRODUCTION TO NEURAL NETWORKS (121–155) ----
+            {
+                id: 121,
+                category: 'Intro to Neural Networks',
+                question: 'What inspired the development of neural networks?',
+                options: [
+                    'The structure and function of the human brain',
+                    'The design of computers',
+                    'The study of mathematics',
+                    'The development of the internet'
+                ],
+                correct: 0,
+                explanation: 'Neural networks are inspired by the structure and function of the human brain and its biological neurons.'
+            }, {
+                id: 122,
+                category: 'Intro to Neural Networks',
+                question: 'In which decade were the Perceptron and Adaline models developed?',
+                options: [
+                    '1950s',
+                    '1960s',
+                    '1970s',
+                    '1980s'
+                ],
+                correct: 1,
+                explanation: 'The Perceptron and Adaline models were developed in the 1960s as early neural network architectures.'
+            }, {
+                id: 123,
+                category: 'Intro to Neural Networks',
+                question: 'What is pattern recognition in neural networks?',
+                options: [
+                    'Identifying patterns in data, such as recognizing strategies in a game of chess',
+                    'Classifying data into categories',
+                    'Approximating complex functions',
+                    'Extracting important features from data'
+                ],
+                correct: 0,
+                explanation: 'Pattern recognition involves identifying patterns in data, like recognizing strategies and openings in a game of chess.'
+            }, {
+                id: 124,
+                category: 'Intro to Neural Networks',
+                question: 'What is data classification in neural networks?',
+                options: [
+                    'Sorting data into categories, like sorting apples from oranges',
+                    'Identifying patterns in data',
+                    'Approximating complex functions',
+                    'Extracting important features'
+                ],
+                correct: 0,
+                explanation: 'Data classification is the process of sorting data into categories, such as filtering emails or medical diagnosis.'
+            }, {
+                id: 125,
+                category: 'Intro to Neural Networks',
+                question: 'What is function approximation in neural networks?',
+                options: [
+                    'Mimicking complex functions like financial markets or weather patterns',
+                    'Sorting data into categories',
+                    'Identifying patterns in data',
+                    'Extracting important features'
+                ],
+                correct: 0,
+                explanation: 'Function approximation allows neural networks to model and mimic complex systems like financial markets or weather patterns.'
+            }, {
+                id: 126,
+                category: 'Intro to Neural Networks',
+                question: 'What is feature extraction in neural networks?',
+                options: [
+                    'Identifying and highlighting the most important features from data',
+                    'Sorting data into categories',
+                    'Approximating complex functions',
+                    'Predicting future data points'
+                ],
+                correct: 0,
+                explanation: 'Feature extraction identifies and highlights the most important features from data, like recognizing faces in a crowd.'
+            }, {
+                id: 127,
+                category: 'Intro to Neural Networks',
+                question: 'What is prediction in neural networks?',
+                options: [
+                    'Forecasting future data points based on historical data',
+                    'Identifying patterns in data',
+                    'Sorting data into categories',
+                    'Extracting important features'
+                ],
+                correct: 0,
+                explanation: 'Prediction involves forecasting future data points based on historical data, such as predicting stock prices or weather.'
+            }, {
+                id: 128,
+                category: 'Intro to Neural Networks',
+                question: 'Which of the following is a real-world application of neural networks?',
+                options: [
+                    'Image and speech recognition',
+                    'Only gaming',
+                    'Only robotics',
+                    'Only finance'
+                ],
+                correct: 0,
+                explanation: 'Neural networks have many real-world applications, including image and speech recognition, NLP, and predictive analytics.'
+            }, {
+                id: 129,
+                category: 'Intro to Neural Networks',
+                question: 'What is an example of speech recognition using neural networks?',
+                options: [
+                    'Voice assistants like Siri and Alexa',
+                    'Netflix suggestions',
+                    'Chatbot services',
+                    'Health risk predictions'
+                ],
+                correct: 0,
+                explanation: 'Voice assistants like Siri and Alexa use neural networks for speech recognition and understanding.'
+            }, {
+                id: 130,
+                category: 'Intro to Neural Networks',
+                question: 'What is an example of natural language processing using neural networks?',
+                options: [
+                    'Chatbot services and sentiment analysis',
+                    'Facial recognition',
+                    'Netflix suggestions',
+                    'Health risk predictions'
+                ],
+                correct: 0,
+                explanation: 'Chatbot services and sentiment analysis are examples of natural language processing using neural networks.'
+            }, {
+                id: 131,
+                category: 'Intro to Neural Networks',
+                question: 'What is an example of predictive analytics using neural networks?',
+                options: [
+                    'Netflix suggestions and health risk predictions',
+                    'Image recognition',
+                    'Speech recognition',
+                    'Sentiment analysis'
+                ],
+                correct: 0,
+                explanation: 'Netflix suggestions and health risk predictions are examples of predictive analytics using neural networks.'
+            }, {
+                id: 132,
+                category: 'Intro to Neural Networks',
+                question: 'What is the basic processing unit of a neural network?',
+                options: [
+                    'A neuron',
+                    'A layer',
+                    'A weight',
+                    'A bias'
+                ],
+                correct: 0,
+                explanation: 'The neuron is the basic processing unit of a neural network, receiving inputs and producing outputs.'
+            }, {
+                id: 133,
+                category: 'Intro to Neural Networks',
+                question: 'What are the parameters adjusted during training in a neural network?',
+                options: [
+                    'Weights and biases',
+                    'Only weights',
+                    'Only biases',
+                    'Activation functions'
+                ],
+                correct: 0,
+                explanation: 'Weights and biases are the learnable parameters adjusted during training to minimize the loss function.'
+            }, {
+                id: 134,
+                category: 'Intro to Neural Networks',
+                question: 'What is the input layer in a neural network?',
+                options: [
+                    'The layer that receives the initial data',
+                    'The layer that produces the final result',
+                    'The layer that processes data',
+                    'The layer that applies activation functions'
+                ],
+                correct: 0,
+                explanation: 'The input layer receives the initial data and passes it to the hidden layers for processing.'
+            }, {
+                id: 135,
+                category: 'Intro to Neural Networks',
+                question: 'What is the output layer in a neural network?',
+                options: [
+                    'The layer that produces the final result',
+                    'The layer that receives the initial data',
+                    'The layer that processes data',
+                    'The layer that applies activation functions'
+                ],
+                correct: 0,
+                explanation: 'The output layer produces the final result of the network, such as a classification or regression output.'
+            }, {
+                id: 136,
+                category: 'Intro to Neural Networks',
+                question: 'What is the role of hidden layers in a neural network?',
+                options: [
+                    'To process data and learn hierarchical features',
+                    'To receive initial data',
+                    'To produce the final result',
+                    'To store training data'
+                ],
+                correct: 0,
+                explanation: 'Hidden layers process data and learn hierarchical features at different levels of abstraction.'
+            }, {
+                id: 137,
+                category: 'Intro to Neural Networks',
+                question: 'What is the significance of the 1960s in neural network history?',
+                options: [
+                    'Development of Perceptron and Adaline models',
+                    'Development of backpropagation',
+                    'Rise of deep learning',
+                    'Introduction of GANs'
+                ],
+                correct: 0,
+                explanation: 'The 1960s saw the development of the Perceptron and Adaline models, early neural network architectures.'
+            }, {
+                id: 138,
+                category: 'Intro to Neural Networks',
+                question: 'What is "feature extraction" useful for in neural networks?',
+                options: [
+                    'Anomaly detection and focusing on key details',
+                    'Classifying data',
+                    'Approximating functions',
+                    'Predicting future values'
+                ],
+                correct: 0,
+                explanation: 'Feature extraction is useful for anomaly detection and enables the network to focus on the most relevant information.'
+            }, {
+                id: 139,
+                category: 'Intro to Neural Networks',
+                question: 'What is the "brain as inspiration" for neural networks?',
+                options: [
+                    'Neural networks are designed to mimic the structure and function of biological brains',
+                    'Neural networks are made of biological neurons',
+                    'Neural networks work exactly like the human brain',
+                    'Neural networks have consciousness'
+                ],
+                correct: 0,
+                explanation: 'Neural networks are inspired by the structure and function of biological brains, but they are a simplified and abstracted model.'
+            }, {
+                id: 140,
+                category: 'Intro to Neural Networks',
+                question: 'What is a "perceptron"?',
+                options: [
+                    'A type of neural network with a single layer and no hidden layers',
+                    'A type of activation function',
+                    'A type of training algorithm',
+                    'A type of loss function'
+                ],
+                correct: 0,
+                explanation: 'A perceptron is a simple neural network with a single layer and no hidden layers, developed in the 1960s.'
+            }, {
+                id: 141,
+                category: 'Intro to Neural Networks',
+                question: 'What is the main limitation of the perceptron?',
+                options: [
+                    'It can only solve linearly separable problems',
+                    'It is too slow to train',
+                    'It requires too much data',
+                    'It has too many parameters'
+                ],
+                correct: 0,
+                explanation: 'The perceptron can only solve linearly separable problems and fails on problems like XOR that are not linearly separable.'
+            }, {
+                id: 142,
+                category: 'Intro to Neural Networks',
+                question: 'What is the relationship between neural networks and deep learning?',
+                options: [
+                    'Deep learning uses deep neural networks with many hidden layers',
+                    'Deep learning does not use neural networks',
+                    'Neural networks are a subset of deep learning',
+                    'They are the same thing'
+                ],
+                correct: 0,
+                explanation: 'Deep learning is a subset of machine learning that uses deep neural networks with many hidden layers.'
+            }, {
+                id: 143,
+                category: 'Intro to Neural Networks',
+                question: 'What is the purpose of the loss function in training neural networks?',
+                options: [
+                    'To measure the difference between predicted and actual outputs',
+                    'To determine the activation function',
+                    'To initialize weights',
+                    'To load data'
+                ],
+                correct: 0,
+                explanation: 'The loss function quantifies how far the network\'s predictions are from the actual targets, guiding the training process.'
+            }, {
+                id: 144,
+                category: 'Intro to Neural Networks',
+                question: 'What is the "forward pass" in a neural network?',
+                options: [
+                    'Moving data from the input layer through the hidden layers to the output layer',
+                    'Moving error gradients backward through the network',
+                    'Loading the training data',
+                    'Saving the trained model'
+                ],
+                correct: 0,
+                explanation: 'The forward pass moves data through the network from input to output, computing predictions.'
+            }, {
+                id: 145,
+                category: 'Intro to Neural Networks',
+                question: 'What is the "backward pass" in a neural network?',
+                options: [
+                    'Moving error gradients backward through the network to update weights',
+                    'Moving data from input to output',
+                    'Loading the training data',
+                    'Saving the trained model'
+                ],
+                correct: 0,
+                explanation: 'The backward pass (backpropagation) moves error gradients backward through the network to compute weight updates.'
+            }, {
+                id: 146,
+                category: 'Intro to Neural Networks',
+                question: 'What is "gradient descent" in neural network training?',
+                options: [
+                    'An optimization algorithm used to minimize the loss by updating weights',
+                    'A type of activation function',
+                    'A type of neural network architecture',
+                    'A data preprocessing technique'
+                ],
+                correct: 0,
+                explanation: 'Gradient descent is an optimization algorithm that updates weights in the direction that minimizes the loss function.'
+            }, {
+                id: 147,
+                category: 'Intro to Neural Networks',
+                question: 'What is "batch size" in neural network training?',
+                options: [
+                    'The number of training examples used in one forward/backward pass',
+                    'The total number of training examples',
+                    'The number of layers in the network',
+                    'The number of neurons in each layer'
+                ],
+                correct: 0,
+                explanation: 'Batch size is the number of training examples used in one iteration of forward and backward propagation.'
+            }, {
+                id: 148,
+                category: 'Intro to Neural Networks',
+                question: 'What is "transfer learning" in neural networks?',
+                options: [
+                    'Using a pre-trained model on a new, related task',
+                    'Transferring data between layers',
+                    'Transferring weights from the input to output',
+                    'Transferring data from one dataset to another'
+                ],
+                correct: 0,
+                explanation: 'Transfer learning involves taking a model pre-trained on one task and fine-tuning it for a different but related task.'
+            }, {
+                id: 149,
+                category: 'Intro to Neural Networks',
+                question: 'What is a "convolutional neural network" (CNN) primarily used for?',
+                options: [
+                    'Image processing and computer vision tasks',
+                    'Natural language processing',
+                    'Time series analysis',
+                    'Reinforcement learning'
+                ],
+                correct: 0,
+                explanation: 'CNNs are primarily used for image processing and computer vision tasks, leveraging convolution operations to extract spatial features.'
+            }, {
+                id: 150,
+                category: 'Intro to Neural Networks',
+                question: 'What is a "recurrent neural network" (RNN) primarily used for?',
+                options: [
+                    'Sequence data like time series and natural language',
+                    'Image processing',
+                    'Classification',
+                    'Clustering'
+                ],
+                correct: 0,
+                explanation: 'RNNs are designed for sequence data and are commonly used for natural language processing and time series analysis.'
+            }, {
+                id: 151,
+                category: 'Intro to Neural Networks',
+                question: 'What is "overfitting" and how can it be prevented?',
+                options: [
+                    'When the model performs well on training data but poorly on new data; prevented with regularization and dropout',
+                    'When the model performs poorly on training data; prevented with more layers',
+                    'When the model trains too slowly; prevented with faster hardware',
+                    'When the model has too few parameters; prevented with more neurons'
+                ],
+                correct: 0,
+                explanation: 'Overfitting occurs when the model memorizes training data and fails to generalize. Regularization and dropout help prevent it.'
+            }, {
+                id: 152,
+                category: 'Intro to Neural Networks',
+                question: 'What is "early stopping" in neural network training?',
+                options: [
+                    'Stopping training when validation performance stops improving to prevent overfitting',
+                    'Stopping training after a fixed number of epochs',
+                    'Stopping training when the loss reaches zero',
+                    'Stopping training when the accuracy reaches 100%'
+                ],
+                correct: 0,
+                explanation: 'Early stopping monitors validation performance and stops training when performance stops improving to prevent overfitting.'
+            }, {
+                id: 153,
+                category: 'Intro to Neural Networks',
+                question: 'What is the "bias-variance trade-off" in machine learning?',
+                options: [
+                    'The trade-off between model simplicity (bias) and ability to capture complexity (variance)',
+                    'The trade-off between training speed and accuracy',
+                    'The trade-off between data size and model size',
+                    'The trade-off between depth and width of the network'
+                ],
+                correct: 0,
+                explanation: 'The bias-variance trade-off balances model simplicity (high bias) against the ability to capture complex patterns (high variance).'
+            }, {
+                id: 154,
+                category: 'Intro to Neural Networks',
+                question: 'What is "hyperparameter tuning" in neural networks?',
+                options: [
+                    'The process of finding the best hyperparameters (e.g., learning rate, batch size) for the model',
+                    'The process of tuning the weights',
+                    'The process of tuning the activation functions',
+                    'The process of tuning the loss function'
+                ],
+                correct: 0,
+                explanation: 'Hyperparameter tuning involves searching for the optimal hyperparameters that control the training process and model architecture.'
+            }, {
+                id: 155,
+                category: 'Intro to Neural Networks',
+                question: 'What is the "universal approximation theorem" in neural networks?',
+                options: [
+                    'A neural network with a single hidden layer can approximate any continuous function given enough neurons',
+                    'All neural networks are equally powerful',
+                    'Neural networks can only approximate linear functions',
+                    'Neural networks cannot approximate non-linear functions'
+                ],
+                correct: 0,
+                explanation: 'The universal approximation theorem states that a neural network with a single hidden layer can approximate any continuous function, given sufficient neurons.'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(.option-item[data-qindex=""][data-optindex=""]);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(You've answered  of  questions. Please answer all questions to see results.);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

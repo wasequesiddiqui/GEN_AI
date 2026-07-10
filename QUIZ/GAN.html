@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gen AI Specialist – GANs Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>GANs · 150+ questions</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  160+ QUESTIONS – Generative Adversarial Networks
+        //  Topics: Intro, Architecture, Training, Loss functions,
+        //  Applications (image generation, data augmentation, style transfer),
+        //  Variants (DCGAN, CycleGAN, StyleGAN), Challenges
+        // ============================================================
+        const QUESTIONS = [
+            // ---- INTRODUCTION TO GANS (1–25) ----
+            {
+                id: 1,
+                category: 'Intro to GANs',
+                question: 'What does GAN stand for?',
+                options: [
+                    'Generative Adversarial Network',
+                    'Generalized Artificial Network',
+                    'Graphical Analysis Network',
+                    'Generative Algorithm Network'
+                ],
+                correct: 0,
+                explanation: 'GAN stands for Generative Adversarial Network, a class of generative models introduced by Ian Goodfellow in 2014.'
+            }, {
+                id: 2,
+                category: 'Intro to GANs',
+                question: 'What are the two main components of a GAN?',
+                options: [
+                    'Generator and Discriminator',
+                    'Encoder and Decoder',
+                    'Convolution and Pooling',
+                    'Attention and Feedforward'
+                ],
+                correct: 0,
+                explanation: 'A GAN consists of a Generator and a Discriminator that are trained adversarially.'
+            }, {
+                id: 3,
+                category: 'Intro to GANs',
+                question: 'What is the role of the Generator in a GAN?',
+                options: [
+                    'To generate synthetic data that resembles real data',
+                    'To classify real vs. fake data',
+                    'To encode data into a latent space',
+                    'To reconstruct input data'
+                ],
+                correct: 0,
+                explanation: 'The Generator takes random noise as input and generates synthetic data that aims to fool the Discriminator.'
+            }, {
+                id: 4,
+                category: 'Intro to GANs',
+                question: 'What is the role of the Discriminator in a GAN?',
+                options: [
+                    'To distinguish between real and generated (fake) data',
+                    'To generate synthetic data',
+                    'To encode data into a latent space',
+                    'To reconstruct input data'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator is a classifier that tries to differentiate between real data samples and samples generated by the Generator.'
+            }, {
+                id: 5,
+                category: 'Intro to GANs',
+                question: 'What is adversarial training in GANs?',
+                options: [
+                    'A two-player game where the Generator and Discriminator compete to improve each other',
+                    'A cooperative training process',
+                    'A single-player optimization',
+                    'A reinforcement learning setup'
+                ],
+                correct: 0,
+                explanation: 'Adversarial training involves a cat-and-mouse game where the Generator tries to fool the Discriminator, and the Discriminator tries to detect fakes.'
+            }, {
+                id: 6,
+                category: 'Intro to GANs',
+                question: 'What is the equilibrium in GAN training?',
+                options: [
+                    'When the Generator produces realistic samples and the Discriminator cannot distinguish them from real data',
+                    'When the Generator fails to produce anything',
+                    'When the Discriminator becomes perfect',
+                    'When the training loss reaches zero'
+                ],
+                correct: 0,
+                explanation: 'Equilibrium is the ideal state where the Generator produces realistic samples and the Discriminator has a 50% accuracy, unable to distinguish real from fake.'
+            }, {
+                id: 7,
+                category: 'Intro to GANs',
+                question: 'What is the typical input to a Generator in a GAN?',
+                options: [
+                    'Random noise vector',
+                    'Real images',
+                    'Labels',
+                    'Encoded data'
+                ],
+                correct: 0,
+                explanation: 'The Generator takes a random noise vector (often from a Gaussian or uniform distribution) and maps it to a data sample.'
+            }, {
+                id: 8,
+                category: 'Intro to GANs',
+                question: 'Which of the following is a famous GAN architecture for generating high-quality images?',
+                options: [
+                    'StyleGAN',
+                    'ResNet',
+                    'BERT',
+                    'Transformer'
+                ],
+                correct: 0,
+                explanation: 'StyleGAN, created by NVIDIA researchers, is a well-known GAN variant for generating high-quality, realistic images.'
+            }, {
+                id: 9,
+                category: 'Intro to GANs',
+                question: 'What is the loss function used for the Discriminator in a standard GAN?',
+                options: [
+                    'Binary Cross-Entropy',
+                    'Mean Squared Error',
+                    'Hinge Loss',
+                    'Wasserstein Loss'
+                ],
+                correct: 0,
+                explanation: 'In the original GAN, the Discriminator uses Binary Cross-Entropy loss to classify real vs. fake samples.'
+            }, {
+                id: 10,
+                category: 'Intro to GANs',
+                question: 'What is the "cat-and-mouse game" in GANs?',
+                options: [
+                    'The dynamic learning process where Generator and Discriminator continually try to outsmart each other',
+                    'A game where the Generator chases the Discriminator',
+                    'A metaphor for the training algorithm',
+                    'A type of reward system'
+                ],
+                correct: 0,
+                explanation: 'The cat-and-mouse game refers to the adversarial training dynamic where each network tries to outsmart the other, leading to improvement.'
+            }, {
+                id: 11,
+                category: 'Intro to GANs',
+                question: 'What is the objective of the Generator in a GAN?',
+                options: [
+                    'To minimize the probability that the Discriminator correctly classifies generated samples as fake',
+                    'To maximize the probability that the Discriminator correctly classifies real samples',
+                    'To minimize the reconstruction error',
+                    'To maximize the diversity of generated samples'
+                ],
+                correct: 0,
+                explanation: 'The Generator aims to produce samples that the Discriminator misclassifies as real, effectively minimizing the Discriminator\'s accuracy on generated data.'
+            }, {
+                id: 12,
+                category: 'Intro to GANs',
+                question: 'What is the objective of the Discriminator in a GAN?',
+                options: [
+                    'To correctly classify real and generated samples',
+                    'To generate realistic samples',
+                    'To minimize the loss of the Generator',
+                    'To produce diverse outputs'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator aims to correctly distinguish between real and fake samples, maximizing its classification accuracy.'
+            }, {
+                id: 13,
+                category: 'Intro to GANs',
+                question: 'What is the convergence of a GAN?',
+                options: [
+                    'When the training reaches a stable state where neither network can improve further',
+                    'When the Generator stops producing outputs',
+                    'When the Discriminator achieves 100% accuracy',
+                    'When the loss becomes zero'
+                ],
+                correct: 0,
+                explanation: 'Convergence occurs when the GAN reaches a Nash equilibrium where neither the Generator nor the Discriminator can improve their performance unilaterally.'
+            }, {
+                id: 14,
+                category: 'Intro to GANs',
+                question: 'Which of the following is a common application of GANs?',
+                options: [
+                    'Image generation',
+                    'Text summarization',
+                    'Sentiment analysis',
+                    'Speech recognition'
+                ],
+                correct: 0,
+                explanation: 'GANs are widely used for image generation, data augmentation, style transfer, and other creative tasks.'
+            }, {
+                id: 15,
+                category: 'Intro to GANs',
+                question: 'What is the role of the Discriminator in a GAN during training?',
+                options: [
+                    'It provides feedback to the Generator by classifying its outputs as real or fake',
+                    'It generates new data samples',
+                    'It acts as a regularizer',
+                    'It encodes the input data'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator evaluates the Generator\'s outputs and provides a signal (loss) that the Generator uses to improve.'
+            }, {
+                id: 16,
+                category: 'Intro to GANs',
+                question: 'What is the fundamental difference between GANs and Variational Autoencoders (VAEs)?',
+                options: [
+                    'GANs use adversarial training; VAEs use likelihood-based training',
+                    'GANs are generative; VAEs are discriminative',
+                    'GANs are unsupervised; VAEs are supervised',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'GANs use an adversarial training framework with a Generator and Discriminator, while VAEs use a probabilistic encoder-decoder approach with variational inference.'
+            }, {
+                id: 17,
+                category: 'Intro to GANs',
+                question: 'What is a key advantage of GANs over other generative models?',
+                options: [
+                    'They can produce high-quality, sharp images',
+                    'They are easier to train',
+                    'They have lower computational cost',
+                    'They require less data'
+                ],
+                correct: 0,
+                explanation: 'GANs are known for generating high-quality, sharp, and realistic images compared to other generative models like VAEs.'
+            }, {
+                id: 18,
+                category: 'Intro to GANs',
+                question: 'What is a common problem in GAN training?',
+                options: [
+                    'Mode collapse',
+                    'Overfitting',
+                    'Underfitting',
+                    'High bias'
+                ],
+                correct: 0,
+                explanation: 'Mode collapse is a common failure mode where the Generator produces limited varieties of samples, failing to capture the full data distribution.'
+            }, {
+                id: 19,
+                category: 'Intro to GANs',
+                question: 'What is the "adversarial" aspect of GANs?',
+                options: [
+                    'The competitive training between Generator and Discriminator',
+                    'The use of adversarial examples',
+                    'The adversarial loss function',
+                    'The adversarial data augmentation'
+                ],
+                correct: 0,
+                explanation: 'The adversarial aspect comes from the competitive game where the Generator tries to fool the Discriminator and vice versa.'
+            }, {
+                id: 20,
+                category: 'Intro to GANs',
+                question: 'What is the typical output of a trained Generator in a GAN?',
+                options: [
+                    'Synthetic data samples that resemble the training distribution',
+                    'Class labels',
+                    'Latent representations',
+                    'Loss values'
+                ],
+                correct: 0,
+                explanation: 'The Generator outputs synthetic data (e.g., images) that are statistically similar to the training data distribution.'
+            }, {
+                id: 21,
+                category: 'Intro to GANs',
+                question: 'Who introduced Generative Adversarial Networks?',
+                options: [
+                    'Ian Goodfellow',
+                    'Yann LeCun',
+                    'Geoffrey Hinton',
+                    'Andrew Ng'
+                ],
+                correct: 0,
+                explanation: 'Ian Goodfellow introduced GANs in 2014, leading to a major breakthrough in generative modeling.'
+            }, {
+                id: 22,
+                category: 'Intro to GANs',
+                question: 'What is the role of the Generator in a GAN?',
+                options: [
+                    'To generate samples that are indistinguishable from real data',
+                    'To classify samples as real or fake',
+                    'To compress data into a latent space',
+                    'To reconstruct data from latent space'
+                ],
+                correct: 0,
+                explanation: 'The Generator\'s goal is to produce samples that are realistic enough to fool the Discriminator.'
+            }, {
+                id: 23,
+                category: 'Intro to GANs',
+                question: 'What is the role of the Discriminator in a GAN?',
+                options: [
+                    'To differentiate between real and generated samples',
+                    'To generate new samples',
+                    'To encode data',
+                    'To reconstruct data'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator is a binary classifier that tries to distinguish real data from generated data.'
+            }, {
+                id: 24,
+                category: 'Intro to GANs',
+                question: 'What is the adversarial training process in GANs?',
+                options: [
+                    'A minimax game where the Generator and Discriminator have opposing objectives',
+                    'A cooperative training where both networks help each other',
+                    'A reinforcement learning setup',
+                    'A self-supervised learning process'
+                ],
+                correct: 0,
+                explanation: 'Adversarial training is a minimax game where the Generator minimizes the Discriminator\'s accuracy and the Discriminator maximizes it.'
+            }, {
+                id: 25,
+                category: 'Intro to GANs',
+                question: 'What is a common application of GANs in data augmentation?',
+                options: [
+                    'Generating synthetic data to augment training datasets',
+                    'Compressing data',
+                    'Classifying data',
+                    'Reducing data dimensionality'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic data that augments existing training sets, especially in scenarios with limited data.'
+            },
+
+            // ---- TRAINING GANS (26–50) ----
+            {
+                id: 26,
+                category: 'Training GANs',
+                question: 'What is the first step in training a GAN?',
+                options: [
+                    'Data preparation: collection, preprocessing, and augmentation',
+                    'Initializing the Generator and Discriminator',
+                    'Forward pass',
+                    'Loss calculation'
+                ],
+                correct: 0,
+                explanation: 'Data preparation is the first step, involving sourcing quality data, cleaning, normalization, and augmentation.'
+            }, {
+                id: 27,
+                category: 'Training GANs',
+                question: 'What is data augmentation in the context of GAN training?',
+                options: [
+                    'Expanding the dataset by creating variations of existing data',
+                    'Compressing the dataset',
+                    'Removing outliers from the dataset',
+                    'Normalizing the dataset'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation involves generating additional training samples from existing ones (e.g., rotations, flips) to increase dataset size and diversity.'
+            }, {
+                id: 28,
+                category: 'Training GANs',
+                question: 'What is the role of learning rate scheduling in GAN training?',
+                options: [
+                    'To adapt the learning rate for stable and efficient training',
+                    'To increase the learning rate steadily',
+                    'To keep the learning rate constant',
+                    'To reduce the learning rate to zero'
+                ],
+                correct: 0,
+                explanation: 'Adaptive learning rate scheduling helps stabilize GAN training and prevents oscillations or divergence.'
+            }, {
+                id: 29,
+                category: 'Training GANs',
+                question: 'What is a common regularization technique used in GAN training?',
+                options: [
+                    'Dropout and Spectral Normalization',
+                    'Batch Normalization only',
+                    'L1 and L2 regularization only',
+                    'Early stopping only'
+                ],
+                correct: 0,
+                explanation: 'Dropout and Spectral Normalization are common regularization techniques to stabilize GAN training and prevent overfitting.'
+            }, {
+                id: 30,
+                category: 'Training GANs',
+                question: 'What is mode collapse in GANs?',
+                options: [
+                    'The Generator produces only a limited variety of samples',
+                    'The Discriminator becomes too strong',
+                    'The training diverges',
+                    'The loss becomes NaN'
+                ],
+                correct: 0,
+                explanation: 'Mode collapse occurs when the Generator fails to capture the full data distribution and produces limited, repetitive samples.'
+            }, {
+                id: 31,
+                category: 'Training GANs',
+                question: 'What are oscillations in GAN training?',
+                options: [
+                    'Fluctuating training metrics due to unstable dynamics',
+                    'Smooth convergence',
+                    'Steady improvement',
+                    'Loss reaching zero'
+                ],
+                correct: 0,
+                explanation: 'Oscillations refer to unstable training where losses and metrics fluctuate, making convergence difficult.'
+            }, {
+                id: 32,
+                category: 'Training GANs',
+                question: 'What is the vanishing gradient problem in GANs?',
+                options: [
+                    'When the Discriminator becomes too good and the Generator receives very small gradients',
+                    'When gradients explode',
+                    'When gradients are zero for all parameters',
+                    'When gradients oscillate'
+                ],
+                correct: 0,
+                explanation: 'If the Discriminator becomes too strong early, the Generator\'s gradients can vanish, making it difficult to update the Generator.'
+            }, {
+                id: 33,
+                category: 'Training GANs',
+                question: 'What is the role of batch size in GAN training?',
+                options: [
+                    'Balancing batch size to avoid instability and slow convergence',
+                    'Increasing batch size always improves training',
+                    'Decreasing batch size always improves training',
+                    'Batch size has no effect'
+                ],
+                correct: 0,
+                explanation: 'Batch size affects training dynamics; too large can lead to stability issues, too small can slow convergence.'
+            }, {
+                id: 34,
+                category: 'Training GANs',
+                question: 'What is the purpose of spectral normalization in GANs?',
+                options: [
+                    'To stabilize training by constraining the Lipschitz constant of the Discriminator',
+                    'To increase the learning rate',
+                    'To augment data',
+                    'To reduce model complexity'
+                ],
+                correct: 0,
+                explanation: 'Spectral normalization is a regularization technique that controls the Discriminator\'s Lipschitz constant to improve training stability.'
+            }, {
+                id: 35,
+                category: 'Training GANs',
+                question: 'What is the "two-player game" in GAN training?',
+                options: [
+                    'The Generator and Discriminator compete against each other',
+                    'The Generator competes with the Discriminator and a third player',
+                    'Two Discriminators compete',
+                    'Two Generators compete'
+                ],
+                correct: 0,
+                explanation: 'The training is a two-player game where the Generator tries to fool the Discriminator, and the Discriminator tries to identify fakes.'
+            }, {
+                id: 36,
+                category: 'Training GANs',
+                question: 'What is the forward pass in GAN training?',
+                options: [
+                    'Passing data through the network to compute outputs and losses',
+                    'Backpropagating gradients',
+                    'Updating parameters',
+                    'Initializing weights'
+                ],
+                correct: 0,
+                explanation: 'The forward pass involves feeding input data (real and generated) through the respective networks to compute predictions and losses.'
+            }, {
+                id: 37,
+                category: 'Training GANs',
+                question: 'What is the backward pass in GAN training?',
+                options: [
+                    'Computing gradients and updating parameters to minimize losses',
+                    'Passing data through the network',
+                    'Calculating accuracy',
+                    'Augmenting data'
+                ],
+                correct: 0,
+                explanation: 'The backward pass involves backpropagation to compute gradients and update the weights of both networks.'
+            }, {
+                id: 38,
+                category: 'Training GANs',
+                question: 'What is the role of the Discriminator\'s loss in GAN training?',
+                options: [
+                    'To measure its ability to classify real vs. fake',
+                    'To measure the quality of generated samples',
+                    'To regularize the Generator',
+                    'To measure reconstruction error'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator\'s loss indicates how well it distinguishes real from fake; it is used to update the Discriminator.'
+            }, {
+                id: 39,
+                category: 'Training GANs',
+                question: 'What is the role of the Generator\'s loss in GAN training?',
+                options: [
+                    'To measure how well the Generator fools the Discriminator',
+                    'To measure the quality of real images',
+                    'To regularize the Discriminator',
+                    'To measure reconstruction error'
+                ],
+                correct: 0,
+                explanation: 'The Generator\'s loss reflects its ability to produce samples that the Discriminator classifies as real; it is used to update the Generator.'
+            }, {
+                id: 40,
+                category: 'Training GANs',
+                question: 'What is the equilibrium in GAN training?',
+                options: [
+                    'When the Generator produces realistic samples and the Discriminator cannot distinguish them',
+                    'When the Generator stops producing samples',
+                    'When the Discriminator achieves perfect accuracy',
+                    'When training loss reaches zero'
+                ],
+                correct: 0,
+                explanation: 'Equilibrium is the Nash equilibrium where the Generator\'s distribution matches the real data distribution, and the Discriminator is uncertain.'
+            }, {
+                id: 41,
+                category: 'Training GANs',
+                question: 'What is the challenge of balancing the Generator and Discriminator?',
+                options: [
+                    'One network may overpower the other, leading to instability or mode collapse',
+                    'Both networks always improve together',
+                    'The Discriminator is always weaker',
+                    'The Generator is always stronger'
+                ],
+                correct: 0,
+                explanation: 'Balancing is critical; if the Discriminator becomes too strong, the Generator may suffer from vanishing gradients; if too weak, the Generator may not learn effectively.'
+            }, {
+                id: 42,
+                category: 'Training GANs',
+                question: 'What is the effect of improper learning rate in GANs?',
+                options: [
+                    'Can cause training instability, oscillations, or slow convergence',
+                    'Always improves training',
+                    'No effect',
+                    'Only affects the Discriminator'
+                ],
+                correct: 0,
+                explanation: 'An improper learning rate can destabilize training, causing oscillations or slow convergence.'
+            }, {
+                id: 43,
+                category: 'Training GANs',
+                question: 'What is the role of data preprocessing in GAN training?',
+                options: [
+                    'Cleaning and normalizing data to ensure consistent input for training',
+                    'Increasing data size',
+                    'Reducing data complexity',
+                    'Labeling data'
+                ],
+                correct: 0,
+                explanation: 'Data preprocessing includes cleaning, normalization, and scaling to prepare data for effective training.'
+            }, {
+                id: 44,
+                category: 'Training GANs',
+                question: 'What is the role of data collection in GAN training?',
+                options: [
+                    'Sourcing quality data that represents the target distribution',
+                    'Creating synthetic data',
+                    'Augmenting data',
+                    'Normalizing data'
+                ],
+                correct: 0,
+                explanation: 'Data collection involves gathering a diverse and representative dataset for training the GAN.'
+            }, {
+                id: 45,
+                category: 'Training GANs',
+                question: 'What is the role of data augmentation in preventing overfitting in GANs?',
+                options: [
+                    'Increasing the dataset size and diversity to help the model generalize',
+                    'Reducing the dataset size',
+                    'Making the dataset simpler',
+                    'Removing outliers'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation increases dataset variety, helping the GAN to generalize better and avoid overfitting.'
+            }, {
+                id: 46,
+                category: 'Training GANs',
+                question: 'What is the difference between the Generator and Discriminator losses?',
+                options: [
+                    'Generator loss is based on its ability to fool the Discriminator; Discriminator loss is based on its classification accuracy',
+                    'They are the same loss',
+                    'Generator loss is based on classification accuracy; Discriminator loss is based on generation quality',
+                    'They are independent'
+                ],
+                correct: 0,
+                explanation: 'The Generator loss measures how well it fools the Discriminator, while the Discriminator loss measures its classification performance.'
+            }, {
+                id: 47,
+                category: 'Training GANs',
+                question: 'What is the role of regularization in GAN training?',
+                options: [
+                    'To prevent overfitting and improve generalization',
+                    'To increase model complexity',
+                    'To speed up training',
+                    'To reduce data size'
+                ],
+                correct: 0,
+                explanation: 'Regularization techniques like dropout and spectral normalization help prevent overfitting and stabilize training.'
+            }, {
+                id: 48,
+                category: 'Training GANs',
+                question: 'What is the role of the Discriminator in preventing mode collapse?',
+                options: [
+                    'A well-tuned Discriminator helps the Generator learn a more diverse distribution',
+                    'The Discriminator causes mode collapse',
+                    'The Discriminator has no role in mode collapse',
+                    'Only the Generator causes mode collapse'
+                ],
+                correct: 0,
+                explanation: 'A properly tuned Discriminator provides useful feedback to the Generator, encouraging it to explore the full data distribution and avoid mode collapse.'
+            }, {
+                id: 49,
+                category: 'Training GANs',
+                question: 'What is the role of the Generator in preventing mode collapse?',
+                options: [
+                    'The Generator must be designed to encourage diversity and avoid repetitive outputs',
+                    'The Generator cannot prevent mode collapse',
+                    'Mode collapse is inevitable',
+                    'Only the Discriminator can prevent mode collapse'
+                ],
+                correct: 0,
+                explanation: 'The Generator architecture and training strategy can be designed to promote diversity, helping to prevent mode collapse.'
+            }, {
+                id: 50,
+                category: 'Training GANs',
+                question: 'What is the overall goal of GAN training?',
+                options: [
+                    'To reach a Nash equilibrium where the Generator produces realistic samples and the Discriminator is maximally confused',
+                    'To make the Discriminator perfect',
+                    'To make the Generator perfect',
+                    'To minimize the Generator loss only'
+                ],
+                correct: 0,
+                explanation: 'The goal is to reach an equilibrium where the Generator produces realistic data and the Discriminator cannot reliably distinguish real from fake.'
+            },
+
+            // ---- LOSS FUNCTIONS & DYNAMICS (51–70) ----
+            {
+                id: 51,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is Binary Cross-Entropy loss in GANs?',
+                options: [
+                    'A loss function used for binary classification, measuring the difference between predicted probabilities and true labels',
+                    'A loss function for regression',
+                    'A loss function for multi-class classification',
+                    'A loss function for sequence generation'
+                ],
+                correct: 0,
+                explanation: 'Binary Cross-Entropy is used for the Discriminator to classify real vs. fake, comparing its predictions to binary labels (1 for real, 0 for fake).'
+            }, {
+                id: 52,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is Wasserstein Loss?',
+                options: [
+                    'A loss function based on the Earth Mover\'s distance, used for GANs to improve stability',
+                    'A loss function for regression',
+                    'A loss function for classification',
+                    'A loss function for reconstruction'
+                ],
+                correct: 0,
+                explanation: 'Wasserstein Loss (WGAN) uses the Earth Mover distance to provide smoother gradients, improving training stability and reducing mode collapse.'
+            }, {
+                id: 53,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is Hinge Loss in GANs?',
+                options: [
+                    'A loss function that encourages margin maximization between real and fake samples',
+                    'A loss function for regression',
+                    'A loss function for multi-class classification',
+                    'A loss function for sequence generation'
+                ],
+                correct: 0,
+                explanation: 'Hinge Loss is used in some GANs (e.g., SN-GAN) to maximize the decision margin, improving training stability.'
+            }, {
+                id: 54,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the advantage of Wasserstein Loss over Binary Cross-Entropy?',
+                options: [
+                    'It provides more stable gradients and is less prone to mode collapse',
+                    'It is faster to compute',
+                    'It requires less data',
+                    'It is simpler to implement'
+                ],
+                correct: 0,
+                explanation: 'Wasserstein Loss provides smoother gradients, making training more stable and reducing issues like mode collapse.'
+            }, {
+                id: 55,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the training dynamics in GANs?',
+                options: [
+                    'The iterative process of updating Generator and Discriminator to reach equilibrium',
+                    'The static process',
+                    'The process of only updating the Generator',
+                    'The process of only updating the Discriminator'
+                ],
+                correct: 0,
+                explanation: 'Training dynamics involve alternating updates of the Generator and Discriminator in an adversarial manner.'
+            }, {
+                id: 56,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is convergence in GAN training?',
+                options: [
+                    'Reaching a state where further training does not improve the model significantly',
+                    'The loss becoming zero',
+                    'The Discriminator achieving 100% accuracy',
+                    'The Generator producing perfect samples'
+                ],
+                correct: 0,
+                explanation: 'Convergence occurs when the GAN reaches a stable equilibrium where both networks have comparable performance and the generated samples are realistic.'
+            }, {
+                id: 57,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is stability in GAN training?',
+                options: [
+                    'The absence of oscillations and mode collapse, with smooth loss curves',
+                    'The loss increasing rapidly',
+                    'The Discriminator dominating the Generator',
+                    'The Generator dominating the Discriminator'
+                ],
+                correct: 0,
+                explanation: 'Stability means the training proceeds smoothly without dramatic fluctuations or failure modes.'
+            }, {
+                id: 58,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the role of the Discriminator\'s loss function?',
+                options: [
+                    'To quantify how well the Discriminator classifies real and fake samples',
+                    'To quantify the quality of generated samples',
+                    'To measure the Generator\'s performance',
+                    'To regularize the network'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator\'s loss measures its classification performance, driving it to better distinguish real from fake.'
+            }, {
+                id: 59,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the role of the Generator\'s loss function?',
+                options: [
+                    'To quantify how well the Generator fools the Discriminator',
+                    'To quantify the quality of real samples',
+                    'To measure the Discriminator\'s performance',
+                    'To regularize the network'
+                ],
+                correct: 0,
+                explanation: 'The Generator\'s loss measures its ability to generate samples that the Discriminator classifies as real, driving it to improve.'
+            }, {
+                id: 60,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the effect of using Wasserstein Loss with gradient penalty?',
+                options: [
+                    'Enforces Lipschitz constraint for stable training',
+                    'Speeds up training',
+                    'Reduces data requirements',
+                    'Simplifies the architecture'
+                ],
+                correct: 0,
+                explanation: 'Wasserstein Loss with gradient penalty (WGAN-GP) enforces the Lipschitz constraint, which stabilizes training and improves convergence.'
+            }, {
+                id: 61,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the concept of "distribution matching" in GANs?',
+                options: [
+                    'Making the Generator\'s output distribution match the real data distribution',
+                    'Matching the Discriminator\'s distribution',
+                    'Matching the noise distribution',
+                    'Matching the loss distribution'
+                ],
+                correct: 0,
+                explanation: 'The goal of GANs is to train the Generator to produce data from a distribution that matches the real data distribution.'
+            }, {
+                id: 62,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the role of the Discriminator in ensuring distribution matching?',
+                options: [
+                    'It provides a gradient signal that guides the Generator towards the real distribution',
+                    'It directly matches distributions',
+                    'It has no role',
+                    'It only classifies'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator\'s feedback helps the Generator adjust its output distribution to better match the real data distribution.'
+            }, {
+                id: 63,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the role of the Generator in distribution matching?',
+                options: [
+                    'It learns to transform the noise distribution into the real data distribution',
+                    'It matches the Discriminator\'s distribution',
+                    'It matches the real data distribution directly',
+                    'It has no role'
+                ],
+                correct: 0,
+                explanation: 'The Generator learns to map the noise distribution to a distribution that approximates the real data distribution.'
+            }, {
+                id: 64,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the significance of the loss functions in GANs?',
+                options: [
+                    'They define the objectives for both networks and drive the adversarial training',
+                    'They are only used for evaluation',
+                    'They are not important',
+                    'They only affect the Discriminator'
+                ],
+                correct: 0,
+                explanation: 'Loss functions are critical as they provide the signal for both networks to improve during adversarial training.'
+            }, {
+                id: 65,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the "minimax" game in GANs?',
+                options: [
+                    'The Generator minimizes the Discriminator\'s accuracy while the Discriminator maximizes it',
+                    'Both networks minimize the same loss',
+                    'Both networks maximize the same loss',
+                    'A cooperative game'
+                ],
+                correct: 0,
+                explanation: 'The minimax game is the foundation of GANs, where the Generator minimizes the Discriminator\'s ability to distinguish real from fake, and the Discriminator maximizes it.'
+            }, {
+                id: 66,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the effect of using a non-saturating loss for the Generator?',
+                options: [
+                    'It provides stronger gradients early in training, helping the Generator learn',
+                    'It causes vanishing gradients',
+                    'It leads to mode collapse',
+                    'It slows down training'
+                ],
+                correct: 0,
+                explanation: 'Non-saturating loss (e.g., -log(D(G(z)))) provides more useful gradients even when the Discriminator is strong, improving early training.'
+            }, {
+                id: 67,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the concept of "gradient penalty" in WGAN-GP?',
+                options: [
+                    'A technique to enforce the Lipschitz constraint on the Discriminator',
+                    'A technique to penalize large gradients in the Generator',
+                    'A technique to reduce the learning rate',
+                    'A technique to augment data'
+                ],
+                correct: 0,
+                explanation: 'Gradient penalty is used in WGAN-GP to enforce the 1-Lipschitz constraint on the Discriminator, improving stability.'
+            }, {
+                id: 68,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the role of the Discriminator in the loss landscape?',
+                options: [
+                    'It shapes the gradient landscape that the Generator navigates',
+                    'It has no role in the loss landscape',
+                    'It only affects its own loss',
+                    'It affects the Generator indirectly'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator defines a loss surface that the Generator uses to update its parameters, guiding it towards the real data distribution.'
+            }, {
+                id: 69,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the effect of a strong Discriminator on the Generator\'s loss?',
+                options: [
+                    'It can cause vanishing gradients, making it hard for the Generator to learn',
+                    'It helps the Generator learn faster',
+                    'It has no effect',
+                    'It causes mode collapse'
+                ],
+                correct: 0,
+                explanation: 'If the Discriminator becomes too strong early, it may output near-zero gradients for the Generator, causing the vanishing gradient problem.'
+            }, {
+                id: 70,
+                category: 'Loss Functions & Dynamics',
+                question: 'What is the effect of a weak Discriminator on the Generator\'s loss?',
+                options: [
+                    'The Generator may receive poor feedback, leading to low-quality outputs',
+                    'The Generator learns perfectly',
+                    'The Discriminator improves automatically',
+                    'No effect'
+                ],
+                correct: 0,
+                explanation: 'If the Discriminator is too weak, it may not provide meaningful gradients, causing the Generator to produce unrealistic samples.'
+            },
+
+            // ---- APPLICATIONS OF GANS (71–110) ----
+            {
+                id: 71,
+                category: 'Applications',
+                question: 'What are the main applications of GANs mentioned?',
+                options: [
+                    'Image generation, data augmentation, and style transfer',
+                    'Only image classification',
+                    'Only natural language processing',
+                    'Only speech recognition'
+                ],
+                correct: 0,
+                explanation: 'GANs are used for image generation, data augmentation, style transfer, and many other creative tasks.'
+            }, {
+                id: 72,
+                category: 'Applications',
+                question: 'What is image generation with GANs?',
+                options: [
+                    'Generating new images that resemble the training data distribution',
+                    'Classifying images into categories',
+                    'Detecting objects in images',
+                    'Enhancing image resolution'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate new, realistic images that are similar to the training set, used in art, design, and synthetic data creation.'
+            }, {
+                id: 73,
+                category: 'Applications',
+                question: 'What is data augmentation with GANs?',
+                options: [
+                    'Creating synthetic data to augment training datasets, improving model generalization',
+                    'Reducing the dataset size',
+                    'Compressing data',
+                    'Labeling data'
+                ],
+                correct: 0,
+                explanation: 'GANs generate synthetic data that can be added to the training set, helping models perform better, especially when data is scarce.'
+            }, {
+                id: 74,
+                category: 'Applications',
+                question: 'What is style transfer with GANs?',
+                options: [
+                    'Applying the style of one image to another, like transforming a photo into a Van Gogh painting',
+                    'Transferring data from one domain to another',
+                    'Changing the resolution of images',
+                    'Classifying images by style'
+                ],
+                correct: 0,
+                explanation: 'Style transfer uses GANs to apply the artistic style of one image to the content of another, creating visually interesting results.'
+            }, {
+                id: 75,
+                category: 'Applications',
+                question: 'What is the role of GANs in digital art?',
+                options: [
+                    'Generating AI-created paintings and sculptures with commercial and aesthetic value',
+                    'Only editing existing art',
+                    'Only classifying art',
+                    'Only analyzing art styles'
+                ],
+                correct: 0,
+                explanation: 'GANs can create original artworks, from paintings to sculptures, that are valued in the art world.'
+            }, {
+                id: 76,
+                category: 'Applications',
+                question: 'What is deepfake technology?',
+                options: [
+                    'Using GANs to create hyper-realistic fake faces or videos, often for synthetic media',
+                    'A method to detect fake images',
+                    'A type of image classification',
+                    'A data augmentation technique'
+                ],
+                correct: 0,
+                explanation: 'Deepfakes leverage GANs to generate highly realistic synthetic faces and videos, raising ethical concerns.'
+            }, {
+                id: 77,
+                category: 'Applications',
+                question: 'What is a key ethical concern of deepfakes?',
+                options: [
+                    'Potential for misuse in misinformation and fraud',
+                    'They are always harmless',
+                    'They are only used for entertainment',
+                    'They have no ethical concerns'
+                ],
+                correct: 0,
+                explanation: 'Deepfakes can be used maliciously to spread misinformation, create non-consensual content, and commit fraud.'
+            }, {
+                id: 78,
+                category: 'Applications',
+                question: 'How can GANs help with imbalanced datasets in classification?',
+                options: [
+                    'By generating synthetic data for the minority class to balance the dataset',
+                    'By ignoring the minority class',
+                    'By oversampling the majority class',
+                    'By reducing the dataset size'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate high-quality synthetic samples for underrepresented classes, improving model calibration and fairness.'
+            }, {
+                id: 79,
+                category: 'Applications',
+                question: 'What is the role of GANs in medical imaging?',
+                options: [
+                    'Generating synthetic medical images to augment limited datasets, improving diagnostic models',
+                    'Only storing medical images',
+                    'Only transmitting medical images',
+                    'Only displaying medical images'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic medical images (e.g., X-rays, MRIs) to address data scarcity, enhancing model robustness and accuracy.'
+            }, {
+                id: 80,
+                category: 'Applications',
+                question: 'What is the impact of GANs on medical research and healthcare?',
+                options: [
+                    'Paradigm shift enabling early diagnosis and treatment planning through synthetic data',
+                    'No impact',
+                    'Only used for image storage',
+                    'Only used for image transmission'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic medical data, aiding in early diagnosis, treatment planning, and medical research.'
+            }, {
+                id: 81,
+                category: 'Applications',
+                question: 'What is the role of GANs in NLP data augmentation?',
+                options: [
+                    'Generating synthetic text to balance datasets and improve performance in tasks like sentiment analysis and translation',
+                    'Only classifying text',
+                    'Only storing text',
+                    'Only translating text'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic text to augment NLP datasets, addressing data imbalance and improving model performance.'
+            }, {
+                id: 82,
+                category: 'Applications',
+                question: 'What is the role of GANs in style transfer?',
+                options: [
+                    'To blend the content of one image with the style of another, creating new artistic images',
+                    'To transfer data between different domains',
+                    'To classify images by style',
+                    'To generate images from text'
+                ],
+                correct: 0,
+                explanation: 'Style transfer applies the artistic style of one image to the content of another, enabling creative image synthesis.'
+            }, {
+                id: 83,
+                category: 'Applications',
+                question: 'What is a real-world example of style transfer?',
+                options: [
+                    'Transforming a landscape photo into a Van Gogh painting',
+                    'Classifying animals',
+                    'Detecting faces',
+                    'Translating text'
+                ],
+                correct: 0,
+                explanation: 'Style transfer can transform photos into the style of famous artists, like Van Gogh, creating visually striking images.'
+            }, {
+                id: 84,
+                category: 'Applications',
+                question: 'What are applications of style transfer in the film industry?',
+                options: [
+                    'Creating visual effects and stylized scenes',
+                    'Only editing scripts',
+                    'Only scoring music',
+                    'Only casting actors'
+                ],
+                correct: 0,
+                explanation: 'Style transfer is used in film for visual effects, creating stylized scenes, and enhancing artistic expression.'
+            }, {
+                id: 85,
+                category: 'Applications',
+                question: 'What is text-to-image generation with GANs?',
+                options: [
+                    'Generating images from textual descriptions, enabling visual storytelling and content creation',
+                    'Generating text from images',
+                    'Classifying images based on text',
+                    'Translating text to another language'
+                ],
+                correct: 0,
+                explanation: 'Text-to-image GANs create images from text descriptions, used in art, design, and content creation.'
+            }, {
+                id: 86,
+                category: 'Applications',
+                question: 'What are ethical implications of style transfer?',
+                options: [
+                    'Intellectual property concerns, cultural appropriation, and potential misrepresentation',
+                    'No ethical issues',
+                    'Only technical issues',
+                    'Only commercial issues'
+                ],
+                correct: 0,
+                explanation: 'Style transfer raises issues like who owns the style, cultural appropriation, and potential misuse of artistic styles.'
+            }, {
+                id: 87,
+                category: 'Applications',
+                question: 'What is the role of GANs in video games?',
+                options: [
+                    'Procedurally generating game environments and assets',
+                    'Only rendering graphics',
+                    'Only storing game data',
+                    'Only playing audio'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate diverse and realistic game environments, characters, and assets procedurally.'
+            }, {
+                id: 88,
+                category: 'Applications',
+                question: 'What is the role of GANs in enhancing image resolution?',
+                options: [
+                    'Super-resolution: generating high-resolution images from low-resolution inputs',
+                    'Only compressing images',
+                    'Only classifying images',
+                    'Only storing images'
+                ],
+                correct: 0,
+                explanation: 'GANs can perform super-resolution, upscaling low-resolution images to high-resolution with realistic details.'
+            }, {
+                id: 89,
+                category: 'Applications',
+                question: 'What is the role of the Generator in image super-resolution?',
+                options: [
+                    'To generate high-resolution images from low-resolution inputs',
+                    'To classify images as real or fake',
+                    'To evaluate image quality',
+                    'To store images'
+                ],
+                correct: 0,
+                explanation: 'In super-resolution GANs, the Generator produces high-resolution images, while the Discriminator ensures they look realistic.'
+            }, {
+                id: 90,
+                category: 'Applications',
+                question: 'What is the role of the Discriminator in image super-resolution?',
+                options: [
+                    'To assess the quality of the generated high-resolution images and distinguish them from real high-res images',
+                    'To generate low-resolution images',
+                    'To classify images by content',
+                    'To store images'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator in super-resolution GANs evaluates the realism of the generated high-res images, helping the Generator improve.'
+            }, {
+                id: 91,
+                category: 'Applications',
+                question: 'How do GANs help in generating realistic faces?',
+                options: [
+                    'By learning the distribution of facial features and generating new, realistic faces',
+                    'By copying existing faces',
+                    'By blurring faces',
+                    'By classifying faces'
+                ],
+                correct: 0,
+                explanation: 'GANs learn the underlying distribution of facial features and can generate new, realistic faces that do not exist in the training set.'
+            }, {
+                id: 92,
+                category: 'Applications',
+                question: 'What is the role of GANs in data augmentation for NLP?',
+                options: [
+                    'Generating synthetic text to augment training data for tasks like sentiment analysis and translation',
+                    'Only classifying text',
+                    'Only storing text',
+                    'Only translating text'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic text that helps balance datasets and improve performance in various NLP tasks.'
+            }, {
+                id: 93,
+                category: 'Applications',
+                question: 'What is the role of GANs in data augmentation for medical imaging?',
+                options: [
+                    'Generating synthetic medical images to augment limited datasets, improving diagnostic models',
+                    'Only storing medical images',
+                    'Only transmitting medical images',
+                    'Only displaying medical images'
+                ],
+                correct: 0,
+                explanation: 'GANs generate synthetic medical images to address data scarcity, enhancing model robustness and accuracy.'
+            }, {
+                id: 94,
+                category: 'Applications',
+                question: 'What is the role of GANs in generating synthetic data for the minority class?',
+                options: [
+                    'To balance datasets and reduce model bias towards the majority class',
+                    'To ignore the minority class',
+                    'To oversample the majority class',
+                    'To reduce the dataset size'
+                ],
+                correct: 0,
+                explanation: 'GANs generate high-quality synthetic data for the minority class, improving model performance and fairness.'
+            }, {
+                id: 95,
+                category: 'Applications',
+                question: 'What is the role of GANs in creating AI-generated paintings?',
+                options: [
+                    'To generate original artworks that can be sold or appreciated for their aesthetic value',
+                    'To copy existing paintings',
+                    'To classify paintings',
+                    'To store paintings'
+                ],
+                correct: 0,
+                explanation: 'GANs can create unique paintings, expanding the possibilities of digital art and generating commercial value.'
+            }, {
+                id: 96,
+                category: 'Applications',
+                question: 'What is the role of GANs in video game environment generation?',
+                options: [
+                    'Procedurally generating levels, textures, and 3D environments',
+                    'Only rendering graphics',
+                    'Only storing game data',
+                    'Only playing audio'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate diverse and realistic game environments procedurally, saving development time and resources.'
+            }, {
+                id: 97,
+                category: 'Applications',
+                question: 'What is the role of GANs in style transfer for video games?',
+                options: [
+                    'Applying different artistic styles to game scenes to create unique visual experiences',
+                    'Only generating characters',
+                    'Only generating textures',
+                    'Only storing game assets'
+                ],
+                correct: 0,
+                explanation: 'Style transfer can be used in games to apply various visual styles, enhancing artistic variety.'
+            }, {
+                id: 98,
+                category: 'Applications',
+                question: 'What is the role of GANs in text-to-image synthesis?',
+                options: [
+                    'Generating images from textual descriptions, enabling visual storytelling',
+                    'Generating text from images',
+                    'Classifying images based on text',
+                    'Translating text to another language'
+                ],
+                correct: 0,
+                explanation: 'Text-to-image GANs create images from text descriptions, used in creative content generation.'
+            }, {
+                id: 99,
+                category: 'Applications',
+                question: 'What is the role of GANs in visual storytelling?',
+                options: [
+                    'Generating images that correspond to a narrative, enhancing storytelling',
+                    'Only generating text',
+                    'Only storing images',
+                    'Only classifying images'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate images that illustrate a story, enabling visual storytelling and content creation.'
+            }, {
+                id: 100,
+                category: 'Applications',
+                question: 'What is the role of GANs in content creation?',
+                options: [
+                    'Generating new content such as images, videos, and music for media and entertainment',
+                    'Only storing content',
+                    'Only classifying content',
+                    'Only transmitting content'
+                ],
+                correct: 0,
+                explanation: 'GANs are used to generate original content in various media, from images to music.'
+            }, {
+                id: 101,
+                category: 'Applications',
+                question: 'What is the role of GANs in medical diagnosis and treatment planning?',
+                options: [
+                    'Generating synthetic medical images to aid in diagnosis and treatment planning',
+                    'Only storing patient data',
+                    'Only transmitting patient data',
+                    'Only displaying patient data'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic medical images that assist in diagnosis and treatment planning, especially when data is scarce.'
+            }, {
+                id: 102,
+                category: 'Applications',
+                question: 'What is the role of GANs in image enhancement?',
+                options: [
+                    'Improving image quality, such as increasing resolution or removing noise',
+                    'Only storing images',
+                    'Only classifying images',
+                    'Only transmitting images'
+                ],
+                correct: 0,
+                explanation: 'GANs can enhance image quality through super-resolution, denoising, and other enhancement techniques.'
+            }, {
+                id: 103,
+                category: 'Applications',
+                question: 'What is the role of GANs in synthesizing new art styles?',
+                options: [
+                    'Learning and combining styles to create novel artistic styles',
+                    'Only copying existing styles',
+                    'Only classifying styles',
+                    'Only storing styles'
+                ],
+                correct: 0,
+                explanation: 'GANs can learn multiple styles and combine them to generate new, unique artistic styles.'
+            }, {
+                id: 104,
+                category: 'Applications',
+                question: 'What is the role of GANs in generating synthetic data for robust models?',
+                options: [
+                    'Augmenting training data to improve model generalization and robustness',
+                    'Reducing training data',
+                    'Increasing model complexity',
+                    'Decreasing model accuracy'
+                ],
+                correct: 0,
+                explanation: 'GANs generate synthetic data that helps models become more robust and generalizable, especially in domains with limited data.'
+            }, {
+                id: 105,
+                category: 'Applications',
+                question: 'What is the role of GANs in music generation?',
+                options: [
+                    'Generating new music compositions by learning patterns from existing music',
+                    'Only storing music',
+                    'Only classifying music',
+                    'Only transmitting music'
+                ],
+                correct: 0,
+                explanation: 'GANs can be used to generate original music, creating new compositions in various styles.'
+            }, {
+                id: 106,
+                category: 'Applications',
+                question: 'What is the role of GANs in fashion design?',
+                options: [
+                    'Generating new clothing designs and patterns',
+                    'Only storing fashion data',
+                    'Only classifying fashion items',
+                    'Only transmitting fashion data'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate novel fashion designs, aiding designers in creativity and production.'
+            }, {
+                id: 107,
+                category: 'Applications',
+                question: 'What is the role of GANs in data augmentation for speech recognition?',
+                options: [
+                    'Generating synthetic speech data to augment training datasets',
+                    'Only storing speech data',
+                    'Only classifying speech',
+                    'Only transmitting speech'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic speech samples to increase dataset size and diversity for speech recognition models.'
+            }, {
+                id: 108,
+                category: 'Applications',
+                question: 'What is the role of GANs in generating realistic 3D models?',
+                options: [
+                    'Generating 3D objects from 2D images or random noise',
+                    'Only storing 3D models',
+                    'Only classifying 3D models',
+                    'Only transmitting 3D models'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate 3D models, useful in gaming, VR, and design.'
+            }, {
+                id: 109,
+                category: 'Applications',
+                question: 'What is the role of GANs in creating synthetic financial data?',
+                options: [
+                    'Generating synthetic financial time series for testing trading strategies',
+                    'Only storing financial data',
+                    'Only classifying financial data',
+                    'Only transmitting financial data'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate synthetic financial data to train and test trading algorithms without relying on real data.'
+            }, {
+                id: 110,
+                category: 'Applications',
+                question: 'What is the role of GANs in generating synthetic data for autonomous driving?',
+                options: [
+                    'Generating realistic driving scenes and conditions to train autonomous vehicles',
+                    'Only storing driving data',
+                    'Only classifying driving data',
+                    'Only transmitting driving data'
+                ],
+                correct: 0,
+                explanation: 'GANs can generate diverse driving scenarios to augment training data for autonomous driving systems.'
+            },
+
+            // ---- VARIANTS OF GANS (111–140) ----
+            {
+                id: 111,
+                category: 'GAN Variants',
+                question: 'What is DCGAN?',
+                options: [
+                    'Deep Convolutional GAN, using convolutional layers for improved image quality and stability',
+                    'Deep Conditional GAN',
+                    'Dual Convolutional GAN',
+                    'Dynamic Convolutional GAN'
+                ],
+                correct: 0,
+                explanation: 'DCGAN (Deep Convolutional GAN) uses convolutional layers in both Generator and Discriminator, improving image quality and training stability.'
+            }, {
+                id: 112,
+                category: 'GAN Variants',
+                question: 'What is a key feature of DCGAN?',
+                options: [
+                    'Use of convolutional layers instead of fully connected layers for better image generation',
+                    'Use of recurrent layers',
+                    'Use of attention mechanisms',
+                    'Use of skip connections'
+                ],
+                correct: 0,
+                explanation: 'DCGAN replaces fully connected layers with convolutional layers, leveraging spatial hierarchies for better image quality.'
+            }, {
+                id: 113,
+                category: 'GAN Variants',
+                question: 'What is CycleGAN?',
+                options: [
+                    'A GAN variant for unpaired image-to-image translation using cycle consistency',
+                    'A GAN for cyclic data',
+                    'A GAN with cyclic loss',
+                    'A GAN for recurring sequences'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN enables image translation between two domains without paired examples, using cycle consistency loss.'
+            }, {
+                id: 114,
+                category: 'GAN Variants',
+                question: 'What is the key innovation of CycleGAN?',
+                options: [
+                    'Cycle consistency loss ensures that translating an image back to its original domain returns the original image',
+                    'It uses paired images',
+                    'It uses only one discriminator',
+                    'It uses only one generator'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN introduces cycle consistency to enforce that the translation is reversible, preserving the content structure.'
+            }, {
+                id: 115,
+                category: 'GAN Variants',
+                question: 'What is an example of CycleGAN application?',
+                options: [
+                    'Turning horses into zebras and vice versa',
+                    'Turning cats into dogs',
+                    'Turning day to night',
+                    'All of the above'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN can perform unpaired image translation, such as turning horses into zebras, photos into paintings, etc.'
+            }, {
+                id: 116,
+                category: 'GAN Variants',
+                question: 'What is StyleGAN?',
+                options: [
+                    'A GAN variant that uses adaptive instance normalization (AdaIN) for controllable style generation',
+                    'A GAN for style transfer only',
+                    'A GAN with style loss',
+                    'A GAN for fashion design'
+                ],
+                correct: 0,
+                explanation: 'StyleGAN introduces AdaIN and progressive growing to generate high-quality, customizable images with style control.'
+            }, {
+                id: 117,
+                category: 'GAN Variants',
+                question: 'What is Adaptive Instance Normalization (AdaIN) in StyleGAN?',
+                options: [
+                    'A technique to inject style information into the Generator at each layer',
+                    'A technique to normalize the data',
+                    'A technique to reduce overfitting',
+                    'A technique to speed up training'
+                ],
+                correct: 0,
+                explanation: 'AdaIN allows style control by adjusting the mean and variance of feature maps, enabling style mixing and fine-grained control.'
+            }, {
+                id: 118,
+                category: 'GAN Variants',
+                question: 'What is a notable use case of StyleGAN?',
+                options: [
+                    'Customizable face generation',
+                    'Landscape generation',
+                    'Animal generation',
+                    'All of the above'
+                ],
+                correct: 0,
+                explanation: 'StyleGAN is famous for generating high-quality, customizable faces, but can be applied to other domains as well.'
+            }, {
+                id: 119,
+                category: 'GAN Variants',
+                question: 'What is Pix2Pix?',
+                options: [
+                    'A GAN for paired image-to-image translation',
+                    'A GAN for unpaired translation',
+                    'A GAN for style transfer',
+                    'A GAN for super-resolution'
+                ],
+                correct: 0,
+                explanation: 'Pix2Pix is a conditional GAN designed for paired image translation tasks, such as mapping sketches to photos.'
+            }, {
+                id: 120,
+                category: 'GAN Variants',
+                question: 'What is BigGAN?',
+                options: [
+                    'A large-scale GAN that generates high-resolution images with high fidelity',
+                    'A GAN for small datasets',
+                    'A GAN for text generation',
+                    'A GAN for audio generation'
+                ],
+                correct: 0,
+                explanation: 'BigGAN scales up the GAN architecture to generate high-resolution, high-quality images using large batch sizes and model sizes.'
+            }, {
+                id: 121,
+                category: 'GAN Variants',
+                question: 'What is the advantage of DCGAN over the original GAN?',
+                options: [
+                    'Better image quality and training stability due to convolutional architectures',
+                    'Faster training',
+                    'Requires less data',
+                    'Simpler implementation'
+                ],
+                correct: 0,
+                explanation: 'DCGAN uses convolutional layers, which improve image quality and provide more stable training compared to fully connected networks.'
+            }, {
+                id: 122,
+                category: 'GAN Variants',
+                question: 'What is the main difference between CycleGAN and Pix2Pix?',
+                options: [
+                    'CycleGAN does not require paired examples, Pix2Pix does',
+                    'CycleGAN uses paired examples, Pix2Pix does not',
+                    'CycleGAN is for unpaired translation, Pix2Pix is for style transfer',
+                    'They are the same'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN works with unpaired data, while Pix2Pix requires paired images for supervised translation.'
+            }, {
+                id: 123,
+                category: 'GAN Variants',
+                question: 'What is the role of cycle consistency in CycleGAN?',
+                options: [
+                    'To ensure that a translated image can be mapped back to the original, preserving content',
+                    'To ensure the images are of high quality',
+                    'To reduce training time',
+                    'To increase model complexity'
+                ],
+                correct: 0,
+                explanation: 'Cycle consistency loss encourages the translation to be reversible, preserving the content structure of the original image.'
+            }, {
+                id: 124,
+                category: 'GAN Variants',
+                question: 'What is the role of AdaIN in StyleGAN?',
+                options: [
+                    'To provide style control by modulating feature statistics',
+                    'To normalize the data',
+                    'To regularize the network',
+                    'To speed up training'
+                ],
+                correct: 0,
+                explanation: 'AdaIN injects style information into the Generator, allowing fine-grained control over the generated output style.'
+            }, {
+                id: 125,
+                category: 'GAN Variants',
+                question: 'What is a common use case of StyleGAN?',
+                options: [
+                    'Generating realistic human faces',
+                    'Generating landscapes',
+                    'Generating animal images',
+                    'All of the above'
+                ],
+                correct: 0,
+                explanation: 'StyleGAN can generate high-quality images in various domains, including faces, landscapes, and animals.'
+            }, {
+                id: 126,
+                category: 'GAN Variants',
+                question: 'What is the role of the Discriminator in DCGAN?',
+                options: [
+                    'To classify real vs. fake images using convolutional layers',
+                    'To generate images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'In DCGAN, the Discriminator uses convolutional layers to distinguish between real and generated images.'
+            }, {
+                id: 127,
+                category: 'GAN Variants',
+                question: 'What is the role of the Generator in DCGAN?',
+                options: [
+                    'To generate images using transposed convolutions',
+                    'To classify images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'The Generator in DCGAN uses transposed convolutional layers to upsample noise into images.'
+            }, {
+                id: 128,
+                category: 'GAN Variants',
+                question: 'What is the role of the Generator in CycleGAN?',
+                options: [
+                    'To translate images from one domain to another',
+                    'To classify images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN has two Generators, each translating between the two domains (e.g., photos to paintings).'
+            }, {
+                id: 129,
+                category: 'GAN Variants',
+                question: 'What is the role of the Discriminator in CycleGAN?',
+                options: [
+                    'To distinguish between real and translated images in each domain',
+                    'To generate images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN has two Discriminators, one for each domain, to classify whether the images are real or translated.'
+            }, {
+                id: 130,
+                category: 'GAN Variants',
+                question: 'What is the role of the Discriminator in StyleGAN?',
+                options: [
+                    'To distinguish between real and generated images, pushing for high realism',
+                    'To generate style vectors',
+                    'To encode style information',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator in StyleGAN plays a similar role to standard GANs, but the Generator uses AdaIN for style control.'
+            }, {
+                id: 131,
+                category: 'GAN Variants',
+                question: 'What is the role of the Generator in StyleGAN?',
+                options: [
+                    'To generate images with style control using AdaIN and progressive growing',
+                    'To classify images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'StyleGAN\'s Generator uses AdaIN and progressive growing to produce high-quality, customizable images.'
+            }, {
+                id: 132,
+                category: 'GAN Variants',
+                question: 'What is progressive growing in StyleGAN?',
+                options: [
+                    'A training technique that starts with low-resolution images and gradually increases resolution for stability',
+                    'A technique to speed up training',
+                    'A technique to reduce overfitting',
+                    'A technique to increase dataset size'
+                ],
+                correct: 0,
+                explanation: 'Progressive growing trains the GAN starting from low resolution and adding layers as training progresses, improving stability and quality.'
+            }, {
+                id: 133,
+                category: 'GAN Variants',
+                question: 'What is the advantage of StyleGAN over other GANs?',
+                options: [
+                    'It provides fine-grained control over the style of generated images',
+                    'It is faster to train',
+                    'It requires less data',
+                    'It is simpler to implement'
+                ],
+                correct: 0,
+                explanation: 'StyleGAN allows control over various aspects of the generated image, such as pose, expression, and style, making it popular for creative applications.'
+            }, {
+                id: 134,
+                category: 'GAN Variants',
+                question: 'What is the advantage of CycleGAN over paired translation methods?',
+                options: [
+                    'It does not require paired examples, making it more widely applicable',
+                    'It produces higher quality images',
+                    'It is faster to train',
+                    'It requires less data'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN works with unpaired data, which is more common and easier to obtain than paired data, expanding its applicability.'
+            }, {
+                id: 135,
+                category: 'GAN Variants',
+                question: 'What is the role of the Generator in Pix2Pix?',
+                options: [
+                    'To translate input images to output images in a paired setting',
+                    'To classify images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'Pix2Pix is a conditional GAN where the Generator takes an input image and generates a corresponding output image.'
+            }, {
+                id: 136,
+                category: 'GAN Variants',
+                question: 'What is the role of the Discriminator in Pix2Pix?',
+                options: [
+                    'To classify whether pairs of input-output images are real or fake',
+                    'To generate images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator in Pix2Pix takes pairs (input, output) and decides if they are real (from the training set) or fake (generated).'
+            }, {
+                id: 137,
+                category: 'GAN Variants',
+                question: 'What is the role of the Generator in BigGAN?',
+                options: [
+                    'To generate high-resolution images using large-scale training',
+                    'To classify images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'BigGAN scales up the Generator and Discriminator to produce high-resolution images with high fidelity.'
+            }, {
+                id: 138,
+                category: 'GAN Variants',
+                question: 'What is the role of the Discriminator in BigGAN?',
+                options: [
+                    'To distinguish between real and generated high-resolution images',
+                    'To generate images',
+                    'To encode images',
+                    'To reconstruct images'
+                ],
+                correct: 0,
+                explanation: 'The Discriminator in BigGAN is also scaled up to handle high-resolution images and provide strong gradients.'
+            }, {
+                id: 139,
+                category: 'GAN Variants',
+                question: 'What is the main advantage of BigGAN?',
+                options: [
+                    'It can generate high-resolution images with exceptional quality',
+                    'It is easy to train',
+                    'It requires little data',
+                    'It is fast'
+                ],
+                correct: 0,
+                explanation: 'BigGAN pushes the boundaries of image quality and resolution, setting new standards for GAN-generated images.'
+            }, {
+                id: 140,
+                category: 'GAN Variants',
+                question: 'Which GAN variant is commonly used for unpaired image translation?',
+                options: [
+                    'CycleGAN',
+                    'Pix2Pix',
+                    'StyleGAN',
+                    'DCGAN'
+                ],
+                correct: 0,
+                explanation: 'CycleGAN is specifically designed for unpaired image-to-image translation.'
+            },
+
+            // ---- CHALLENGES & CONCLUSION (141–160) ----
+            {
+                id: 141,
+                category: 'Challenges',
+                question: 'What is mode collapse in GANs?',
+                options: [
+                    'The Generator produces only a limited set of samples, missing the full data distribution',
+                    'The Discriminator becomes perfect',
+                    'The training diverges',
+                    'The loss becomes zero'
+                ],
+                correct: 0,
+                explanation: 'Mode collapse is a common failure where the Generator fails to capture the diversity of the training data.'
+            }, {
+                id: 142,
+                category: 'Challenges',
+                question: 'What causes mode collapse in GANs?',
+                options: [
+                    'Imbalanced training where the Generator finds a few easy samples to fool the Discriminator',
+                    'The Discriminator being too weak',
+                    'The learning rate being too high',
+                    'The dataset being too large'
+                ],
+                correct: 0,
+                explanation: 'Mode collapse often occurs when the Generator exploits a weakness in the Discriminator by producing similar samples that are easy to pass off as real.'
+            }, {
+                id: 143,
+                category: 'Challenges',
+                question: 'What is the vanishing gradient problem in GANs?',
+                options: [
+                    'When the Discriminator becomes too strong, gradients to the Generator vanish, halting learning',
+                    'When gradients become extremely large',
+                    'When gradients oscillate',
+                    'When gradients are zero for all parameters'
+                ],
+                correct: 0,
+                explanation: 'If the Discriminator is too powerful early, the Generator receives very small gradients, preventing it from improving.'
+            }, {
+                id: 144,
+                category: 'Challenges',
+                question: 'What is the exploding gradient problem in GANs?',
+                options: [
+                    'When gradients become extremely large, causing unstable updates',
+                    'When gradients become very small',
+                    'When gradients are zero',
+                    'When gradients are constant'
+                ],
+                correct: 0,
+                explanation: 'Exploding gradients can occur in GANs, leading to training instability and divergence.'
+            }, {
+                id: 145,
+                category: 'Challenges',
+                question: 'What is a common cause of oscillating losses in GAN training?',
+                options: [
+                    'Unstable equilibrium between Generator and Discriminator',
+                    'Learning rate too low',
+                    'Data augmentation',
+                    'Batch normalization'
+                ],
+                correct: 0,
+                explanation: 'Oscillations occur when the two networks keep overtaking each other, preventing convergence.'
+            }, {
+                id: 146,
+                category: 'Challenges',
+                question: 'What is the role of regularization in addressing GAN challenges?',
+                options: [
+                    'To stabilize training and prevent overfitting',
+                    'To increase model complexity',
+                    'To speed up training',
+                    'To reduce data size'
+                ],
+                correct: 0,
+                explanation: 'Regularization techniques like spectral normalization and dropout help stabilize GAN training and prevent overfitting.'
+            }, {
+                id: 147,
+                category: 'Challenges',
+                question: 'What is the role of learning rate scheduling in addressing GAN challenges?',
+                options: [
+                    'To adapt the learning rate for stable convergence',
+                    'To keep the learning rate constant',
+                    'To increase the learning rate continuously',
+                    'To decrease the learning rate continuously'
+                ],
+                correct: 0,
+                explanation: 'Adaptive learning rate scheduling helps maintain a balance between the Generator and Discriminator, preventing instability.'
+            }, {
+                id: 148,
+                category: 'Challenges',
+                question: 'What is the role of batch size in addressing GAN challenges?',
+                options: [
+                    'To balance the trade-off between training stability and convergence speed',
+                    'To always use the largest batch size',
+                    'To always use the smallest batch size',
+                    'Batch size has no effect'
+                ],
+                correct: 0,
+                explanation: 'Batch size affects the gradient estimate; a well-chosen batch size can improve training stability and speed.'
+            }, {
+                id: 149,
+                category: 'Challenges',
+                question: 'What is the role of the Discriminator in addressing mode collapse?',
+                options: [
+                    'To provide a diverse set of gradients that encourages the Generator to explore the full distribution',
+                    'To collapse the mode',
+                    'To ignore the mode collapse',
+                    'To only focus on the majority class'
+                ],
+                correct: 0,
+                explanation: 'A well-tuned Discriminator provides useful feedback that pushes the Generator to cover the entire data distribution.'
+            }, {
+                id: 150,
+                category: 'Challenges',
+                question: 'What is the role of the Generator in addressing mode collapse?',
+                options: [
+                    'To be designed with mechanisms that promote diversity, such as minibatch discrimination',
+                    'To ignore diversity',
+                    'To focus on a single mode',
+                    'To only generate the majority class'
+                ],
+                correct: 0,
+                explanation: 'The Generator architecture and training can be augmented with techniques like minibatch discrimination to encourage diversity and prevent mode collapse.'
+            }, {
+                id: 151,
+                category: 'Challenges',
+                question: 'What is the concept of "Nash equilibrium" in GANs?',
+                options: [
+                    'A state where neither the Generator nor the Discriminator can improve unilaterally',
+                    'A state where the Generator is perfect',
+                    'A state where the Discriminator is perfect',
+                    'A state where the loss is zero'
+                ],
+                correct: 0,
+                explanation: 'The Nash equilibrium is the ideal training outcome where both networks have reached an optimal balance.'
+            }, {
+                id: 152,
+                category: 'Challenges',
+                question: 'What is the role of the loss function in preventing mode collapse?',
+                options: [
+                    'Choosing a loss that encourages diversity, like Wasserstein loss, can reduce mode collapse',
+                    'Loss function has no role',
+                    'Only the Generator loss matters',
+                    'Only the Discriminator loss matters'
+                ],
+                correct: 0,
+                explanation: 'Different loss functions, such as Wasserstein loss, can provide better gradients that encourage the Generator to explore the full distribution.'
+            }, {
+                id: 153,
+                category: 'Challenges',
+                question: 'What is the role of architecture design in addressing GAN challenges?',
+                options: [
+                    'Using convolutional architectures (DCGAN) and normalization layers can improve stability',
+                    'Architecture has no effect',
+                    'Only deeper networks work',
+                    'Only shallower networks work'
+                ],
+                correct: 0,
+                explanation: 'Architecture choices, such as using convolutional layers, batch normalization, and skip connections, significantly impact GAN stability and performance.'
+            }, {
+                id: 154,
+                category: 'Challenges',
+                question: 'What is the role of data quality in GAN training?',
+                options: [
+                    'High-quality, diverse data is essential for training a robust GAN',
+                    'Data quality does not matter',
+                    'Only quantity matters',
+                    'Only diversity matters'
+                ],
+                correct: 0,
+                explanation: 'The quality and diversity of the training data directly affect the GAN\'s ability to generate realistic and varied samples.'
+            }, {
+                id: 155,
+                category: 'Challenges',
+                question: 'What is the role of evaluation metrics in GANs?',
+                options: [
+                    'Metrics like Inception Score and FID help assess the quality and diversity of generated samples',
+                    'Metrics are not needed',
+                    'Only visual inspection matters',
+                    'Only loss values matter'
+                ],
+                correct: 0,
+                explanation: 'Evaluation metrics provide quantitative measures of GAN performance, helping compare models and tune hyperparameters.'
+            }, {
+                id: 156,
+                category: 'Challenges',
+                question: 'What is the Inception Score (IS) for GANs?',
+                options: [
+                    'A metric that evaluates the quality and diversity of generated images using a pre-trained Inception network',
+                    'A metric for training speed',
+                    'A metric for model size',
+                    'A metric for data size'
+                ],
+                correct: 0,
+                explanation: 'Inception Score measures both the quality (sharpness) and diversity of generated images, using a pre-trained classifier.'
+            }, {
+                id: 157,
+                category: 'Challenges',
+                question: 'What is the Fréchet Inception Distance (FID) for GANs?',
+                options: [
+                    'A metric that compares the distribution of generated images to real images using the Inception network',
+                    'A metric for training time',
+                    'A metric for model complexity',
+                    'A metric for data size'
+                ],
+                correct: 0,
+                explanation: 'FID measures the similarity between the feature distributions of real and generated images, lower scores indicate better quality.'
+            }, {
+                id: 158,
+                category: 'Challenges',
+                question: 'What is the role of minibatch discrimination in preventing mode collapse?',
+                options: [
+                    'It allows the Discriminator to consider the diversity of samples in a batch, encouraging the Generator to produce varied outputs',
+                    'It reduces the batch size',
+                    'It increases the learning rate',
+                    'It regularizes the weights'
+                ],
+                correct: 0,
+                explanation: 'Minibatch discrimination provides the Discriminator with information about the diversity of a batch, penalizing the Generator for producing similar samples.'
+            }, {
+                id: 159,
+                category: 'Challenges',
+                question: 'What is the role of gradient penalty in WGAN-GP?',
+                options: [
+                    'To enforce the Lipschitz constraint on the Discriminator for stable training',
+                    'To increase the learning rate',
+                    'To reduce model complexity',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Gradient penalty enforces the 1-Lipschitz constraint, which is crucial for the Wasserstein loss to provide meaningful gradients.'
+            }, {
+                id: 160,
+                category: 'Challenges',
+                question: 'What is the overall goal of addressing GAN challenges?',
+                options: [
+                    'To achieve stable training and generate high-quality, diverse samples',
+                    'To make training faster',
+                    'To reduce the number of parameters',
+                    'To increase overfitting'
+                ],
+                correct: 0,
+                explanation: 'The ultimate goal is to train GANs that are stable, converge to a good equilibrium, and produce realistic, varied outputs.'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(.option-item[data-qindex=""][data-optindex=""]);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(You've answered  of  questions. Please answer all questions to see results.);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

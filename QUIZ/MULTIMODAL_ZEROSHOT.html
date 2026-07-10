@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gen AI Specialist – Multimodal & Zero-Shot Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>Multimodal · Zero-Shot</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  160+ QUESTIONS – Multimodal Models, Learning Techniques,
+        //  Zero-Shot Learning, and Applications
+        // ============================================================
+        const QUESTIONS = [
+            // ---- MULTIMODAL MODELS (1–30) ----
+            {
+                id: 1,
+                category: 'Multimodal Models',
+                question: 'What are multimodal models?',
+                options: [
+                    'Models that use information across multiple data modalities such as text, images, and sound',
+                    'Models that use only one type of data',
+                    'Models that generate multiple outputs',
+                    'Models that are trained on multiple tasks'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models integrate information from multiple data modalities (text, images, sound, etc.) to achieve a comprehensive understanding.'
+            }, {
+                id: 2,
+                category: 'Multimodal Models',
+                question: 'Which of the following is an example of a data modality?',
+                options: [
+                    'Text',
+                    'Images',
+                    'Sound',
+                    'All of the above'
+                ],
+                correct: 3,
+                explanation: 'Text, images, and sound are all examples of data modalities used in multimodal models.'
+            }, {
+                id: 3,
+                category: 'Multimodal Models',
+                question: 'What is the primary advantage of multimodal models over unimodal models?',
+                options: [
+                    'They can process and integrate multiple types of data for enhanced performance',
+                    'They are simpler to build',
+                    'They require less data',
+                    'They are faster to train'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models process and integrate multiple data types, leading to enhanced performance and accuracy in complex tasks.'
+            }, {
+                id: 4,
+                category: 'Multimodal Models',
+                question: 'What is fusion in the context of multimodal models?',
+                options: [
+                    'A mechanism to integrate multiple types of data',
+                    'A method to reduce data dimensionality',
+                    'A technique for data augmentation',
+                    'A type of loss function'
+                ],
+                correct: 0,
+                explanation: 'Fusion refers to the integration of data from different modalities to enable the model to learn from combined information.'
+            }, {
+                id: 5,
+                category: 'Multimodal Models',
+                question: 'What are the three main types of fusion techniques?',
+                options: [
+                    'Early, Late, and Hybrid fusion',
+                    'Early, Mid, and Late fusion',
+                    'Concat, Add, and Attention fusion',
+                    'Feature, Score, and Decision fusion'
+                ],
+                correct: 0,
+                explanation: 'The three main types of fusion are Early (feature-level), Late (decision-level), and Hybrid (combination of both).'
+            }, {
+                id: 6,
+                category: 'Multimodal Models',
+                question: 'What is early fusion?',
+                options: [
+                    'Also known as feature-level fusion, concatenating features before model input',
+                    'Combining outputs after separate processing',
+                    'A hybrid approach',
+                    'Fusing at the loss function level'
+                ],
+                correct: 0,
+                explanation: 'Early fusion involves concatenating features from different modalities before feeding them into the model.'
+            }, {
+                id: 7,
+                category: 'Multimodal Models',
+                question: 'What is a disadvantage of early fusion?',
+                options: [
+                    'High dimensionality and loss of temporal information',
+                    'Low computational cost',
+                    'Simplicity',
+                    'Flexibility'
+                ],
+                correct: 0,
+                explanation: 'Early fusion can lead to high-dimensional feature vectors and may lose temporal or sequential information.'
+            }, {
+                id: 8,
+                category: 'Multimodal Models',
+                question: 'What is late fusion?',
+                options: [
+                    'Running each modality through its own model and combining outputs for final decision',
+                    'Concatenating features early',
+                    'Hybrid approach',
+                    'Fusing at the feature level'
+                ],
+                correct: 0,
+                explanation: 'Late fusion processes each modality separately and combines their outputs (e.g., scores) for the final decision.'
+            }, {
+                id: 9,
+                category: 'Multimodal Models',
+                question: 'What is a disadvantage of late fusion?',
+                options: [
+                    'Computational cost and complexity in fusing outputs',
+                    'Loss of temporal information',
+                    'High dimensionality',
+                    'Simplicity'
+                ],
+                correct: 0,
+                explanation: 'Late fusion requires separate models per modality, increasing computational cost, and the fusion mechanism can be complex.'
+            }, {
+                id: 10,
+                category: 'Multimodal Models',
+                question: 'What is hybrid fusion?',
+                options: [
+                    'Combining early and late fusion approaches, often at intermediate layers',
+                    'Only using early fusion',
+                    'Only using late fusion',
+                    'No fusion at all'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion combines elements of both early and late fusion, often integrating features at intermediate layers.'
+            }, {
+                id: 11,
+                category: 'Multimodal Models',
+                question: 'What is a key advantage of hybrid fusion?',
+                options: [
+                    'Versatility and context preservation',
+                    'Simplicity',
+                    'Low computational cost',
+                    'No need for modality-specific models'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion is versatile and can preserve context by leveraging the benefits of both early and late fusion.'
+            }, {
+                id: 12,
+                category: 'Multimodal Models',
+                question: 'What is a challenge of multimodal models?',
+                options: [
+                    'Aligning multimodal data',
+                    'Lack of data',
+                    'Low accuracy',
+                    'Simplicity'
+                ],
+                correct: 0,
+                explanation: 'Aligning data from different modalities (e.g., matching an image with its text description) is a significant challenge.'
+            }, {
+                id: 13,
+                category: 'Multimodal Models',
+                question: 'What is an advantage of multimodal models in healthcare?',
+                options: [
+                    'Comprehensive diagnosis using X-rays and patient history',
+                    'Reduced accuracy',
+                    'Less data required',
+                    'Simpler models'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can integrate medical images and patient history for more comprehensive diagnosis.'
+            }, {
+                id: 14,
+                category: 'Multimodal Models',
+                question: 'What is a concurrent multimodal model?',
+                options: [
+                    'Processes multiple modalities simultaneously',
+                    'Processes one modality then another',
+                    'Uses one modality to enhance another',
+                    'Uses redundant modalities'
+                ],
+                correct: 0,
+                explanation: 'Concurrent models process multiple modalities at the same time, e.g., audio-visual speech recognition.'
+            }, {
+                id: 15,
+                category: 'Multimodal Models',
+                question: 'What is a sequential multimodal model?',
+                options: [
+                    'Processes one modality followed by another',
+                    'Processes multiple modalities simultaneously',
+                    'Uses redundant modalities',
+                    'Uses one modality to enhance another'
+                ],
+                correct: 0,
+                explanation: 'Sequential models process one modality after another, e.g., text-to-image generation.'
+            }, {
+                id: 16,
+                category: 'Multimodal Models',
+                question: 'What is a complementary multimodal model?',
+                options: [
+                    'Uses one modality to enhance the other',
+                    'Processes modalities simultaneously',
+                    'Uses redundant modalities',
+                    'Processes sequentially'
+                ],
+                correct: 0,
+                explanation: 'Complementary models use one modality to provide additional context that enhances the other, e.g., sentiment analysis with text and tone.'
+            }, {
+                id: 17,
+                category: 'Multimodal Models',
+                question: 'What is a redundant multimodal model?',
+                options: [
+                    'Multiple modalities provide the same information',
+                    'Uses one modality to enhance the other',
+                    'Processes sequentially',
+                    'Processes simultaneously'
+                ],
+                correct: 0,
+                explanation: 'Redundant models use multiple modalities that convey the same information, e.g., lip reading from audio and video.'
+            }, {
+                id: 18,
+                category: 'Multimodal Models',
+                question: 'What is an advantage of multimodal learning for data efficiency?',
+                options: [
+                    'Using multiple data types can reduce the amount of data needed for training',
+                    'It requires more data',
+                    'It has no effect on data efficiency',
+                    'It only works with large datasets'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can be more data-efficient by leveraging complementary information from different modalities.'
+            }, {
+                id: 19,
+                category: 'Multimodal Models',
+                question: 'What is a limitation of multimodal models?',
+                options: [
+                    'Computational overhead and resource limitations',
+                    'They are too simple',
+                    'They cannot handle complex tasks',
+                    'They only work with text data'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models require significant computational resources and may face challenges in aligning data.'
+            }, {
+                id: 20,
+                category: 'Multimodal Models',
+                question: 'What is an ethical implication of multimodal systems?',
+                options: [
+                    'Data privacy concerns, especially with biometric data',
+                    'They have no ethical concerns',
+                    'They are always fair',
+                    'They are transparent'
+                ],
+                correct: 0,
+                explanation: 'Multimodal systems often handle personal and biometric data, raising serious privacy and ethical issues.'
+            }, {
+                id: 21,
+                category: 'Multimodal Models',
+                question: 'How do multimodal models mimic human cognition?',
+                options: [
+                    'By integrating multiple senses, similar to how humans use multisensory integration',
+                    'By using only one sense',
+                    'By ignoring context',
+                    'By focusing on isolated data'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models are inspired by human cognitive processing, which integrates information from multiple senses for comprehensive understanding.'
+            }, {
+                id: 22,
+                category: 'Multimodal Models',
+                question: 'What is the role of fusion in multimodal models?',
+                options: [
+                    'To combine data from different modalities for joint learning',
+                    'To separate data by modality',
+                    'To discard irrelevant modalities',
+                    'To reduce data dimensionality'
+                ],
+                correct: 0,
+                explanation: 'Fusion combines data from different modalities so that the model can learn joint representations.'
+            }, {
+                id: 23,
+                category: 'Multimodal Models',
+                question: 'Which of the following is an example of multimodal learning in autonomous vehicles?',
+                options: [
+                    'Sensor fusion using radar, lidar, and cameras',
+                    'Using only camera data',
+                    'Using only radar data',
+                    'Using only lidar data'
+                ],
+                correct: 0,
+                explanation: 'Autonomous vehicles use multiple sensors (radar, lidar, cameras) fused together for robust perception.'
+            }, {
+                id: 24,
+                category: 'Multimodal Models',
+                question: 'What is the benefit of multimodal models in customer service?',
+                options: [
+                    'Better understanding of user intent through multiple channels (text, voice, etc.)',
+                    'Simpler implementation',
+                    'Lower cost',
+                    'Less data required'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can analyze text, voice, and other inputs to understand user intent more accurately.'
+            }, {
+                id: 25,
+                category: 'Multimodal Models',
+                question: 'What is the concept of "contextual understanding" in multimodal models?',
+                options: [
+                    'Understanding context through multiple data types',
+                    'Understanding only the text',
+                    'Understanding only the image',
+                    'Ignoring context'
+                ],
+                correct: 0,
+                explanation: 'Contextual understanding means the model uses information from multiple modalities to grasp the broader context of a situation.'
+            }, {
+                id: 26,
+                category: 'Multimodal Models',
+                question: 'What is the importance of multimodal learning for robustness?',
+                options: [
+                    'Better generalization across different data types and conditions',
+                    'Less robust performance',
+                    'Increased sensitivity to noise',
+                    'No effect on robustness'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can be more robust because they can compensate for noise or missing data in one modality with information from another.'
+            }, {
+                id: 27,
+                category: 'Multimodal Models',
+                question: 'What is the challenge of aligning multimodal data?',
+                options: [
+                    'Synchronizing data streams (e.g., matching audio to video)',
+                    'Data is always perfectly aligned',
+                    'Alignment is trivial',
+                    'No alignment needed'
+                ],
+                correct: 0,
+                explanation: 'Aligning data from different modalities, such as matching audio with corresponding video frames, is a non-trivial challenge.'
+            }, {
+                id: 28,
+                category: 'Multimodal Models',
+                question: 'What is a typical architecture for multimodal learning?',
+                options: [
+                    'CNN + RNN for processing image and text data',
+                    'Only CNN',
+                    'Only RNN',
+                    'Only Transformer'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models often combine architectures like CNN (for images) and RNN (for sequences) to handle different modalities.'
+            }, {
+                id: 29,
+                category: 'Multimodal Models',
+                question: 'What is the role of data augmentation in multimodal models?',
+                options: [
+                    'To increase data diversity and improve generalization',
+                    'To reduce data size',
+                    'To simplify the model',
+                    'To remove noise'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation generates variations of training data, helping multimodal models generalize better.'
+            }, {
+                id: 30,
+                category: 'Multimodal Models',
+                question: 'What is transfer learning in multimodal models?',
+                options: [
+                    'Leveraging knowledge from one task to improve performance on another',
+                    'Training from scratch',
+                    'Using only one modality',
+                    'Ignoring pre-trained models'
+                ],
+                correct: 0,
+                explanation: 'Transfer learning applies pre-trained models from one domain to related tasks, which is particularly useful in multimodal settings.'
+            },
+
+            // ---- LEARNING TECHNIQUES (31–60) ----
+            {
+                id: 31,
+                category: 'Learning Techniques',
+                question: 'What is early fusion also known as?',
+                options: [
+                    'Feature-level fusion',
+                    'Decision-level fusion',
+                    'Hybrid fusion',
+                    'Late fusion'
+                ],
+                correct: 0,
+                explanation: 'Early fusion is also known as feature-level fusion, as it concatenates features before the model.'
+            }, {
+                id: 32,
+                category: 'Learning Techniques',
+                question: 'What is a key advantage of early fusion?',
+                options: [
+                    'Simplicity and low computational cost',
+                    'Flexibility',
+                    'Temporal preservation',
+                    'Complexity'
+                ],
+                correct: 0,
+                explanation: 'Early fusion is simple to implement and computationally efficient.'
+            }, {
+                id: 33,
+                category: 'Learning Techniques',
+                question: 'What is a key disadvantage of early fusion?',
+                options: [
+                    'Loss of temporal information and high dimensionality',
+                    'High computational cost',
+                    'Complexity',
+                    'Inflexibility'
+                ],
+                correct: 0,
+                explanation: 'Early fusion can lead to high-dimensional feature vectors and may not capture temporal relationships well.'
+            }, {
+                id: 34,
+                category: 'Learning Techniques',
+                question: 'What is late fusion also known as?',
+                options: [
+                    'Decision-level fusion',
+                    'Feature-level fusion',
+                    'Hybrid fusion',
+                    'Early fusion'
+                ],
+                correct: 0,
+                explanation: 'Late fusion is also known as decision-level fusion, as it combines outputs from separate models.'
+            }, {
+                id: 35,
+                category: 'Learning Techniques',
+                question: 'What is a key advantage of late fusion?',
+                options: [
+                    'Flexibility and temporal preservation',
+                    'Simplicity',
+                    'Low computational cost',
+                    'Low dimensionality'
+                ],
+                correct: 0,
+                explanation: 'Late fusion allows each modality to be processed by tailored models and preserves temporal information.'
+            }, {
+                id: 36,
+                category: 'Learning Techniques',
+                question: 'What is a key disadvantage of late fusion?',
+                options: [
+                    'Computational cost and complexity in fusing outputs',
+                    'High dimensionality',
+                    'Loss of temporal information',
+                    'Simplicity'
+                ],
+                correct: 0,
+                explanation: 'Late fusion requires separate models and a fusion mechanism, increasing computational cost and complexity.'
+            }, {
+                id: 37,
+                category: 'Learning Techniques',
+                question: 'What is hybrid fusion?',
+                options: [
+                    'A combination of early and late fusion, often at intermediate layers',
+                    'Only early fusion',
+                    'Only late fusion',
+                    'No fusion'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion combines early and late approaches, often by concatenating features at intermediate layers.'
+            }, {
+                id: 38,
+                category: 'Learning Techniques',
+                question: 'What is a key advantage of hybrid fusion?',
+                options: [
+                    'Versatility and context preservation',
+                    'Simplicity',
+                    'Low computational cost',
+                    'No need for modality-specific models'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion is versatile and can preserve context by leveraging benefits of both early and late fusion.'
+            }, {
+                id: 39,
+                category: 'Learning Techniques',
+                question: 'What is a key disadvantage of hybrid fusion?',
+                options: [
+                    'Complexity and computational cost',
+                    'Simplicity',
+                    'Low dimensionality',
+                    'Loss of temporal information'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion can be complex to implement and may require additional computational resources.'
+            }, {
+                id: 40,
+                category: 'Learning Techniques',
+                question: 'What is an example of a multimodal neural network architecture?',
+                options: [
+                    'CNN + RNN',
+                    'Only CNN',
+                    'Only RNN',
+                    'Only Transformer'
+                ],
+                correct: 0,
+                explanation: 'CNN + RNN is a common architecture where CNN processes images and RNN processes sequences.'
+            }, {
+                id: 41,
+                category: 'Learning Techniques',
+                question: 'What is audio-visual speech recognition an example of?',
+                options: [
+                    'Multisensory integration using multimodal models',
+                    'Unimodal model',
+                    'Only audio processing',
+                    'Only video processing'
+                ],
+                correct: 0,
+                explanation: 'Audio-visual speech recognition integrates audio and video information for improved accuracy.'
+            }, {
+                id: 42,
+                category: 'Learning Techniques',
+                question: 'What is multimodal sentiment analysis?',
+                options: [
+                    'Analyzing sentiment using both text and audio',
+                    'Analyzing sentiment using only text',
+                    'Analyzing sentiment using only audio',
+                    'Analyzing sentiment using only images'
+                ],
+                correct: 0,
+                explanation: 'Multimodal sentiment analysis combines text and audio (tone) to determine sentiment more accurately.'
+            }, {
+                id: 43,
+                category: 'Learning Techniques',
+                question: 'What is the role of data augmentation for images?',
+                options: [
+                    'Applying rotations, flipping, and scaling',
+                    'Applying synonym replacement',
+                    'Applying back translation',
+                    'Applying sentence shuffling'
+                ],
+                correct: 0,
+                explanation: 'Image data augmentation includes geometric transformations like rotation, flipping, and scaling.'
+            }, {
+                id: 44,
+                category: 'Learning Techniques',
+                question: 'What is the role of data augmentation for text?',
+                options: [
+                    'Synonym replacement, back translation, sentence shuffling',
+                    'Rotations and flips',
+                    'Scaling',
+                    'Cropping'
+                ],
+                correct: 0,
+                explanation: 'Text augmentation techniques include synonym replacement, back translation, and sentence shuffling.'
+            }, {
+                id: 45,
+                category: 'Learning Techniques',
+                question: 'What is transfer learning?',
+                options: [
+                    'Leveraging knowledge from one task to improve performance on another',
+                    'Training from scratch',
+                    'Using only one modality',
+                    'Ignoring pre-trained models'
+                ],
+                correct: 0,
+                explanation: 'Transfer learning applies pre-trained models from a source task to a target task, speeding up training and improving performance.'
+            }, {
+                id: 46,
+                category: 'Learning Techniques',
+                question: 'What is fine-tuning in multimodal models?',
+                options: [
+                    'Adjusting pre-trained models to better align with new task requirements',
+                    'Training from scratch',
+                    'Freezing all layers',
+                    'Removing all layers'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning adjusts pre-trained models on new data, often with modality-specific strategies.'
+            }, {
+                id: 47,
+                category: 'Learning Techniques',
+                question: 'What is modality-specific fine-tuning?',
+                options: [
+                    'Adjusting different layers differently for each modality (e.g., few layers for CNN, more for RNN)',
+                    'Fine-tuning all layers equally',
+                    'Not fine-tuning at all',
+                    'Only fine-tuning the final layer'
+                ],
+                correct: 0,
+                explanation: 'Modality-specific fine-tuning applies different levels of adjustment to layers handling different modalities.'
+            }, {
+                id: 48,
+                category: 'Learning Techniques',
+                question: 'What is balanced fine-tuning?',
+                options: [
+                    'Adjusting the model without losing pre-trained features',
+                    'Only fine-tuning one modality',
+                    'Freezing all layers',
+                    'Removing all layers'
+                ],
+                correct: 0,
+                explanation: 'Balanced fine-tuning aims to adapt the model to new tasks while preserving useful features from pre-training.'
+            }, {
+                id: 49,
+                category: 'Learning Techniques',
+                question: 'What is accuracy as an evaluation metric?',
+                options: [
+                    'The proportion of correct predictions',
+                    'The harmonic mean of precision and recall',
+                    'A graphical representation of performance',
+                    'A measure of model complexity'
+                ],
+                correct: 0,
+                explanation: 'Accuracy is the ratio of correct predictions to total predictions, but can be misleading in imbalanced datasets.'
+            }, {
+                id: 50,
+                category: 'Learning Techniques',
+                question: 'What is F1-score?',
+                options: [
+                    'The harmonic mean of precision and recall, useful for imbalanced classes',
+                    'The proportion of correct predictions',
+                    'A graphical representation of performance',
+                    'A measure of model complexity'
+                ],
+                correct: 0,
+                explanation: 'F1-score balances precision and recall, making it suitable for imbalanced classification problems.'
+            }, {
+                id: 51,
+                category: 'Learning Techniques',
+                question: 'What is ROC curve?',
+                options: [
+                    'A graphical representation of classification model performance at various thresholds',
+                    'The proportion of correct predictions',
+                    'The harmonic mean of precision and recall',
+                    'A measure of model complexity'
+                ],
+                correct: 0,
+                explanation: 'ROC curve plots true positive rate vs. false positive rate, helping understand the sensitivity-specificity trade-off.'
+            }, {
+                id: 52,
+                category: 'Learning Techniques',
+                question: 'What is the role of evaluation metrics in multimodal models?',
+                options: [
+                    'To assess performance and compare models',
+                    'To increase model complexity',
+                    'To reduce training time',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Evaluation metrics provide quantitative measures to evaluate and compare model performance.'
+            }, {
+                id: 53,
+                category: 'Learning Techniques',
+                question: 'What is the benefit of using multiple evaluation metrics?',
+                options: [
+                    'To get a comprehensive view of model performance',
+                    'To confuse the model',
+                    'To increase training time',
+                    'To reduce accuracy'
+                ],
+                correct: 0,
+                explanation: 'Using multiple metrics (accuracy, F1, ROC) provides a more complete picture of model strengths and weaknesses.'
+            }, {
+                id: 54,
+                category: 'Learning Techniques',
+                question: 'What is the purpose of data augmentation in multimodal models?',
+                options: [
+                    'To increase data diversity and help the model generalize',
+                    'To reduce data size',
+                    'To simplify the model',
+                    'To remove noise'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation creates variations of training data, making the model more robust to variations.'
+            }, {
+                id: 55,
+                category: 'Learning Techniques',
+                question: 'What is the purpose of transfer learning in multimodal models?',
+                options: [
+                    'To leverage pre-trained models to reduce training time and improve performance',
+                    'To train from scratch',
+                    'To use only one modality',
+                    'To ignore pre-trained models'
+                ],
+                correct: 0,
+                explanation: 'Transfer learning uses knowledge from pre-trained models, accelerating training and improving results.'
+            }, {
+                id: 56,
+                category: 'Learning Techniques',
+                question: 'What is the purpose of fine-tuning in multimodal models?',
+                options: [
+                    'To adapt pre-trained models to new tasks with minimal training',
+                    'To train from scratch',
+                    'To freeze all layers',
+                    'To remove all layers'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning adjusts pre-trained models on new data, often with less training than from scratch.'
+            }, {
+                id: 57,
+                category: 'Learning Techniques',
+                question: 'What is an example of a multimodal transformer?',
+                options: [
+                    'Models like CLIP that process text and images',
+                    'Only text transformers',
+                    'Only image transformers',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'CLIP is a multimodal transformer that jointly processes text and images for tasks like zero-shot classification.'
+            }, {
+                id: 58,
+                category: 'Learning Techniques',
+                question: 'What is the role of autoencoders in multimodal learning?',
+                options: [
+                    'Learning compressed representations of multimodal data',
+                    'Classifying data',
+                    'Generating data',
+                    'Augmenting data'
+                ],
+                correct: 0,
+                explanation: 'Autoencoders can learn joint representations from multiple modalities by reconstructing the inputs.'
+            }, {
+                id: 59,
+                category: 'Learning Techniques',
+                question: 'What is the challenge of high dimensionality in early fusion?',
+                options: [
+                    'The concatenated feature vector can become very large, leading to the curse of dimensionality',
+                    'It improves performance',
+                    'It reduces training time',
+                    'It simplifies the model'
+                ],
+                correct: 0,
+                explanation: 'Concatenating features from multiple modalities can create a very high-dimensional vector, making training difficult.'
+            }, {
+                id: 60,
+                category: 'Learning Techniques',
+                question: 'What is the challenge of complexity in hybrid fusion?',
+                options: [
+                    'It can be difficult to design and implement, requiring careful tuning',
+                    'It is always simple',
+                    'It has no challenges',
+                    'It is computationally cheap'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion combines elements of early and late fusion, increasing implementation complexity.'
+            },
+
+            // ---- ZERO-SHOT LEARNING (61–90) ----
+            {
+                id: 61,
+                category: 'Zero-Shot Learning',
+                question: 'What is Zero-Shot Learning (ZSL)?',
+                options: [
+                    'A machine learning technique that enables models to perform tasks without prior training on those specific tasks',
+                    'A technique that requires training on all classes',
+                    'A technique that only works with labeled data',
+                    'A technique that uses reinforcement learning'
+                ],
+                correct: 0,
+                explanation: 'Zero-Shot Learning allows models to recognize or classify instances of classes not seen during training by leveraging semantic relationships.'
+            }, {
+                id: 62,
+                category: 'Zero-Shot Learning',
+                question: 'How does Zero-Shot Learning differ from traditional supervised learning?',
+                options: [
+                    'ZSL generalizes to unseen classes, while traditional learning trains and tests on the same classes',
+                    'ZSL requires more data',
+                    'ZSL is less accurate',
+                    'ZSL only works with images'
+                ],
+                correct: 0,
+                explanation: 'Traditional learning assumes the same classes in training and testing, while ZSL handles unseen classes.'
+            }, {
+                id: 63,
+                category: 'Zero-Shot Learning',
+                question: 'What enables Zero-Shot Learning to identify unseen classes?',
+                options: [
+                    'Semantic understanding and feature learning that relate unseen classes to known ones',
+                    'Random guessing',
+                    'Using only labeled data',
+                    'Ignoring semantic information'
+                ],
+                correct: 0,
+                explanation: 'ZSL uses semantic embeddings (e.g., attributes, word vectors) to bridge the gap between seen and unseen classes.'
+            }, {
+                id: 64,
+                category: 'Zero-Shot Learning',
+                question: 'What is a key application of Zero-Shot Learning?',
+                options: [
+                    'Identifying rare diseases with limited labeled data',
+                    'Classifying common objects with ample data',
+                    'Only image classification',
+                    'Only text classification'
+                ],
+                correct: 0,
+                explanation: 'ZSL is valuable in healthcare for rare diseases where labeled data is scarce.'
+            }, {
+                id: 65,
+                category: 'Zero-Shot Learning',
+                question: 'What is Generalized Zero-Shot Learning (GZSL)?',
+                options: [
+                    'Adapts to both seen and unseen classes, useful in dynamic environments',
+                    'Only classifies unseen classes',
+                    'Only classifies seen classes',
+                    'No difference from standard ZSL'
+                ],
+                correct: 0,
+                explanation: 'GZSL allows prediction on both seen and unseen classes, more practical for real-world scenarios.'
+            }, {
+                id: 66,
+                category: 'Zero-Shot Learning',
+                question: 'What is Transductive Zero-Shot Learning?',
+                options: [
+                    'Utilizes unlabeled data of unseen classes during training for more informed predictions',
+                    'Does not use any data of unseen classes',
+                    'Only uses labeled data',
+                    'Only uses seen classes'
+                ],
+                correct: 0,
+                explanation: 'Transductive ZSL leverages unlabeled data from unseen classes to improve learning.'
+            }, {
+                id: 67,
+                category: 'Zero-Shot Learning',
+                question: 'What is Inductive Zero-Shot Learning?',
+                options: [
+                    'Lacks access to unseen classes\' unlabeled data during training, relies on semantic relationships',
+                    'Uses unlabeled data of unseen classes',
+                    'Requires all classes to be labeled',
+                    'Only works with seen classes'
+                ],
+                correct: 0,
+                explanation: 'Inductive ZSL does not use unlabeled data from unseen classes; it relies purely on semantic relationships.'
+            }, {
+                id: 68,
+                category: 'Zero-Shot Learning',
+                question: 'What is Constrained Zero-Shot Learning?',
+                options: [
+                    'Restricts predictions to only unseen classes',
+                    'Allows predictions on both seen and unseen classes',
+                    'No restrictions',
+                    'Only seen classes'
+                ],
+                correct: 0,
+                explanation: 'Constrained ZSL forces the model to predict only unseen classes, ignoring seen classes.'
+            }, {
+                id: 69,
+                category: 'Zero-Shot Learning',
+                question: 'What is Unconstrained Zero-Shot Learning?',
+                options: [
+                    'Allows predictions on both seen and unseen classes',
+                    'Restricts to unseen classes only',
+                    'Restricts to seen classes only',
+                    'No predictions'
+                ],
+                correct: 0,
+                explanation: 'Unconstrained ZSL lets the model predict any class, seen or unseen, offering more flexibility.'
+            }, {
+                id: 70,
+                category: 'Zero-Shot Learning',
+                question: 'What is a key advantage of Zero-Shot Learning in NLP?',
+                options: [
+                    'Understanding dialects and low-resource languages without extensive labeled data',
+                    'Requires large labeled datasets',
+                    'Only works for English',
+                    'No advantage'
+                ],
+                correct: 0,
+                explanation: 'ZSL enables models to handle new languages or dialects with minimal labeled data, leveraging cross-lingual transfer.'
+            }, {
+                id: 71,
+                category: 'Zero-Shot Learning',
+                question: 'What is a key application of Zero-Shot Learning in computer vision?',
+                options: [
+                    'Recognizing objects from unseen categories using semantic attributes',
+                    'Only recognizing seen categories',
+                    'Requires training on all categories',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL in vision uses attributes or word embeddings to recognize objects without training examples for those specific categories.'
+            }, {
+                id: 72,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of semantic embeddings in Zero-Shot Learning?',
+                options: [
+                    'To connect seen and unseen classes via shared semantic space',
+                    'To increase model complexity',
+                    'To reduce accuracy',
+                    'To ignore relationships'
+                ],
+                correct: 0,
+                explanation: 'Semantic embeddings (e.g., word vectors) allow the model to relate unseen classes to seen ones based on meaning.'
+            }, {
+                id: 73,
+                category: 'Zero-Shot Learning',
+                question: 'What is the difference between ZSL and transfer learning?',
+                options: [
+                    'ZSL handles unseen classes without retraining; transfer learning requires some data from target task',
+                    'They are the same',
+                    'ZSL requires more data',
+                    'Transfer learning is only for images'
+                ],
+                correct: 0,
+                explanation: 'ZSL directly predicts unseen classes, while transfer learning typically involves fine-tuning on target data.'
+            }, {
+                id: 74,
+                category: 'Zero-Shot Learning',
+                question: 'What is the challenge of domain shift in Zero-Shot Learning?',
+                options: [
+                    'The semantic relationships learned from seen classes may not generalize to unseen classes',
+                    'Domain shift is not a problem',
+                    'Domain shift improves performance',
+                    'Domain shift is easy to handle'
+                ],
+                correct: 0,
+                explanation: 'Domain shift occurs when the source (seen) and target (unseen) domains differ, affecting generalization.'
+            }, {
+                id: 75,
+                category: 'Zero-Shot Learning',
+                question: 'How does Zero-Shot Learning help in wildlife conservation?',
+                options: [
+                    'Identifying endangered species from camera trap images without labeled data for those species',
+                    'Requires labels for all species',
+                    'Only works for common species',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can identify rare or endangered species from images using semantic attributes, aiding conservation efforts.'
+            }, {
+                id: 76,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in fraud detection?',
+                options: [
+                    'Detecting new types of fraud without labeled examples of those types',
+                    'Requires examples of all fraud types',
+                    'Only works for known fraud types',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'ZSL can identify novel fraud patterns by using semantic descriptions of fraud behaviors.'
+            }, {
+                id: 77,
+                category: 'Zero-Shot Learning',
+                question: 'What is Zero-Shot Translation?',
+                options: [
+                    'Translating between language pairs without parallel training data for those pairs',
+                    'Translating only seen languages',
+                    'Requires parallel data',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'Zero-Shot Translation uses multilingual models to translate between languages not seen together during training.'
+            }, {
+                id: 78,
+                category: 'Zero-Shot Learning',
+                question: 'What is the concept of "seen" and "unseen" classes in ZSL?',
+                options: [
+                    'Seen classes are those used in training; unseen classes are not used in training',
+                    'Seen classes are ignored',
+                    'Unseen classes are used in training',
+                    'They are the same'
+                ],
+                correct: 0,
+                explanation: 'Seen classes are part of the training data, while unseen classes are novel and only known through semantic descriptions.'
+            }, {
+                id: 79,
+                category: 'Zero-Shot Learning',
+                question: 'What is the advantage of Generalized Zero-Shot Learning over conventional ZSL?',
+                options: [
+                    'It can handle both seen and unseen classes, making it more practical for real-world applications',
+                    'It only handles unseen classes',
+                    'It only handles seen classes',
+                    'It is less accurate'
+                ],
+                correct: 0,
+                explanation: 'GZSL is more realistic because it does not assume that test data only contains unseen classes.'
+            }, {
+                id: 80,
+                category: 'Zero-Shot Learning',
+                question: 'What is the advantage of Transductive Zero-Shot Learning?',
+                options: [
+                    'It uses unlabeled data from unseen classes to improve predictions',
+                    'It requires no data',
+                    'It only uses labeled data',
+                    'It is less accurate'
+                ],
+                correct: 0,
+                explanation: 'Transductive ZSL leverages unlabeled target data to adapt the model to the unseen class distribution.'
+            }, {
+                id: 81,
+                category: 'Zero-Shot Learning',
+                question: 'What is a disadvantage of Inductive Zero-Shot Learning?',
+                options: [
+                    'It does not use unlabeled data from unseen classes, potentially limiting performance',
+                    'It requires too much data',
+                    'It is too complex',
+                    'It always outperforms others'
+                ],
+                correct: 0,
+                explanation: 'Inductive ZSL relies solely on semantic relationships and cannot adapt using unlabeled target data.'
+            }, {
+                id: 82,
+                category: 'Zero-Shot Learning',
+                question: 'What is the trade-off in Constrained vs. Unconstrained ZSL?',
+                options: [
+                    'Constrained ZSL forces unseen-only predictions, while unconstrained allows both seen and unseen, offering flexibility',
+                    'They are identical',
+                    'Unconstrained is always better',
+                    'Constrained is always better'
+                ],
+                correct: 0,
+                explanation: 'Constrained ZSL focuses on unseen classes, while unconstrained is more flexible but may be biased towards seen classes.'
+            }, {
+                id: 83,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in robotics?',
+                options: [
+                    'Enabling robots to perform new tasks without explicit training by understanding instructions semantically',
+                    'Requires training for each task',
+                    'Only works for simple tasks',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'ZSL allows robots to generalize to new tasks by understanding the semantic meaning of instructions.'
+            }, {
+                id: 84,
+                category: 'Zero-Shot Learning',
+                question: 'What is the connection between Zero-Shot Learning and multimodal models?',
+                options: [
+                    'Multimodal models can provide richer semantic representations for ZSL, improving performance',
+                    'They are unrelated',
+                    'ZSL is a subset of multimodal models',
+                    'Multimodal models cannot use ZSL'
+                ],
+                correct: 0,
+                explanation: 'Combining multiple modalities (e.g., text and images) provides better semantic understanding for zero-shot tasks.'
+            }, {
+                id: 85,
+                category: 'Zero-Shot Learning',
+                question: 'What is an example of Zero-Shot Learning in product recommendation?',
+                options: [
+                    'Recommending new products without having user interaction data for those products',
+                    'Requires interaction data for all products',
+                    'Only recommends seen products',
+                    'No such application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can recommend new products by understanding their descriptions and user preferences from similar products.'
+            }, {
+                id: 86,
+                category: 'Zero-Shot Learning',
+                question: 'What is the challenge of semantic gap in Zero-Shot Learning?',
+                options: [
+                    'The difference between semantic representations and visual features can hinder recognition',
+                    'Semantic gap is not a problem',
+                    'It improves performance',
+                    'It is easy to bridge'
+                ],
+                correct: 0,
+                explanation: 'The semantic gap refers to the mismatch between high-level semantics (attributes) and low-level visual features, making classification difficult.'
+            }, {
+                id: 87,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of attribute-based learning in ZSL?',
+                options: [
+                    'Using attributes (e.g., color, shape) to describe classes and enable recognition without samples',
+                    'Using only class names',
+                    'Ignoring attributes',
+                    'Using random labels'
+                ],
+                correct: 0,
+                explanation: 'Attribute-based learning describes classes with human-understandable properties, which are used for zero-shot classification.'
+            }, {
+                id: 88,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of embedding-based methods in ZSL?',
+                options: [
+                    'Learning a shared embedding space where seen and unseen classes can be compared',
+                    'Ignoring embeddings',
+                    'Using only one-hot vectors',
+                    'Using random projections'
+                ],
+                correct: 0,
+                explanation: 'Embedding-based methods map both images and class descriptions into a common space, enabling comparison.'
+            }, {
+                id: 89,
+                category: 'Zero-Shot Learning',
+                question: 'What is the challenge of hubness in ZSL?',
+                options: [
+                    'Some unseen classes may be overly represented in the embedding space, causing biased predictions',
+                    'Hubness is not a problem',
+                    'Hubness improves accuracy',
+                    'Hubness is easy to correct'
+                ],
+                correct: 0,
+                explanation: 'Hubness refers to the tendency of some points to be nearest neighbors to many others, leading to bias.'
+            }, {
+                id: 90,
+                category: 'Zero-Shot Learning',
+                question: 'What is the purpose of using semantic space in ZSL?',
+                options: [
+                    'To provide a bridge between seen and unseen classes via shared semantics',
+                    'To increase model complexity',
+                    'To reduce accuracy',
+                    'To ignore class relationships'
+                ],
+                correct: 0,
+                explanation: 'Semantic space allows the model to generalize to unseen classes by using the semantics of seen classes.'
+            },
+
+            // ---- APPLICATIONS (91–120) ----
+            {
+                id: 91,
+                category: 'Applications',
+                question: 'How are multimodal models used in healthcare?',
+                options: [
+                    'Combining medical images and patient history for comprehensive diagnosis',
+                    'Only using images',
+                    'Only using patient history',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models integrate imaging and patient data for better diagnosis and treatment planning.'
+            }, {
+                id: 92,
+                category: 'Applications',
+                question: 'How is Zero-Shot Learning applied in healthcare?',
+                options: [
+                    'Identifying rare diseases with limited labeled data by using semantic descriptions',
+                    'Requires extensive labeled data',
+                    'Only works for common diseases',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can diagnose rare diseases by leveraging knowledge from related diseases and semantic descriptions.'
+            }, {
+                id: 93,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in NLP?',
+                options: [
+                    'Sentiment analysis using text and tone, real-time language interpretation',
+                    'Only text-based sentiment analysis',
+                    'Only audio-based sentiment analysis',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal NLP combines text, audio, and other signals for more accurate sentiment analysis and interpretation.'
+            }, {
+                id: 94,
+                category: 'Applications',
+                question: 'What is Zero-Shot Translation in NLP?',
+                options: [
+                    'Translating between languages without parallel training data for that pair',
+                    'Requires parallel data',
+                    'Only translates seen pairs',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'Zero-Shot Translation uses multilingual models to translate between language pairs not seen during training.'
+            }, {
+                id: 95,
+                category: 'Applications',
+                question: 'What are multimodal chatbots?',
+                options: [
+                    'Chatbots that process text, voice, and possibly visual inputs for richer interaction',
+                    'Only text chatbots',
+                    'Only voice chatbots',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'Multimodal chatbots integrate multiple input modalities to understand and respond more naturally.'
+            }, {
+                id: 96,
+                category: 'Applications',
+                question: 'How is Zero-Shot Learning used in retail and e-commerce?',
+                options: [
+                    'Categorizing new products without prior labels using descriptions and images',
+                    'Requires manual labeling of all new products',
+                    'Only works for existing products',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can classify new products by leveraging semantic information and visual features without needing labeled examples.'
+            }, {
+                id: 97,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in autonomous vehicles?',
+                options: [
+                    'Sensor fusion (radar, lidar, cameras) for robust perception',
+                    'Only using cameras',
+                    'Only using radar',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Autonomous vehicles fuse data from multiple sensors to perceive the environment accurately.'
+            }, {
+                id: 98,
+                category: 'Applications',
+                question: 'What is Zero-Shot Learning used for in autonomous vehicles?',
+                options: [
+                    'Detecting unseen obstacles (e.g., animals, debris) without prior training',
+                    'Only detects known obstacles',
+                    'Requires training on all obstacles',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can help identify novel objects on the road by using semantic descriptions and visual features.'
+            }, {
+                id: 99,
+                category: 'Applications',
+                question: 'What are multimodal security systems in smart homes?',
+                options: [
+                    'Using camera feeds and sensor data for enhanced security',
+                    'Only using cameras',
+                    'Only using sensors',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'Smart home security systems integrate video and sensor data to detect intrusions or anomalies.'
+            }, {
+                id: 100,
+                category: 'Applications',
+                question: 'What is Zero-Shot Learning for energy management?',
+                options: [
+                    'Predicting energy usage patterns for new scenarios without historical data',
+                    'Requires historical data for all scenarios',
+                    'Only works for typical usage',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can predict energy consumption in novel conditions by using semantic understanding of factors affecting usage.'
+            }, {
+                id: 101,
+                category: 'Applications',
+                question: 'How are multimodal models used in environmental monitoring?',
+                options: [
+                    'Combining satellite images, sensor data, and historical weather data for weather prediction',
+                    'Only using satellite images',
+                    'Only using sensor data',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models integrate various data sources for more accurate environmental predictions.'
+            }, {
+                id: 102,
+                category: 'Applications',
+                question: 'What is Zero-Shot Learning for rare event prediction?',
+                options: [
+                    'Predicting rare events (e.g., earthquakes) using semantic understanding and limited data',
+                    'Requires abundant data for rare events',
+                    'Only works for common events',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can predict rare events by leveraging semantic descriptions and patterns from related events.'
+            }, {
+                id: 103,
+                category: 'Applications',
+                question: 'What are ethical considerations in multimodal models?',
+                options: [
+                    'Data privacy, bias (cultural, gender, racial), and ethical use',
+                    'No ethical concerns',
+                    'Only privacy',
+                    'Only bias'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models raise significant ethical issues regarding data privacy, bias, and potential misuse.'
+            }, {
+                id: 104,
+                category: 'Applications',
+                question: 'What is the future direction of multimodal models?',
+                options: [
+                    'Integration of emerging technologies and applications in healthcare and sustainability',
+                    'Stagnation',
+                    'Only focusing on text',
+                    'No future'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models are expected to evolve with new sensors and applications in various domains.'
+            }, {
+                id: 105,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in rare disease diagnosis?',
+                options: [
+                    'Diagnosing diseases with very few labeled examples using semantic knowledge',
+                    'Requires many examples',
+                    'Only works for common diseases',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL is particularly valuable for rare diseases where labeled data is scarce, using semantic descriptions for diagnosis.'
+            }, {
+                id: 106,
+                category: 'Applications',
+                question: 'How does Zero-Shot Learning help in wildlife conservation?',
+                options: [
+                    'Identifying endangered species from camera trap images without training on each species',
+                    'Requires training on all species',
+                    'Only works for common species',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can recognize rare or new species by using attributes and semantic information.'
+            }, {
+                id: 107,
+                category: 'Applications',
+                question: 'What is the advantage of multimodal customer behavior analysis?',
+                options: [
+                    'Combining web activity, purchase history, and social media for deeper insights',
+                    'Only using purchase history',
+                    'Only using social media',
+                    'No advantage'
+                ],
+                correct: 0,
+                explanation: 'Multimodal analysis provides a holistic view of customer behavior across channels.'
+            }, {
+                id: 108,
+                category: 'Applications',
+                question: 'What is Zero-Shot Fraud Detection?',
+                options: [
+                    'Detecting novel fraud patterns without prior labels using semantic descriptions of fraud behaviors',
+                    'Requires labeled fraud examples',
+                    'Only detects known fraud types',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can identify new fraud patterns by understanding the semantics of fraudulent activities.'
+            }, {
+                id: 109,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in smart homes?',
+                options: [
+                    'Voice and gesture control, security systems, and energy management',
+                    'Only voice control',
+                    'Only gesture control',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Smart homes use multiple modalities for intuitive control and monitoring.'
+            }, {
+                id: 110,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in adaptive cruise control?',
+                options: [
+                    'Adapting to new traffic patterns and speed limits without retraining',
+                    'Requires retraining for each new pattern',
+                    'Only works for fixed patterns',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can adjust cruise control based on new traffic rules or conditions by semantic understanding.'
+            }, {
+                id: 111,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in product recommendation?',
+                options: [
+                    'Using user behavior, product images, and reviews for personalized recommendations',
+                    'Only using user behavior',
+                    'Only using product images',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal recommendation systems leverage multiple data sources for better personalization.'
+            }, {
+                id: 112,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in content recommendation?',
+                options: [
+                    'Recommending new content categories without user interaction data for those categories',
+                    'Requires interaction data for all categories',
+                    'Only recommends seen categories',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can recommend novel content by understanding its semantic similarity to previously interacted items.'
+            }, {
+                id: 113,
+                category: 'Applications',
+                question: 'How are multimodal models used in sentiment analysis?',
+                options: [
+                    'Combining text and audio tone for more accurate sentiment classification',
+                    'Only using text',
+                    'Only using audio',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal sentiment analysis integrates textual and tonal cues for improved accuracy.'
+            }, {
+                id: 114,
+                category: 'Applications',
+                question: 'What is Zero-Shot Text Classification?',
+                options: [
+                    'Classifying text into categories not seen during training using semantic knowledge',
+                    'Requires training on all categories',
+                    'Only classifies seen categories',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'Zero-shot text classification assigns labels to documents without prior training on those labels, using descriptions.'
+            }, {
+                id: 115,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in traffic sign recognition?',
+                options: [
+                    'Combining visual data and GPS data for robust traffic sign recognition',
+                    'Only using visual data',
+                    'Only using GPS data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal traffic sign recognition uses visual and location information for better accuracy.'
+            }, {
+                id: 116,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in traffic sign recognition?',
+                options: [
+                    'Recognizing new or modified traffic signs without retraining',
+                    'Requires retraining for each new sign',
+                    'Only works for standard signs',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can handle new traffic signs by using semantic descriptions of their meaning.'
+            }, {
+                id: 117,
+                category: 'Applications',
+                question: 'What are multimodal models used for in environmental sustainability?',
+                options: [
+                    'Analyzing satellite and sensor data for climate change monitoring',
+                    'Only analyzing satellite data',
+                    'Only analyzing sensor data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models integrate various data sources for comprehensive environmental analysis.'
+            }, {
+                id: 118,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in environmental monitoring?',
+                options: [
+                    'Predicting rare environmental events without historical data for those events',
+                    'Requires historical data for all events',
+                    'Only works for common events',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can predict novel environmental phenomena by leveraging semantic understanding.'
+            }, {
+                id: 119,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in real-time language interpretation?',
+                options: [
+                    'Combining text, speech, and possibly visual context for accurate interpretation',
+                    'Only using text',
+                    'Only using speech',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal interpretation uses multiple signals for more accurate and context-aware translation.'
+            }, {
+                id: 120,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in real-time language interpretation?',
+                options: [
+                    'Handling new language pairs without prior parallel data for those pairs',
+                    'Requires parallel data for each pair',
+                    'Only works for seen pairs',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'Zero-shot translation enables real-time interpretation for language pairs not seen during training.'
+            },
+
+            // ---- ADDITIONAL QUESTIONS (121–160) ----
+            {
+                id: 121,
+                category: 'Multimodal Models',
+                question: 'What is the concept of "richer data representation" in multimodal learning?',
+                options: [
+                    'Combining multiple modalities provides a more comprehensive representation of the data',
+                    'Using only one modality is richer',
+                    'Multimodal representation is simpler',
+                    'No difference'
+                ],
+                correct: 0,
+                explanation: 'Multimodal learning captures complementary information from different data types, leading to richer representations.'
+            }, {
+                id: 122,
+                category: 'Multimodal Models',
+                question: 'What is the advantage of multimodal models in object recognition?',
+                options: [
+                    'Better performance in varied lighting conditions by combining visual and other sensor data',
+                    'Only works in perfect lighting',
+                    'Worse performance',
+                    'No advantage'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can use additional modalities (e.g., depth, IR) to improve recognition in challenging conditions.'
+            }, {
+                id: 123,
+                category: 'Multimodal Models',
+                question: 'What is the role of multimodal models in virtual assistants?',
+                options: [
+                    'Understanding user intent through text, voice, and context',
+                    'Only understanding text',
+                    'Only understanding voice',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Virtual assistants use multiple modalities to better interpret user requests.'
+            }, {
+                id: 124,
+                category: 'Learning Techniques',
+                question: 'What is the purpose of using evaluation metrics like F1-score?',
+                options: [
+                    'To balance precision and recall, especially for imbalanced datasets',
+                    'To increase accuracy',
+                    'To reduce training time',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'F1-score is the harmonic mean of precision and recall, providing a single measure for imbalanced problems.'
+            }, {
+                id: 125,
+                category: 'Learning Techniques',
+                question: 'What is the ROC curve used for?',
+                options: [
+                    'To visualize the trade-off between true positive rate and false positive rate at various thresholds',
+                    'To measure accuracy',
+                    'To measure F1-score',
+                    'To reduce overfitting'
+                ],
+                correct: 0,
+                explanation: 'ROC curves help select an optimal threshold for classification based on sensitivity and specificity.'
+            }, {
+                id: 126,
+                category: 'Zero-Shot Learning',
+                question: 'What is the difference between Zero-Shot and One-Shot Learning?',
+                options: [
+                    'Zero-Shot uses no examples of unseen classes; One-Shot uses one example per class',
+                    'They are the same',
+                    'One-Shot uses no examples',
+                    'Zero-Shot uses multiple examples'
+                ],
+                correct: 0,
+                explanation: 'Zero-Shot Learning has no training examples for unseen classes, while One-Shot Learning has a single example per class.'
+            }, {
+                id: 127,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in low-resource settings?',
+                options: [
+                    'It enables model performance when labeled data is scarce or expensive',
+                    'It requires abundant labeled data',
+                    'It is not useful in low-resource settings',
+                    'It only works for high-resource languages'
+                ],
+                correct: 0,
+                explanation: 'ZSL is particularly beneficial in low-resource settings where obtaining labeled data is difficult.'
+            }, {
+                id: 128,
+                category: 'Applications',
+                question: 'How are multimodal models used in healthcare for treatment acceleration?',
+                options: [
+                    'By integrating patient data and imaging for quicker diagnosis and treatment planning',
+                    'By slowing down diagnosis',
+                    'By ignoring patient history',
+                    'No effect'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can streamline diagnosis by combining multiple data sources, accelerating treatment.'
+            }, {
+                id: 129,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in medical imaging?',
+                options: [
+                    'Classifying new diseases from images without labeled examples for those diseases',
+                    'Requires labeled examples for all diseases',
+                    'Only works for common diseases',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can identify novel pathologies by using semantic descriptions and features from related diseases.'
+            }, {
+                id: 130,
+                category: 'Multimodal Models',
+                question: 'What is a multimodal autoencoder?',
+                options: [
+                    'An autoencoder that learns joint representations from multiple modalities',
+                    'Only encodes one modality',
+                    'Only decodes one modality',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'Multimodal autoencoders learn a shared latent representation from different data types.'
+            }, {
+                id: 131,
+                category: 'Learning Techniques',
+                question: 'What is the role of transfer learning in multimodal models?',
+                options: [
+                    'To use pre-trained models from one modality to help another, reducing training time',
+                    'To train from scratch',
+                    'To only use one modality',
+                    'To ignore pre-trained models'
+                ],
+                correct: 0,
+                explanation: 'Transfer learning leverages pre-trained models (e.g., image models) to improve other modalities.'
+            }, {
+                id: 132,
+                category: 'Zero-Shot Learning',
+                question: 'What is the concept of "semantic relations" in ZSL?',
+                options: [
+                    'Relationships between classes based on meaning, used to transfer knowledge to unseen classes',
+                    'Relationships based on random similarity',
+                    'No such concept',
+                    'Only visual similarity'
+                ],
+                correct: 0,
+                explanation: 'Semantic relations (e.g., attributes, word vectors) enable knowledge transfer from seen to unseen classes.'
+            }, {
+                id: 133,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in autonomous vehicle sensor fusion?',
+                options: [
+                    'Integrating radar, lidar, and camera data for comprehensive environment perception',
+                    'Using only one sensor',
+                    'Ignoring sensor data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Sensor fusion combines multiple sensors to provide a robust understanding of the vehicle\'s surroundings.'
+            }, {
+                id: 134,
+                category: 'Applications',
+                question: 'What is the role of Zero-Shot Learning in autonomous driving for obstacle detection?',
+                options: [
+                    'Detecting objects not seen during training, such as animals or debris, using semantic attributes',
+                    'Only detects known objects',
+                    'Requires training on all objects',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can identify novel obstacles by their semantic descriptions, enhancing safety.'
+            }, {
+                id: 135,
+                category: 'Multimodal Models',
+                question: 'What is the challenge of computational overhead in multimodal models?',
+                options: [
+                    'Processing multiple modalities requires significant computational resources',
+                    'They are computationally cheap',
+                    'No overhead',
+                    'Only memory overhead'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models often require more memory and compute due to multiple networks and larger data.'
+            }, {
+                id: 136,
+                category: 'Zero-Shot Learning',
+                question: 'What is the challenge of bias in Zero-Shot Learning?',
+                options: [
+                    'Semantic embeddings may contain cultural or gender biases, affecting predictions',
+                    'No bias exists',
+                    'Bias is not a problem',
+                    'Bias improves accuracy'
+                ],
+                correct: 0,
+                explanation: 'Biases in training data or semantic embeddings can lead to unfair or inaccurate predictions.'
+            }, {
+                id: 137,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in environmental monitoring for weather prediction?',
+                options: [
+                    'Combining satellite imagery, sensor networks, and historical data for accurate forecasts',
+                    'Using only satellite images',
+                    'Using only sensor data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal weather prediction integrates diverse data sources for more reliable forecasts.'
+            }, {
+                id: 138,
+                category: 'Learning Techniques',
+                question: 'What is the benefit of hybrid fusion over early or late fusion alone?',
+                options: [
+                    'It combines the advantages of both, offering greater flexibility and performance',
+                    'It is simpler than both',
+                    'It has no advantage',
+                    'It is slower'
+                ],
+                correct: 0,
+                explanation: 'Hybrid fusion balances the trade-offs of early and late fusion, often yielding better results.'
+            }, {
+                id: 139,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in personalized medicine?',
+                options: [
+                    'Predicting treatment responses for new patient profiles without prior examples',
+                    'Requires examples for each patient profile',
+                    'Only works for standard treatments',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can personalize medicine by using semantic descriptions of patient characteristics and treatments.'
+            }, {
+                id: 140,
+                category: 'Multimodal Models',
+                question: 'What is the role of multimodal models in enhancing text summarization?',
+                options: [
+                    'Using images and text to produce more comprehensive summaries',
+                    'Only using text',
+                    'Only using images',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal summarization can generate richer summaries by incorporating visual content.'
+            }, {
+                id: 141,
+                category: 'Zero-Shot Learning',
+                question: 'What is the concept of "zero-shot" in the context of computer vision?',
+                options: [
+                    'Recognizing object categories without any training examples, using attributes or word vectors',
+                    'Requires one example per category',
+                    'Requires many examples',
+                    'No such thing'
+                ],
+                correct: 0,
+                explanation: 'Zero-shot vision recognizes new categories by leveraging semantic descriptions without visual examples.'
+            }, {
+                id: 142,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in smart home energy management?',
+                options: [
+                    'Integrating utility usage data and weather data for optimized energy consumption',
+                    'Using only utility data',
+                    'Using only weather data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal energy management uses multiple data sources to reduce consumption and costs.'
+            }, {
+                id: 143,
+                category: 'Learning Techniques',
+                question: 'What is the purpose of data augmentation in multimodal models?',
+                options: [
+                    'To create variations of multimodal data to improve generalization',
+                    'To reduce data size',
+                    'To simplify the model',
+                    'To remove noise'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation increases the diversity of training data, helping multimodal models generalize better.'
+            }, {
+                id: 144,
+                category: 'Zero-Shot Learning',
+                question: 'What is the challenge of evaluating Zero-Shot Learning models?',
+                options: [
+                    'Standard evaluation metrics may not capture the ability to generalize to unseen classes',
+                    'Evaluation is straightforward',
+                    'No challenges',
+                    'Only accuracy is used'
+                ],
+                correct: 0,
+                explanation: 'Evaluating ZSL requires specific metrics that account for both seen and unseen class performance.'
+            }, {
+                id: 145,
+                category: 'Multimodal Models',
+                question: 'What is the role of multimodal models in retail?',
+                options: [
+                    'Combining user behavior, product images, and reviews for better recommendations',
+                    'Only using user behavior',
+                    'Only using product images',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal retail models leverage multiple data sources to personalize recommendations.'
+            }, {
+                id: 146,
+                category: 'Zero-Shot Learning',
+                question: 'What is the advantage of Zero-Shot Learning in e-commerce?',
+                options: [
+                    'Classifying new product categories without prior labeled data for those categories',
+                    'Requires labeling all new products',
+                    'Only works for existing categories',
+                    'No advantage'
+                ],
+                correct: 0,
+                explanation: 'ZSL can handle new product lines by using descriptions and attributes, reducing manual labeling.'
+            }, {
+                id: 147,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in healthcare for comprehensive diagnosis?',
+                options: [
+                    'Combining imaging, genomics, and clinical data for holistic patient assessment',
+                    'Using only imaging',
+                    'Using only genomics',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal healthcare models integrate diverse patient data for more accurate and complete diagnosis.'
+            }, {
+                id: 148,
+                category: 'Learning Techniques',
+                question: 'What is the role of fine-tuning in multimodal transfer learning?',
+                options: [
+                    'Adjusting pre-trained models to adapt to the target multimodal task',
+                    'Freezing all layers',
+                    'Training from scratch',
+                    'Ignoring pre-trained weights'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning adapts pre-trained models to new multimodal tasks, improving performance with less data.'
+            }, {
+                id: 149,
+                category: 'Zero-Shot Learning',
+                question: 'What is the concept of "generalization" in Zero-Shot Learning?',
+                options: [
+                    'The ability to perform well on unseen classes by leveraging semantic knowledge',
+                    'The ability to fit training data well',
+                    'Overfitting',
+                    'No generalization'
+                ],
+                correct: 0,
+                explanation: 'Generalization in ZSL refers to the model\'s capability to correctly classify classes it has never seen during training.'
+            }, {
+                id: 150,
+                category: 'Multimodal Models',
+                question: 'What is the role of multimodal models in autonomous driving for traffic sign recognition?',
+                options: [
+                    'Combining visual and GPS data for accurate sign recognition',
+                    'Using only visual data',
+                    'Using only GPS data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal traffic sign recognition uses visual and location data for robustness.'
+            }, {
+                id: 151,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in autonomous driving for adaptive cruise control?',
+                options: [
+                    'Adjusting to new traffic patterns and speed limits without retraining',
+                    'Requires retraining for each new pattern',
+                    'Only works for fixed patterns',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can adapt cruise control based on new traffic rules using semantic understanding.'
+            }, {
+                id: 152,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in environmental sustainability?',
+                options: [
+                    'Analyzing satellite and sensor data for climate change monitoring',
+                    'Only analyzing satellite data',
+                    'Only analyzing sensor data',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models integrate various data sources for comprehensive environmental analysis.'
+            }, {
+                id: 153,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in environmental sustainability?',
+                options: [
+                    'Predicting rare environmental events without historical data for those events',
+                    'Requires historical data for all events',
+                    'Only works for common events',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can predict novel environmental phenomena by leveraging semantic understanding.'
+            }, {
+                id: 154,
+                category: 'Multimodal Models',
+                question: 'What is the role of multimodal models in real-time language interpretation?',
+                options: [
+                    'Combining text, speech, and possibly visual context for accurate interpretation',
+                    'Only using text',
+                    'Only using speech',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal interpretation uses multiple signals for more accurate and context-aware translation.'
+            }, {
+                id: 155,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in real-time language interpretation?',
+                options: [
+                    'Handling new language pairs without prior parallel data for those pairs',
+                    'Requires parallel data for each pair',
+                    'Only works for seen pairs',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'Zero-shot translation enables real-time interpretation for language pairs not seen during training.'
+            }, {
+                id: 156,
+                category: 'Multimodal Models',
+                question: 'What is the role of multimodal models in healthcare for treatment acceleration?',
+                options: [
+                    'By integrating patient data and imaging for quicker diagnosis and treatment planning',
+                    'By slowing down diagnosis',
+                    'By ignoring patient history',
+                    'No effect'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models can streamline diagnosis by combining multiple data sources, accelerating treatment.'
+            }, {
+                id: 157,
+                category: 'Zero-Shot Learning',
+                question: 'What is the role of Zero-Shot Learning in medical imaging?',
+                options: [
+                    'Classifying new diseases from images without labeled examples for those diseases',
+                    'Requires labeled examples for all diseases',
+                    'Only works for common diseases',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'ZSL can identify novel pathologies by using semantic descriptions and features from related diseases.'
+            }, {
+                id: 158,
+                category: 'Applications',
+                question: 'What is the role of multimodal models in retail?',
+                options: [
+                    'Combining user behavior, product images, and reviews for better recommendations',
+                    'Only using user behavior',
+                    'Only using product images',
+                    'No role'
+                ],
+                correct: 0,
+                explanation: 'Multimodal retail models leverage multiple data sources to personalize recommendations.'
+            }, {
+                id: 159,
+                category: 'Zero-Shot Learning',
+                question: 'What is the advantage of Zero-Shot Learning in e-commerce?',
+                options: [
+                    'Classifying new product categories without prior labeled data for those categories',
+                    'Requires labeling all new products',
+                    'Only works for existing categories',
+                    'No advantage'
+                ],
+                correct: 0,
+                explanation: 'ZSL can handle new product lines by using descriptions and attributes, reducing manual labeling.'
+            }, {
+                id: 160,
+                category: 'Multimodal Models',
+                question: 'What is the future potential of multimodal models?',
+                options: [
+                    'They will play a crucial role in advancing AI capabilities across healthcare, sustainability, and more',
+                    'They will become obsolete',
+                    'They will only be used for images',
+                    'No future'
+                ],
+                correct: 0,
+                explanation: 'Multimodal models are expected to drive significant advancements in many fields by integrating diverse data.'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(.option-item[data-qindex=""][data-optindex=""]);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(You've answered  of  questions. Please answer all questions to see results.);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

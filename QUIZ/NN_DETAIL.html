@@ -1,0 +1,2745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certified Gen AI Specialist – Advanced Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>Advanced Topics · 150+ questions</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  150+ QUESTIONS — based on newly uploaded documents
+        //  Topics: Overfitting/Underfitting, Gradient Descent variants,
+        //  Learning in NN (forward/backprop, loss functions), Regularization
+        // ============================================================
+        const QUESTIONS = [
+            // ---- OVERFITTING & UNDERFITTING (1–30) ----
+            {
+                id: 1,
+                category: 'Overfitting & Underfitting',
+                question: 'What is overfitting in neural networks?',
+                options: [
+                    'Model learns training data too well, performing poorly on new data',
+                    'Model is too simple to capture patterns',
+                    'Model has too few parameters',
+                    'Model trains too quickly'
+                ],
+                correct: 0,
+                explanation: 'Overfitting occurs when the model memorizes training data and fails to generalize to new, unseen data.'
+            }, {
+                id: 2,
+                category: 'Overfitting & Underfitting',
+                question: 'What is underfitting in neural networks?',
+                options: [
+                    'Model is too simple to grasp complex patterns, leading to subpar performance',
+                    'Model memorizes training data',
+                    'Model has too many parameters',
+                    'Model overfits the validation set'
+                ],
+                correct: 0,
+                explanation: 'Underfitting happens when the model is too simplistic and cannot capture the underlying patterns in the data.'
+            }, {
+                id: 3,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the "Goldilocks Zone" in modeling?',
+                options: [
+                    'The ideal balance where model is neither too simple nor too complex, generalizing well',
+                    'The zone where model overfits',
+                    'The zone where model underfits',
+                    'The zone with maximum training accuracy'
+                ],
+                correct: 0,
+                explanation: 'The Goldilocks Zone is the optimal model complexity that balances bias and variance, leading to good generalization.'
+            }, {
+                id: 4,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following can cause overfitting?',
+                options: [
+                    'Too complex model architecture',
+                    'Too few training samples',
+                    'Presence of noisy data and outliers',
+                    'All of the above'
+                ],
+                correct: 3,
+                explanation: 'Overfitting can be caused by high model complexity, insufficient data, and noisy data that the model memorizes.'
+            }, {
+                id: 5,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following can cause underfitting?',
+                options: [
+                    'Model architecture too simple',
+                    'Too much training data',
+                    'High regularization',
+                    'Both A and C'
+                ],
+                correct: 3,
+                explanation: 'Underfitting can be caused by a too-simple model or excessive regularization that restricts the model from learning patterns.'
+            }, {
+                id: 6,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the purpose of a train-test split?',
+                options: [
+                    'To evaluate model generalization on unseen data',
+                    'To increase training data size',
+                    'To reduce overfitting by using more data',
+                    'To simplify the model'
+                ],
+                correct: 0,
+                explanation: 'The test set is used to evaluate how well the model generalizes to new data, providing an unbiased performance measure.'
+            }, {
+                id: 7,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the role of a validation set in a 3-way split?',
+                options: [
+                    'To tune hyperparameters and guide model selection without touching the test set',
+                    'To evaluate final model performance',
+                    'To augment the training data',
+                    'To replace the test set'
+                ],
+                correct: 0,
+                explanation: 'The validation set is used for hyperparameter tuning and model selection, while the test set is kept untouched for final evaluation.'
+            }, {
+                id: 8,
+                category: 'Overfitting & Underfitting',
+                question: 'What is K-fold cross-validation?',
+                options: [
+                    'A technique that extends train-test split by partitioning data into k folds and rotating training/validation',
+                    'A method to augment data',
+                    'A regularization technique',
+                    'A type of gradient descent'
+                ],
+                correct: 0,
+                explanation: 'K-fold cross-validation splits data into k folds, each used once as validation while the rest are used for training, providing a robust performance estimate.'
+            }, {
+                id: 9,
+                category: 'Overfitting & Underfitting',
+                question: 'What is early stopping?',
+                options: [
+                    'Halting training when validation performance stops improving to prevent overfitting',
+                    'Stopping training after a fixed number of epochs',
+                    'Stopping training when training accuracy reaches 100%',
+                    'Stopping training when the loss is zero'
+                ],
+                correct: 0,
+                explanation: 'Early stopping monitors validation performance and stops training when it starts to degrade, preventing overfitting.'
+            }, {
+                id: 10,
+                category: 'Overfitting & Underfitting',
+                question: 'What is pruning in neural networks?',
+                options: [
+                    'Reducing model complexity by removing neurons or layers to prevent overfitting',
+                    'Adding more layers to increase capacity',
+                    'Increasing training data size',
+                    'Adjusting the learning rate'
+                ],
+                correct: 0,
+                explanation: 'Pruning removes unnecessary neurons or layers to simplify the model and reduce overfitting.'
+            }, {
+                id: 11,
+                category: 'Overfitting & Underfitting',
+                question: 'What is data augmentation?',
+                options: [
+                    'Creating new training samples through transformations like rotation, flipping, and zooming',
+                    'Reducing the dataset size',
+                    'Changing the model architecture',
+                    'Increasing the learning rate'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation generates new training examples from existing ones using transformations, increasing data variety and robustness.'
+            }, {
+                id: 12,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following is a sign of overfitting?',
+                options: [
+                    'High training accuracy, low validation accuracy',
+                    'Low training accuracy, high validation accuracy',
+                    'Both training and validation accuracy are low',
+                    'Both training and validation accuracy are high'
+                ],
+                correct: 0,
+                explanation: 'Overfitting is indicated by a large gap between training accuracy (high) and validation accuracy (low).'
+            }, {
+                id: 13,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following is a sign of underfitting?',
+                options: [
+                    'Low training accuracy and low validation accuracy',
+                    'High training accuracy and low validation accuracy',
+                    'Low training accuracy and high validation accuracy',
+                    'High training accuracy and high validation accuracy'
+                ],
+                correct: 0,
+                explanation: 'Underfitting is indicated by low performance on both training and validation sets, meaning the model is too simple.'
+            }, {
+                id: 14,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the main goal of addressing overfitting and underfitting?',
+                options: [
+                    'To find a model that generalizes well to new data while capturing core patterns',
+                    'To maximize training accuracy',
+                    'To minimize validation accuracy',
+                    'To use the largest model possible'
+                ],
+                correct: 0,
+                explanation: 'The goal is to achieve good generalization, balancing the trade-off between bias and variance.'
+            }, {
+                id: 15,
+                category: 'Overfitting & Underfitting',
+                question: 'Which factor can influence overfitting?',
+                options: [
+                    'Volume and diversity of training data',
+                    'Model architecture complexity',
+                    'Training duration',
+                    'All of the above'
+                ],
+                correct: 3,
+                explanation: 'Overfitting is influenced by data size/diversity, model complexity, and training duration (early stopping strategies).'
+            }, {
+                id: 16,
+                category: 'Overfitting & Underfitting',
+                question: 'What does a validation set help with?',
+                options: [
+                    'Hyperparameter tuning without leaking information to the test set',
+                    'Final evaluation of the model',
+                    'Training the model',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'The validation set is used to guide hyperparameter selection and model tuning, while the test set remains as a final unbiased evaluator.'
+            }, {
+                id: 17,
+                category: 'Overfitting & Underfitting',
+                question: 'In K-fold cross-validation, what is the benefit?',
+                options: [
+                    'More robust performance estimate by using all data for both training and validation',
+                    'It reduces overfitting by increasing data size',
+                    'It simplifies the model',
+                    'It speeds up training'
+                ],
+                correct: 0,
+                explanation: 'K-fold cross-validation provides a robust estimate of model performance by averaging over multiple splits, reducing variance.'
+            }, {
+                id: 18,
+                category: 'Overfitting & Underfitting',
+                question: 'What is "noisy data" and its effect on overfitting?',
+                options: [
+                    'Data with errors or outliers; can cause the model to fit noise, leading to overfitting',
+                    'Data that is perfectly clean; reduces overfitting',
+                    'Data that is too simple; causes underfitting',
+                    'No effect'
+                ],
+                correct: 0,
+                explanation: 'Noisy data can cause the model to learn spurious patterns, increasing the risk of overfitting.'
+            }, {
+                id: 19,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the trade-off in early stopping?',
+                options: [
+                    'Between training duration and performance, halting before overfitting but still achieving good generalization',
+                    'Between training accuracy and validation accuracy',
+                    'Between model complexity and data size',
+                    'Between learning rate and batch size'
+                ],
+                correct: 0,
+                explanation: 'Early stopping balances training duration with generalization performance, stopping when validation performance begins to worsen.'
+            }, {
+                id: 20,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the effect of pruning on model complexity?',
+                options: [
+                    'Reduces complexity by removing neurons or layers, helping to prevent overfitting',
+                    'Increases complexity by adding more layers',
+                    'Does not change complexity',
+                    'Only changes the activation functions'
+                ],
+                correct: 0,
+                explanation: 'Pruning simplifies the model, reducing its capacity and thereby mitigating overfitting.'
+            }, {
+                id: 21,
+                category: 'Overfitting & Underfitting',
+                question: 'Data augmentation is most useful when:',
+                options: [
+                    'Training data is limited, to artificially increase diversity',
+                    'Training data is already very large',
+                    'The model is underfitting',
+                    'The model is too simple'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation is especially valuable when the training dataset is small, as it generates additional varied samples.'
+            }, {
+                id: 22,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following is not a technique to combat overfitting?',
+                options: [
+                    'Increasing model complexity',
+                    'Early stopping',
+                    'Data augmentation',
+                    'Pruning'
+                ],
+                correct: 0,
+                explanation: 'Increasing model complexity would worsen overfitting, not combat it. The others are regularization techniques.'
+            }, {
+                id: 23,
+                category: 'Overfitting & Underfitting',
+                question: 'What does "generalization" mean in machine learning?',
+                options: [
+                    'The model\'s ability to perform well on new, unseen data',
+                    'The model\'s ability to memorize training data',
+                    'The model\'s training speed',
+                    'The model\'s complexity'
+                ],
+                correct: 0,
+                explanation: 'Generalization refers to how well the model applies what it learned to new data outside the training set.'
+            }, {
+                id: 24,
+                category: 'Overfitting & Underfitting',
+                question: 'Why is it important to keep the test set untouched during model development?',
+                options: [
+                    'To provide an unbiased evaluation of the final model\'s performance',
+                    'To use it for hyperparameter tuning',
+                    'To augment the training data',
+                    'To speed up training'
+                ],
+                correct: 0,
+                explanation: 'The test set must be kept separate to give a fair assessment of how the model will perform in the real world.'
+            }, {
+                id: 25,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the bias-variance trade-off?',
+                options: [
+                    'A trade-off between model simplicity (bias) and ability to capture complexity (variance)',
+                    'A trade-off between training speed and accuracy',
+                    'A trade-off between data size and model size',
+                    'A trade-off between depth and width of the network'
+                ],
+                correct: 0,
+                explanation: 'Bias refers to error due to overly simplistic assumptions, while variance refers to error due to sensitivity to small fluctuations in training data.'
+            }, {
+                id: 26,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following describes a model with high bias?',
+                options: [
+                    'It consistently makes errors regardless of training data, underfitting',
+                    'It fits the training data perfectly',
+                    'It has high variance',
+                    'It overfits'
+                ],
+                correct: 0,
+                explanation: 'High bias models are too simple and fail to capture the underlying patterns, leading to underfitting.'
+            }, {
+                id: 27,
+                category: 'Overfitting & Underfitting',
+                question: 'Which of the following describes a model with high variance?',
+                options: [
+                    'It fits the training data very well but performs poorly on new data, overfitting',
+                    'It consistently makes errors',
+                    'It underfits',
+                    'It has low complexity'
+                ],
+                correct: 0,
+                explanation: 'High variance models are overly complex and sensitive to training data, leading to overfitting.'
+            }, {
+                id: 28,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the effect of increasing the amount of training data on overfitting?',
+                options: [
+                    'It generally reduces overfitting by providing more examples',
+                    'It increases overfitting',
+                    'It has no effect',
+                    'It causes underfitting'
+                ],
+                correct: 0,
+                explanation: 'More training data helps the model generalize better and reduces the risk of memorizing noise.'
+            }, {
+                id: 29,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the effect of increasing model complexity on underfitting?',
+                options: [
+                    'It can reduce underfitting by allowing the model to capture more complex patterns',
+                    'It worsens underfitting',
+                    'It has no effect',
+                    'It always causes overfitting'
+                ],
+                correct: 0,
+                explanation: 'Increasing complexity can help a model overcome underfitting, provided it does not go too far and start overfitting.'
+            }, {
+                id: 30,
+                category: 'Overfitting & Underfitting',
+                question: 'What is the main purpose of using regularization techniques?',
+                options: [
+                    'To prevent overfitting and improve model generalization',
+                    'To increase training accuracy',
+                    'To reduce training time',
+                    'To increase model complexity'
+                ],
+                correct: 0,
+                explanation: 'Regularization techniques (L1, L2, dropout) are used to constrain the model and prevent overfitting.'
+            },
+
+            // ---- GRADIENT DESCENT & BACKPROPAGATION (31–65) ----
+            {
+                id: 31,
+                category: 'Gradient Descent',
+                question: 'What is gradient descent?',
+                options: [
+                    'An optimization algorithm used to minimize the error by adjusting weights',
+                    'A type of activation function',
+                    'A neural network architecture',
+                    'A data preprocessing technique'
+                ],
+                correct: 0,
+                explanation: 'Gradient descent is an optimization algorithm that iteratively adjusts weights to minimize the loss function.'
+            }, {
+                id: 32,
+                category: 'Gradient Descent',
+                question: 'What does the "gradient" in gradient descent represent?',
+                options: [
+                    'The direction and magnitude of the steepest increase in error; we move opposite to minimize error',
+                    'The error value itself',
+                    'The learning rate',
+                    'The weight values'
+                ],
+                correct: 0,
+                explanation: 'The gradient points in the direction of the steepest increase in the loss; we move in the opposite direction to decrease loss.'
+            }, {
+                id: 33,
+                category: 'Gradient Descent',
+                question: 'What is the learning rate in gradient descent?',
+                options: [
+                    'A hyperparameter that determines the step size during weight updates',
+                    'The number of epochs',
+                    'The batch size',
+                    'The loss value'
+                ],
+                correct: 0,
+                explanation: 'Learning rate controls how much to adjust weights in response to the gradient; too large may overshoot, too small may slow convergence.'
+            }, {
+                id: 34,
+                category: 'Gradient Descent',
+                question: 'What is backpropagation?',
+                options: [
+                    'An algorithm to compute the gradient of the loss function for each weight using the chain rule',
+                    'A forward pass through the network',
+                    'A regularization technique',
+                    'A data augmentation technique'
+                ],
+                correct: 0,
+                explanation: 'Backpropagation calculates gradients by applying the chain rule of calculus, determining how each weight contributes to the error.'
+            }, {
+                id: 35,
+                category: 'Gradient Descent',
+                question: 'What is the chain rule used for in backpropagation?',
+                options: [
+                    'To compute derivatives of the loss with respect to weights by multiplying gradients layer by layer',
+                    'To update weights directly',
+                    'To initialize weights',
+                    'To choose activation functions'
+                ],
+                correct: 0,
+                explanation: 'The chain rule allows backpropagation to propagate error gradients backward through the network, computing weight gradients.'
+            }, {
+                id: 36,
+                category: 'Gradient Descent',
+                question: 'What is the weight update rule in gradient descent?',
+                options: [
+                    'Δw = -η * ∂L/∂w, where η is learning rate and L is loss',
+                    'Δw = η * ∂L/∂w',
+                    'Δw = -η * L',
+                    'Δw = ∂L/∂w / η'
+                ],
+                correct: 0,
+                explanation: 'Weights are updated by subtracting the gradient times the learning rate, moving towards a minimum of the loss function.'
+            }, {
+                id: 37,
+                category: 'Gradient Descent',
+                question: 'What is the vanishing gradient problem?',
+                options: [
+                    'Gradients become very small, causing weights to stop updating, especially in deep networks',
+                    'Gradients become very large, causing unstable training',
+                    'Gradients oscillate wildly',
+                    'Gradients are zero for all weights'
+                ],
+                correct: 0,
+                explanation: 'The vanishing gradient problem occurs when gradients shrink as they are backpropagated through many layers, hindering learning.'
+            }, {
+                id: 38,
+                category: 'Gradient Descent',
+                question: 'What is the exploding gradient problem?',
+                options: [
+                    'Gradients become very large, causing drastic weight updates and training instability',
+                    'Gradients become very small',
+                    'Gradients are constant',
+                    'Gradients disappear entirely'
+                ],
+                correct: 0,
+                explanation: 'Exploding gradients occur when gradients grow exponentially, leading to large updates and divergence.'
+            }, {
+                id: 39,
+                category: 'Gradient Descent',
+                question: 'What is Stochastic Gradient Descent (SGD)?',
+                options: [
+                    'Updates weights using one training example at a time',
+                    'Updates weights using the entire dataset',
+                    'Updates weights using a subset of data',
+                    'Updates weights without gradients'
+                ],
+                correct: 0,
+                explanation: 'SGD uses a single random sample to compute the gradient and update weights, introducing noise that can help escape local minima.'
+            }, {
+                id: 40,
+                category: 'Gradient Descent',
+                question: 'What is Mini-batch Gradient Descent?',
+                options: [
+                    'Updates weights using a subset (mini-batch) of training examples',
+                    'Updates weights using one example at a time',
+                    'Updates weights using the entire dataset',
+                    'Updates weights using only the validation set'
+                ],
+                correct: 0,
+                explanation: 'Mini-batch GD uses a small batch of examples, balancing the efficiency of batch GD and the noise of SGD.'
+            }, {
+                id: 41,
+                category: 'Gradient Descent',
+                question: 'What is the role of momentum in gradient descent?',
+                options: [
+                    'It incorporates the direction of previous gradients to accelerate convergence and smooth updates',
+                    'It reduces the learning rate',
+                    'It increases the batch size',
+                    'It adds noise to gradients'
+                ],
+                correct: 0,
+                explanation: 'Momentum accumulates a moving average of past gradients, helping to navigate ravines and accelerate convergence.'
+            }, {
+                id: 42,
+                category: 'Gradient Descent',
+                question: 'What is the error surface in gradient descent?',
+                options: [
+                    'A representation of how the error changes with model parameters (weights)',
+                    'The training data points',
+                    'The validation curve',
+                    'The loss function plot over epochs'
+                ],
+                correct: 0,
+                explanation: 'The error surface shows the loss landscape as a function of weights, with valleys representing minima.'
+            }, {
+                id: 43,
+                category: 'Gradient Descent',
+                question: 'What are local minima in gradient descent?',
+                options: [
+                    'Points on the error surface where the gradient is zero but not the global minimum, potentially trapping the algorithm',
+                    'The global minimum of the loss',
+                    'Points with maximum error',
+                    'Points with infinite error'
+                ],
+                correct: 0,
+                explanation: 'Local minima are suboptimal solutions that the gradient descent can get stuck in, missing the global minimum.'
+            }, {
+                id: 44,
+                category: 'Gradient Descent',
+                question: 'What are saddle points?',
+                options: [
+                    'Points on the error surface where the gradient is zero but not a minimum, causing slow movement',
+                    'Points of maximum error',
+                    'Points of minimum error',
+                    'Points where the gradient is undefined'
+                ],
+                correct: 0,
+                explanation: 'Saddle points have zero gradient in some directions but are not minima, making optimization challenging.'
+            }, {
+                id: 45,
+                category: 'Gradient Descent',
+                question: 'What is the difference between backpropagation and gradient descent?',
+                options: [
+                    'Backpropagation computes gradients; gradient descent uses those gradients to update weights',
+                    'They are the same',
+                    'Gradient descent computes gradients; backpropagation updates weights',
+                    'Backpropagation is a type of gradient descent'
+                ],
+                correct: 0,
+                explanation: 'Backpropagation calculates gradients, and gradient descent is the optimization algorithm that applies those gradients to update weights.'
+            }, {
+                id: 46,
+                category: 'Gradient Descent',
+                question: 'What is Adagrad?',
+                options: [
+                    'An adaptive learning rate algorithm that adjusts learning rates per parameter based on past gradients',
+                    'A type of activation function',
+                    'A regularization technique',
+                    'A data augmentation method'
+                ],
+                correct: 0,
+                explanation: 'Adagrad adapts the learning rate for each parameter based on the accumulation of squared gradients, suitable for sparse data.'
+            }, {
+                id: 47,
+                category: 'Gradient Descent',
+                question: 'What is a drawback of Adagrad?',
+                options: [
+                    'Learning rates can become very small, leading to premature convergence',
+                    'It is too sensitive to learning rate',
+                    'It does not work for deep networks',
+                    'It requires too much memory'
+                ],
+                correct: 0,
+                explanation: 'Adagrad accumulates squared gradients, causing learning rates to diminish over time, which can halt learning.'
+            }, {
+                id: 48,
+                category: 'Gradient Descent',
+                question: 'What is RMSprop?',
+                options: [
+                    'An optimization algorithm that uses a moving average of squared gradients to adapt learning rates, overcoming Adagrad\'s diminishing rates',
+                    'A type of activation function',
+                    'A regularization technique',
+                    'A data augmentation method'
+                ],
+                correct: 0,
+                explanation: 'RMSprop uses an exponentially decaying average of squared gradients to keep learning rates adaptive without diminishing.'
+            }, {
+                id: 49,
+                category: 'Gradient Descent',
+                question: 'What is Adam?',
+                options: [
+                    'An optimization algorithm combining Momentum and RMSprop, with bias corrections and adaptive learning rates',
+                    'A type of activation function',
+                    'A regularization technique',
+                    'A data augmentation method'
+                ],
+                correct: 0,
+                explanation: 'Adam maintains moving averages of both gradients and squared gradients, combining the benefits of Momentum and RMSprop.'
+            }, {
+                id: 50,
+                category: 'Gradient Descent',
+                question: 'Which of the following is NOT a variant of gradient descent?',
+                options: [
+                    'Stochastic Gradient Descent',
+                    'Mini-batch Gradient Descent',
+                    'Batch Gradient Descent',
+                    'Adaline'
+                ],
+                correct: 3,
+                explanation: 'Adaline is an early neural network model, not a gradient descent variant. The others are GD variants.'
+            }, {
+                id: 51,
+                category: 'Gradient Descent',
+                question: 'What is the effect of a learning rate that is too high?',
+                options: [
+                    'It may overshoot the minimum and cause divergence',
+                    'It converges slowly',
+                    'It gets stuck in local minima',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'A high learning rate can cause the optimizer to jump over the minimum, leading to oscillations or divergence.'
+            }, {
+                id: 52,
+                category: 'Gradient Descent',
+                question: 'What is the effect of a learning rate that is too low?',
+                options: [
+                    'It may converge very slowly or get stuck in local minima',
+                    'It causes divergence',
+                    'It speeds up training',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'A low learning rate makes tiny updates, leading to slow convergence and possible trapping in suboptimal minima.'
+            }, {
+                id: 53,
+                category: 'Gradient Descent',
+                question: 'What is the purpose of bias correction in Adam?',
+                options: [
+                    'To correct the initialization bias of moving averages, especially early in training',
+                    'To add a bias term to the weights',
+                    'To increase the learning rate',
+                    'To reduce overfitting'
+                ],
+                correct: 0,
+                explanation: 'Adam includes bias correction to adjust the moving averages early in training when they are initialized to zero.'
+            }, {
+                id: 54,
+                category: 'Gradient Descent',
+                question: 'What is the "error" in gradient descent context?',
+                options: [
+                    'The difference between predicted and actual output',
+                    'The learning rate',
+                    'The number of epochs',
+                    'The batch size'
+                ],
+                correct: 0,
+                explanation: 'Error is the difference between the model\'s prediction and the true target, which the optimization aims to minimize.'
+            }, {
+                id: 55,
+                category: 'Gradient Descent',
+                question: 'What is the role of partial derivatives in backpropagation?',
+                options: [
+                    'They measure the rate of change of the loss with respect to each weight, allowing gradient computation',
+                    'They define the activation function',
+                    'They initialize weights',
+                    'They compute the error directly'
+                ],
+                correct: 0,
+                explanation: 'Partial derivatives of the loss with respect to weights are computed to determine how to adjust each weight to reduce error.'
+            }, {
+                id: 56,
+                category: 'Gradient Descent',
+                question: 'What is the "slope of the hill" in gradient descent analogy?',
+                options: [
+                    'The gradient indicating the direction of steepest ascent; we go opposite to descend',
+                    'The learning rate',
+                    'The error surface',
+                    'The activation function'
+                ],
+                correct: 0,
+                explanation: 'The gradient is like the slope of a hill; we move downhill (negative gradient) to minimize the error.'
+            }, {
+                id: 57,
+                category: 'Gradient Descent',
+                question: 'What is the purpose of weight adjustment in gradient descent?',
+                options: [
+                    'To iteratively reduce the error by moving weights in the direction of negative gradient',
+                    'To increase the error for better accuracy',
+                    'To randomize weights',
+                    'To keep weights constant'
+                ],
+                correct: 0,
+                explanation: 'Weight adjustments are made to reduce the loss, using the gradient to guide the updates.'
+            }, {
+                id: 58,
+                category: 'Gradient Descent',
+                question: 'What is the concept of "exploration vs. exploitation" in gradient descent?',
+                options: [
+                    'Not directly applicable; gradient descent uses deterministic updates, but learning rate and momentum can help escape local minima',
+                    'It\'s a reinforcement learning concept',
+                    'It refers to choosing between SGD and batch GD',
+                    'It refers to data augmentation'
+                ],
+                correct: 0,
+                explanation: 'While not a standard term for GD, momentum and adaptive methods help navigate the loss landscape, avoiding poor minima.'
+            }, {
+                id: 59,
+                category: 'Gradient Descent',
+                question: 'What is the effect of batch size on gradient descent?',
+                options: [
+                    'Smaller batches provide noisier gradients but can help escape local minima; larger batches give more stable gradients but are computationally heavy',
+                    'Batch size has no effect',
+                    'Larger batches always perform better',
+                    'Smaller batches always converge faster'
+                ],
+                correct: 0,
+                explanation: 'Batch size affects the gradient estimate: small batches introduce noise that may help generalization, while large batches provide more accurate but expensive updates.'
+            }, {
+                id: 60,
+                category: 'Gradient Descent',
+                question: 'What is the concept of "convergence" in gradient descent?',
+                options: [
+                    'The point where the algorithm reaches a minimum and further updates do not significantly reduce loss',
+                    'The initial starting point of optimization',
+                    'The learning rate decay',
+                    'The number of epochs'
+                ],
+                correct: 0,
+                explanation: 'Convergence occurs when the loss stabilizes, indicating the optimizer has found a (local) minimum.'
+            }, {
+                id: 61,
+                category: 'Gradient Descent',
+                question: 'What is the "loss landscape" in neural network training?',
+                options: [
+                    'The surface defined by the loss function over the parameter space, which is optimized',
+                    'The training data distribution',
+                    'The validation curve',
+                    'The activation function plot'
+                ],
+                correct: 0,
+                explanation: 'The loss landscape is the high-dimensional surface of the loss function, which gradient descent navigates to find minima.'
+            }, {
+                id: 62,
+                category: 'Gradient Descent',
+                question: 'What is the purpose of using optimizers like Adam, RMSprop?',
+                options: [
+                    'To adapt the learning rate per parameter, improving convergence speed and stability',
+                    'To increase the model complexity',
+                    'To reduce the training data',
+                    'To change the activation functions'
+                ],
+                correct: 0,
+                explanation: 'Adaptive optimizers adjust learning rates dynamically based on gradient history, leading to more efficient training.'
+            }, {
+                id: 63,
+                category: 'Gradient Descent',
+                question: 'What is the mathematical expression for weight update using gradient descent?',
+                options: [
+                    'w_new = w_old - η * ∂L/∂w',
+                    'w_new = w_old + η * ∂L/∂w',
+                    'w_new = w_old * ∂L/∂w',
+                    'w_new = w_old / η'
+                ],
+                correct: 0,
+                explanation: 'The standard update subtracts the gradient multiplied by the learning rate from the current weight.'
+            }, {
+                id: 64,
+                category: 'Gradient Descent',
+                question: 'What is the role of the loss function in gradient descent?',
+                options: [
+                    'It provides a measure of error to be minimized, serving as the objective function',
+                    'It determines the learning rate',
+                    'It initializes weights',
+                    'It selects the activation function'
+                ],
+                correct: 0,
+                explanation: 'The loss function quantifies the error, and gradient descent aims to minimize this function by adjusting weights.'
+            }, {
+                id: 65,
+                category: 'Gradient Descent',
+                question: 'What is the difference between Batch Gradient Descent and SGD?',
+                options: [
+                    'Batch GD uses all data to compute gradient; SGD uses one sample',
+                    'Batch GD uses one sample; SGD uses all data',
+                    'Batch GD is faster',
+                    'SGD is more accurate'
+                ],
+                correct: 0,
+                explanation: 'Batch GD computes the gradient from the entire dataset, while SGD uses a single random sample, making it faster but noisier.'
+            },
+
+            // ---- LEARNING IN NEURAL NETWORKS (66–100) ----
+            {
+                id: 66,
+                category: 'Learning in NN',
+                question: 'What is learning in neural networks?',
+                options: [
+                    'The iterative process of adjusting weights based on errors to improve performance',
+                    'The forward pass of data',
+                    'The initialization of weights',
+                    'The selection of activation functions'
+                ],
+                correct: 0,
+                explanation: 'Learning involves updating weights using training data and error feedback to minimize the loss.'
+            }, {
+                id: 67,
+                category: 'Learning in NN',
+                question: 'What is forward propagation?',
+                options: [
+                    'The process of passing input data through the network from input to output layer to produce a prediction',
+                    'The backward pass to compute gradients',
+                    'The weight update step',
+                    'The loss calculation'
+                ],
+                correct: 0,
+                explanation: 'Forward propagation computes the output of the network by applying weights, biases, and activations layer by layer.'
+            }, {
+                id: 68,
+                category: 'Learning in NN',
+                question: 'What is the error (loss) function?',
+                options: [
+                    'A function that measures the difference between predicted and actual outputs, used to guide learning',
+                    'The activation function',
+                    'The weight initialization method',
+                    'The learning rate'
+                ],
+                correct: 0,
+                explanation: 'The loss function quantifies how far the predictions are from the targets, providing a signal for weight updates.'
+            }, {
+                id: 69,
+                category: 'Learning in NN',
+                question: 'What is Mean Squared Error (MSE)?',
+                options: [
+                    'A loss function that averages the squared differences between predicted and actual values, used for regression',
+                    'A loss function for classification',
+                    'A regularization technique',
+                    'An activation function'
+                ],
+                correct: 0,
+                explanation: 'MSE is the average of squared errors, commonly used for regression problems because it penalizes large errors heavily.'
+            }, {
+                id: 70,
+                category: 'Learning in NN',
+                question: 'What is Cross-Entropy loss?',
+                options: [
+                    'A loss function used for classification that measures the difference between predicted probabilities and true labels',
+                    'A loss function for regression',
+                    'A regularization technique',
+                    'An activation function'
+                ],
+                correct: 0,
+                explanation: 'Cross-entropy loss is used for classification, penalizing wrong classifications heavily, especially for multi-class problems.'
+            }, {
+                id: 71,
+                category: 'Learning in NN',
+                question: 'What is the backward pass?',
+                options: [
+                    'The process of propagating error gradients backward through the network to compute weight updates',
+                    'The forward pass',
+                    'The loss calculation',
+                    'The data preprocessing'
+                ],
+                correct: 0,
+                explanation: 'The backward pass (backpropagation) computes gradients of the loss with respect to weights, enabling optimization.'
+            }, {
+                id: 72,
+                category: 'Learning in NN',
+                question: 'What is the purpose of optimization in neural network learning?',
+                options: [
+                    'To find the set of weights that minimizes the loss function',
+                    'To increase the loss function',
+                    'To randomize weights',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Optimization algorithms adjust weights to minimize the loss, improving model accuracy.'
+            }, {
+                id: 73,
+                category: 'Learning in NN',
+                question: 'What is the formula for error in a single output?',
+                options: [
+                    'Error = Actual - Predicted',
+                    'Error = Predicted - Actual',
+                    'Error = Actual / Predicted',
+                    'Error = Predicted * Actual'
+                ],
+                correct: 0,
+                explanation: 'Error is defined as the difference between the true value and the predicted value (actual - predicted).'
+            }, {
+                id: 74,
+                category: 'Learning in NN',
+                question: 'Why do we minimize the error in neural networks?',
+                options: [
+                    'To make the model\'s predictions as close to the actual values as possible',
+                    'To increase the error for better generalization',
+                    'To make training slower',
+                    'To reduce data size'
+                ],
+                correct: 0,
+                explanation: 'Minimizing error ensures that the model accurately predicts the target values for training data, and ideally generalizes to new data.'
+            }, {
+                id: 75,
+                category: 'Learning in NN',
+                question: 'What does MSE emphasize?',
+                options: [
+                    'Larger errors more than smaller ones due to squaring',
+                    'All errors equally',
+                    'Smaller errors more',
+                    'It ignores errors'
+                ],
+                correct: 0,
+                explanation: 'Because errors are squared, MSE gives higher weight to larger errors, making it sensitive to outliers.'
+            }, {
+                id: 76,
+                category: 'Learning in NN',
+                question: 'What is the formula for MSE?',
+                options: [
+                    'MSE = (1/n) * Σ(y_i - ŷ_i)²',
+                    'MSE = (1/n) * Σ|y_i - ŷ_i|',
+                    'MSE = (1/n) * Σ(y_i - ŷ_i)',
+                    'MSE = Σ(y_i - ŷ_i)²'
+                ],
+                correct: 0,
+                explanation: 'MSE is the mean of squared differences between actual and predicted values.'
+            }, {
+                id: 77,
+                category: 'Learning in NN',
+                question: 'What is the role of activation functions in learning?',
+                options: [
+                    'They introduce non-linearity, allowing the network to learn complex patterns',
+                    'They compute the error',
+                    'They update weights',
+                    'They store data'
+                ],
+                correct: 0,
+                explanation: 'Activation functions enable neural networks to learn non-linear relationships, essential for complex tasks.'
+            }, {
+                id: 78,
+                category: 'Learning in NN',
+                question: 'What is the relationship between forward pass and loss function?',
+                options: [
+                    'The forward pass produces predictions, and the loss function compares them to targets to compute error',
+                    'The loss function is used in the forward pass',
+                    'The forward pass adjusts weights',
+                    'There is no relationship'
+                ],
+                correct: 0,
+                explanation: 'Forward pass computes predictions, which are then used by the loss function to measure error.'
+            }, {
+                id: 79,
+                category: 'Learning in NN',
+                question: 'What is the purpose of the backward pass?',
+                options: [
+                    'To compute gradients of the loss with respect to weights for updating',
+                    'To compute predictions',
+                    'To augment data',
+                    'To initialize weights'
+                ],
+                correct: 0,
+                explanation: 'Backward pass calculates gradients that indicate how to adjust weights to reduce error.'
+            }, {
+                id: 80,
+                category: 'Learning in NN',
+                question: 'What is the "error surface" in the context of learning?',
+                options: [
+                    'The plot of loss vs. model parameters, which optimization navigates',
+                    'The training data plot',
+                    'The validation curve',
+                    'The activation function plot'
+                ],
+                correct: 0,
+                explanation: 'The error surface shows how the loss changes with weights; the goal is to find the minimum.'
+            }, {
+                id: 81,
+                category: 'Learning in NN',
+                question: 'What is the learning rate in the context of learning?',
+                options: [
+                    'A hyperparameter that controls the step size during weight updates',
+                    'The number of epochs',
+                    'The batch size',
+                    'The loss value'
+                ],
+                correct: 0,
+                explanation: 'Learning rate determines how much to adjust weights based on the gradient.'
+            }, {
+                id: 82,
+                category: 'Learning in NN',
+                question: 'What is an epoch in neural network training?',
+                options: [
+                    'One complete pass of the entire training dataset through the network',
+                    'A single forward pass',
+                    'A single backward pass',
+                    'A single batch'
+                ],
+                correct: 0,
+                explanation: 'An epoch consists of one full cycle through all training samples, including forward and backward passes.'
+            }, {
+                id: 83,
+                category: 'Learning in NN',
+                question: 'What is the role of weights and biases in learning?',
+                options: [
+                    'They are the parameters adjusted during training to minimize the loss',
+                    'They store the training data',
+                    'They are fixed throughout training',
+                    'They determine the activation function'
+                ],
+                correct: 0,
+                explanation: 'Weights and biases are learnable parameters that are updated to improve the model\'s predictions.'
+            }, {
+                id: 84,
+                category: 'Learning in NN',
+                question: 'What is the "optimization" in neural network learning?',
+                options: [
+                    'The process of finding the set of parameters that minimizes the loss function',
+                    'The forward pass',
+                    'The backward pass',
+                    'Data preprocessing'
+                ],
+                correct: 0,
+                explanation: 'Optimization refers to the algorithm (e.g., gradient descent) that adjusts parameters to minimize loss.'
+            }, {
+                id: 85,
+                category: 'Learning in NN',
+                question: 'What is the difference between error and loss?',
+                options: [
+                    'Error is the difference per sample; loss is the average error over a batch (or the function)',
+                    'They are the same',
+                    'Error is the loss function',
+                    'Loss is per sample, error is average'
+                ],
+                correct: 0,
+                explanation: 'Error is typically the difference for a single sample, while loss is the aggregated value over a batch or the entire dataset.'
+            }, {
+                id: 86,
+                category: 'Learning in NN',
+                question: 'What is the purpose of using a loss function?',
+                options: [
+                    'To provide a scalar measure of model performance to guide learning',
+                    'To compute the forward pass',
+                    'To initialize weights',
+                    'To select activation functions'
+                ],
+                correct: 0,
+                explanation: 'Loss functions quantify how well the model is performing, providing a signal for optimization.'
+            }, {
+                id: 87,
+                category: 'Learning in NN',
+                question: 'What is the cross-entropy loss formula for binary classification?',
+                options: [
+                    'Loss = -[y log(ŷ) + (1-y) log(1-ŷ)]',
+                    'Loss = (y - ŷ)²',
+                    'Loss = |y - ŷ|',
+                    'Loss = -y log(ŷ)'
+                ],
+                correct: 0,
+                explanation: 'Binary cross-entropy is the standard loss for binary classification, measuring the divergence between predicted probability and true label.'
+            }, {
+                id: 88,
+                category: 'Learning in NN',
+                question: 'What is the forward pass also known as?',
+                options: [
+                    'Forward propagation',
+                    'Backpropagation',
+                    'Gradient descent',
+                    'Inference'
+                ],
+                correct: 0,
+                explanation: 'The forward pass is also called forward propagation, where data flows from input to output.'
+            }, {
+                id: 89,
+                category: 'Learning in NN',
+                question: 'What is the backward pass also known as?',
+                options: [
+                    'Backpropagation',
+                    'Forward propagation',
+                    'Gradient descent',
+                    'Inference'
+                ],
+                correct: 0,
+                explanation: 'The backward pass is backpropagation, used to compute gradients.'
+            }, {
+                id: 90,
+                category: 'Learning in NN',
+                question: 'What is the main goal of learning in neural networks?',
+                options: [
+                    'To find a set of weights that makes the model produce accurate predictions on unseen data',
+                    'To memorize the training data',
+                    'To minimize training time',
+                    'To maximize model complexity'
+                ],
+                correct: 0,
+                explanation: 'The ultimate goal is generalization: accurate predictions on new, unseen data.'
+            }, {
+                id: 91,
+                category: 'Learning in NN',
+                question: 'What is the role of the loss function in backpropagation?',
+                options: [
+                    'It provides the error signal that is backpropagated to compute gradients',
+                    'It determines the learning rate',
+                    'It initializes weights',
+                    'It chooses the activation function'
+                ],
+                correct: 0,
+                explanation: 'The loss value is used to compute gradients, which are then propagated backward to update weights.'
+            }, {
+                id: 92,
+                category: 'Learning in NN',
+                question: 'What is the "gradient" in the context of learning?',
+                options: [
+                    'A vector of partial derivatives of the loss with respect to each weight, indicating the direction of steepest ascent',
+                    'The error value',
+                    'The learning rate',
+                    'The weight value'
+                ],
+                correct: 0,
+                explanation: 'The gradient points towards increasing loss; we move in the opposite direction to minimize it.'
+            }, {
+                id: 93,
+                category: 'Learning in NN',
+                question: 'What is the main challenge in learning deep neural networks?',
+                options: [
+                    'Vanishing/exploding gradients, local minima, and slow convergence',
+                    'Too much data',
+                    'Too few layers',
+                    'Activation functions being too simple'
+                ],
+                correct: 0,
+                explanation: 'Deep networks face challenges like vanishing gradients, local minima, and optimization difficulties.'
+            }, {
+                id: 94,
+                category: 'Learning in NN',
+                question: 'What is the effect of using a large learning rate on learning?',
+                options: [
+                    'It can cause overshooting and divergence, preventing convergence',
+                    'It speeds up convergence always',
+                    'It has no effect',
+                    'It reduces overfitting'
+                ],
+                correct: 0,
+                explanation: 'A learning rate that is too large can cause the optimizer to jump over the minimum, leading to erratic updates.'
+            }, {
+                id: 95,
+                category: 'Learning in NN',
+                question: 'What is the effect of using a small learning rate on learning?',
+                options: [
+                    'It can cause slow convergence and getting stuck in local minima',
+                    'It speeds up convergence',
+                    'It causes divergence',
+                    'It reduces underfitting'
+                ],
+                correct: 0,
+                explanation: 'A very small learning rate leads to tiny updates, prolonging training and potentially getting trapped in poor minima.'
+            }, {
+                id: 96,
+                category: 'Learning in NN',
+                question: 'What is the "iteration" in the context of training?',
+                options: [
+                    'One update of the weights using a batch of data',
+                    'One full pass through the dataset',
+                    'One forward pass',
+                    'One backward pass'
+                ],
+                correct: 0,
+                explanation: 'An iteration refers to a single weight update step, often using a mini-batch of data.'
+            }, {
+                id: 97,
+                category: 'Learning in NN',
+                question: 'What is the relationship between forward pass and backward pass?',
+                options: [
+                    'Forward pass computes predictions; backward pass computes gradients based on the loss',
+                    'They are independent',
+                    'Forward pass computes gradients; backward pass computes predictions',
+                    'They are the same'
+                ],
+                correct: 0,
+                explanation: 'The forward pass generates predictions, which are used to compute loss, and the backward pass computes gradients to update weights.'
+            }, {
+                id: 98,
+                category: 'Learning in NN',
+                question: 'What is the purpose of using non-linear activation functions in learning?',
+                options: [
+                    'To enable the network to learn complex, non-linear relationships between inputs and outputs',
+                    'To make the network linear',
+                    'To reduce computation',
+                    'To simplify the model'
+                ],
+                correct: 0,
+                explanation: 'Non-linear activations are essential for learning complex patterns; without them, the network would just be a linear model.'
+            }, {
+                id: 99,
+                category: 'Learning in NN',
+                question: 'What is the "learning" in neural networks often described as?',
+                options: [
+                    'An iterative process of error minimization through weight adjustments',
+                    'A one-time calculation',
+                    'A data storage process',
+                    'A random process'
+                ],
+                correct: 0,
+                explanation: 'Learning is iterative, involving multiple epochs and updates to gradually reduce error.'
+            }, {
+                id: 100,
+                category: 'Learning in NN',
+                question: 'What is the role of the optimizer in learning?',
+                options: [
+                    'To apply the gradients to update weights, often with adaptive learning rates',
+                    'To compute gradients',
+                    'To compute loss',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'The optimizer uses gradients to update weights, and variants like Adam adjust learning rates dynamically.'
+            },
+
+            // ---- REGULARIZATION (101–130) ----
+            {
+                id: 101,
+                category: 'Regularization',
+                question: 'What is regularization in machine learning?',
+                options: [
+                    'Techniques used to prevent overfitting by adding penalties or constraints to the model',
+                    'Techniques to increase model complexity',
+                    'Techniques to increase training data',
+                    'Techniques to speed up training'
+                ],
+                correct: 0,
+                explanation: 'Regularization adds penalties or constraints to the model to reduce overfitting and improve generalization.'
+            }, {
+                id: 102,
+                category: 'Regularization',
+                question: 'What is L1 regularization (Lasso)?',
+                options: [
+                    'Adds a penalty equal to the absolute value of weights, encouraging sparsity and feature selection',
+                    'Adds a penalty equal to the square of weights, shrinking them',
+                    'Randomly drops neurons during training',
+                    'Stops training early'
+                ],
+                correct: 0,
+                explanation: 'L1 regularization adds the sum of absolute weights to the loss, driving some weights to zero, effectively performing feature selection.'
+            }, {
+                id: 103,
+                category: 'Regularization',
+                question: 'What is L2 regularization (Ridge)?',
+                options: [
+                    'Adds a penalty equal to the squared value of weights, shrinking them but not to zero',
+                    'Adds a penalty equal to the absolute value of weights',
+                    'Randomly drops neurons',
+                    'Stops training early'
+                ],
+                correct: 0,
+                explanation: 'L2 regularization adds the sum of squared weights to the loss, encouraging smaller weights and more generalized solutions.'
+            }, {
+                id: 104,
+                category: 'Regularization',
+                question: 'What is the main difference between L1 and L2 regularization?',
+                options: [
+                    'L1 can produce sparse weights (feature selection), while L2 shrinks weights but does not zero them',
+                    'L2 can produce sparse weights, L1 cannot',
+                    'They are identical',
+                    'L1 uses squared penalty, L2 uses absolute penalty'
+                ],
+                correct: 0,
+                explanation: 'L1 regularization tends to produce sparse solutions, while L2 regularization shrinks weights without eliminating them.'
+            }, {
+                id: 105,
+                category: 'Regularization',
+                question: 'What is dropout regularization?',
+                options: [
+                    'Randomly deactivating neurons during training to prevent co-adaptation and overfitting',
+                    'Adding a penalty to weights',
+                    'Reducing the number of layers',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'Dropout randomly drops neurons (sets them to zero) during training, forcing the network to learn redundant representations.'
+            }, {
+                id: 106,
+                category: 'Regularization',
+                question: 'What is the effect of dropout on neural networks?',
+                options: [
+                    'It enhances model robustness and reduces overfitting by preventing reliance on specific neurons',
+                    'It increases overfitting',
+                    'It speeds up training',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'Dropout makes the network more robust by preventing neurons from co-adapting, thus improving generalization.'
+            }, {
+                id: 107,
+                category: 'Regularization',
+                question: 'What is early stopping as a regularization technique?',
+                options: [
+                    'Monitoring validation performance and halting training to prevent overfitting',
+                    'Adding a penalty to weights',
+                    'Randomly dropping neurons',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'Early stopping stops training when validation performance degrades, preventing overfitting.'
+            }, {
+                id: 108,
+                category: 'Regularization',
+                question: 'What is the "need for regularization"?',
+                options: [
+                    'To address overfitting and improve model generalization by balancing fit and complexity',
+                    'To increase training accuracy',
+                    'To reduce training time',
+                    'To simplify the loss function'
+                ],
+                correct: 0,
+                explanation: 'Regularization addresses overfitting and improves generalization by finding a balance between model complexity and fit.'
+            }, {
+                id: 109,
+                category: 'Regularization',
+                question: 'Which regularization technique adds a penalty equal to the sum of absolute weights?',
+                options: [
+                    'L1 regularization (Lasso)',
+                    'L2 regularization (Ridge)',
+                    'Dropout',
+                    'Early stopping'
+                ],
+                correct: 0,
+                explanation: 'Lasso regression uses L1 penalty (sum of absolute weights).'
+            }, {
+                id: 110,
+                category: 'Regularization',
+                question: 'Which regularization technique adds a penalty equal to the sum of squared weights?',
+                options: [
+                    'L2 regularization (Ridge)',
+                    'L1 regularization (Lasso)',
+                    'Dropout',
+                    'Early stopping'
+                ],
+                correct: 0,
+                explanation: 'Ridge regression uses L2 penalty (sum of squared weights).'
+            }, {
+                id: 111,
+                category: 'Regularization',
+                question: 'What is the advantage of L1 regularization over L2?',
+                options: [
+                    'It can perform feature selection by driving some weights to zero',
+                    'It is computationally cheaper',
+                    'It always gives better accuracy',
+                    'It prevents underfitting'
+                ],
+                correct: 0,
+                explanation: 'L1 regularization produces sparse weight vectors, effectively selecting the most important features.'
+            }, {
+                id: 112,
+                category: 'Regularization',
+                question: 'What is the advantage of L2 regularization over L1?',
+                options: [
+                    'It provides a more generalized solution and is less likely to discard important features',
+                    'It performs feature selection',
+                    'It is faster to compute',
+                    'It always gives better accuracy'
+                ],
+                correct: 0,
+                explanation: 'L2 regularization shrinks weights but does not eliminate them, preserving all features and often providing stable solutions.'
+            }, {
+                id: 113,
+                category: 'Regularization',
+                question: 'What is the impact of regularization on bias and variance?',
+                options: [
+                    'It increases bias but decreases variance, helping to prevent overfitting',
+                    'It decreases bias and increases variance',
+                    'It has no effect',
+                    'It increases both'
+                ],
+                correct: 0,
+                explanation: 'Regularization reduces model complexity (variance) at the cost of increased bias, trading off to improve generalization.'
+            }, {
+                id: 114,
+                category: 'Regularization',
+                question: 'What is the role of the regularization parameter (e.g., λ in L1/L2)?',
+                options: [
+                    'It controls the strength of the penalty; higher λ leads to more regularization',
+                    'It controls the learning rate',
+                    'It controls the number of layers',
+                    'It controls the batch size'
+                ],
+                correct: 0,
+                explanation: 'The regularization coefficient λ determines how much penalty is applied; larger λ results in simpler models.'
+            }, {
+                id: 115,
+                category: 'Regularization',
+                question: 'What is data augmentation considered in terms of regularization?',
+                options: [
+                    'A form of regularization that increases data variety to reduce overfitting',
+                    'A penalty on weights',
+                    'A dropout technique',
+                    'An early stopping method'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation artificially increases the training set size and diversity, helping models generalize better.'
+            }, {
+                id: 116,
+                category: 'Regularization',
+                question: 'What is the effect of dropout on the training process?',
+                options: [
+                    'It introduces noise by randomly dropping neurons, making the model more robust',
+                    'It speeds up training',
+                    'It increases overfitting',
+                    'It simplifies the loss function'
+                ],
+                correct: 0,
+                explanation: 'Dropout adds noise during training, forcing the network to learn redundant representations, which improves generalization.'
+            }, {
+                id: 117,
+                category: 'Regularization',
+                question: 'What is the main reason to use early stopping?',
+                options: [
+                    'To prevent overfitting by stopping training before the model memorizes noise',
+                    'To reduce training time always',
+                    'To increase training accuracy',
+                    'To simplify the model architecture'
+                ],
+                correct: 0,
+                explanation: 'Early stopping halts training when validation performance starts to worsen, preventing overfitting.'
+            }, {
+                id: 118,
+                category: 'Regularization',
+                question: 'What is the difference between L1 and L2 regularization in terms of weight distribution?',
+                options: [
+                    'L1 yields sparse weights (many zeros), L2 yields small but non-zero weights',
+                    'L1 yields small weights, L2 yields sparse weights',
+                    'They are the same',
+                    'L1 yields non-zero weights, L2 yields zeros'
+                ],
+                correct: 0,
+                explanation: 'L1 regularization encourages sparsity (feature selection), while L2 regularization shrinks weights but rarely to zero.'
+            }, {
+                id: 119,
+                category: 'Regularization',
+                question: 'What is the purpose of using regularization in deep learning?',
+                options: [
+                    'To improve model generalization and prevent overfitting, especially with large models and limited data',
+                    'To increase model complexity',
+                    'To speed up training',
+                    'To reduce the number of epochs'
+                ],
+                correct: 0,
+                explanation: 'Regularization is crucial in deep learning to prevent overfitting, as deep networks have high capacity.'
+            }, {
+                id: 120,
+                category: 'Regularization',
+                question: 'What is the "trade-off" in regularization?',
+                options: [
+                    'Between model fit (low bias) and model complexity (low variance)',
+                    'Between training speed and accuracy',
+                    'Between data size and model size',
+                    'Between depth and width'
+                ],
+                correct: 0,
+                explanation: 'Regularization increases bias but reduces variance, balancing the bias-variance trade-off to improve generalization.'
+            }, {
+                id: 121,
+                category: 'Regularization',
+                question: 'What is the effect of L2 regularization on weights?',
+                options: [
+                    'It shrinks large weights more, promoting smaller weights distributed across features',
+                    'It forces weights to zero',
+                    'It has no effect on weights',
+                    'It increases weights'
+                ],
+                correct: 0,
+                explanation: 'L2 regularization penalizes large weights, causing them to shrink towards zero without eliminating them.'
+            }, {
+                id: 122,
+                category: 'Regularization',
+                question: 'What is the effect of L1 regularization on weights?',
+                options: [
+                    'It can shrink some weights to exactly zero, effectively selecting features',
+                    'It shrinks all weights equally',
+                    'It has no effect on weights',
+                    'It increases weights'
+                ],
+                correct: 0,
+                explanation: 'L1 regularization can drive some weights to zero, leading to sparse models and feature selection.'
+            }, {
+                id: 123,
+                category: 'Regularization',
+                question: 'What is the main challenge when using dropout?',
+                options: [
+                    'It increases training time and requires tuning of dropout rates',
+                    'It causes underfitting always',
+                    'It is not effective for deep networks',
+                    'It requires more data'
+                ],
+                correct: 0,
+                explanation: 'Dropout can increase training time and the dropout rate is a hyperparameter that needs to be carefully chosen.'
+            }, {
+                id: 124,
+                category: 'Regularization',
+                question: 'What is the relationship between regularization and overfitting?',
+                options: [
+                    'Regularization directly reduces overfitting by constraining the model',
+                    'Regularization increases overfitting',
+                    'Regularization has no effect on overfitting',
+                    'Regularization only affects underfitting'
+                ],
+                correct: 0,
+                explanation: 'Regularization techniques are designed to reduce overfitting and improve generalization.'
+            }, {
+                id: 125,
+                category: 'Regularization',
+                question: 'What is the "validation performance" used for in early stopping?',
+                options: [
+                    'To monitor whether the model is overfitting, and stop training when it degrades',
+                    'To evaluate final model accuracy',
+                    'To augment data',
+                    'To compute gradients'
+                ],
+                correct: 0,
+                explanation: 'Validation performance is tracked; if it stops improving or worsens, early stopping halts training.'
+            }, {
+                id: 126,
+                category: 'Regularization',
+                question: 'What is the role of regularization in preventing overfitting?',
+                options: [
+                    'It penalizes complex models to prevent them from fitting noise in the training data',
+                    'It increases the number of parameters',
+                    'It reduces training data size',
+                    'It speeds up convergence'
+                ],
+                correct: 0,
+                explanation: 'Regularization adds penalties that discourage complex models, reducing their ability to memorize noise.'
+            }, {
+                id: 127,
+                category: 'Regularization',
+                question: 'What is the difference between L1 and L2 regularization in terms of model interpretability?',
+                options: [
+                    'L1 can lead to more interpretable models by selecting a subset of features',
+                    'L2 is more interpretable',
+                    'Both are equally interpretable',
+                    'Neither helps interpretability'
+                ],
+                correct: 0,
+                explanation: 'L1 regularization produces sparse models, making it easier to interpret which features are most important.'
+            }, {
+                id: 128,
+                category: 'Regularization',
+                question: 'What is the "strength" of regularization controlled by?',
+                options: [
+                    'The regularization coefficient (λ)',
+                    'The learning rate',
+                    'The number of layers',
+                    'The batch size'
+                ],
+                correct: 0,
+                explanation: 'The regularization coefficient λ determines how much penalty is applied; larger λ means stronger regularization.'
+            }, {
+                id: 129,
+                category: 'Regularization',
+                question: 'Which regularization technique is most similar to adding noise to the weights?',
+                options: [
+                    'Dropout, by randomly dropping neurons, introduces noise',
+                    'L1 regularization',
+                    'L2 regularization',
+                    'Early stopping'
+                ],
+                correct: 0,
+                explanation: 'Dropout can be seen as adding multiplicative noise to the network, as it randomly sets neurons to zero.'
+            }, {
+                id: 130,
+                category: 'Regularization',
+                question: 'What is the main purpose of regularization techniques like L1, L2, and dropout?',
+                options: [
+                    'To improve model generalization and prevent overfitting',
+                    'To increase training accuracy',
+                    'To reduce training time',
+                    'To increase model complexity'
+                ],
+                correct: 0,
+                explanation: 'All regularization techniques aim to improve generalization and reduce overfitting.'
+            },
+
+            // ---- ADDITIONAL QUESTIONS to reach 150+ (131–160) ----
+            {
+                id: 131,
+                category: 'General Concepts',
+                question: 'What is the "loss" in neural network training?',
+                options: [
+                    'A measure of how far the predictions are from the targets',
+                    'The learning rate',
+                    'The number of layers',
+                    'The activation function'
+                ],
+                correct: 0,
+                explanation: 'Loss quantifies the error, which the optimizer aims to minimize.'
+            }, {
+                id: 132,
+                category: 'General Concepts',
+                question: 'What is the role of the optimizer in training?',
+                options: [
+                    'To update weights using gradients to minimize loss',
+                    'To compute the loss',
+                    'To augment data',
+                    'To select activation functions'
+                ],
+                correct: 0,
+                explanation: 'Optimizers apply gradients to update weights, often with adaptive learning rates.'
+            }, {
+                id: 133,
+                category: 'General Concepts',
+                question: 'What is the purpose of the validation set in a 3-way split?',
+                options: [
+                    'To tune hyperparameters and select the best model',
+                    'To evaluate final model performance',
+                    'To train the model',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'The validation set is used for model selection and hyperparameter tuning.'
+            }, {
+                id: 134,
+                category: 'General Concepts',
+                question: 'What is the test set used for?',
+                options: [
+                    'Final evaluation of the trained model\'s generalization ability',
+                    'Training the model',
+                    'Hyperparameter tuning',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'The test set provides an unbiased evaluation of the final model.'
+            }, {
+                id: 135,
+                category: 'General Concepts',
+                question: 'What is the relationship between training error and generalization error?',
+                options: [
+                    'Training error is usually lower than generalization error; the gap indicates overfitting',
+                    'They are always the same',
+                    'Generalization error is always lower',
+                    'Training error is higher'
+                ],
+                correct: 0,
+                explanation: 'Training error is often lower; a large gap indicates overfitting.'
+            }, {
+                id: 136,
+                category: 'General Concepts',
+                question: 'What is the role of the loss function in regularization?',
+                options: [
+                    'Regularization terms are added to the loss function to penalize complexity',
+                    'Loss function is not related to regularization',
+                    'Regularization replaces the loss function',
+                    'Loss function determines the learning rate'
+                ],
+                correct: 0,
+                explanation: 'Regularization adds a penalty term (like L1/L2) to the loss function.'
+            }, {
+                id: 137,
+                category: 'General Concepts',
+                question: 'What is the effect of adding more layers to a neural network?',
+                options: [
+                    'It increases model capacity, which can help capture complex patterns but risks overfitting',
+                    'It always reduces overfitting',
+                    'It always improves generalization',
+                    'It reduces training time'
+                ],
+                correct: 0,
+                explanation: 'More layers increase capacity, beneficial for complex tasks but with higher overfitting risk.'
+            }, {
+                id: 138,
+                category: 'General Concepts',
+                question: 'What is the "bias" in the bias-variance trade-off?',
+                options: [
+                    'Error due to overly simplistic assumptions in the model',
+                    'Error due to sensitivity to training data',
+                    'The bias term in a neuron',
+                    'The learning rate'
+                ],
+                correct: 0,
+                explanation: 'Bias is the error introduced by approximating a real-world problem with a too-simple model.'
+            }, {
+                id: 139,
+                category: 'General Concepts',
+                question: 'What is the "variance" in the bias-variance trade-off?',
+                options: [
+                    'Error due to model\'s sensitivity to small fluctuations in training data',
+                    'Error due to overly simplistic assumptions',
+                    'The variance of weights',
+                    'The learning rate'
+                ],
+                correct: 0,
+                explanation: 'Variance is the error due to the model\'s sensitivity to the training data, often leading to overfitting.'
+            }, {
+                id: 140,
+                category: 'General Concepts',
+                question: 'What is the purpose of using a learning rate schedule?',
+                options: [
+                    'To adjust the learning rate during training to improve convergence',
+                    'To keep the learning rate constant',
+                    'To increase the learning rate over time',
+                    'To reduce the batch size'
+                ],
+                correct: 0,
+                explanation: 'Learning rate schedules adjust the learning rate (e.g., decay) to improve convergence.'
+            }, {
+                id: 141,
+                category: 'General Concepts',
+                question: 'What is the effect of a large batch size on training?',
+                options: [
+                    'It provides more accurate gradient estimates but is computationally heavy and may lead to sharp minima',
+                    'It always speeds up training',
+                    'It reduces overfitting',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'Large batches give stable gradients but may lead to poor generalization and require more memory.'
+            }, {
+                id: 142,
+                category: 'General Concepts',
+                question: 'What is the effect of a small batch size on training?',
+                options: [
+                    'It introduces noise, which can help escape local minima but may slow convergence',
+                    'It always improves performance',
+                    'It increases overfitting',
+                    'It reduces training time'
+                ],
+                correct: 0,
+                explanation: 'Small batches add noise, which can be beneficial for generalization but may slow convergence.'
+            }, {
+                id: 143,
+                category: 'General Concepts',
+                question: 'What is the role of the activation function in the forward pass?',
+                options: [
+                    'To transform the weighted sum into the neuron\'s output, introducing non-linearity',
+                    'To compute the loss',
+                    'To update weights',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Activation functions take the weighted sum and apply a non-linear transformation.'
+            }, {
+                id: 144,
+                category: 'General Concepts',
+                question: 'What is the purpose of the backward pass?',
+                options: [
+                    'To compute gradients and update weights to minimize loss',
+                    'To compute predictions',
+                    'To compute loss',
+                    'To initialize weights'
+                ],
+                correct: 0,
+                explanation: 'The backward pass computes gradients and allows weight updates.'
+            }, {
+                id: 145,
+                category: 'General Concepts',
+                question: 'What is the "learning" process in neural networks often described as?',
+                options: [
+                    'An iterative optimization of weights using gradient descent',
+                    'A one-time computation',
+                    'A random search',
+                    'A data storage process'
+                ],
+                correct: 0,
+                explanation: 'Learning is the iterative optimization of weights using gradient descent to minimize error.'
+            }, {
+                id: 146,
+                category: 'General Concepts',
+                question: 'What is the effect of early stopping on training time?',
+                options: [
+                    'It can reduce training time by stopping early, but may require monitoring',
+                    'It always increases training time',
+                    'It has no effect on training time',
+                    'It reduces accuracy'
+                ],
+                correct: 0,
+                explanation: 'Early stopping can reduce training time by halting before overfitting, but requires careful monitoring.'
+            }, {
+                id: 147,
+                category: 'General Concepts',
+                question: 'What is the effect of pruning on model complexity?',
+                options: [
+                    'It reduces complexity by removing unnecessary neurons, potentially improving generalization',
+                    'It increases complexity',
+                    'It has no effect',
+                    'It reduces training time only'
+                ],
+                correct: 0,
+                explanation: 'Pruning reduces model complexity, which can help prevent overfitting and improve generalization.'
+            }, {
+                id: 148,
+                category: 'General Concepts',
+                question: 'What is the purpose of data augmentation in regularizing?',
+                options: [
+                    'To increase the effective size of the training set, reducing overfitting',
+                    'To reduce the training set',
+                    'To increase model complexity',
+                    'To speed up training'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation increases data variety, helping the model generalize better.'
+            }, {
+                id: 149,
+                category: 'General Concepts',
+                question: 'What is the "dead neuron" problem in ReLU?',
+                options: [
+                    'Neurons that output 0 for all inputs, often due to large negative bias, and never update',
+                    'Neurons that output constant value',
+                    'Neurons that are always active',
+                    'Neurons that have infinite output'
+                ],
+                correct: 0,
+                explanation: 'Dead neurons occur when ReLU outputs zero and gradients are zero, preventing updates.'
+            }, {
+                id: 150,
+                category: 'General Concepts',
+                question: 'How can Leaky ReLU help with dead neurons?',
+                options: [
+                    'It allows a small negative gradient for negative inputs, keeping neurons alive',
+                    'It sets all negative inputs to zero',
+                    'It uses a different activation function',
+                    'It increases the learning rate'
+                ],
+                correct: 0,
+                explanation: 'Leaky ReLU has a small slope for negative inputs, ensuring gradients flow and neurons update.'
+            }, {
+                id: 151,
+                category: 'General Concepts',
+                question: 'What is the purpose of using a validation set for early stopping?',
+                options: [
+                    'To monitor overfitting and stop training when validation error increases',
+                    'To evaluate final model performance',
+                    'To train the model',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Validation error is monitored; early stopping halts training when it starts to rise, indicating overfitting.'
+            }, {
+                id: 152,
+                category: 'General Concepts',
+                question: 'What is the main goal of optimization in neural networks?',
+                options: [
+                    'To minimize the loss function',
+                    'To maximize the loss function',
+                    'To keep weights constant',
+                    'To increase training accuracy'
+                ],
+                correct: 0,
+                explanation: 'Optimization aims to find the weights that minimize the loss function.'
+            }, {
+                id: 153,
+                category: 'General Concepts',
+                question: 'What is the effect of using momentum in gradient descent?',
+                options: [
+                    'It accelerates convergence and helps escape local minima by smoothing updates',
+                    'It slows down convergence',
+                    'It increases overfitting',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'Momentum helps the optimizer move faster and avoid getting stuck in local minima.'
+            }, {
+                id: 154,
+                category: 'General Concepts',
+                question: 'What is the role of the chain rule in backpropagation?',
+                options: [
+                    'To compute gradients of the loss with respect to weights by multiplying derivatives layer by layer',
+                    'To compute the forward pass',
+                    'To update weights directly',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'The chain rule is fundamental for backpropagation, allowing gradient computation through multiple layers.'
+            }, {
+                id: 155,
+                category: 'General Concepts',
+                question: 'What is the purpose of using bias in a neuron?',
+                options: [
+                    'To shift the activation function, allowing the neuron to learn more complex patterns',
+                    'To increase the number of parameters',
+                    'To reduce overfitting',
+                    'To speed up training'
+                ],
+                correct: 0,
+                explanation: 'Bias provides an offset, enabling the neuron to fit data that does not pass through the origin.'
+            }, {
+                id: 156,
+                category: 'General Concepts',
+                question: 'What is the effect of increasing the number of neurons in a layer?',
+                options: [
+                    'It increases the model\'s capacity, potentially improving performance but also increasing overfitting risk',
+                    'It always improves performance',
+                    'It reduces overfitting',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'More neurons increase capacity, which can help with complex tasks but may also lead to overfitting.'
+            }, {
+                id: 157,
+                category: 'General Concepts',
+                question: 'What is the purpose of using a loss function like Cross-Entropy?',
+                options: [
+                    'To measure performance in classification tasks by penalizing wrong predictions heavily',
+                    'To measure performance in regression tasks',
+                    'To regularize the model',
+                    'To initialize weights'
+                ],
+                correct: 0,
+                explanation: 'Cross-Entropy is designed for classification, penalizing incorrect classifications.'
+            }, {
+                id: 158,
+                category: 'General Concepts',
+                question: 'What is the effect of using a learning rate that is too large?',
+                options: [
+                    'It can cause the loss to diverge or oscillate, preventing convergence',
+                    'It speeds up convergence',
+                    'It reduces overfitting',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'A too-large learning rate can cause overshooting and divergence.'
+            }, {
+                id: 159,
+                category: 'General Concepts',
+                question: 'What is the effect of using a learning rate that is too small?',
+                options: [
+                    'It can cause very slow convergence, potentially getting stuck in local minima',
+                    'It speeds up convergence',
+                    'It causes divergence',
+                    'It reduces underfitting'
+                ],
+                correct: 0,
+                explanation: 'A too-small learning rate leads to tiny updates, slowing training and possibly getting trapped in poor minima.'
+            }, {
+                id: 160,
+                category: 'General Concepts',
+                question: 'What is the purpose of regularization techniques like weight decay?',
+                options: [
+                    'To add a penalty to large weights, encouraging smaller weights and reducing overfitting',
+                    'To increase the learning rate',
+                    'To augment data',
+                    'To speed up training'
+                ],
+                correct: 0,
+                explanation: 'Weight decay (L2) penalizes large weights, helping to prevent overfitting by encouraging smaller weights.'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(.option-item[data-qindex=""][data-optindex=""]);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(You've answered  of  questions. Please answer all questions to see results.);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

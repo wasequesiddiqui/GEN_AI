@@ -1,0 +1,2893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certified Gen AI Specialist – Practice Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+
+        /* ---- CONTAINER ---- */
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        /* ---- HEADER ---- */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+
+        /* ---- PROGRESS ---- */
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+
+        /* ---- CATEGORY TAG ---- */
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+
+        /* ---- QUESTION ---- */
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+
+        /* ---- EXPLANATION ---- */
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- NAVIGATION ---- */
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        /* ---- RESULTS ---- */
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+
+            .container {
+                padding: 1.5rem 1.2rem;
+                border-radius: 2rem;
+            }
+
+            .quiz-title-group h1 {
+                font-size: 1.4rem;
+            }
+
+            .score-display {
+                padding: 0.4rem 1rem;
+                min-width: 100px;
+            }
+
+            .score-display .score-number {
+                font-size: 1.2rem;
+            }
+
+            .question-card {
+                padding: 1.2rem 1.2rem;
+                border-radius: 1.4rem;
+            }
+
+            .question-text {
+                font-size: 1.05rem;
+            }
+
+            .option-item {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+                gap: 0.7rem;
+            }
+
+            .option-item .letter {
+                width: 1.7rem;
+                height: 1.7rem;
+                font-size: 0.7rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.8rem;
+            }
+
+            .results-score {
+                font-size: 3rem;
+            }
+
+            .container {
+                backdrop-filter: blur(2px);
+            }
+        }
+
+        @media (max-width: 450px) {
+            .quiz-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .score-display {
+                text-align: left;
+                width: 100%;
+            }
+
+            .nav-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-btn {
+                justify-content: center;
+            }
+        }
+
+        /* ---- SCROLLBAR ---- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e6edf6;
+            border-radius: 100px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #b0c8e0;
+            border-radius: 100px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8aacd0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>Certification prep · 150+ questions</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  150+ QUESTIONS — based on DEEP_LEARNING.pdf + INTRODUCTION_TO_GENAI.pdf
+        // ============================================================
+        const QUESTIONS = [
+            // ---- CATEGORY: Fundamentals of AI & Deep Learning (1–25) ----
+            {
+                id: 1,
+                category: 'AI Fundamentals',
+                question: 'What is Artificial Intelligence (AI)?',
+                options: [
+                    'The simulation of human intelligence processes by machines',
+                    'A programming language for building websites',
+                    'A type of computer hardware',
+                    'A database management system'
+                ],
+                correct: 0,
+                explanation: 'AI is defined as the simulation of human intelligence processes by machines, especially computer systems.'
+            }, {
+                id: 2,
+                category: 'AI Fundamentals',
+                question: 'Deep Learning uses layered ________ to process data.',
+                options: [
+                    'decision trees',
+                    'neural networks',
+                    'support vector machines',
+                    'linear regressions'
+                ],
+                correct: 1,
+                explanation: 'Deep Learning uses layered neural networks to process data and learn complex patterns.'
+            }, {
+                id: 3,
+                category: 'AI Fundamentals',
+                question: 'Which of the following is a core mission of AI?',
+                options: [
+                    'Simulating human intelligence',
+                    'Replacing all human workers',
+                    'Creating perfect copies of human brains',
+                    'Eliminating the need for data'
+                ],
+                correct: 0,
+                explanation: 'The core mission of AI is to simulate human intelligence, including problem solving, learning, and decision-making.'
+            }, {
+                id: 4,
+                category: 'AI Fundamentals',
+                question: 'Machine Learning allows computers to learn from data without being explicitly ________.',
+                options: [
+                    'programmed',
+                    'trained',
+                    'tested',
+                    'validated'
+                ],
+                correct: 0,
+                explanation: 'ML allows computers to learn from data without being explicitly programmed, finding patterns on their own.'
+            }, {
+                id: 5,
+                category: 'AI Fundamentals',
+                question: 'What is the primary difference between "classic" ML and Deep Learning?',
+                options: [
+                    'Classic ML requires more data',
+                    'Classic ML depends on human intervention to identify features',
+                    'Deep Learning is older than classic ML',
+                    'There is no difference'
+                ],
+                correct: 1,
+                explanation: 'Classic ML depends on human experts to determine the hierarchy of features, while deep learning learns features automatically.'
+            }, {
+                id: 6,
+                category: 'AI Fundamentals',
+                question: 'Which of the following is NOT a component of AI\'s basic mission?',
+                options: [
+                    'Simulating human intelligence',
+                    'Problem solving and decision making',
+                    'Learning and adaptation',
+                    'Eliminating all human errors'
+                ],
+                correct: 3,
+                explanation: 'AI\'s mission includes simulating intelligence, problem solving, learning, and interaction with the environment—not eliminating all human errors.'
+            }, {
+                id: 7,
+                category: 'AI Fundamentals',
+                question: 'Deep Learning gained significant traction around which time period?',
+                options: [
+                    '1950s',
+                    '1980s',
+                    '2000–2010',
+                    '2020s'
+                ],
+                correct: 2,
+                explanation: 'Deep Learning gained traction in the 2000–2010 period, driven by advanced hardware (GPUs) and improved algorithms.'
+            }, {
+                id: 8,
+                category: 'AI Fundamentals',
+                question: 'Which term describes the ability of machines to imitate intelligent human behavior?',
+                options: [
+                    'Automation',
+                    'Artificial Intelligence',
+                    'Robotics',
+                    'Data Science'
+                ],
+                correct: 1,
+                explanation: 'Artificial Intelligence is the capability of machines to imitate intelligent human behavior.'
+            }, {
+                id: 9,
+                category: 'AI Fundamentals',
+                question: 'What is a key enabler for Deep Learning\'s success in the 2010s?',
+                options: [
+                    'Better programming languages',
+                    'Advanced hardware (GPUs)',
+                    'More internet users',
+                    'Cheaper electricity'
+                ],
+                correct: 1,
+                explanation: 'Advanced hardware, particularly GPUs, along with improved algorithms, enabled the deep learning boom in the 2010s.'
+            }, {
+                id: 10,
+                category: 'AI Fundamentals',
+                question: 'ML stands for ________.',
+                options: [
+                    'Machine Logic',
+                    'Machine Learning',
+                    'Mainframe Learning',
+                    'Model Learning'
+                ],
+                correct: 1,
+                explanation: 'ML is the standard abbreviation for Machine Learning.'
+            }, {
+                id: 11,
+                category: 'AI Fundamentals',
+                question: 'Which of the following best describes "classic" or "non-deep" machine learning?',
+                options: [
+                    'It requires no human intervention at all',
+                    'Human experts determine the hierarchy of features',
+                    'It uses only neural networks',
+                    'It is always more accurate than deep learning'
+                ],
+                correct: 1,
+                explanation: 'Classic ML depends on human experts to determine the hierarchy of features to understand differences between data inputs.'
+            }, {
+                id: 12,
+                category: 'AI Fundamentals',
+                question: 'What is the role of "layers" in deep learning?',
+                options: [
+                    'To store data in a structured format',
+                    'To process data hierarchically and extract features',
+                    'To connect to the internet',
+                    'To visualize results'
+                ],
+                correct: 1,
+                explanation: 'Layered neural networks process data hierarchically, with each layer extracting increasingly complex features.'
+            }, {
+                id: 13,
+                category: 'AI Fundamentals',
+                question: 'Which of the following is a core component of AI\'s interaction with the environment?',
+                options: [
+                    'Reading books',
+                    'Perceiving and responding to surroundings',
+                    'Writing code',
+                    'Designing hardware'
+                ],
+                correct: 1,
+                explanation: 'AI interacts with the environment by perceiving and responding to surroundings, a key aspect of intelligent behavior.'
+            }, {
+                id: 14,
+                category: 'AI Fundamentals',
+                question: 'The term "Deep" in Deep Learning refers to ________.',
+                options: [
+                    'The depth of the data',
+                    'The number of layers in the neural network',
+                    'The complexity of the problem',
+                    'The size of the dataset'
+                ],
+                correct: 1,
+                explanation: '"Deep" refers to the multiple layers in the neural network, allowing for hierarchical feature learning.'
+            }, {
+                id: 15,
+                category: 'AI Fundamentals',
+                question: 'Which of the following is NOT a typical application of AI mentioned in the materials?',
+                options: [
+                    'Healthcare',
+                    'Entertainment',
+                    'Astronomy',
+                    'E-commerce'
+                ],
+                correct: 2,
+                explanation: 'Healthcare, Entertainment, and E-commerce are mentioned. Astronomy is not covered in the provided content.'
+            }, {
+                id: 16,
+                category: 'AI Fundamentals',
+                question: 'What does "simulation of human intelligence" in AI typically include?',
+                options: [
+                    'Only logical reasoning',
+                    'Learning, reasoning, and self-correction',
+                    'Only pattern recognition',
+                    'Physical movement'
+                ],
+                correct: 1,
+                explanation: 'Simulation of human intelligence includes learning, reasoning, problem-solving, perception, and language understanding.'
+            }, {
+                id: 17,
+                category: 'AI Fundamentals',
+                question: 'Which hardware advancement significantly boosted deep learning in the 2010s?',
+                options: [
+                    'SSD drives',
+                    'GPUs (Graphics Processing Units)',
+                    'Quantum computers',
+                    'Optical fibers'
+                ],
+                correct: 1,
+                explanation: 'GPUs provided the parallel processing power needed to train large deep learning models effectively.'
+            }, {
+                id: 18,
+                category: 'AI Fundamentals',
+                question: 'The ability of machines to learn from data without explicit programming is the essence of ________.',
+                options: [
+                    'Artificial Intelligence',
+                    'Machine Learning',
+                    'Deep Learning',
+                    'All of the above'
+                ],
+                correct: 1,
+                explanation: 'Machine Learning is specifically defined as the ability to learn from data without being explicitly programmed.'
+            }, {
+                id: 19,
+                category: 'AI Fundamentals',
+                question: 'In the context of AI, what is "adaptation"?',
+                options: [
+                    'Changing the hardware',
+                    'Adjusting behavior based on new information',
+                    'Writing new code',
+                    'Deleting old data'
+                ],
+                correct: 1,
+                explanation: 'Adaptation in AI refers to the ability to adjust behavior or models based on new information or changing environments.'
+            }, {
+                id: 20,
+                category: 'AI Fundamentals',
+                question: 'Which of the following best describes the relationship between AI, ML, and Deep Learning?',
+                options: [
+                    'They are all the same',
+                    'AI ⊃ ML ⊃ Deep Learning',
+                    'ML ⊃ AI ⊃ Deep Learning',
+                    'Deep Learning ⊃ AI ⊃ ML'
+                ],
+                correct: 1,
+                explanation: 'AI is the broadest field, ML is a subset of AI, and Deep Learning is a subset of ML.'
+            }, {
+                id: 21,
+                category: 'AI Fundamentals',
+                question: 'What is the primary purpose of the backpropagation algorithm in ML?',
+                options: [
+                    'To visualize data',
+                    'To train neural networks by adjusting weights',
+                    'To sort data',
+                    'To generate new data'
+                ],
+                correct: 1,
+                explanation: 'Backpropagation is used to train neural networks by calculating gradients and adjusting weights to minimize error.'
+            }, {
+                id: 22,
+                category: 'AI Fundamentals',
+                question: 'Which decade saw the development of the backpropagation algorithm?',
+                options: [
+                    '1950s',
+                    '1960s',
+                    '1970s',
+                    '1980s'
+                ],
+                correct: 3,
+                explanation: 'The backpropagation algorithm was developed in the 1980s, marking a key milestone in machine learning.'
+            }, {
+                id: 23,
+                category: 'AI Fundamentals',
+                question: 'What is a key characteristic of "structured data" in the context of ML?',
+                options: [
+                    'It is always large',
+                    'It is organized in a predefined format (e.g., tables)',
+                    'It is always image data',
+                    'It requires no preprocessing'
+                ],
+                correct: 1,
+                explanation: 'Structured data is organized in a predefined format, such as tables with rows and columns, making it easier for classic ML algorithms to process.'
+            }, {
+                id: 24,
+                category: 'AI Fundamentals',
+                question: 'Which of the following is a benefit of deep learning over classic ML?',
+                options: [
+                    'Requires less data',
+                    'Automatically learns feature hierarchies',
+                    'Is always faster',
+                    'Never overfits'
+                ],
+                correct: 1,
+                explanation: 'Deep learning automatically learns feature hierarchies from raw data, reducing the need for manual feature engineering.'
+            }, {
+                id: 25,
+                category: 'AI Fundamentals',
+                question: 'The Dartmouth conference in 1956 is significant because ________.',
+                options: [
+                    'It was the first AI conference',
+                    'It coined the term "Artificial Intelligence"',
+                    'It introduced the first neural network',
+                    'It was the first machine learning competition'
+                ],
+                correct: 1,
+                explanation: 'The 1956 Dartmouth conference is where the term "Artificial Intelligence" was coined, marking the formal birth of the field.'
+            },
+
+            // ---- CATEGORY: Generative vs Discriminative Models (26–45) ----
+            {
+                id: 26,
+                category: 'Generative vs Discriminative',
+                question: 'What is the primary goal of Generative Models?',
+                options: [
+                    'To classify data into categories',
+                    'To produce new data samples resembling the training data',
+                    'To compress data',
+                    'To delete redundant data'
+                ],
+                correct: 1,
+                explanation: 'Generative Models can produce new data samples that resemble the training data by understanding the underlying data distribution.'
+            }, {
+                id: 27,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model is typically used for classification tasks?',
+                options: [
+                    'Generative Models',
+                    'Discriminative Models',
+                    'Both equally',
+                    'Neither'
+                ],
+                correct: 1,
+                explanation: 'Discriminative Models are trained to differentiate and classify data into different classes.'
+            }, {
+                id: 28,
+                category: 'Generative vs Discriminative',
+                question: 'Generative Models aim to model ________.',
+                options: [
+                    'the decision boundary between classes',
+                    'how the data is generated',
+                    'only the output labels',
+                    'the noise in the data'
+                ],
+                correct: 1,
+                explanation: 'Generative models aim to model how the data is generated and can produce new data points.'
+            }, {
+                id: 29,
+                category: 'Generative vs Discriminative',
+                question: 'Discriminative Models focus on ________.',
+                options: [
+                    'generating new data',
+                    'distinguishing between different classes',
+                    'understanding data distribution',
+                    'creating data variations'
+                ],
+                correct: 1,
+                explanation: 'Discriminative models focus on distinguishing between different classes and are typically used for classification.'
+            }, {
+                id: 30,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model can create entirely new, similar data on its own?',
+                options: [
+                    'Generative Models',
+                    'Discriminative Models',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 0,
+                explanation: 'Generative models learn from data and can create entirely new, similar data on their own.'
+            }, {
+                id: 31,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model is trained to differentiate and classify?',
+                options: [
+                    'Generative Models',
+                    'Discriminative Models',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 1,
+                explanation: 'Discriminative models are trained to differentiate and classify data into distinct categories.'
+            }, {
+                id: 32,
+                category: 'Generative vs Discriminative',
+                question: 'The essence of Generative Models is understanding the ________.',
+                options: [
+                    'underlying data distribution',
+                    'class boundaries',
+                    'noise patterns',
+                    'output labels'
+                ],
+                correct: 0,
+                explanation: 'The essence of generative models is understanding the underlying data distribution to generate new samples.'
+            }, {
+                id: 33,
+                category: 'Generative vs Discriminative',
+                question: 'Which of the following is a characteristic of Discriminative Models?',
+                options: [
+                    'They can generate new data',
+                    'They model the joint probability P(X,Y)',
+                    'They focus on the decision boundary between classes',
+                    'They require understanding of data distribution'
+                ],
+                correct: 2,
+                explanation: 'Discriminative models focus on the decision boundary between classes, making them ideal for classification.'
+            }, {
+                id: 34,
+                category: 'Generative vs Discriminative',
+                question: 'Generative Models are particularly useful for ________.',
+                options: [
+                    'classification tasks',
+                    'data generation and synthesis',
+                    'only regression tasks',
+                    'only clustering'
+                ],
+                correct: 1,
+                explanation: 'Generative models excel at data generation and synthesis, creating new samples that resemble the training data.'
+            }, {
+                id: 35,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model would you use to generate realistic images of cats?',
+                options: [
+                    'Discriminative Model',
+                    'Generative Model',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 1,
+                explanation: 'A generative model would be used to generate realistic images of cats, as it can produce new data samples.'
+            }, {
+                id: 36,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model would you use to distinguish between images of cats and dogs?',
+                options: [
+                    'Generative Model',
+                    'Discriminative Model',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 1,
+                explanation: 'A discriminative model would be used to distinguish between cats and dogs, as it focuses on classification.'
+            }, {
+                id: 37,
+                category: 'Generative vs Discriminative',
+                question: 'Generative Models are about "modeling how data is generated", while Discriminative Models are about ________.',
+                options: [
+                    'modeling the data distribution',
+                    'modeling the decision boundary',
+                    'generating new data',
+                    'modeling the noise'
+                ],
+                correct: 1,
+                explanation: 'Discriminative models focus on modeling the decision boundary between classes, rather than the data generation process.'
+            }, {
+                id: 38,
+                category: 'Generative vs Discriminative',
+                question: 'Which of the following is an example of a Generative Model?',
+                options: [
+                    'Logistic Regression',
+                    'Support Vector Machine',
+                    'GAN (Generative Adversarial Network)',
+                    'Decision Tree'
+                ],
+                correct: 2,
+                explanation: 'GAN is a generative model that can produce new data samples. The others are discriminative models.'
+            }, {
+                id: 39,
+                category: 'Generative vs Discriminative',
+                question: 'Which of the following is an example of a Discriminative Model?',
+                options: [
+                    'GAN',
+                    'VAE (Variational Autoencoder)',
+                    'Logistic Regression',
+                    'Diffusion Model'
+                ],
+                correct: 2,
+                explanation: 'Logistic Regression is a discriminative model used for classification. GAN, VAE, and Diffusion Models are generative.'
+            }, {
+                id: 40,
+                category: 'Generative vs Discriminative',
+                question: 'Generative Models enable advanced AI capabilities by ________.',
+                options: [
+                    'simplifying data',
+                    'laying the groundwork for sophisticated tasks',
+                    'reducing computational needs',
+                    'eliminating the need for training'
+                ],
+                correct: 1,
+                explanation: 'Generative models lay the groundwork for sophisticated AI capabilities by understanding and generating complex data.'
+            }, {
+                id: 41,
+                category: 'Generative vs Discriminative',
+                question: 'Discriminative Models are typically used for ________ tasks.',
+                options: [
+                    'generation',
+                    'classification',
+                    'clustering',
+                    'dimensionality reduction'
+                ],
+                correct: 1,
+                explanation: 'Discriminative models are typically used for classification tasks, distinguishing between different classes.'
+            }, {
+                id: 42,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model requires understanding of the joint probability distribution P(X,Y)?',
+                options: [
+                    'Generative Models',
+                    'Discriminative Models',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 0,
+                explanation: 'Generative models model the joint probability distribution P(X,Y), while discriminative models model the conditional P(Y|X).'
+            }, {
+                id: 43,
+                category: 'Generative vs Discriminative',
+                question: 'Which type of model models the conditional probability P(Y|X)?',
+                options: [
+                    'Generative Models',
+                    'Discriminative Models',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 1,
+                explanation: 'Discriminative models model the conditional probability P(Y|X), directly learning the mapping from inputs to outputs.'
+            }, {
+                id: 44,
+                category: 'Generative vs Discriminative',
+                question: 'Generative Models are said to "amplify human potential" by ________.',
+                options: [
+                    'replacing human workers',
+                    'providing tools for enhanced decision-making and creativity',
+                    'eliminating the need for human input',
+                    'making decisions autonomously'
+                ],
+                correct: 1,
+                explanation: 'Generative models amplify human potential by providing tools for enhanced decision-making and creativity.'
+            }, {
+                id: 45,
+                category: 'Generative vs Discriminative',
+                question: 'The main difference between Generative and Discriminative models is that ________.',
+                options: [
+                    'Generative models are older',
+                    'Generative models can create new data, while discriminative models classify',
+                    'Discriminative models are always more accurate',
+                    'There is no difference'
+                ],
+                correct: 1,
+                explanation: 'Generative models can create new data samples, while discriminative models are focused on classifying existing data.'
+            },
+
+            // ---- CATEGORY: Applications of Generative AI (46–70) ----
+            {
+                id: 46,
+                category: 'Applications',
+                question: 'In healthcare, Generative AI is used for ________.',
+                options: [
+                    'drug discovery and medical imaging',
+                    'only administrative tasks',
+                    'patient scheduling',
+                    'billing and coding'
+                ],
+                correct: 0,
+                explanation: 'Generative AI in healthcare is used for drug discovery (generating molecular structures) and medical imaging (enhancing quality, generating 3D models).'
+            }, {
+                id: 47,
+                category: 'Applications',
+                question: 'Generative AI can generate molecular structures for ________.',
+                options: [
+                    'new potential drugs',
+                    'food recipes',
+                    'building materials',
+                    'clothing designs'
+                ],
+                correct: 0,
+                explanation: 'In drug discovery, generative AI can generate molecular structures for new potential drugs.'
+            }, {
+                id: 48,
+                category: 'Applications',
+                question: 'In medical imaging, Generative AI can ________.',
+                options: [
+                    'replace all doctors',
+                    'enhance image quality and generate 3D models from 2D scans',
+                    'only store images',
+                    'delete old images'
+                ],
+                correct: 1,
+                explanation: 'Generative AI can enhance image quality and generate 3D models from 2D scans, aiding in diagnosis and treatment planning.'
+            }, {
+                id: 49,
+                category: 'Applications',
+                question: 'In entertainment, Generative AI is used for ________.',
+                options: [
+                    'creating realistic CGI characters and scenes',
+                    'only sound editing',
+                    'script writing only',
+                    'marketing'
+                ],
+                correct: 0,
+                explanation: 'In entertainment, Generative AI is used for creating realistic CGI characters and scenes, as well as composing music and sound effects.'
+            }, {
+                id: 50,
+                category: 'Applications',
+                question: 'Generative AI can compose ________ in the entertainment industry.',
+                options: [
+                    'only classical music',
+                    'AI-generated music tracks and sound effects',
+                    'only sound effects',
+                    'only lyrics'
+                ],
+                correct: 1,
+                explanation: 'Generative AI can compose AI-generated music tracks and sound effects for films, games, and other media.'
+            }, {
+                id: 51,
+                category: 'Applications',
+                question: 'In fashion, Generative AI is used for ________.',
+                options: [
+                    'designing personalized clothing based on user preferences',
+                    'only manufacturing',
+                    'only retail pricing',
+                    'only inventory management'
+                ],
+                correct: 0,
+                explanation: 'In fashion, Generative AI can design personalized clothing based on user preferences, as well as generate room layouts and decor suggestions.'
+            }, {
+                id: 52,
+                category: 'Applications',
+                question: 'Interior design is a Generative AI application in which industry?',
+                options: [
+                    'Healthcare',
+                    'Fashion & Design',
+                    'Automotive',
+                    'E-commerce'
+                ],
+                correct: 1,
+                explanation: 'Interior design falls under the Fashion & Design category, where Generative AI generates room layouts and decor suggestions.'
+            }, {
+                id: 53,
+                category: 'Applications',
+                question: 'In automotive, Generative AI is used for ________.',
+                options: [
+                    'generating prototype designs for new car models',
+                    'only tire manufacturing',
+                    'only marketing',
+                    'only customer service'
+                ],
+                correct: 0,
+                explanation: 'In automotive and manufacturing, Generative AI is used for generating prototype designs for new car models.'
+            }, {
+                id: 54,
+                category: 'Applications',
+                question: 'Generative AI can predict and optimize ________ in manufacturing.',
+                options: [
+                    'assembly line processes',
+                    'employee salaries',
+                    'marketing campaigns',
+                    'customer reviews'
+                ],
+                correct: 0,
+                explanation: 'In production, Generative AI can predict and optimize assembly line processes for improved efficiency.'
+            }, {
+                id: 55,
+                category: 'Applications',
+                question: 'In e-commerce, Generative AI is used for ________.',
+                options: [
+                    'creating new product variations based on consumer trends',
+                    'only payment processing',
+                    'only shipping',
+                    'only customer support'
+                ],
+                correct: 0,
+                explanation: 'In e-commerce, Generative AI creates new product variations based on consumer trends and enables virtual try-ons.'
+            }, {
+                id: 56,
+                category: 'Applications',
+                question: 'Virtual try-ons in e-commerce use Generative AI to ________.',
+                options: [
+                    'generate virtual models of customers to try products',
+                    'only show product images',
+                    'only show product videos',
+                    'only process payments'
+                ],
+                correct: 0,
+                explanation: 'Generative AI enables virtual try-ons by generating virtual models of customers to try products before purchasing.'
+            }, {
+                id: 57,
+                category: 'Applications',
+                question: 'Generative AI can generate 3D models from 2D scans in which field?',
+                options: [
+                    'Entertainment',
+                    'Healthcare (medical imaging)',
+                    'Fashion',
+                    'E-commerce'
+                ],
+                correct: 1,
+                explanation: 'In healthcare, Generative AI can generate 3D models from 2D scans to aid in diagnosis and treatment.'
+            }, {
+                id: 58,
+                category: 'Applications',
+                question: 'Which industry uses Generative AI to create realistic CGI characters?',
+                options: [
+                    'Healthcare',
+                    'Entertainment & Media',
+                    'Automotive',
+                    'E-commerce'
+                ],
+                correct: 1,
+                explanation: 'The entertainment and media industry uses Generative AI to create realistic CGI characters and scenes.'
+            }, {
+                id: 59,
+                category: 'Applications',
+                question: 'Generative AI in Fashion & Design can generate ________.',
+                options: [
+                    'room layouts and decor suggestions',
+                    'only clothing patterns',
+                    'only color palettes',
+                    'only fabric textures'
+                ],
+                correct: 0,
+                explanation: 'In Fashion & Design, Generative AI can generate room layouts and decor suggestions, as well as personalized clothing designs.'
+            }, {
+                id: 60,
+                category: 'Applications',
+                question: 'In automotive, Generative AI helps with ________.',
+                options: [
+                    'prototype designs and production optimization',
+                    'only engine design',
+                    'only tire design',
+                    'only marketing'
+                ],
+                correct: 0,
+                explanation: 'Generative AI in automotive helps with prototype designs for new car models and optimizing assembly line processes.'
+            }, {
+                id: 61,
+                category: 'Applications',
+                question: 'Which of the following is a Generative AI application in e-commerce?',
+                options: [
+                    'Product design based on consumer trends',
+                    'Only inventory management',
+                    'Only logistics',
+                    'Only payment security'
+                ],
+                correct: 0,
+                explanation: 'Generative AI in e-commerce includes product design based on consumer trends and virtual try-ons.'
+            }, {
+                id: 62,
+                category: 'Applications',
+                question: 'Generative AI can be used to design personalized clothing based on ________.',
+                options: [
+                    'user preferences',
+                    'only weather conditions',
+                    'only price ranges',
+                    'only material availability'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can design personalized clothing based on user preferences, making fashion more customized.'
+            }, {
+                id: 63,
+                category: 'Applications',
+                question: 'In which industry is Generative AI used for drug discovery?',
+                options: [
+                    'Entertainment',
+                    'Healthcare',
+                    'Automotive',
+                    'E-commerce'
+                ],
+                correct: 1,
+                explanation: 'Drug discovery is a healthcare application where Generative AI generates molecular structures for new potential drugs.'
+            }, {
+                id: 64,
+                category: 'Applications',
+                question: 'Generative AI in film production can create ________.',
+                options: [
+                    'realistic CGI characters and scenes',
+                    'only scripts',
+                    'only soundtracks',
+                    'only marketing posters'
+                ],
+                correct: 0,
+                explanation: 'Generative AI in film production creates realistic CGI characters and scenes, enhancing visual effects.'
+            }, {
+                id: 65,
+                category: 'Applications',
+                question: 'Generative AI can generate ________ for new car models in automotive.',
+                options: [
+                    'prototype designs',
+                    'only color options',
+                    'only interior fabrics',
+                    'only wheel designs'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can generate prototype designs for new car models, accelerating the design process.'
+            }, {
+                id: 66,
+                category: 'Applications',
+                question: 'In manufacturing, Generative AI can optimize ________.',
+                options: [
+                    'assembly line processes',
+                    'only warehouse storage',
+                    'only employee schedules',
+                    'only procurement'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can predict and optimize assembly line processes in manufacturing for better efficiency.'
+            }, {
+                id: 67,
+                category: 'Applications',
+                question: 'Generative AI in e-commerce enables ________.',
+                options: [
+                    'virtual try-ons',
+                    'only product recommendations',
+                    'only price comparisons',
+                    'only review generation'
+                ],
+                correct: 0,
+                explanation: 'Generative AI enables virtual try-ons in e-commerce, allowing customers to see how products look on them.'
+            }, {
+                id: 68,
+                category: 'Applications',
+                question: 'Which of the following is a healthcare application of Generative AI?',
+                options: [
+                    'Generating molecular structures for drugs',
+                    'Creating video game characters',
+                    'Designing fashion collections',
+                    'Optimizing assembly lines'
+                ],
+                correct: 0,
+                explanation: 'Generating molecular structures for drugs is a healthcare application of Generative AI.'
+            }, {
+                id: 69,
+                category: 'Applications',
+                question: 'Generative AI can create personalized user experiences in which industry?',
+                options: [
+                    'All of the above',
+                    'Healthcare',
+                    'Entertainment',
+                    'E-commerce'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can create personalized experiences across healthcare, entertainment, e-commerce, and many other industries.'
+            }, {
+                id: 70,
+                category: 'Applications',
+                question: 'Generative AI in entertainment can compose music tracks and sound effects for ________.',
+                options: [
+                    'films, games, and other media',
+                    'only classical concerts',
+                    'only radio',
+                    'only podcasts'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can compose music tracks and sound effects for films, games, and other media, expanding creative possibilities.'
+            },
+
+            // ---- CATEGORY: Benefits & Capabilities (71–90) ----
+            {
+                id: 71,
+                category: 'Benefits & Capabilities',
+                question: 'Which of the following is a benefit of Generative AI?',
+                options: [
+                    'Unprecedented creativity',
+                    'Only cost reduction',
+                    'Only speed improvement',
+                    'Only data storage'
+                ],
+                correct: 0,
+                explanation: 'Unprecedented creativity is one of the key benefits of Generative AI, producing unique art, music, and designs.'
+            }, {
+                id: 72,
+                category: 'Benefits & Capabilities',
+                question: 'Data Augmentation in Generative AI refers to ________.',
+                options: [
+                    'generating new, synthetic data points to enhance datasets',
+                    'deleting old data',
+                    'compressing data',
+                    'encrypting data'
+                ],
+                correct: 0,
+                explanation: 'Data Augmentation involves generating new, synthetic data points to enhance datasets and aid in robust model training.'
+            }, {
+                id: 73,
+                category: 'Benefits & Capabilities',
+                question: 'Customization in Generative AI allows ________.',
+                options: [
+                    'tailoring content to individual preferences',
+                    'only mass production',
+                    'only standard designs',
+                    'only fixed templates'
+                ],
+                correct: 0,
+                explanation: 'Customization allows tailoring content to individual preferences, from personalized fashion to user-specific video game environments.'
+            }, {
+                id: 74,
+                category: 'Benefits & Capabilities',
+                question: 'Cost Efficiency in Generative AI means ________.',
+                options: [
+                    'reducing the need for expensive data collection or manual content creation',
+                    'increasing costs',
+                    'no change in costs',
+                    'only reducing hardware costs'
+                ],
+                correct: 0,
+                explanation: 'Cost efficiency comes from reducing the need for expensive data collection or manual content creation, saving resources.'
+            }, {
+                id: 75,
+                category: 'Benefits & Capabilities',
+                question: 'Real-time Generation in Generative AI refers to ________.',
+                options: [
+                    'producing high-quality content instantly',
+                    'only processing data overnight',
+                    'only batch processing',
+                    'only generating text'
+                ],
+                correct: 0,
+                explanation: 'Real-time generation means producing high-quality content instantly, from avatars to video enhancements.'
+            }, {
+                id: 76,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI is said to amplify human creativity by ________.',
+                options: [
+                    'enhancing human potential, not replacing it',
+                    'replacing human creativity entirely',
+                    'eliminating the need for human input',
+                    'only automating routine tasks'
+                ],
+                correct: 0,
+                explanation: 'Generative AI amplifies human creativity by enhancing human potential, not replacing it.'
+            }, {
+                id: 77,
+                category: 'Benefits & Capabilities',
+                question: 'Which of the following is NOT a benefit of Generative AI mentioned in the materials?',
+                options: [
+                    'Unprecedented creativity',
+                    'Data augmentation',
+                    'Elimination of all human errors',
+                    'Customization'
+                ],
+                correct: 2,
+                explanation: 'Elimination of all human errors is not mentioned as a benefit. Generative AI augments but does not eliminate human involvement.'
+            }, {
+                id: 78,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI can generate unique ________, pushing the boundaries of human-like creativity.',
+                options: [
+                    'art, music, and designs',
+                    'only text',
+                    'only numbers',
+                    'only code'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can produce unique art, music, and designs, expanding the boundaries of human-like creativity.'
+            }, {
+                id: 79,
+                category: 'Benefits & Capabilities',
+                question: 'Data augmentation helps in ________.',
+                options: [
+                    'robust model training',
+                    'only making data smaller',
+                    'only making data faster',
+                    'only encrypting data'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation enhances datasets with synthetic data points, aiding in robust model training and generalization.'
+            }, {
+                id: 80,
+                category: 'Benefits & Capabilities',
+                question: 'Which benefit allows for user-specific video game environments?',
+                options: [
+                    'Customization',
+                    'Cost efficiency',
+                    'Real-time generation',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'Customization allows for user-specific video game environments, tailoring content to individual preferences.'
+            }, {
+                id: 81,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI can reduce the need for ________.',
+                options: [
+                    'expensive data collection and manual content creation',
+                    'all human workers',
+                    'all computational resources',
+                    'all software'
+                ],
+                correct: 0,
+                explanation: 'Generative AI reduces the need for expensive data collection and manual content creation, saving time and money.'
+            }, {
+                id: 82,
+                category: 'Benefits & Capabilities',
+                question: 'Instant avatars and on-the-fly video enhancements are examples of ________.',
+                options: [
+                    'real-time generation',
+                    'data augmentation',
+                    'customization',
+                    'cost efficiency'
+                ],
+                correct: 0,
+                explanation: 'Real-time generation enables instant avatars and on-the-fly video enhancements, producing high-quality content instantly.'
+            }, {
+                id: 83,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI enhances decision-making and creativity by ________.',
+                options: [
+                    'amplifying human potential',
+                    'replacing human decision-making',
+                    'eliminating all risks',
+                    'only automating routine tasks'
+                ],
+                correct: 0,
+                explanation: 'Generative AI amplifies human potential by providing tools for enhanced decision-making and creativity.'
+            }, {
+                id: 84,
+                category: 'Benefits & Capabilities',
+                question: 'Which benefit of Generative AI helps in creating unique art and music?',
+                options: [
+                    'Unprecedented creativity',
+                    'Data augmentation',
+                    'Cost efficiency',
+                    'Real-time generation'
+                ],
+                correct: 0,
+                explanation: 'Unprecedented creativity is the benefit that enables the creation of unique art, music, and designs.'
+            }, {
+                id: 85,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI can generate ________ data points for robust training.',
+                options: [
+                    'new, synthetic',
+                    'only historical',
+                    'only real',
+                    'only random'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can generate new, synthetic data points to augment datasets and improve model training robustness.'
+            }, {
+                id: 86,
+                category: 'Benefits & Capabilities',
+                question: 'Tailoring content to individual preferences is known as ________.',
+                options: [
+                    'customization',
+                    'standardization',
+                    'generalization',
+                    'optimization'
+                ],
+                correct: 0,
+                explanation: 'Customization is the process of tailoring content to individual preferences, enabled by Generative AI.'
+            }, {
+                id: 87,
+                category: 'Benefits & Capabilities',
+                question: 'Which benefit reduces the need for manual content creation?',
+                options: [
+                    'Cost efficiency',
+                    'Unprecedented creativity',
+                    'Real-time generation',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'Cost efficiency reduces the need for expensive manual content creation, leveraging AI to generate content.'
+            }, {
+                id: 88,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI can produce high-quality content ________.',
+                options: [
+                    'in real-time',
+                    'only after hours of processing',
+                    'only in batch mode',
+                    'only with human supervision'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can produce high-quality content in real-time, enabling instant avatars and on-the-fly enhancements.'
+            }, {
+                id: 89,
+                category: 'Benefits & Capabilities',
+                question: 'Which of the following is a key benefit of Generative AI for businesses?',
+                options: [
+                    'Cost efficiency and customization',
+                    'Only increased complexity',
+                    'Only higher costs',
+                    'Only slower processes'
+                ],
+                correct: 0,
+                explanation: 'Cost efficiency and customization are key business benefits of Generative AI, saving resources and tailoring products.'
+            }, {
+                id: 90,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI helps in creating personalized ________ from fashion to video games.',
+                options: [
+                    'experiences',
+                    'only products',
+                    'only services',
+                    'only content'
+                ],
+                correct: 0,
+                explanation: 'Generative AI helps create personalized experiences across fashion, video games, and many other domains.'
+            },
+
+            // ---- CATEGORY: Challenges & Ethical Concerns (91–110) ----
+            {
+                id: 91,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is a data quality challenge in Generative AI?',
+                options: [
+                    'Ensuring availability of large, diverse datasets',
+                    'Only data storage',
+                    'Only data speed',
+                    'Only data encryption'
+                ],
+                correct: 0,
+                explanation: 'Ensuring the availability of large, diverse datasets for training is a key data quality challenge.'
+            }, {
+                id: 92,
+                category: 'Challenges & Ethics',
+                question: 'Data bias in Generative AI refers to ________.',
+                options: [
+                    'mitigating biases present in the training data to avoid skewed outputs',
+                    'only data size issues',
+                    'only data speed issues',
+                    'only data format issues'
+                ],
+                correct: 0,
+                explanation: 'Data bias involves mitigating biases present in the training data to avoid skewed or unfair outputs.'
+            }, {
+                id: 93,
+                category: 'Challenges & Ethics',
+                question: 'Which ethical concern is associated with Generative AI?',
+                options: [
+                    'Potential for generating deepfakes and deceptive content',
+                    'Only cost issues',
+                    'Only speed issues',
+                    'Only data size issues'
+                ],
+                correct: 0,
+                explanation: 'The potential for generating deepfakes and other deceptive content is a major ethical concern with Generative AI.'
+            }, {
+                id: 94,
+                category: 'Challenges & Ethics',
+                question: 'Intellectual Property in Generative AI involves ________.',
+                options: [
+                    'navigating the complex landscape of AI-generated content ownership',
+                    'only copyright of software',
+                    'only patent of hardware',
+                    'only trademark issues'
+                ],
+                correct: 0,
+                explanation: 'Intellectual property concerns involve navigating who owns AI-generated content, which is a complex legal landscape.'
+            }, {
+                id: 95,
+                category: 'Challenges & Ethics',
+                question: 'Which computational need is a challenge for Generative AI?',
+                options: [
+                    'High-performance computing resources',
+                    'Only low-end devices',
+                    'Only mobile devices',
+                    'Only cloud storage'
+                ],
+                correct: 0,
+                explanation: 'Generative AI requires high-performance computing resources for training and generation, which is a significant challenge.'
+            }, {
+                id: 96,
+                category: 'Challenges & Ethics',
+                question: 'Energy consumption is a concern in Generative AI due to ________.',
+                options: [
+                    'the high energy demands of complex AI models',
+                    'only cooling systems',
+                    'only data centers',
+                    'only network usage'
+                ],
+                correct: 0,
+                explanation: 'Complex AI models have high energy demands, making energy consumption a significant concern.'
+            }, {
+                id: 97,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is a data quality issue in Generative AI?',
+                options: [
+                    'Sufficient data and data bias',
+                    'Only data security',
+                    'Only data privacy',
+                    'Only data format'
+                ],
+                correct: 0,
+                explanation: 'Sufficient data availability and data bias are the two main data quality issues mentioned in the materials.'
+            }, {
+                id: 98,
+                category: 'Challenges & Ethics',
+                question: 'Deepfakes are a concern related to ________.',
+                options: [
+                    'misuse of Generative AI',
+                    'data quality',
+                    'computational needs',
+                    'cost efficiency'
+                ],
+                correct: 0,
+                explanation: 'Deepfakes are a misuse of Generative AI, where deceptive content is generated to mislead or harm.'
+            }, {
+                id: 99,
+                category: 'Challenges & Ethics',
+                question: 'Who owns the content generated by AI is a question related to ________.',
+                options: [
+                    'intellectual property',
+                    'data quality',
+                    'computational needs',
+                    'energy consumption'
+                ],
+                correct: 0,
+                explanation: 'Ownership of AI-generated content falls under intellectual property concerns, which are complex and evolving.'
+            }, {
+                id: 100,
+                category: 'Challenges & Ethics',
+                question: 'High-performance hardware is needed for ________ in Generative AI.',
+                options: [
+                    'training and generating',
+                    'only data storage',
+                    'only networking',
+                    'only UI rendering'
+                ],
+                correct: 0,
+                explanation: 'High-performance computing resources are required for both training and generating content in Generative AI.'
+            }, {
+                id: 101,
+                category: 'Challenges & Ethics',
+                question: 'Which ethical concern relates to the potential deception of AI-generated content?',
+                options: [
+                    'Misuse',
+                    'Data bias',
+                    'Energy consumption',
+                    'Cost efficiency'
+                ],
+                correct: 0,
+                explanation: 'Misuse of Generative AI, such as creating deepfakes, relates to the potential for deception and harm.'
+            }, {
+                id: 102,
+                category: 'Challenges & Ethics',
+                question: 'Biased training data can lead to ________.',
+                options: [
+                    'skewed outputs',
+                    'only faster training',
+                    'only better accuracy',
+                    'only lower costs'
+                ],
+                correct: 0,
+                explanation: 'Biased training data can lead to skewed or unfair outputs, which is a significant ethical concern.'
+            }, {
+                id: 103,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is a computational challenge for Generative AI?',
+                options: [
+                    'Hardware requirements and energy consumption',
+                    'Only software issues',
+                    'Only network issues',
+                    'Only storage issues'
+                ],
+                correct: 0,
+                explanation: 'Hardware requirements and energy consumption are the two main computational challenges for Generative AI.'
+            }, {
+                id: 104,
+                category: 'Challenges & Ethics',
+                question: 'The complex landscape of AI-generated content ownership is a ________ concern.',
+                options: [
+                    'intellectual property',
+                    'data quality',
+                    'computational',
+                    'environmental'
+                ],
+                correct: 0,
+                explanation: 'Ownership of AI-generated content is an intellectual property concern that is legally complex.'
+            }, {
+                id: 105,
+                category: 'Challenges & Ethics',
+                question: 'Ensuring diverse datasets is important to avoid ________.',
+                options: [
+                    'data bias',
+                    'only data loss',
+                    'only data speed issues',
+                    'only data cost issues'
+                ],
+                correct: 0,
+                explanation: 'Diverse datasets help avoid data bias, ensuring that AI models produce fair and accurate outputs.'
+            }, {
+                id: 106,
+                category: 'Challenges & Ethics',
+                question: 'Generative AI\'s energy consumption is a concern for ________.',
+                options: [
+                    'environmental sustainability',
+                    'only cost',
+                    'only speed',
+                    'only accuracy'
+                ],
+                correct: 0,
+                explanation: 'The high energy consumption of complex AI models raises concerns about environmental sustainability.'
+            }, {
+                id: 107,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is NOT a challenge mentioned for Generative AI?',
+                options: [
+                    'Lack of programming languages',
+                    'Data quality issues',
+                    'Ethical concerns',
+                    'Computational needs'
+                ],
+                correct: 0,
+                explanation: 'Lack of programming languages is not mentioned as a challenge. The challenges are data quality, ethics, and computation.'
+            }, {
+                id: 108,
+                category: 'Challenges & Ethics',
+                question: 'Deepfakes are an example of ________.',
+                options: [
+                    'misuse of Generative AI',
+                    'data augmentation',
+                    'customization',
+                    'real-time generation'
+                ],
+                correct: 0,
+                explanation: 'Deepfakes are an example of the misuse of Generative AI, creating deceptive and potentially harmful content.'
+            }, {
+                id: 109,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is a data quality requirement for Generative AI?',
+                options: [
+                    'Sufficient data availability',
+                    'Only small datasets',
+                    'Only unstructured data',
+                    'Only text data'
+                ],
+                correct: 0,
+                explanation: 'Sufficient data availability is a key data quality requirement for training effective Generative AI models.'
+            }, {
+                id: 110,
+                category: 'Challenges & Ethics',
+                question: 'The ethical concern of intellectual property in Generative AI relates to ________.',
+                options: [
+                    'ownership of AI-generated content',
+                    'data quality',
+                    'computational costs',
+                    'energy efficiency'
+                ],
+                correct: 0,
+                explanation: 'Intellectual property concerns revolve around who owns the content generated by AI systems.'
+            },
+
+            // ---- CATEGORY: Timeline & History (111–130) ----
+            {
+                id: 111,
+                category: 'Timeline & History',
+                question: 'In which year was the term "Artificial Intelligence" coined?',
+                options: [
+                    '1950',
+                    '1955',
+                    '1960',
+                    '1970'
+                ],
+                correct: 1,
+                explanation: 'The term "Artificial Intelligence" was coined by John McCarthy in 1955, followed by the Dartmouth conference in 1956.'
+            }, {
+                id: 112,
+                category: 'Timeline & History',
+                question: 'The Dartmouth conference in 1956 is known for ________.',
+                options: [
+                    'coining the term "Artificial Intelligence"',
+                    'introducing the first computer',
+                    'creating the first neural network',
+                    'developing the first AI product'
+                ],
+                correct: 0,
+                explanation: 'The 1956 Dartmouth conference is where the term "Artificial Intelligence" was formally introduced and the field was founded.'
+            }, {
+                id: 113,
+                category: 'Timeline & History',
+                question: 'Who coined the term "Artificial Intelligence"?',
+                options: [
+                    'Alan Turing',
+                    'John McCarthy',
+                    'Geoffrey Hinton',
+                    'Yann LeCun'
+                ],
+                correct: 1,
+                explanation: 'John McCarthy coined the term "Artificial Intelligence" in 1955.'
+            }, {
+                id: 114,
+                category: 'Timeline & History',
+                question: 'Machine Learning as a field began gaining prominence in the ________.',
+                options: [
+                    '1950s',
+                    '1980s',
+                    '2000s',
+                    '2010s'
+                ],
+                correct: 1,
+                explanation: 'Machine Learning gained prominence in the 1980s with the development of algorithms and models that could learn from data.'
+            }, {
+                id: 115,
+                category: 'Timeline & History',
+                question: 'The backpropagation algorithm was developed in the ________.',
+                options: [
+                    '1950s',
+                    '1960s',
+                    '1970s',
+                    '1980s'
+                ],
+                correct: 3,
+                explanation: 'The backpropagation algorithm was developed in the 1980s, enabling effective training of neural networks.'
+            }, {
+                id: 116,
+                category: 'Timeline & History',
+                question: 'Deep Learning gained traction in the ________.',
+                options: [
+                    '1990s',
+                    '2000–2010 period',
+                    '1980s',
+                    '1960s'
+                ],
+                correct: 1,
+                explanation: 'Deep Learning gained traction in the 2000–2010 period, driven by GPUs and improved algorithms.'
+            }, {
+                id: 117,
+                category: 'Timeline & History',
+                question: 'Generative AI emerged in the ________.',
+                options: [
+                    '1950s',
+                    '1980s',
+                    'late 2010s to present',
+                    '2000s'
+                ],
+                correct: 2,
+                explanation: 'Generative AI emerged in the late 2010s to present, with GANs introduced in 2014.'
+            }, {
+                id: 118,
+                category: 'Timeline & History',
+                question: 'GANs (Generative Adversarial Networks) were introduced in ________.',
+                options: [
+                    '2010',
+                    '2012',
+                    '2014',
+                    '2016'
+                ],
+                correct: 2,
+                explanation: 'Generative Adversarial Networks (GANs) were introduced in 2014, marking a key milestone in Generative AI.'
+            }, {
+                id: 119,
+                category: 'Timeline & History',
+                question: 'Which of the following is the correct chronological order of AI development?',
+                options: [
+                    'Basic AI → ML → Deep Learning → Generative AI',
+                    'ML → Basic AI → Deep Learning → Generative AI',
+                    'Deep Learning → Basic AI → ML → Generative AI',
+                    'Generative AI → Deep Learning → ML → Basic AI'
+                ],
+                correct: 0,
+                explanation: 'The correct order is Basic AI (1950s), ML (1980s), Deep Learning (2000s), and Generative AI (late 2010s).'
+            }, {
+                id: 120,
+                category: 'Timeline & History',
+                question: 'The term "Artificial Intelligence" was coined at which event?',
+                options: [
+                    'Turing Test',
+                    'Dartmouth Conference',
+                    'MIT AI Lab opening',
+                    'Stanford AI Lab opening'
+                ],
+                correct: 1,
+                explanation: 'The term "Artificial Intelligence" was coined at the Dartmouth Conference in 1956.'
+            }, {
+                id: 121,
+                category: 'Timeline & History',
+                question: 'What is the significance of the 1950s in AI history?',
+                options: [
+                    'The beginning of Basic AI',
+                    'The start of Deep Learning',
+                    'The introduction of GANs',
+                    'The development of backpropagation'
+                ],
+                correct: 0,
+                explanation: 'The 1950s marked the beginning of Basic AI, with the Dartmouth conference and the coining of the term.'
+            }, {
+                id: 122,
+                category: 'Timeline & History',
+                question: 'Which decade saw the development of algorithms and models that could learn from data?',
+                options: [
+                    '1950s',
+                    '1960s',
+                    '1970s',
+                    '1980s'
+                ],
+                correct: 3,
+                explanation: 'The 1980s saw the development of ML algorithms and models that could learn from data.'
+            }, {
+                id: 123,
+                category: 'Timeline & History',
+                question: 'Advanced hardware (GPUs) and improved algorithms in the 2000s enabled the rise of ________.',
+                options: [
+                    'Basic AI',
+                    'Machine Learning',
+                    'Deep Learning',
+                    'Generative AI'
+                ],
+                correct: 2,
+                explanation: 'GPUs and improved algorithms in the 2000s enabled the rise of Deep Learning.'
+            }, {
+                id: 124,
+                category: 'Timeline & History',
+                question: 'Generative AI began to emerge in the ________.',
+                options: [
+                    'early 2000s',
+                    'late 2010s',
+                    '1990s',
+                    '1980s'
+                ],
+                correct: 1,
+                explanation: 'Generative AI began to emerge in the late 2010s, with GANs introduced in 2014 and subsequent advances.'
+            }, {
+                id: 125,
+                category: 'Timeline & History',
+                question: 'Who is credited with coining the term "Artificial Intelligence"?',
+                options: [
+                    'Alan Turing',
+                    'John McCarthy',
+                    'Marvin Minsky',
+                    'Geoffrey Hinton'
+                ],
+                correct: 1,
+                explanation: 'John McCarthy is credited with coining the term "Artificial Intelligence" in 1955.'
+            }, {
+                id: 126,
+                category: 'Timeline & History',
+                question: 'The backpropagation algorithm was a key development in which era of AI?',
+                options: [
+                    'Basic AI',
+                    'Machine Learning',
+                    'Deep Learning',
+                    'Generative AI'
+                ],
+                correct: 1,
+                explanation: 'Backpropagation was a key development in the Machine Learning era (1980s), enabling neural network training.'
+            }, {
+                id: 127,
+                category: 'Timeline & History',
+                question: 'Which milestone marks the transition to Deep Learning?',
+                options: [
+                    'Coining of AI',
+                    'Development of backpropagation',
+                    'Advances in hardware (GPUs) and algorithms in the 2000s',
+                    'Introduction of GANs'
+                ],
+                correct: 2,
+                explanation: 'The transition to Deep Learning was marked by advances in hardware (GPUs) and improved algorithms in the 2000s.'
+            }, {
+                id: 128,
+                category: 'Timeline & History',
+                question: 'GANs were introduced in 2014, marking the rise of ________.',
+                options: [
+                    'Basic AI',
+                    'Machine Learning',
+                    'Deep Learning',
+                    'Generative AI'
+                ],
+                correct: 3,
+                explanation: 'GANs introduced in 2014 marked the rise of Generative AI, enabling new data generation capabilities.'
+            }, {
+                id: 129,
+                category: 'Timeline & History',
+                question: 'The Dartmouth conference is significant because it ________.',
+                options: [
+                    'launched the field of AI',
+                    'introduced the first AI product',
+                    'created the first neural network',
+                    'developed the first AI language'
+                ],
+                correct: 0,
+                explanation: 'The Dartmouth conference in 1956 launched the field of AI by formally introducing the term and bringing researchers together.'
+            }, {
+                id: 130,
+                category: 'Timeline & History',
+                question: 'Which of the following represents the most recent development in AI?',
+                options: [
+                    'Basic AI',
+                    'Machine Learning',
+                    'Deep Learning',
+                    'Generative AI'
+                ],
+                correct: 3,
+                explanation: 'Generative AI is the most recent development, emerging in the late 2010s to present.'
+            },
+
+            // ---- CATEGORY: Technical Concepts & Terminology (131–150) ----
+            {
+                id: 131,
+                category: 'Technical Concepts',
+                question: 'What does GAN stand for?',
+                options: [
+                    'Generative Adversarial Network',
+                    'General Artificial Network',
+                    'Graphical Analysis Network',
+                    'Generative Algorithm Network'
+                ],
+                correct: 0,
+                explanation: 'GAN stands for Generative Adversarial Network, a class of generative models introduced in 2014.'
+            }, {
+                id: 132,
+                category: 'Technical Concepts',
+                question: 'Which algorithm is used to train neural networks by adjusting weights?',
+                options: [
+                    'Backpropagation',
+                    'Forward propagation',
+                    'Gradient boosting',
+                    'Random forest'
+                ],
+                correct: 0,
+                explanation: 'Backpropagation is the algorithm used to train neural networks by calculating gradients and adjusting weights.'
+            }, {
+                id: 133,
+                category: 'Technical Concepts',
+                question: 'In Deep Learning, "layers" refer to ________.',
+                options: [
+                    'levels of abstraction in a neural network',
+                    'data storage units',
+                    'hardware components',
+                    'software modules'
+                ],
+                correct: 0,
+                explanation: 'Layers in deep learning refer to levels of abstraction in a neural network, each extracting increasingly complex features.'
+            }, {
+                id: 134,
+                category: 'Technical Concepts',
+                question: 'What is the role of GPUs in Deep Learning?',
+                options: [
+                    'To provide parallel processing power for training models',
+                    'To store data',
+                    'To visualize results',
+                    'To network computers'
+                ],
+                correct: 0,
+                explanation: 'GPUs provide the parallel processing power needed to train large deep learning models efficiently.'
+            }, {
+                id: 135,
+                category: 'Technical Concepts',
+                question: 'A neural network with many layers is called a ________.',
+                options: [
+                    'deep neural network',
+                    'wide neural network',
+                    'shallow neural network',
+                    'single-layer network'
+                ],
+                correct: 0,
+                explanation: 'A neural network with many layers is called a deep neural network, which is the basis of deep learning.'
+            }, {
+                id: 136,
+                category: 'Technical Concepts',
+                question: 'Which of the following is a key component of a neural network?',
+                options: [
+                    'Neurons and weights',
+                    'Only data',
+                    'Only algorithms',
+                    'Only hardware'
+                ],
+                correct: 0,
+                explanation: 'Neural networks consist of neurons (nodes) and weights (connections) that are adjusted during training.'
+            }, {
+                id: 137,
+                category: 'Technical Concepts',
+                question: 'In the context of AI, what is "training" a model?',
+                options: [
+                    'The process of teaching a model to learn patterns from data',
+                    'Deleting old models',
+                    'Copying models',
+                    'Installing software'
+                ],
+                correct: 0,
+                explanation: 'Training is the process of teaching a model to learn patterns from data by adjusting its parameters.'
+            }, {
+                id: 138,
+                category: 'Technical Concepts',
+                question: 'What is a "synthetic" data point in Generative AI?',
+                options: [
+                    'A newly generated data point that resembles real data',
+                    'A data point from the original dataset',
+                    'A corrupted data point',
+                    'A duplicate data point'
+                ],
+                correct: 0,
+                explanation: 'A synthetic data point is a newly generated data point that resembles real data, used for data augmentation.'
+            }, {
+                id: 139,
+                category: 'Technical Concepts',
+                question: 'Which type of AI model can generate new data samples?',
+                options: [
+                    'Generative models',
+                    'Discriminative models',
+                    'Regression models',
+                    'Clustering models'
+                ],
+                correct: 0,
+                explanation: 'Generative models can generate new data samples that resemble the training data.'
+            }, {
+                id: 140,
+                category: 'Technical Concepts',
+                question: 'The "depth" of a neural network refers to the ________.',
+                options: [
+                    'number of layers',
+                    'width of layers',
+                    'amount of data',
+                    'processing speed'
+                ],
+                correct: 0,
+                explanation: 'The depth of a neural network refers to the number of layers it has.'
+            }, {
+                id: 141,
+                category: 'Technical Concepts',
+                question: 'What is the purpose of "weights" in a neural network?',
+                options: [
+                    'To adjust the strength of connections between neurons',
+                    'To store data',
+                    'To visualize results',
+                    'To connect to the internet'
+                ],
+                correct: 0,
+                explanation: 'Weights adjust the strength of connections between neurons, determining how much influence one neuron has on another.'
+            }, {
+                id: 142,
+                category: 'Technical Concepts',
+                question: 'In Generative AI, "data augmentation" refers to ________.',
+                options: [
+                    'generating new synthetic data to enhance training datasets',
+                    'deleting old data',
+                    'compressing data',
+                    'encrypting data'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation involves generating new synthetic data to enhance training datasets for more robust models.'
+            }, {
+                id: 143,
+                category: 'Technical Concepts',
+                question: 'Which of the following is NOT a type of AI model?',
+                options: [
+                    'Generative',
+                    'Discriminative',
+                    'Computative',
+                    'None of the above'
+                ],
+                correct: 2,
+                explanation: '"Computative" is not a type of AI model. Generative and Discriminative are the two main categories mentioned.'
+            }, {
+                id: 144,
+                category: 'Technical Concepts',
+                question: 'What does "real-time generation" mean in Generative AI?',
+                options: [
+                    'Producing content instantly as needed',
+                    'Generating content only overnight',
+                    'Generating content in batches',
+                    'Only generating text'
+                ],
+                correct: 0,
+                explanation: 'Real-time generation means producing content instantly as needed, such as instant avatars or on-the-fly video enhancements.'
+            }, {
+                id: 145,
+                category: 'Technical Concepts',
+                question: 'The process of adjusting neural network weights to minimize error is called ________.',
+                options: [
+                    'backpropagation',
+                    'forward propagation',
+                    'gradient descent',
+                    'optimization'
+                ],
+                correct: 0,
+                explanation: 'Backpropagation is the process of adjusting weights to minimize error, often using gradient descent.'
+            }, {
+                id: 146,
+                category: 'Technical Concepts',
+                question: 'Which of the following is a characteristic of discriminative models?',
+                options: [
+                    'They can generate new data',
+                    'They focus on the decision boundary between classes',
+                    'They model the data distribution',
+                    'They are used for data synthesis'
+                ],
+                correct: 1,
+                explanation: 'Discriminative models focus on the decision boundary between classes for classification tasks.'
+            }, {
+                id: 147,
+                category: 'Technical Concepts',
+                question: 'In the context of Generative AI, "distribution" refers to ________.',
+                options: [
+                    'the underlying probability distribution of the data',
+                    'the hardware distribution',
+                    'the software distribution',
+                    'the network distribution'
+                ],
+                correct: 0,
+                explanation: 'Distribution refers to the underlying probability distribution of the data that generative models aim to learn.'
+            }, {
+                id: 148,
+                category: 'Technical Concepts',
+                question: 'What is the primary advantage of deep learning over traditional ML?',
+                options: [
+                    'Automatic feature learning from raw data',
+                    'Requires less computational power',
+                    'Works with smaller datasets',
+                    'Is easier to interpret'
+                ],
+                correct: 0,
+                explanation: 'Deep learning automatically learns features from raw data, while traditional ML requires manual feature engineering.'
+            }, {
+                id: 149,
+                category: 'Technical Concepts',
+                question: 'Which of the following is a generative model?',
+                options: [
+                    'GAN (Generative Adversarial Network)',
+                    'Logistic Regression',
+                    'Support Vector Machine',
+                    'Decision Tree'
+                ],
+                correct: 0,
+                explanation: 'GAN is a generative model. The others are discriminative models used for classification.'
+            }, {
+                id: 150,
+                category: 'Technical Concepts',
+                question: 'Which of the following is a discriminative model?',
+                options: [
+                    'GAN',
+                    'VAE',
+                    'Logistic Regression',
+                    'Diffusion Model'
+                ],
+                correct: 2,
+                explanation: 'Logistic Regression is a discriminative model used for classification. GAN, VAE, and Diffusion Models are generative.'
+            },
+
+            // ---- Extra questions to reach 150+ (151–160) ----
+            {
+                id: 151,
+                category: 'Applications',
+                question: 'Generative AI can be used to generate ________ for interior design.',
+                options: [
+                    'room layouts and decor suggestions',
+                    'only wall colors',
+                    'only furniture prices',
+                    'only lighting designs'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can generate complete room layouts and decor suggestions for interior design.'
+            }, {
+                id: 152,
+                category: 'Benefits & Capabilities',
+                question: 'Which benefit allows Generative AI to produce unique designs and art?',
+                options: [
+                    'Unprecedented creativity',
+                    'Cost efficiency',
+                    'Data augmentation',
+                    'Real-time generation'
+                ],
+                correct: 0,
+                explanation: 'Unprecedented creativity is the benefit that enables unique art, music, and design generation.'
+            }, {
+                id: 153,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is an ethical concern specific to Generative AI?',
+                options: [
+                    'Generation of deepfakes',
+                    'Only data storage',
+                    'Only software bugs',
+                    'Only hardware failures'
+                ],
+                correct: 0,
+                explanation: 'The generation of deepfakes and deceptive content is a specific ethical concern for Generative AI.'
+            }, {
+                id: 154,
+                category: 'Timeline & History',
+                question: 'The 1980s saw the development of which key ML algorithm?',
+                options: [
+                    'Backpropagation',
+                    'Forward propagation',
+                    'Gradient boosting',
+                    'Random forest'
+                ],
+                correct: 0,
+                explanation: 'The backpropagation algorithm was developed in the 1980s, enabling neural network training.'
+            }, {
+                id: 155,
+                category: 'Technical Concepts',
+                question: 'In a neural network, the "bias" term is used to ________.',
+                options: [
+                    'shift the activation function',
+                    'store data',
+                    'connect to the internet',
+                    'visualize results'
+                ],
+                correct: 0,
+                explanation: 'The bias term in a neural network shifts the activation function, allowing the model to fit the data better.'
+            }, {
+                id: 156,
+                category: 'AI Fundamentals',
+                question: 'Which of the following is an example of a task that Generative AI can perform?',
+                options: [
+                    'Generating realistic images',
+                    'Only sorting numbers',
+                    'Only storing files',
+                    'Only sending emails'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can generate realistic images, music, text, and other content.'
+            }, {
+                id: 157,
+                category: 'Applications',
+                question: 'In which industry is Generative AI used for virtual try-ons?',
+                options: [
+                    'E-commerce & Retail',
+                    'Healthcare',
+                    'Automotive',
+                    'Entertainment'
+                ],
+                correct: 0,
+                explanation: 'Virtual try-ons are used in E-commerce & Retail, allowing customers to see products on themselves.'
+            }, {
+                id: 158,
+                category: 'Benefits & Capabilities',
+                question: 'Generative AI can generate high-quality content in real-time, which enables ________.',
+                options: [
+                    'instant avatars and video enhancements',
+                    'only text generation',
+                    'only image generation',
+                    'only audio generation'
+                ],
+                correct: 0,
+                explanation: 'Real-time generation enables instant avatars and on-the-fly video enhancements, among other applications.'
+            }, {
+                id: 159,
+                category: 'Challenges & Ethics',
+                question: 'Which of the following is a computational need for Generative AI?',
+                options: [
+                    'High-performance computing resources',
+                    'Only low-end devices',
+                    'Only single-core processors',
+                    'Only minimal RAM'
+                ],
+                correct: 0,
+                explanation: 'Generative AI requires high-performance computing resources for training and generating content.'
+            }, {
+                id: 160,
+                category: 'Technical Concepts',
+                question: 'The term "deep" in deep learning refers to the ________.',
+                options: [
+                    'number of layers in the neural network',
+                    'complexity of the data',
+                    'size of the dataset',
+                    'speed of processing'
+                ],
+                correct: 0,
+                explanation: '"Deep" refers to the multiple layers in the neural network that enable hierarchical feature learning.'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null); // index of selected option, or -1 if skipped
+        let questionStatus = new Array(totalQ).fill('unanswered'); // 'unanswered', 'correct', 'incorrect'
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        // Set total
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+
+            // Category
+            elements.categoryTag.textContent = q.category;
+
+            // Question
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+
+            // Options
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        // Show correct answer even if not selected
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            // Explanation
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            // Option click handlers (only if not answered)
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            // Update progress
+            updateProgress();
+
+            // Nav buttons
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            // If all answered, also enable
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+
+            // Update score
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            // Visually select the option — do NOT record answer yet
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(`.option-item[data-qindex="${qIndex}"][data-optindex="${optIndex}"]`);
+            if (clicked) clicked.classList.add('selected');
+            // Enable submit button
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            // Find selected option
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            // Scroll to top of card
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            // accuracy
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            // Hide question area, show results
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+
+            // Update progress bar to 100%
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        // ---- EVENT LISTENERS ----
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                // Check if all answered
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    // If not all answered, but last is answered, show results anyway
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results, or review your answers.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            // Reset all
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        // ---- INIT ----
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

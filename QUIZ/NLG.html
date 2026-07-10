@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gen AI Specialist – NLG & Language Models Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>NLG · Language Models · Seq2Seq</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  160+ QUESTIONS – NLG, Language Models, Seq2Seq
+        // ============================================================
+        const QUESTIONS = [
+            // ---- INTRO TO NLG (1–25) ----
+            {
+                id: 1,
+                category: 'Intro to NLG',
+                question: 'What is Natural Language Generation (NLG)?',
+                options: [
+                    'The process of automatically generating coherent and contextually relevant text based on data or rules',
+                    'The process of understanding human language',
+                    'A type of computer vision',
+                    'A method for image generation'
+                ],
+                correct: 0,
+                explanation: 'NLG is the process of automatically generating coherent and contextually relevant text based on a set of predefined rules, algorithms, or machine learning models.【4†L2】'
+            }, {
+                id: 2,
+                category: 'Intro to NLG',
+                question: 'Which of the following is a core concept of NLG?',
+                options: [
+                    'Generating human-like text from structured data',
+                    'Classifying text into categories',
+                    'Translating text between languages',
+                    'Summarizing existing text'
+                ],
+                correct: 0,
+                explanation: 'NLG focuses on generating new, human-like text from data, often structured or unstructured.【2†L2】'
+            }, {
+                id: 3,
+                category: 'Intro to NLG',
+                question: 'What is the main distinction between NLG and other AI subfields like NLP?',
+                options: [
+                    'NLG generates text; NLP often focuses on understanding or processing text',
+                    'NLG is only for chatbots',
+                    'NLP is a subset of NLG',
+                    'There is no distinction'
+                ],
+                correct: 0,
+                explanation: 'NLG is specifically about generating text, while NLP encompasses a broader range of text processing and understanding tasks.【2†L3】'
+            }, {
+                id: 4,
+                category: 'Intro to NLG',
+                question: 'What is the necessity of NLG in modern technology?',
+                options: [
+                    'To automate content creation and enable human-like communication with machines',
+                    'To replace all human writers',
+                    'Only for academic research',
+                    'To make computers understand emotions'
+                ],
+                correct: 0,
+                explanation: 'NLG is essential for automating content creation, powering chatbots, and enabling machines to communicate naturally with humans.【3†L2】'
+            }, {
+                id: 5,
+                category: 'Intro to NLG',
+                question: 'Which of the following is a diverse domain of NLG application?',
+                options: [
+                    'Automated journalism, chatbots, and medical reporting',
+                    'Only weather forecasting',
+                    'Only creative writing',
+                    'Only language translation'
+                ],
+                correct: 0,
+                explanation: 'NLG is applied in various domains including journalism, customer support, healthcare, and many others.【3†L3】'
+            }, {
+                id: 6,
+                category: 'Intro to NLG',
+                question: 'What is the economic and social impact of NLG?',
+                options: [
+                    'It enhances productivity and enables new forms of communication and content creation',
+                    'It has no significant impact',
+                    'It only affects the technology sector',
+                    'It reduces the need for human creativity'
+                ],
+                correct: 0,
+                explanation: 'NLG boosts productivity by automating content generation and enables new ways for humans and machines to interact.【3†L4】'
+            }, {
+                id: 7,
+                category: 'Intro to NLG',
+                question: 'What is a rule-based approach in NLG?',
+                options: [
+                    'Following a set of hard-coded rules to generate text',
+                    'Using machine learning to learn patterns from data',
+                    'Using neural networks to generate text',
+                    'A method that requires no human input'
+                ],
+                correct: 0,
+                explanation: 'Rule-based NLG relies on predefined linguistic rules and templates to produce text.【4†L3】'
+            }, {
+                id: 8,
+                category: 'Intro to NLG',
+                question: 'What is a machine learning approach in NLG?',
+                options: [
+                    'Using vast amounts of data to learn the nuances of human language for text generation',
+                    'Using hand-crafted rules',
+                    'Using only statistical methods',
+                    'A method that does not require training'
+                ],
+                correct: 0,
+                explanation: 'Machine learning approaches, especially deep learning, use large datasets to train models that generate human-like text.【4†L4】'
+            }, {
+                id: 9,
+                category: 'Intro to NLG',
+                question: 'What are the three stages of the NLG process?',
+                options: [
+                    'Text planning, sentence planning, and text realization',
+                    'Data collection, model training, and evaluation',
+                    'Input processing, output generation, and feedback',
+                    'Analysis, synthesis, and presentation'
+                ],
+                correct: 0,
+                explanation: 'The NLG pipeline typically consists of text planning (content selection and organization), sentence planning (syntactic structuring), and text realization (surface form generation).【5†L3】'
+            }, {
+                id: 10,
+                category: 'Intro to NLG',
+                question: 'What is the role of text planning in NLG?',
+                options: [
+                    'Determining what content to include and how to organize it',
+                    'Converting sentences into a final text',
+                    'Choosing the right words and syntax',
+                    'Evaluating the generated text'
+                ],
+                correct: 0,
+                explanation: 'Text planning involves content selection, organization, and focus determination, deciding what information to convey and in what order.【6†L3】'
+            }, {
+                id: 11,
+                category: 'Intro to NLG',
+                question: 'What is the role of sentence planning in NLG?',
+                options: [
+                    'Deciding the syntactic structure, word choice, and word order for each sentence',
+                    'Selecting the overall topic',
+                    'Generating the final text',
+                    'Evaluating the coherence'
+                ],
+                correct: 0,
+                explanation: 'Sentence planning bridges text planning and text realization by determining the grammatical structure and lexical choice for each sentence.【7†L2】'
+            }, {
+                id: 12,
+                category: 'Intro to NLG',
+                question: 'What is the role of text realization in NLG?',
+                options: [
+                    'Converting sentence plans into a final, fluent, and grammatically correct text',
+                    'Selecting the content',
+                    'Organizing the content',
+                    'Evaluating the output'
+                ],
+                correct: 0,
+                explanation: 'Text realization is the final stage where sentence plans are turned into actual text, ensuring readability, coherence, and grammatical accuracy.【8†L2】'
+            }, {
+                id: 13,
+                category: 'Intro to NLG',
+                question: 'What is an example of text planning in NLG?',
+                options: [
+                    'Generating a weather report by selecting key weather data to include',
+                    'Choosing the words "sunny" and "warm" for a weather report',
+                    'Formatting the final weather report text',
+                    'Evaluating the accuracy of the weather report'
+                ],
+                correct: 0,
+                explanation: 'Text planning for a weather report involves deciding which weather parameters (temperature, precipitation, wind) to include and how to structure them.【6†L4】'
+            }, {
+                id: 14,
+                category: 'Intro to NLG',
+                question: 'What is the importance of sentence planning for grammar and syntax?',
+                options: [
+                    'It ensures that sentences are grammatically correct and well-formed',
+                    'It selects the overall topic',
+                    'It generates the final text',
+                    'It evaluates the output'
+                ],
+                correct: 0,
+                explanation: 'Sentence planning is crucial for producing grammatically correct and syntactically well-formed sentences.【7†L4】'
+            }, {
+                id: 15,
+                category: 'Intro to NLG',
+                question: 'What is the importance of text realization for readability?',
+                options: [
+                    'It ensures the final text is fluent, coherent, and easy to read',
+                    'It selects the content',
+                    'It organizes the content',
+                    'It evaluates the output'
+                ],
+                correct: 0,
+                explanation: 'Text realization focuses on making the generated text fluent and readable, applying surface-level linguistic rules.【8†L4】'
+            }, {
+                id: 16,
+                category: 'Intro to NLG',
+                question: 'What is a key technique used in text realization?',
+                options: [
+                    'Templating and machine learning models',
+                    'Content selection',
+                    'Syntactic structuring',
+                    'Word choice'
+                ],
+                correct: 0,
+                explanation: 'Text realization often uses templates or machine learning models to generate the final text from sentence plans.【8†L3】'
+            }, {
+                id: 17,
+                category: 'Intro to NLG',
+                question: 'What is the difference between rule-based and machine learning NLG?',
+                options: [
+                    'Rule-based uses hard-coded rules; machine learning learns from data',
+                    'Rule-based is always better',
+                    'Machine learning does not require data',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'Rule-based NLG relies on predefined rules, while machine learning NLG learns patterns from large datasets.【4†L3-L4】'
+            }, {
+                id: 18,
+                category: 'Intro to NLG',
+                question: 'What is the primary goal of NLG?',
+                options: [
+                    'To produce human-like text that is coherent, contextually relevant, and useful',
+                    'To classify text into categories',
+                    'To translate text between languages',
+                    'To summarize existing text'
+                ],
+                correct: 0,
+                explanation: 'The primary goal of NLG is to generate text that is indistinguishable from human-written text and serves a useful purpose.【4†L2】'
+            }, {
+                id: 19,
+                category: 'Intro to NLG',
+                question: 'What is the "content selection" task in text planning?',
+                options: [
+                    'Deciding which pieces of information to include in the generated text',
+                    'Deciding the order of information',
+                    'Deciding the grammatical structure',
+                    'Deciding the final wording'
+                ],
+                correct: 0,
+                explanation: 'Content selection is the process of choosing the most relevant information to convey from the available data.【6†L3】'
+            }, {
+                id: 20,
+                category: 'Intro to NLG',
+                question: 'What is the "content organization" task in text planning?',
+                options: [
+                    'Structuring the selected information in a logical and coherent order',
+                    'Selecting which information to include',
+                    'Choosing the right words',
+                    'Generating the final text'
+                ],
+                correct: 0,
+                explanation: 'Content organization arranges the selected information in a coherent structure, such as chronological order or importance.【6†L3】'
+            }, {
+                id: 21,
+                category: 'Intro to NLG',
+                question: 'What is "focus determination" in text planning?',
+                options: [
+                    'Identifying the main point or perspective of the generated text',
+                    'Selecting the content',
+                    'Organizing the content',
+                    'Generating the final text'
+                ],
+                correct: 0,
+                explanation: 'Focus determination identifies the central theme or angle of the text, guiding what is emphasized.【6†L3】'
+            }, {
+                id: 22,
+                category: 'Intro to NLG',
+                question: 'What is an example of sentence planning?',
+                options: [
+                    'Deciding to use "The temperature will reach 25°C" instead of "25°C is the temperature"',
+                    'Deciding to include temperature data',
+                    'Formatting the final text',
+                    'Evaluating the accuracy'
+                ],
+                correct: 0,
+                explanation: 'Sentence planning involves choosing the syntactic structure and word order for a sentence, such as active vs. passive voice.【7†L2】'
+            }, {
+                id: 23,
+                category: 'Intro to NLG',
+                question: 'What is an example of text realization?',
+                options: [
+                    'Converting "The temperature will reach 25°C" into a final, well-formatted sentence',
+                    'Selecting temperature data',
+                    'Deciding to include temperature',
+                    'Deciding the order of weather parameters'
+                ],
+                correct: 0,
+                explanation: 'Text realization takes the sentence plan and applies surface-level formatting, such as punctuation and spelling, to produce the final text.【8†L2】'
+            }, {
+                id: 24,
+                category: 'Intro to NLG',
+                question: 'What is the role of machine learning models in text realization?',
+                options: [
+                    'To generate fluent and natural-sounding text from sentence plans',
+                    'To select the content',
+                    'To organize the content',
+                    'To evaluate the output'
+                ],
+                correct: 0,
+                explanation: 'Machine learning models, especially neural networks, are increasingly used in text realization to produce more natural and fluent text.【8†L3】'
+            }, {
+                id: 25,
+                category: 'Intro to NLG',
+                question: 'What is a key challenge in NLG?',
+                options: [
+                    'Ensuring the generated text is coherent, contextually appropriate, and factually correct',
+                    'Collecting enough data',
+                    'Training models quickly',
+                    'Deploying models'
+                ],
+                correct: 0,
+                explanation: 'NLG faces challenges in maintaining coherence, contextual relevance, and factual accuracy across diverse topics and domains.【4†L2】'
+            },
+
+            // ---- LANGUAGE MODELS (26–60) ----
+            {
+                id: 26,
+                category: 'Language Models',
+                question: 'What are language models trained to do?',
+                options: [
+                    'Predict word sequences and generate coherent text',
+                    'Classify images',
+                    'Translate text',
+                    'Summarize text'
+                ],
+                correct: 0,
+                explanation: 'Language models are trained on large datasets to predict the next word in a sequence, enabling text generation and understanding.【2†L2】'
+            }, {
+                id: 27,
+                category: 'Language Models',
+                question: 'What is a key application of language models in NLG?',
+                options: [
+                    'Text summarization, translation, and creative writing',
+                    'Image classification',
+                    'Speech recognition',
+                    'Object detection'
+                ],
+                correct: 0,
+                explanation: 'Language models are the engine for generating coherent and contextually relevant text in applications like summarization, translation, and creative writing.【2†L3】'
+            }, {
+                id: 28,
+                category: 'Language Models',
+                question: 'What is GPT?',
+                options: [
+                    'A generative language model known for its text generation capabilities',
+                    'A model for image generation',
+                    'A model for speech recognition',
+                    'A model for classification'
+                ],
+                correct: 0,
+                explanation: 'GPT (Generative Pre-trained Transformer) is a large language model developed by OpenAI, known for its ability to generate human-like text.【3†L3】'
+            }, {
+                id: 29,
+                category: 'Language Models',
+                question: 'What does BERT stand for?',
+                options: [
+                    'Bidirectional Encoder Representations from Transformers',
+                    'Binary Encoder Representation Transformer',
+                    'Bidirectional Embedding Representation Transformer',
+                    'Binary Embedding Representation from Transformers'
+                ],
+                correct: 0,
+                explanation: 'BERT (Bidirectional Encoder Representations from Transformers) is a language model that reads text bidirectionally to understand context.【6†L2】'
+            }, {
+                id: 30,
+                category: 'Language Models',
+                question: 'What is the key feature of BERT?',
+                options: [
+                    'Bidirectional reading to capture context from both left and right',
+                    'Unidirectional reading',
+                    'Focus on text generation',
+                    'Image processing capabilities'
+                ],
+                correct: 0,
+                explanation: 'BERT is bidirectional, meaning it processes text from both directions to understand the full context of a word.【6†L3】'
+            }, {
+                id: 31,
+                category: 'Language Models',
+                question: 'What is a Transformer model?',
+                options: [
+                    'An architecture based on attention mechanisms, foundational for models like GPT and BERT',
+                    'A type of recurrent neural network',
+                    'A model for image processing',
+                    'A model for speech recognition'
+                ],
+                correct: 0,
+                explanation: 'Transformers are a neural network architecture that uses attention mechanisms, forming the backbone of many modern language models.【3†L5】'
+            }, {
+                id: 32,
+                category: 'Language Models',
+                question: 'What is the evolution from GPT-3 to GPT-4?',
+                options: [
+                    'Enhanced capabilities, multimodal functionality, improved factual correctness, and safety measures',
+                    'Smaller model size',
+                    'Only text processing',
+                    'No changes'
+                ],
+                correct: 0,
+                explanation: 'GPT-4 introduced multimodal capabilities (text and image processing), improved factual accuracy, reduced hallucinations, and better safety measures.【4†L2-L4】'
+            }, {
+                id: 33,
+                category: 'Language Models',
+                question: 'What is a key safety measure introduced in GPT-4?',
+                options: [
+                    'Reduced response to disallowed content and improved safety filters',
+                    'No safety measures',
+                    'Only for research',
+                    'Open access to all content'
+                ],
+                correct: 0,
+                explanation: 'GPT-4 includes enhanced safety measures to reduce the generation of disallowed or harmful content.【4†L5】'
+            }, {
+                id: 34,
+                category: 'Language Models',
+                question: 'What is a key application of GPT in code generation?',
+                options: [
+                    'Generating code snippets and entire programs from natural language descriptions',
+                    'Only generating comments',
+                    'Only for debugging',
+                    'No code generation'
+                ],
+                correct: 0,
+                explanation: 'GPT can generate code from natural language prompts, aiding developers in writing and debugging code.【5†L3】'
+            }, {
+                id: 35,
+                category: 'Language Models',
+                question: 'What is the role of BERT in named entity recognition (NER)?',
+                options: [
+                    'Identifying and classifying named entities (e.g., people, organizations) in text',
+                    'Generating text',
+                    'Translating text',
+                    'Summarizing text'
+                ],
+                correct: 0,
+                explanation: 'BERT\'s bidirectional context understanding makes it highly effective for NER tasks.【7†L2】'
+            }, {
+                id: 36,
+                category: 'Language Models',
+                question: 'What is the Transformer architecture composed of?',
+                options: [
+                    'Encoder and decoder components with attention mechanisms',
+                    'Only encoder',
+                    'Only decoder',
+                    'Recurrent layers'
+                ],
+                correct: 0,
+                explanation: 'The Transformer architecture consists of an encoder and a decoder, both utilizing multi-head attention mechanisms.【8†L3】'
+            }, {
+                id: 37,
+                category: 'Language Models',
+                question: 'What is the impact of Transformer models on modern NLP?',
+                options: [
+                    'They have revolutionized NLP, achieving state-of-the-art results in many tasks',
+                    'They have had no impact',
+                    'They are only used for research',
+                    'They are inferior to RNNs'
+                ],
+                correct: 0,
+                explanation: 'Transformers have become the dominant architecture in NLP, powering models like GPT, BERT, and T5.【8†L4】'
+            }, {
+                id: 38,
+                category: 'Language Models',
+                question: 'What is fine-tuning in language models?',
+                options: [
+                    'Adjusting a pre-trained model\'s parameters for a specific task with additional training',
+                    'Training a model from scratch',
+                    'Freezing all layers',
+                    'Removing layers'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning adapts a pre-trained model to a specific task by continuing training on task-specific data, improving performance.【10†L2】'
+            }, {
+                id: 39,
+                category: 'Language Models',
+                question: 'What is a risk of fine-tuning language models?',
+                options: [
+                    'Overfitting to the fine-tuning data',
+                    'Underfitting',
+                    'No risks',
+                    'Reduced accuracy'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning can lead to overfitting if the task-specific dataset is small or not representative, reducing generalization.【10†L3】'
+            }, {
+                id: 40,
+                category: 'Language Models',
+                question: 'What is a benefit of customizing pre-trained models?',
+                options: [
+                    'They can be adapted to domain-specific tasks like healthcare or creative writing',
+                    'They become less accurate',
+                    'They are harder to use',
+                    'They require more data'
+                ],
+                correct: 0,
+                explanation: 'Pre-trained models can be fine-tuned to excel in specific domains, improving performance on specialized tasks.【9†L2】'
+            }, {
+                id: 41,
+                category: 'Language Models',
+                question: 'What is a key application of language models in chatbots?',
+                options: [
+                    'Generating human-like responses to user queries',
+                    'Only answering simple questions',
+                    'No application',
+                    'Only for entertainment'
+                ],
+                correct: 0,
+                explanation: 'Language models enable chatbots to generate natural and contextually appropriate responses, going beyond simple scripted replies.【5†L2】'
+            }, {
+                id: 42,
+                category: 'Language Models',
+                question: 'What is a key application of language models in research and academia?',
+                options: [
+                    'Assisting in literature review, hypothesis generation, and scientific writing',
+                    'Only for grading',
+                    'No application',
+                    'Only for data entry'
+                ],
+                correct: 0,
+                explanation: 'Language models can help researchers with tasks like summarizing papers, generating hypotheses, and drafting manuscripts.【5†L4】'
+            }, {
+                id: 43,
+                category: 'Language Models',
+                question: 'What is the difference between GPT and BERT in terms of directionality?',
+                options: [
+                    'GPT is unidirectional (left-to-right); BERT is bidirectional',
+                    'GPT is bidirectional; BERT is unidirectional',
+                    'Both are bidirectional',
+                    'Both are unidirectional'
+                ],
+                correct: 0,
+                explanation: 'GPT generates text by predicting the next word from left to right, while BERT reads text bidirectionally for understanding.【3†L3-L4】'
+            }, {
+                id: 44,
+                category: 'Language Models',
+                question: 'What is a key advantage of Transformer models over RNNs?',
+                options: [
+                    'Parallel processing and better handling of long-range dependencies',
+                    'Slower training',
+                    'Worse performance',
+                    'No advantage'
+                ],
+                correct: 0,
+                explanation: 'Transformers process sequences in parallel and use attention mechanisms to capture long-range dependencies more effectively than RNNs.【8†L3】'
+            }, {
+                id: 45,
+                category: 'Language Models',
+                question: 'What is the role of attention in Transformer models?',
+                options: [
+                    'To allow the model to focus on relevant parts of the input when generating output',
+                    'To reduce model size',
+                    'To speed up training',
+                    'To increase complexity'
+                ],
+                correct: 0,
+                explanation: 'Attention mechanisms enable Transformers to weigh the importance of different input tokens, improving context understanding.【8†L3】'
+            }, {
+                id: 46,
+                category: 'Language Models',
+                question: 'What is a key challenge in training large language models?',
+                options: [
+                    'High computational cost and data requirements',
+                    'Low accuracy',
+                    'No challenges',
+                    'Easy training'
+                ],
+                correct: 0,
+                explanation: 'Training large language models requires significant computational resources and vast amounts of data, making it expensive and time-consuming.【2†L2】'
+            }, {
+                id: 47,
+                category: 'Language Models',
+                question: 'What is the role of pre-training in language models?',
+                options: [
+                    'Training on a large general corpus to learn language representations before fine-tuning',
+                    'Training on a specific task',
+                    'No role',
+                    'Only for classification'
+                ],
+                correct: 0,
+                explanation: 'Pre-training on large text corpora allows models to learn general language understanding, which is then fine-tuned for specific tasks.【10†L2】'
+            }, {
+                id: 48,
+                category: 'Language Models',
+                question: 'What is a key application of GPT in content creation?',
+                options: [
+                    'Generating articles, stories, and marketing copy',
+                    'Only for coding',
+                    'Only for translation',
+                    'No application'
+                ],
+                correct: 0,
+                explanation: 'GPT is widely used for generating various forms of content, from blog posts to creative writing and marketing materials.【5†L2】'
+            }, {
+                id: 49,
+                category: 'Language Models',
+                question: 'What is the role of BERT in search engine optimization (SEO)?',
+                options: [
+                    'Improving search results by understanding the context and intent of queries',
+                    'Generating search results',
+                    'No role',
+                    'Only for image search'
+                ],
+                correct: 0,
+                explanation: 'BERT helps search engines better understand the meaning and context of search queries, leading to more relevant results.【7†L3】'
+            }, {
+                id: 50,
+                category: 'Language Models',
+                question: 'What is a key feature of GPT-4\'s multimodal functionality?',
+                options: [
+                    'It can process both text and images',
+                    'It can only process text',
+                    'It can only process images',
+                    'It can process audio'
+                ],
+                correct: 0,
+                explanation: 'GPT-4 introduces multimodal capabilities, allowing it to understand and generate text based on image inputs as well.【4†L3】'
+            }, {
+                id: 51,
+                category: 'Language Models',
+                question: 'What is the concept of "hallucination" in language models?',
+                options: [
+                    'Generating factually incorrect or nonsensical information',
+                    'Generating accurate information',
+                    'Generating no information',
+                    'Generating only code'
+                ],
+                correct: 0,
+                explanation: 'Hallucination refers to the tendency of language models to generate content that is not based on factual data, often appearing plausible but incorrect.【4†L4】'
+            }, {
+                id: 52,
+                category: 'Language Models',
+                question: 'What is the role of fine-tuning in reducing hallucinations?',
+                options: [
+                    'Fine-tuning on domain-specific, factual data can reduce hallucinations',
+                    'Fine-tuning has no effect',
+                    'Fine-tuning increases hallucinations',
+                    'Fine-tuning is not used'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning on accurate, domain-specific data can help reduce the frequency of hallucinations in language model outputs.【10†L2】'
+            }, {
+                id: 53,
+                category: 'Language Models',
+                question: 'What is the concept of "context window" in language models?',
+                options: [
+                    'The amount of text the model can consider when generating a response',
+                    'The model\'s vocabulary size',
+                    'The number of layers in the model',
+                    'The training data size'
+                ],
+                correct: 0,
+                explanation: 'The context window determines how much previous text the model can use to generate the next word, affecting coherence and context understanding.【4†L2】'
+            }, {
+                id: 54,
+                category: 'Language Models',
+                question: 'What is a key difference between GPT-3 and GPT-4?',
+                options: [
+                    'GPT-4 has multimodal capabilities and improved factual accuracy',
+                    'GPT-3 is multimodal',
+                    'There is no difference',
+                    'GPT-4 is smaller'
+                ],
+                correct: 0,
+                explanation: 'GPT-4 builds on GPT-3 with enhancements like multimodal processing (text and images) and better factual correctness.【4†L2-L4】'
+            }, {
+                id: 55,
+                category: 'Language Models',
+                question: 'What is the role of language models in automated storytelling?',
+                options: [
+                    'Generating coherent narratives and stories based on prompts or data',
+                    'Only for news generation',
+                    'No role',
+                    'Only for poetry'
+                ],
+                correct: 0,
+                explanation: 'Language models can generate creative stories, novels, and other narrative forms by learning patterns from existing literature.【5†L2】'
+            }, {
+                id: 56,
+                category: 'Language Models',
+                question: 'What is the role of BERT in sentiment analysis?',
+                options: [
+                    'Classifying text sentiment by understanding the context and nuance of words',
+                    'Generating sentiment',
+                    'No role',
+                    'Only for positive sentiment'
+                ],
+                correct: 0,
+                explanation: 'BERT\'s bidirectional context understanding makes it highly effective for sentiment analysis, capturing nuances like sarcasm.【7†L2】'
+            }, {
+                id: 57,
+                category: 'Language Models',
+                question: 'What is a key component of the Transformer architecture?',
+                options: [
+                    'Multi-head self-attention',
+                    'Recurrent connections',
+                    'Convolutional layers',
+                    'Pooling layers'
+                ],
+                correct: 0,
+                explanation: 'Multi-head self-attention is a core component of Transformers, allowing the model to focus on different parts of the input simultaneously.【8†L3】'
+            }, {
+                id: 58,
+                category: 'Language Models',
+                question: 'What is the role of the encoder in a Transformer?',
+                options: [
+                    'To process the input sequence and generate a contextual representation',
+                    'To generate the output sequence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The encoder in a Transformer processes the input sequence and produces a representation that captures its context.【8†L3】'
+            }, {
+                id: 59,
+                category: 'Language Models',
+                question: 'What is the role of the decoder in a Transformer?',
+                options: [
+                    'To generate the output sequence from the encoder\'s representation',
+                    'To process the input sequence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The decoder generates the output sequence step by step, using the encoder\'s representations and attention mechanisms.【8†L3】'
+            }, {
+                id: 60,
+                category: 'Language Models',
+                question: 'What is a key advantage of pre-trained language models?',
+                options: [
+                    'They can be fine-tuned for various tasks with limited task-specific data',
+                    'They require no fine-tuning',
+                    'They are always accurate',
+                    'They are easy to train from scratch'
+                ],
+                correct: 0,
+                explanation: 'Pre-trained models provide a strong foundation that can be adapted to many tasks with relatively little additional data, saving time and resources.【10†L2】'
+            },
+
+            // ---- SEQUENCE-TO-SEQUENCE MODELS (61–90) ----
+            {
+                id: 61,
+                category: 'Seq2Seq Models',
+                question: 'What is a Sequence-to-Sequence (Seq2Seq) model?',
+                options: [
+                    'A neural network architecture designed to convert sequences from one domain to sequences in another domain',
+                    'A model for image classification',
+                    'A model for speech recognition',
+                    'A model for data augmentation'
+                ],
+                correct: 0,
+                explanation: 'Seq2Seq models are designed for tasks like machine translation, where an input sequence is transformed into an output sequence.【2†L2】'
+            }, {
+                id: 62,
+                category: 'Seq2Seq Models',
+                question: 'What are the two main components of a Seq2Seq model?',
+                options: [
+                    'Encoder and decoder',
+                    'Generator and discriminator',
+                    'Convolution and pooling',
+                    'Attention and feedforward'
+                ],
+                correct: 0,
+                explanation: 'The Seq2Seq architecture consists of an encoder that processes the input sequence and a decoder that generates the output sequence.【3†L2】'
+            }, {
+                id: 63,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the encoder in a Seq2Seq model?',
+                options: [
+                    'To process the input sequence and create a context vector',
+                    'To generate the output sequence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The encoder reads the input sequence and compresses it into a context vector that summarizes the input information.【4†L2】'
+            }, {
+                id: 64,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the decoder in a Seq2Seq model?',
+                options: [
+                    'To generate the output sequence from the context vector',
+                    'To process the input sequence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The decoder takes the context vector and generates the output sequence step by step.【4†L3】'
+            }, {
+                id: 65,
+                category: 'Seq2Seq Models',
+                question: 'What is the context vector in a Seq2Seq model?',
+                options: [
+                    'A fixed-length vector that summarizes the input sequence for the decoder',
+                    'The output sequence',
+                    'The input sequence',
+                    'The loss value'
+                ],
+                correct: 0,
+                explanation: 'The context vector is the final hidden state of the encoder, which encapsulates the entire input sequence for the decoder.【4†L4】'
+            }, {
+                id: 66,
+                category: 'Seq2Seq Models',
+                question: 'What is a key challenge with basic Seq2Seq models?',
+                options: [
+                    'They struggle with long sequences due to the fixed-length context vector',
+                    'They are too fast',
+                    'They require no data',
+                    'They are always accurate'
+                ],
+                correct: 0,
+                explanation: 'Basic Seq2Seq models compress the entire input into a fixed-length vector, which can lose information for long sequences.【5†L2】'
+            }, {
+                id: 67,
+                category: 'Seq2Seq Models',
+                question: 'What is the attention mechanism in Seq2Seq models?',
+                options: [
+                    'A technique that allows the decoder to focus on specific parts of the input sequence',
+                    'A technique to reduce sequence length',
+                    'A technique to increase sequence length',
+                    'A technique to compute the loss'
+                ],
+                correct: 0,
+                explanation: 'Attention mechanisms enable the decoder to selectively focus on the most relevant parts of the input sequence when generating each output token.【5†L2】'
+            }, {
+                id: 68,
+                category: 'Seq2Seq Models',
+                question: 'What problem does the attention mechanism solve in Seq2Seq models?',
+                options: [
+                    'The long-sequence problem by allowing the decoder to access all input states',
+                    'The vanishing gradient problem',
+                    'The exploding gradient problem',
+                    'The overfitting problem'
+                ],
+                correct: 0,
+                explanation: 'Attention overcomes the limitation of a fixed-length context vector by allowing the decoder to look at all encoder states, improving handling of long sequences.【7†L2】'
+            }, {
+                id: 69,
+                category: 'Seq2Seq Models',
+                question: 'What are the key components of the attention mechanism?',
+                options: [
+                    'Query, Key, and Value',
+                    'Encoder, Decoder, and Context',
+                    'Input, Output, and Loss',
+                    'Weight, Bias, and Activation'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism computes a weighted sum of values based on the similarity between a query and keys.【6†L2】'
+            }, {
+                id: 70,
+                category: 'Seq2Seq Models',
+                question: 'What is self-attention?',
+                options: [
+                    'An attention mechanism where each element in a sequence attends to all other elements in the same sequence',
+                    'Attention between encoder and decoder',
+                    'Attention on the output',
+                    'Attention on the input'
+                ],
+                correct: 0,
+                explanation: 'Self-attention allows a sequence to capture dependencies between its own elements, as used in Transformer models.【5†L4】'
+            }, {
+                id: 71,
+                category: 'Seq2Seq Models',
+                question: 'What is multi-head attention?',
+                options: [
+                    'Multiple attention mechanisms running in parallel, each focusing on different aspects',
+                    'A single attention mechanism',
+                    'Attention on the output only',
+                    'Attention on the input only'
+                ],
+                correct: 0,
+                explanation: 'Multi-head attention runs several attention mechanisms in parallel, allowing the model to capture different types of relationships.【5†L4】'
+            }, {
+                id: 72,
+                category: 'Seq2Seq Models',
+                question: 'What is the benefit of using attention in Seq2Seq models?',
+                options: [
+                    'Enhanced model interpretability and better handling of long sequences',
+                    'Faster training',
+                    'No benefit',
+                    'Reduced accuracy'
+                ],
+                correct: 0,
+                explanation: 'Attention improves performance on long sequences and makes the model\'s decisions more interpretable by showing which input parts are focused on.【7†L2-L3】'
+            }, {
+                id: 73,
+                category: 'Seq2Seq Models',
+                question: 'What is a real-world application of Seq2Seq models?',
+                options: [
+                    'Machine translation',
+                    'Image classification',
+                    'Object detection',
+                    'Speech recognition'
+                ],
+                correct: 0,
+                explanation: 'Seq2Seq models are widely used for machine translation, where an input sentence in one language is converted to another.【2†L4】'
+            }, {
+                id: 74,
+                category: 'Seq2Seq Models',
+                question: 'What is another application of Seq2Seq models?',
+                options: [
+                    'Text summarization',
+                    'Image generation',
+                    'Audio generation',
+                    'Video processing'
+                ],
+                correct: 0,
+                explanation: 'Seq2Seq models are used for text summarization, where a long document is converted into a concise summary.【2†L4】'
+            }, {
+                id: 75,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the attention score in the attention mechanism?',
+                options: [
+                    'It determines the importance of each input element for the current output',
+                    'It computes the loss',
+                    'It updates the weights',
+                    'It reduces sequence length'
+                ],
+                correct: 0,
+                explanation: 'The attention score quantifies the relevance of each encoder state to the current decoder step, used to compute a weighted sum.【6†L3】'
+            }, {
+                id: 76,
+                category: 'Seq2Seq Models',
+                question: 'What is the weighted sum in the attention mechanism?',
+                options: [
+                    'A combination of encoder states weighted by their attention scores',
+                    'A sum of all encoder states',
+                    'A product of encoder states',
+                    'An average of encoder states'
+                ],
+                correct: 0,
+                explanation: 'The weighted sum combines encoder states based on their attention scores, producing a context vector for the decoder.【6†L4】'
+            }, {
+                id: 77,
+                category: 'Seq2Seq Models',
+                question: 'What is the origin of the attention mechanism?',
+                options: [
+                    'It was originally conceived to improve machine translation systems',
+                    'It was developed for image processing',
+                    'It was developed for speech recognition',
+                    'It was developed for game playing'
+                ],
+                correct: 0,
+                explanation: 'Attention was first introduced to address the limitations of Seq2Seq models in machine translation.【5†L3】'
+            }, {
+                id: 78,
+                category: 'Seq2Seq Models',
+                question: 'What is a key advantage of attention for model interpretability?',
+                options: [
+                    'It allows visualization of which input parts the model focuses on',
+                    'It makes the model faster',
+                    'It reduces model size',
+                    'It increases accuracy'
+                ],
+                correct: 0,
+                explanation: 'Attention weights can be visualized to understand which parts of the input influenced the output, improving interpretability.【7†L3】'
+            }, {
+                id: 79,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the encoder in a Seq2Seq model for machine translation?',
+                options: [
+                    'To encode the source language sentence into a context vector',
+                    'To generate the target language sentence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'In machine translation, the encoder processes the source sentence and produces a context vector for the decoder.【4†L2】'
+            }, {
+                id: 80,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the decoder in a Seq2Seq model for machine translation?',
+                options: [
+                    'To generate the target language sentence from the context vector',
+                    'To encode the source language sentence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The decoder in machine translation generates the translated sentence step by step using the context vector from the encoder.【4†L3】'
+            }, {
+                id: 81,
+                category: 'Seq2Seq Models',
+                question: 'What is the challenge of variable-length sequences in Seq2Seq models?',
+                options: [
+                    'The model must handle inputs and outputs of different lengths',
+                    'The model cannot handle variable lengths',
+                    'The model only works with fixed lengths',
+                    'No challenge'
+                ],
+                correct: 0,
+                explanation: 'Seq2Seq models are designed to handle variable-length sequences, but this requires careful design of the encoder and decoder.【2†L3】'
+            }, {
+                id: 82,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of context preservation in Seq2Seq models?',
+                options: [
+                    'To ensure that the model retains important information from the input sequence',
+                    'To reduce sequence length',
+                    'To increase sequence length',
+                    'To compute the loss'
+                ],
+                correct: 0,
+                explanation: 'Context preservation is crucial for Seq2Seq models to maintain the meaning and details of the input sequence.【2†L3】'
+            }, {
+                id: 83,
+                category: 'Seq2Seq Models',
+                question: 'What is a key limitation of the basic Seq2Seq model without attention?',
+                options: [
+                    'It cannot handle long sequences effectively due to the fixed context vector',
+                    'It is too fast',
+                    'It requires no data',
+                    'It is always accurate'
+                ],
+                correct: 0,
+                explanation: 'Without attention, the encoder compresses the entire input into a fixed vector, which loses information for long sequences.【5†L2】'
+            }, {
+                id: 84,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the attention mechanism in improving long-sequence handling?',
+                options: [
+                    'It allows the decoder to access all encoder states, not just a fixed vector',
+                    'It reduces sequence length',
+                    'It increases sequence length',
+                    'It computes the loss'
+                ],
+                correct: 0,
+                explanation: 'Attention gives the decoder direct access to all encoder states, allowing it to focus on relevant parts of the input for each output step.【7†L2】'
+            }, {
+                id: 85,
+                category: 'Seq2Seq Models',
+                question: 'What is the relationship between attention and Transformer models?',
+                options: [
+                    'Transformers are built entirely on attention mechanisms, including self-attention and multi-head attention',
+                    'Transformers do not use attention',
+                    'Attention is a minor part of Transformers',
+                    'Transformers use only self-attention'
+                ],
+                correct: 0,
+                explanation: 'Transformers rely heavily on attention mechanisms, using self-attention to capture dependencies within sequences.【5†L4】'
+            }, {
+                id: 86,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the query in the attention mechanism?',
+                options: [
+                    'It represents the current decoder state, used to compare with encoder states',
+                    'It represents the encoder states',
+                    'It represents the output values',
+                    'It represents the loss'
+                ],
+                correct: 0,
+                explanation: 'In attention, the query is typically the decoder\'s current state, which is compared with keys from the encoder to compute attention scores.【6†L2】'
+            }, {
+                id: 87,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the key in the attention mechanism?',
+                options: [
+                    'It represents the encoder states, used to compare with the query',
+                    'It represents the decoder states',
+                    'It represents the output values',
+                    'It represents the loss'
+                ],
+                correct: 0,
+                explanation: 'Keys are derived from encoder states and are compared with the query to determine attention weights.【6†L2】'
+            }, {
+                id: 88,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the value in the attention mechanism?',
+                options: [
+                    'It represents the encoder states that are weighted by the attention scores',
+                    'It represents the query',
+                    'It represents the decoder states',
+                    'It represents the loss'
+                ],
+                correct: 0,
+                explanation: 'Values are also derived from encoder states and are combined using the attention weights to produce the final context vector.【6†L2】'
+            }, {
+                id: 89,
+                category: 'Seq2Seq Models',
+                question: 'What is the output of the attention mechanism?',
+                options: [
+                    'A context vector that is a weighted sum of the values',
+                    'A sequence of tokens',
+                    'A loss value',
+                    'A reduced sequence'
+                ],
+                correct: 0,
+                explanation: 'The attention mechanism produces a context vector by computing a weighted sum of the values based on the attention scores.【6†L4】'
+            }, {
+                id: 90,
+                category: 'Seq2Seq Models',
+                question: 'What is a key application of attention beyond NLP?',
+                options: [
+                    'Computer vision, where attention can focus on important parts of an image',
+                    'Only NLP',
+                    'Only speech recognition',
+                    'Only game playing'
+                ],
+                correct: 0,
+                explanation: 'Attention mechanisms have been applied in computer vision for tasks like image captioning and object detection.【8†L2】'
+            },
+
+            // ---- APPLICATIONS OF NLG (91–130) ----
+            {
+                id: 91,
+                category: 'Applications of NLG',
+                question: 'What is automated journalism in NLG?',
+                options: [
+                    'Using NLG to automatically generate news articles from data',
+                    'Writing news articles manually',
+                    'Using images for news',
+                    'No such application'
+                ],
+                correct: 0,
+                explanation: 'Automated journalism uses NLG to generate news articles from structured data, such as sports scores or financial reports.【2†L2】'
+            }, {
+                id: 92,
+                category: 'Applications of NLG',
+                question: 'What is the impact of automated journalism?',
+                options: [
+                    'It can produce articles quickly and at scale, freeing up journalists for more complex tasks',
+                    'It replaces all journalists',
+                    'It has no impact',
+                    'It reduces article quality'
+                ],
+                correct: 0,
+                explanation: 'Automated journalism can generate routine articles efficiently, allowing human journalists to focus on investigative and analytical work.【2†L2】'
+            }, {
+                id: 93,
+                category: 'Applications of NLG',
+                question: 'How is NLG used in creative writing?',
+                options: [
+                    'Generating poems, stories, and other creative content based on prompts',
+                    'Only for news',
+                    'Only for reports',
+                    'No such application'
+                ],
+                correct: 0,
+                explanation: 'NLG can assist in creative writing by generating ideas, drafts, or even complete stories based on user input.【2†L3】'
+            }, {
+                id: 94,
+                category: 'Applications of NLG',
+                question: 'What is SEO content optimization with NLG?',
+                options: [
+                    'Generating content that is optimized for search engines by incorporating target keywords',
+                    'Generating content without keywords',
+                    'Only for technical writing',
+                    'No such application'
+                ],
+                correct: 0,
+                explanation: 'NLG can generate content that is tailored to include specific keywords and phrases to improve search engine ranking.【2†L4】'
+            }, {
+                id: 95,
+                category: 'Applications of NLG',
+                question: 'What is personalized content creation with NLG?',
+                options: [
+                    'Generating content tailored to individual user preferences or demographics',
+                    'Generating the same content for everyone',
+                    'Only for marketing',
+                    'No such application'
+                ],
+                correct: 0,
+                explanation: 'NLG can create personalized content, such as product recommendations or tailored news feeds, based on user data.【2†L5】'
+            }, {
+                id: 96,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in chatbots and virtual assistants?',
+                options: [
+                    'Generating human-like responses to user queries in real-time',
+                    'Only answering predefined questions',
+                    'No role',
+                    'Only for customer support'
+                ],
+                correct: 0,
+                explanation: 'NLG enables chatbots and virtual assistants to generate natural, contextually appropriate responses, enhancing user interaction.【6†L2】'
+            }, {
+                id: 97,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in customer support?',
+                options: [
+                    'Automating responses to common customer queries, reducing wait times',
+                    'Only for human agents',
+                    'No application',
+                    'Only for technical support'
+                ],
+                correct: 0,
+                explanation: 'NLG-powered chatbots can handle routine customer inquiries, providing quick and consistent responses.【6†L2】'
+            }, {
+                id: 98,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in data summarization?',
+                options: [
+                    'Generating concise summaries of business reports, academic papers, or articles',
+                    'Generating full-length reports',
+                    'No application',
+                    'Only for news'
+                ],
+                correct: 0,
+                explanation: 'NLG can extract key points from long documents and produce coherent summaries, saving time for readers.【8†L2】'
+            }, {
+                id: 99,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in language translation?',
+                options: [
+                    'Real-time translation of text or speech between multiple languages',
+                    'Only for written text',
+                    'No application',
+                    'Only for technical documents'
+                ],
+                correct: 0,
+                explanation: 'NLG powers translation tools that can convert text or speech from one language to another in real-time.【10†L2】'
+            }, {
+                id: 100,
+                category: 'Applications of NLG',
+                question: 'How can NLG assist in learning a new language?',
+                options: [
+                    'By providing vocabulary building, sentence construction, and language drills',
+                    'Only for grammar checking',
+                    'No application',
+                    'Only for translation'
+                ],
+                correct: 0,
+                explanation: 'NLG can help language learners with exercises like synonym generation, sentence formation, and practice drills.【11†L2】'
+            }, {
+                id: 101,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in medical reporting?',
+                options: [
+                    'Generating diagnostic reports, patient histories, and personalized treatment plans',
+                    'Only for billing',
+                    'No application',
+                    'Only for scheduling'
+                ],
+                correct: 0,
+                explanation: 'NLG can automate the generation of medical documentation, such as patient summaries and treatment recommendations.【12†L2】'
+            }, {
+                id: 102,
+                category: 'Applications of NLG',
+                question: 'What is a key benefit of using NLG for business reports?',
+                options: [
+                    'It can generate reports quickly and consistently from data, reducing manual effort',
+                    'It requires more time',
+                    'It is less accurate',
+                    'No benefit'
+                ],
+                correct: 0,
+                explanation: 'NLG can automate the creation of business reports, such as financial summaries or performance dashboards, from structured data.【8†L2】'
+            }, {
+                id: 103,
+                category: 'Applications of NLG',
+                question: 'What is a key benefit of using NLG for academic summaries?',
+                options: [
+                    'It can condense lengthy academic papers into concise summaries for quick understanding',
+                    'It cannot handle academic text',
+                    'No benefit',
+                    'It only works for science papers'
+                ],
+                correct: 0,
+                explanation: 'NLG can help researchers and students quickly grasp the key points of academic papers by generating summaries.【8†L3】'
+            }, {
+                id: 104,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in SEO?',
+                options: [
+                    'Generating content that is optimized for specific keywords to improve search rankings',
+                    'Generating content without keywords',
+                    'No application',
+                    'Only for meta descriptions'
+                ],
+                correct: 0,
+                explanation: 'NLG can create content that naturally incorporates target keywords, helping websites rank higher in search results.【5†L2】'
+            }, {
+                id: 105,
+                category: 'Applications of NLG',
+                question: 'What is a key ethical consideration in NLG applications?',
+                options: [
+                    'Ensuring the generated content is accurate, unbiased, and does not spread misinformation',
+                    'Generating as much content as possible',
+                    'No ethical concerns',
+                    'Only for transparency'
+                ],
+                correct: 0,
+                explanation: 'Ethical NLG requires careful attention to factuality, bias, and potential misuse, such as generating fake news.【13†L3】'
+            }, {
+                id: 106,
+                category: 'Applications of NLG',
+                question: 'What is a future trend in NLG?',
+                options: [
+                    'Integration with multimodal models and zero-shot learning for more versatile applications',
+                    'No future trends',
+                    'Only text generation',
+                    'Only for chatbots'
+                ],
+                correct: 0,
+                explanation: 'Future NLG systems will likely incorporate multimodal capabilities and zero-shot learning to handle a wider range of tasks.【13†L2】'
+            }, {
+                id: 107,
+                category: 'Applications of NLG',
+                question: 'What is the role of AI governance in NLG?',
+                options: [
+                    'Establishing guidelines and regulations for the responsible development and deployment of NLG systems',
+                    'No role',
+                    'Only for research',
+                    'Only for commercial use'
+                ],
+                correct: 0,
+                explanation: 'AI governance ensures that NLG systems are developed and used responsibly, addressing ethical and societal concerns.【13†L4】'
+            }, {
+                id: 108,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in personalized content?',
+                options: [
+                    'Generating customized email campaigns, product recommendations, and news feeds',
+                    'Generating generic content',
+                    'No application',
+                    'Only for marketing'
+                ],
+                correct: 0,
+                explanation: 'NLG can create personalized content for individual users based on their preferences, behavior, or demographics.【2†L5】'
+            }, {
+                id: 109,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in automated journalism for sports?',
+                options: [
+                    'Generating match reports and summaries from game statistics',
+                    'Only for financial news',
+                    'No application',
+                    'Only for weather'
+                ],
+                correct: 0,
+                explanation: 'NLG can automatically generate sports articles, such as game recaps, from box scores and play-by-play data.【3†L2】'
+            }, {
+                id: 110,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in financial reporting?',
+                options: [
+                    'Generating earnings reports, market summaries, and financial analysis from data',
+                    'Only for accounting',
+                    'No application',
+                    'Only for stock prices'
+                ],
+                correct: 0,
+                explanation: 'NLG can produce financial reports and summaries from numerical data, helping investors and analysts quickly understand key information.【8†L2】'
+            }, {
+                id: 111,
+                category: 'Applications of NLG',
+                question: 'What is a key challenge in deploying NLG for customer support?',
+                options: [
+                    'Ensuring the generated responses are accurate, empathetic, and handle complex queries effectively',
+                    'Generating responses is always easy',
+                    'No challenges',
+                    'Only for simple queries'
+                ],
+                correct: 0,
+                explanation: 'NLG in customer support must produce responses that are not only accurate but also empathetic and capable of handling nuanced queries.【6†L2】'
+            }, {
+                id: 112,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in data-driven storytelling?',
+                options: [
+                    'Creating narratives from data to make insights more engaging and understandable',
+                    'Only for reports',
+                    'No application',
+                    'Only for charts'
+                ],
+                correct: 0,
+                explanation: 'NLG can transform dry data into compelling stories, making it easier for audiences to grasp complex information.【8†L2】'
+            }, {
+                id: 113,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in e-commerce product descriptions?',
+                options: [
+                    'Generating unique and compelling product descriptions from product data',
+                    'Copying existing descriptions',
+                    'No application',
+                    'Only for prices'
+                ],
+                correct: 0,
+                explanation: 'NLG can automatically generate product descriptions for e-commerce sites, saving time and ensuring consistency.【2†L4】'
+            }, {
+                id: 114,
+                category: 'Applications of NLG',
+                question: 'What is a key benefit of NLG in content generation for marketing?',
+                options: [
+                    'It can produce a large volume of content quickly, supporting various marketing channels',
+                    'It reduces content quality',
+                    'No benefit',
+                    'Only for social media'
+                ],
+                correct: 0,
+                explanation: 'NLG can scale content production for marketing, enabling the creation of blog posts, social media updates, and ad copy efficiently.【2†L4】'
+            }, {
+                id: 115,
+                category: 'Applications of NLG',
+                question: 'What is a key ethical consideration in using NLG for content creation?',
+                options: [
+                    'Ensuring that AI-generated content is properly attributed and not misleading',
+                    'No ethical concerns',
+                    'Only for news',
+                    'Only for creative writing'
+                ],
+                correct: 0,
+                explanation: 'Ethical use of NLG requires clear disclosure of AI-generated content and measures to prevent misinformation.【13†L3】'
+            }, {
+                id: 116,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in legal document generation?',
+                options: [
+                    'Automating the creation of contracts, legal briefs, and other legal documents from templates',
+                    'Only for research',
+                    'No application',
+                    'Only for court filings'
+                ],
+                correct: 0,
+                explanation: 'NLG can streamline legal document creation by generating drafts from templates and data, reducing manual effort.【8†L2】'
+            }, {
+                id: 117,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in educational content creation?',
+                options: [
+                    'Generating personalized learning materials, quizzes, and explanations for students',
+                    'Only for grading',
+                    'No application',
+                    'Only for textbooks'
+                ],
+                correct: 0,
+                explanation: 'NLG can create customized educational content, such as practice questions and explanations, tailored to individual student needs.【2†L4】'
+            }, {
+                id: 118,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in social media content generation?',
+                options: [
+                    'Generating posts, captions, and responses for social media platforms',
+                    'Only for images',
+                    'No application',
+                    'Only for ads'
+                ],
+                correct: 0,
+                explanation: 'NLG can automate social media content creation, helping brands maintain an active and engaging online presence.【2†L4】'
+            }, {
+                id: 119,
+                category: 'Applications of NLG',
+                question: 'What is a key challenge in NLG for multilingual applications?',
+                options: [
+                    'Ensuring cultural and linguistic appropriateness across different languages and regions',
+                    'No challenges',
+                    'Only for translation',
+                    'Only for European languages'
+                ],
+                correct: 0,
+                explanation: 'NLG systems must handle nuances of different languages and cultures to generate appropriate and accurate content.【10†L2】'
+            }, {
+                id: 120,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in generating personalized health advice?',
+                options: [
+                    'Creating tailored health recommendations and treatment plans based on patient data',
+                    'Only for general advice',
+                    'No application',
+                    'Only for diagnostics'
+                ],
+                correct: 0,
+                explanation: 'NLG can generate personalized health content, such as diet plans or exercise routines, based on individual health data.【12†L2】'
+            }, {
+                id: 121,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in the travel industry?',
+                options: [
+                    'Generating personalized travel itineraries and recommendations',
+                    'Only for booking',
+                    'No application',
+                    'Only for flight information'
+                ],
+                correct: 0,
+                explanation: 'NLG can create custom travel plans, including suggestions for activities, dining, and accommodations based on user preferences.【2†L4】'
+            }, {
+                id: 122,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in generating real-time alerts and notifications?',
+                options: [
+                    'Creating timely and context-aware alerts for various applications, such as security or weather',
+                    'Only for emails',
+                    'No application',
+                    'Only for news'
+                ],
+                correct: 0,
+                explanation: 'NLG can generate real-time alerts, such as severe weather warnings or security breaches, in natural language.【8†L2】'
+            }, {
+                id: 123,
+                category: 'Applications of NLG',
+                question: 'What is a key benefit of NLG in data visualization?',
+                options: [
+                    'It can generate textual explanations to accompany charts and graphs, making data more accessible',
+                    'It replaces visualizations',
+                    'No benefit',
+                    'Only for reports'
+                ],
+                correct: 0,
+                explanation: 'NLG can provide natural language descriptions of data visualizations, helping users interpret the information more easily.【8†L2】'
+            }, {
+                id: 124,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in automated email generation?',
+                options: [
+                    'Generating personalized emails for marketing, customer service, and internal communications',
+                    'Only for spam',
+                    'No application',
+                    'Only for newsletters'
+                ],
+                correct: 0,
+                explanation: 'NLG can create personalized emails at scale, improving engagement and efficiency in communication.【2†L4】'
+            }, {
+                id: 125,
+                category: 'Applications of NLG',
+                question: 'What is a key challenge in NLG for creative writing?',
+                options: [
+                    'Generating content that is original, engaging, and emotionally resonant',
+                    'No challenges',
+                    'Only for poetry',
+                    'Only for short stories'
+                ],
+                correct: 0,
+                explanation: 'Creative NLG must produce text that is not only grammatically correct but also creative, original, and emotionally compelling.【2†L3】'
+            }, {
+                id: 126,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in generating product reviews?',
+                options: [
+                    'Creating realistic and varied product reviews from user data or product features',
+                    'Only for positive reviews',
+                    'No application',
+                    'Only for negative reviews'
+                ],
+                correct: 0,
+                explanation: 'NLG can generate synthetic product reviews for testing or training, or to provide balanced perspectives.【2†L4】'
+            }, {
+                id: 127,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in the gaming industry?',
+                options: [
+                    'Generating dynamic dialogues, narratives, and quest descriptions for games',
+                    'Only for graphics',
+                    'No application',
+                    'Only for audio'
+                ],
+                correct: 0,
+                explanation: 'NLG can create adaptive and immersive game narratives, enhancing player experience with dynamic content.【2†L4】'
+            }, {
+                id: 128,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in generating personalized learning paths?',
+                options: [
+                    'Creating customized educational sequences and recommendations based on learner progress',
+                    'Only for quizzes',
+                    'No application',
+                    'Only for textbooks'
+                ],
+                correct: 0,
+                explanation: 'NLG can adapt educational content to individual learners, providing tailored pathways and resources.【2†L4】'
+            }, {
+                id: 129,
+                category: 'Applications of NLG',
+                question: 'What is a key consideration in NLG for mental health applications?',
+                options: [
+                    'Ensuring the generated content is empathetic, supportive, and does not cause harm',
+                    'No considerations',
+                    'Only for diagnostics',
+                    'Only for generic advice'
+                ],
+                correct: 0,
+                explanation: 'NLG in mental health must be carefully designed to provide supportive and safe responses, avoiding any potential harm.【13†L3】'
+            }, {
+                id: 130,
+                category: 'Applications of NLG',
+                question: 'What is the role of NLG in generating meeting summaries?',
+                options: [
+                    'Automatically generating concise summaries of meetings from transcripts or notes',
+                    'Only for emails',
+                    'No application',
+                    'Only for action items'
+                ],
+                correct: 0,
+                explanation: 'NLG can process meeting recordings or notes to produce summaries, highlighting key decisions and action items.【8†L2】'
+            },
+
+            // ---- ADDITIONAL QUESTIONS (131–160) ----
+            {
+                id: 131,
+                category: 'Intro to NLG',
+                question: 'What is a key difference between NLG and NLU (Natural Language Understanding)?',
+                options: [
+                    'NLG generates text; NLU understands text',
+                    'NLU generates text; NLG understands text',
+                    'They are the same',
+                    'NLG is a subset of NLU'
+                ],
+                correct: 0,
+                explanation: 'NLG focuses on generating text, while NLU focuses on understanding and interpreting text.【2†L2】'
+            }, {
+                id: 132,
+                category: 'Language Models',
+                question: 'What is the role of tokenization in language models?',
+                options: [
+                    'Converting text into smaller units (tokens) that the model can process',
+                    'Generating text',
+                    'Classifying text',
+                    'Summarizing text'
+                ],
+                correct: 0,
+                explanation: 'Tokenization breaks down text into tokens (words, subwords, or characters) for input into language models.【2†L2】'
+            }, {
+                id: 133,
+                category: 'Language Models',
+                question: 'What is the concept of "embedding" in language models?',
+                options: [
+                    'A dense vector representation of a token that captures semantic meaning',
+                    'A sparse representation of a token',
+                    'A one-hot encoding',
+                    'A random vector'
+                ],
+                correct: 0,
+                explanation: 'Embeddings map tokens to high-dimensional vectors, capturing semantic and syntactic relationships between words.【2†L2】'
+            }, {
+                id: 134,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the context vector in a Seq2Seq model?',
+                options: [
+                    'To pass information from the encoder to the decoder',
+                    'To store the output sequence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The context vector is the final hidden state of the encoder, summarizing the input for the decoder.【4†L4】'
+            }, {
+                id: 135,
+                category: 'Seq2Seq Models',
+                question: 'What is a key advantage of using attention in Seq2Seq models?',
+                options: [
+                    'It allows the model to handle long sequences more effectively by focusing on relevant parts',
+                    'It reduces the number of parameters',
+                    'It speeds up training',
+                    'It simplifies the architecture'
+                ],
+                correct: 0,
+                explanation: 'Attention helps the model handle long sequences by allowing it to focus on the most relevant parts of the input at each step.【7†L2】'
+            }, {
+                id: 136,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in the finance industry?',
+                options: [
+                    'Generating financial reports, market summaries, and investment insights',
+                    'Only for accounting',
+                    'No application',
+                    'Only for stock trading'
+                ],
+                correct: 0,
+                explanation: 'NLG is used in finance to generate reports, summaries, and insights from financial data, aiding in decision-making.【8†L2】'
+            }, {
+                id: 137,
+                category: 'Language Models',
+                question: 'What is the role of pre-training in language models?',
+                options: [
+                    'Training on a large general corpus to learn language representations before fine-tuning',
+                    'Training on a specific task',
+                    'No role',
+                    'Only for classification'
+                ],
+                correct: 0,
+                explanation: 'Pre-training on large text corpora allows models to learn general language understanding, which is then fine-tuned for specific tasks.【10†L2】'
+            }, {
+                id: 138,
+                category: 'Language Models',
+                question: 'What is a key challenge in fine-tuning language models?',
+                options: [
+                    'Overfitting to the fine-tuning data, especially with small datasets',
+                    'Underfitting',
+                    'No challenges',
+                    'Easy training'
+                ],
+                correct: 0,
+                explanation: 'Fine-tuning can lead to overfitting if the task-specific dataset is small or not representative.【10†L3】'
+            }, {
+                id: 139,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the decoder in a Seq2Seq model for text summarization?',
+                options: [
+                    'To generate a concise summary from the encoder\'s context vector',
+                    'To process the input document',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'In summarization, the decoder generates a summary from the context vector that represents the input document.【4†L3】'
+            }, {
+                id: 140,
+                category: 'Applications of NLG',
+                question: 'What is a key benefit of using NLG for data summarization?',
+                options: [
+                    'It can quickly extract and condense key information from large volumes of text',
+                    'It requires more time',
+                    'It is less accurate',
+                    'No benefit'
+                ],
+                correct: 0,
+                explanation: 'NLG can process large amounts of text to generate concise summaries, saving time and effort for readers.【8†L2】'
+            }, {
+                id: 141,
+                category: 'Intro to NLG',
+                question: 'What is the role of templating in text realization?',
+                options: [
+                    'Using predefined templates to generate text from data',
+                    'Learning templates from data',
+                    'No role',
+                    'Only for rule-based systems'
+                ],
+                correct: 0,
+                explanation: 'Templating is a technique in text realization where fixed templates are filled with data to produce text.【8†L3】'
+            }, {
+                id: 142,
+                category: 'Language Models',
+                question: 'What is the concept of "few-shot learning" in language models?',
+                options: [
+                    'The ability to perform a task with only a few examples, leveraging pre-trained knowledge',
+                    'Training from scratch with few examples',
+                    'No such concept',
+                    'Only for classification'
+                ],
+                correct: 0,
+                explanation: 'Few-shot learning allows language models to adapt to new tasks with very few task-specific examples, using their pre-trained knowledge.【4†L2】'
+            }, {
+                id: 143,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the encoder in a Seq2Seq model for speech recognition?',
+                options: [
+                    'To process the audio signal and convert it into a sequence of features',
+                    'To generate the text transcription',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'In speech recognition, the encoder processes the audio input to produce a sequence of acoustic features.【4†L2】'
+            }, {
+                id: 144,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in the healthcare industry?',
+                options: [
+                    'Generating patient summaries, diagnostic reports, and treatment plans',
+                    'Only for billing',
+                    'No application',
+                    'Only for scheduling'
+                ],
+                correct: 0,
+                explanation: 'NLG is used in healthcare to generate patient summaries, diagnostic reports, and personalized treatment plans.【12†L2】'
+            }, {
+                id: 145,
+                category: 'Language Models',
+                question: 'What is the role of the Transformer in GPT?',
+                options: [
+                    'GPT uses the Transformer architecture for its language modeling',
+                    'GPT uses RNNs',
+                    'GPT uses CNNs',
+                    'GPT does not use Transformers'
+                ],
+                correct: 0,
+                explanation: 'GPT is built on the Transformer architecture, which uses self-attention mechanisms for language modeling.【3†L3】'
+            }, {
+                id: 146,
+                category: 'Language Models',
+                question: 'What is the role of the Transformer in BERT?',
+                options: [
+                    'BERT uses the Transformer architecture, specifically the encoder, for bidirectional language understanding',
+                    'BERT uses RNNs',
+                    'BERT uses CNNs',
+                    'BERT does not use Transformers'
+                ],
+                correct: 0,
+                explanation: 'BERT uses the encoder part of the Transformer architecture to process text bidirectionally.【6†L4】'
+            }, {
+                id: 147,
+                category: 'Seq2Seq Models',
+                question: 'What is a key limitation of the basic Seq2Seq model without attention for machine translation?',
+                options: [
+                    'It struggles with long sentences because the context vector cannot capture all information',
+                    'It is too fast',
+                    'It requires no data',
+                    'It is always accurate'
+                ],
+                correct: 0,
+                explanation: 'Without attention, the encoder compresses the entire input into a fixed vector, losing information for long sentences.【5†L2】'
+            }, {
+                id: 148,
+                category: 'Applications of NLG',
+                question: 'What is a key ethical consideration in NLG for news generation?',
+                options: [
+                    'Ensuring the generated news is accurate, unbiased, and does not spread misinformation',
+                    'Generating as much news as possible',
+                    'No ethical concerns',
+                    'Only for speed'
+                ],
+                correct: 0,
+                explanation: 'NLG for news must be carefully managed to avoid generating fake or biased news that could mislead the public.【13†L3】'
+            }, {
+                id: 149,
+                category: 'Intro to NLG',
+                question: 'What is the role of machine learning in NLG?',
+                options: [
+                    'To learn patterns from data and generate human-like text',
+                    'To follow hard-coded rules',
+                    'To only generate templates',
+                    'To evaluate text'
+                ],
+                correct: 0,
+                explanation: 'Machine learning approaches in NLG use large datasets to train models that can generate natural and contextually relevant text.【4†L4】'
+            }, {
+                id: 150,
+                category: 'Language Models',
+                question: 'What is the concept of "zero-shot learning" in language models?',
+                options: [
+                    'The ability to perform a task without any task-specific training examples',
+                    'Training with many examples',
+                    'No such concept',
+                    'Only for classification'
+                ],
+                correct: 0,
+                explanation: 'Zero-shot learning allows language models to perform tasks they were not explicitly trained on, using their general understanding.【13†L2】'
+            }, {
+                id: 151,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the attention mechanism in improving model interpretability?',
+                options: [
+                    'It allows visualization of which input parts the model focuses on when generating output',
+                    'It makes the model faster',
+                    'It reduces model size',
+                    'It increases accuracy'
+                ],
+                correct: 0,
+                explanation: 'Attention weights can be visualized to understand which parts of the input influenced the output, improving interpretability.【7†L3】'
+            }, {
+                id: 152,
+                category: 'Applications of NLG',
+                question: 'What is a key application of NLG in the e-commerce industry?',
+                options: [
+                    'Generating product descriptions, reviews, and personalized recommendations',
+                    'Only for pricing',
+                    'No application',
+                    'Only for inventory'
+                ],
+                correct: 0,
+                explanation: 'NLG is used in e-commerce to generate product descriptions, reviews, and personalized recommendations for customers.【2†L4】'
+            }, {
+                id: 153,
+                category: 'Language Models',
+                question: 'What is the concept of "transfer learning" in language models?',
+                options: [
+                    'Applying knowledge learned from one task to another related task',
+                    'Training from scratch for each task',
+                    'No such concept',
+                    'Only for classification'
+                ],
+                correct: 0,
+                explanation: 'Transfer learning allows language models to apply knowledge gained from pre-training on large corpora to specific downstream tasks.【10†L2】'
+            }, {
+                id: 154,
+                category: 'Seq2Seq Models',
+                question: 'What is a key application of Seq2Seq models with attention?',
+                options: [
+                    'Machine translation, text summarization, and speech recognition',
+                    'Only machine translation',
+                    'Only text summarization',
+                    'Only speech recognition'
+                ],
+                correct: 0,
+                explanation: 'Seq2Seq models with attention are used in machine translation, text summarization, speech recognition, and other sequence transformation tasks.【2†L4】'
+            }, {
+                id: 155,
+                category: 'Applications of NLG',
+                question: 'What is a key benefit of using NLG for personalized marketing?',
+                options: [
+                    'It can generate tailored content for individual customers, improving engagement and conversion',
+                    'It generates generic content',
+                    'No benefit',
+                    'Only for email'
+                ],
+                correct: 0,
+                explanation: 'NLG enables personalized marketing by creating content that resonates with individual customers based on their preferences and behavior.【2†L5】'
+            }, {
+                id: 156,
+                category: 'Intro to NLG',
+                question: 'What is the role of text planning in ensuring coherence?',
+                options: [
+                    'By organizing content logically and selecting the right information, text planning ensures the overall text is coherent',
+                    'By choosing the right words',
+                    'By generating fluent sentences',
+                    'By evaluating the output'
+                ],
+                correct: 0,
+                explanation: 'Text planning ensures coherence by structuring the content in a logical order and selecting the most relevant information.【6†L3】'
+            }, {
+                id: 157,
+                category: 'Language Models',
+                question: 'What is the role of the attention mechanism in Transformers?',
+                options: [
+                    'To allow the model to weigh the importance of different tokens in the input',
+                    'To reduce model size',
+                    'To speed up training',
+                    'To increase complexity'
+                ],
+                correct: 0,
+                explanation: 'Attention mechanisms in Transformers allow the model to focus on different parts of the input, capturing dependencies.【8†L3】'
+            }, {
+                id: 158,
+                category: 'Seq2Seq Models',
+                question: 'What is the role of the decoder in a Seq2Seq model for machine translation?',
+                options: [
+                    'To generate the translated sentence in the target language',
+                    'To process the source sentence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The decoder in machine translation generates the target language sentence from the context vector provided by the encoder.【4†L3】'
+            }, {
+                id: 159,
+                category: 'Applications of NLG',
+                question: 'What is a key challenge in NLG for creative writing?',
+                options: [
+                    'Generating content that is original, engaging, and emotionally resonant',
+                    'No challenges',
+                    'Only for poetry',
+                    'Only for short stories'
+                ],
+                correct: 0,
+                explanation: 'Creative NLG must produce text that is not only grammatically correct but also creative, original, and emotionally compelling.【2†L3】'
+            }, {
+                id: 160,
+                category: 'Language Models',
+                question: 'What is the role of the decoder in a Transformer?',
+                options: [
+                    'To generate the output sequence from the encoder\'s representation',
+                    'To process the input sequence',
+                    'To compute the loss',
+                    'To reduce sequence length'
+                ],
+                correct: 0,
+                explanation: 'The decoder in a Transformer generates the output sequence step by step, using the encoder\'s representations and attention mechanisms.【8†L3】'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(.option-item[data-qindex=""][data-optindex=""]);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(You've answered  of  questions. Please answer all questions to see results.);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

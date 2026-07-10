@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CNN & Deep Learning Architectures – Practice Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>CNN & Deep Learning · 150+ questions</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  150+ QUESTIONS — based on CNN and Deep Learning Architecture documents
+        //  Topics: Deep Learning overview, CNNs, convolution, pooling,
+        //  fully connected layers, challenges, medical imaging applications
+        // ============================================================
+        const QUESTIONS = [
+            // ---- DEEP LEARNING OVERVIEW (1–20) ----
+            {
+                id: 1,
+                category: 'Deep Learning Overview',
+                question: 'What is Deep Learning?',
+                options: [
+                    'A subset of machine learning that uses neural networks with many layers',
+                    'A type of supervised learning only',
+                    'A algorithm for data compression',
+                    'A hardware architecture'
+                ],
+                correct: 0,
+                explanation: 'Deep Learning is a subset of machine learning that uses neural networks with many layers (deep architectures) to automatically extract features from data.【4†L3】'
+            }, {
+                id: 2,
+                category: 'Deep Learning Overview',
+                question: 'Deep learning architectures are capable of handling ________.',
+                options: [
+                    'only small datasets',
+                    'vast amounts of data',
+                    'only numerical data',
+                    'only text data'
+                ],
+                correct: 1,
+                explanation: 'Deep learning architectures handle vast amounts of data and power modern breakthroughs in image recognition, NLP, and game playing.【2†L2】'
+            }, {
+                id: 3,
+                category: 'Deep Learning Overview',
+                question: 'Which of the following is a key capability of deep learning?',
+                options: [
+                    'Automatically extracting features from data',
+                    'Requiring manual feature engineering',
+                    'Only working with structured data',
+                    'Unable to learn hierarchical representations'
+                ],
+                correct: 0,
+                explanation: 'Deep learning can automatically extract features from data and learn hierarchical representations.【4†L3】'
+            }, {
+                id: 4,
+                category: 'Deep Learning Overview',
+                question: 'Deep learning uses neural networks with ________ layers.',
+                options: [
+                    'only one',
+                    'many (deep architectures)',
+                    'no',
+                    'exactly three'
+                ],
+                correct: 1,
+                explanation: 'Deep learning uses neural networks with many layers, which is why it is called "deep".【4†L3】'
+            }, {
+                id: 5,
+                category: 'Deep Learning Overview',
+                question: 'Which of the following is NOT a benefit of deep learning architectures?',
+                options: [
+                    'Efficient processing and improved accuracy',
+                    'Tailored to specific data types and challenges',
+                    'Requiring no data for training',
+                    'Evolution driven by real-world needs'
+                ],
+                correct: 2,
+                explanation: 'Deep learning architectures require data for training. They are tailored to specific data types and challenges, and evolve based on real-world needs.【5†L2】'
+            }, {
+                id: 6,
+                category: 'Deep Learning Overview',
+                question: 'What does "hierarchical representations" mean in deep learning?',
+                options: [
+                    'Learning features at different levels of abstraction across layers',
+                    'A single-level representation',
+                    'Random feature extraction',
+                    'Only low-level features'
+                ],
+                correct: 0,
+                explanation: 'Deep learning learns hierarchical representations, meaning features are learned at different levels of abstraction across layers.【4†L3】'
+            }, {
+                id: 7,
+                category: 'Deep Learning Overview',
+                question: 'Which architectures are mentioned as part of deep learning?',
+                options: [
+                    'CNNs, RNNs, and Transformers',
+                    'Only CNNs',
+                    'Only RNNs',
+                    'Only decision trees'
+                ],
+                correct: 0,
+                explanation: 'The materials cover Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs), and Transformers with Attention Mechanisms.【6†L2】'
+            }, {
+                id: 8,
+                category: 'Deep Learning Overview',
+                question: 'What is the role of deep learning in AI applications?',
+                options: [
+                    'Revolutionizing AI applications and enabling modern breakthroughs',
+                    'Only used for image processing',
+                    'Only used for natural language processing',
+                    'A niche technology with limited impact'
+                ],
+                correct: 0,
+                explanation: 'Deep learning has revolutionized AI applications and powers modern breakthroughs across multiple domains.【2†L2】'
+            }, {
+                id: 9,
+                category: 'Deep Learning Overview',
+                question: 'Deep learning architectures are designed to be ________.',
+                options: [
+                    'tailored to specific data types and challenges',
+                    'one-size-fits-all',
+                    'only for image data',
+                    'only for text data'
+                ],
+                correct: 0,
+                explanation: 'Different architectures are tailored to specific data types and challenges for efficient processing and improved accuracy.【5†L2】'
+            }, {
+                id: 10,
+                category: 'Deep Learning Overview',
+                question: 'Which of the following is a key application area for deep learning?',
+                options: [
+                    'Image recognition',
+                    'Only spreadsheet analysis',
+                    'Only basic arithmetic',
+                    'Only data storage'
+                ],
+                correct: 0,
+                explanation: 'Deep learning powers breakthroughs in image recognition, natural language processing, and game playing.【2†L2】'
+            }, {
+                id: 11,
+                category: 'Deep Learning Overview',
+                question: 'What is the relationship between deep learning and machine learning?',
+                options: [
+                    'Deep learning is a subset of machine learning',
+                    'They are the same thing',
+                    'Machine learning is a subset of deep learning',
+                    'They are unrelated'
+                ],
+                correct: 0,
+                explanation: 'Deep learning is a subset of machine learning that uses neural networks with many layers.【4†L3】'
+            }, {
+                id: 12,
+                category: 'Deep Learning Overview',
+                question: 'What does "deep" in deep learning refer to?',
+                options: [
+                    'The number of layers in the neural network',
+                    'The depth of the data',
+                    'The complexity of the algorithm',
+                    'The size of the dataset'
+                ],
+                correct: 0,
+                explanation: '"Deep" refers to the many layers in the neural network architecture.【4†L3】'
+            }, {
+                id: 13,
+                category: 'Deep Learning Overview',
+                question: 'Which of the following is a characteristic of deep learning?',
+                options: [
+                    'Learns hierarchical representations',
+                    'Requires manual feature extraction',
+                    'Only works with small datasets',
+                    'Cannot handle complex data'
+                ],
+                correct: 0,
+                explanation: 'Deep learning learns hierarchical representations and can automatically extract features from data.【4†L3】'
+            }, {
+                id: 14,
+                category: 'Deep Learning Overview',
+                question: 'What types of data can deep learning handle?',
+                options: [
+                    'Images, text, audio, and more',
+                    'Only images',
+                    'Only text',
+                    'Only numerical data'
+                ],
+                correct: 0,
+                explanation: 'Deep learning can handle various data types including images, text, audio, and numerical data.【4†L3】'
+            }, {
+                id: 15,
+                category: 'Deep Learning Overview',
+                question: 'What is the significance of deep learning architectures?',
+                options: [
+                    'They enable complex model architectures and efficient processing',
+                    'They are simple and easy to implement',
+                    'They require no computational resources',
+                    'They are only for research'
+                ],
+                correct: 0,
+                explanation: 'Deep learning architectures enable complex models and efficient processing, tailored to specific challenges.【2†L2】【5†L2】'
+            }, {
+                id: 16,
+                category: 'Deep Learning Overview',
+                question: 'Which of the following is NOT typically associated with deep learning?',
+                options: [
+                    'Decision trees',
+                    'Neural networks',
+                    'Hierarchical feature learning',
+                    'Large datasets'
+                ],
+                correct: 0,
+                explanation: 'Decision trees are not typically associated with deep learning; deep learning uses neural networks with many layers.【4†L3】'
+            }, {
+                id: 17,
+                category: 'Deep Learning Overview',
+                question: 'Deep learning models are particularly good at ________.',
+                options: [
+                    'automatically extracting features from raw data',
+                    'working with small datasets',
+                    'manual feature engineering',
+                    'linear problems only'
+                ],
+                correct: 0,
+                explanation: 'Deep learning models can automatically extract features from raw data without manual feature engineering.【4†L3】'
+            }, {
+                id: 18,
+                category: 'Deep Learning Overview',
+                question: 'What is the primary advantage of deep learning over traditional machine learning?',
+                options: [
+                    'Automatic feature extraction and hierarchical learning',
+                    'Requires less data',
+                    'Faster training',
+                    'Easier to interpret'
+                ],
+                correct: 0,
+                explanation: 'Deep learning\'s main advantage is its ability to automatically extract features and learn hierarchical representations.【4†L3】'
+            }, {
+                id: 19,
+                category: 'Deep Learning Overview',
+                question: 'Which of the following is a deep learning architecture mentioned in the materials?',
+                options: [
+                    'Convolutional Neural Networks (CNNs)',
+                    'Linear regression',
+                    'K-means clustering',
+                    'Principal Component Analysis'
+                ],
+                correct: 0,
+                explanation: 'Convolutional Neural Networks (CNNs) are a key deep learning architecture covered in the materials.【6†L2】'
+            }, {
+                id: 20,
+                category: 'Deep Learning Overview',
+                question: 'What enables deep learning to handle vast amounts of data?',
+                options: [
+                    'Complex model architectures and efficient processing',
+                    'Simple algorithms',
+                    'Manual data labeling',
+                    'Reduced computational power'
+                ],
+                correct: 0,
+                explanation: 'Deep learning uses complex model architectures and efficient processing to handle vast amounts of data.【2†L2】'
+            },
+
+            // ---- CNN BASICS (21–50) ----
+            {
+                id: 21,
+                category: 'CNN Basics',
+                question: 'What does CNN stand for?',
+                options: [
+                    'Convolutional Neural Network',
+                    'Complex Neural Network',
+                    'Connected Neural Network',
+                    'Circular Neural Network'
+                ],
+                correct: 0,
+                explanation: 'CNN stands for Convolutional Neural Network, a special type of neural network designed for image data.【8†L2】'
+            }, {
+                id: 22,
+                category: 'CNN Basics',
+                question: 'CNNs are primarily designed for what type of data?',
+                options: [
+                    'Image data',
+                    'Text data',
+                    'Audio data',
+                    'Tabular data'
+                ],
+                correct: 0,
+                explanation: 'CNNs are specifically designed for image data and hierarchical pattern recognition.【8†L2】'
+            }, {
+                id: 23,
+                category: 'CNN Basics',
+                question: 'What makes CNNs special compared to other neural networks?',
+                options: [
+                    'Efficient feature extraction and spatial hierarchies',
+                    'They require no training',
+                    'They are simpler to implement',
+                    'They work with any data type'
+                ],
+                correct: 0,
+                explanation: 'CNNs are special because of their efficient feature extraction, ability to capture spatial hierarchies, and reduced pre-processing.【9†L2】'
+            }, {
+                id: 24,
+                category: 'CNN Basics',
+                question: 'What is the fundamental building block of a CNN?',
+                options: [
+                    'Convolutional layer',
+                    'Fully connected layer',
+                    'Pooling layer',
+                    'Activation layer'
+                ],
+                correct: 0,
+                explanation: 'The convolutional layer is the fundamental building block of a CNN, extracting features using filters.【10†L2】'
+            }, {
+                id: 25,
+                category: 'CNN Basics',
+                question: 'What do convolutional layers extract from input data?',
+                options: [
+                    'Features using filters',
+                    'Only edges',
+                    'Only colors',
+                    'No features'
+                ],
+                correct: 0,
+                explanation: 'Convolutional layers extract features using filters and capture spatial and temporal dependencies.【10†L2】'
+            }, {
+                id: 26,
+                category: 'CNN Basics',
+                question: 'What is a key advantage of CNNs in computer vision?',
+                options: [
+                    'Reduced pre-processing',
+                    'Requires more pre-processing',
+                    'Cannot handle images',
+                    'Only works with text'
+                ],
+                correct: 0,
+                explanation: 'CNNs require reduced pre-processing compared to traditional methods, making them efficient for image tasks.【9†L2】'
+            }, {
+                id: 27,
+                category: 'CNN Basics',
+                question: 'Which of the following is a role of CNNs in computer vision?',
+                options: [
+                    'Image classification',
+                    'Only text classification',
+                    'Only audio processing',
+                    'Only regression'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used for image classification, object detection, image segmentation, and facial recognition.【11†L2】'
+            }, {
+                id: 28,
+                category: 'CNN Basics',
+                question: 'What type of pattern recognition do CNNs perform?',
+                options: [
+                    'Hierarchical pattern recognition',
+                    'Linear pattern recognition',
+                    'Random pattern recognition',
+                    'No pattern recognition'
+                ],
+                correct: 0,
+                explanation: 'CNNs perform hierarchical pattern recognition, learning features at different levels of abstraction.【8†L2】'
+            }, {
+                id: 29,
+                category: 'CNN Basics',
+                question: 'CNNs capture ________ dependencies in data.',
+                options: [
+                    'spatial and temporal',
+                    'only temporal',
+                    'only spatial',
+                    'no'
+                ],
+                correct: 0,
+                explanation: 'CNNs capture spatial and temporal dependencies through their convolutional layers.【10†L2】'
+            }, {
+                id: 30,
+                category: 'CNN Basics',
+                question: 'What is the role of filters in a CNN?',
+                options: [
+                    'To detect specific features like edges, textures, and colors',
+                    'To store data',
+                    'To connect layers',
+                    'To compute loss'
+                ],
+                correct: 0,
+                explanation: 'Filters (or kernels) are small matrices that detect specific features such as edges, textures, and colors.【15†L2】'
+            }, {
+                id: 31,
+                category: 'CNN Basics',
+                question: 'In a CNN, what does the convolution operation do?',
+                options: [
+                    'It extracts features by multiplying filter values with image pixels',
+                    'It reduces the image size',
+                    'It classifies the image',
+                    'It stores the image'
+                ],
+                correct: 0,
+                explanation: 'The convolution operation multiplies filter values by the original pixel values at each position, producing a feature map.【14†L2】'
+            }, {
+                id: 32,
+                category: 'CNN Basics',
+                question: 'What is a feature map in a CNN?',
+                options: [
+                    'The result of the convolution operation that highlights specific features',
+                    'The input image',
+                    'The output of the fully connected layer',
+                    'The loss function'
+                ],
+                correct: 0,
+                explanation: 'A feature map is the result of the convolution operation that highlights specific features in the image and forms the basis for subsequent layers.【16†L2】'
+            }, {
+                id: 33,
+                category: 'CNN Basics',
+                question: 'Different filters in a CNN detect ________.',
+                options: [
+                    'different features',
+                    'the same features',
+                    'no features',
+                    'only edges'
+                ],
+                correct: 0,
+                explanation: 'Different filters detect different features like edges, textures, and colors.【15†L2】'
+            }, {
+                id: 34,
+                category: 'CNN Basics',
+                question: 'What is the purpose of the convolution operation in CNNs?',
+                options: [
+                    'To extract features from input data',
+                    'To reduce the number of parameters',
+                    'To classify the data',
+                    'To augment the data'
+                ],
+                correct: 0,
+                explanation: 'The convolution operation is fundamental to CNNs and extracts features from input data.【13†L2】'
+            }, {
+                id: 35,
+                category: 'CNN Basics',
+                question: 'What is a typical CNN architecture composed of?',
+                options: [
+                    'Convolutional layers, pooling layers, and fully connected layers',
+                    'Only convolutional layers',
+                    'Only fully connected layers',
+                    'Only pooling layers'
+                ],
+                correct: 0,
+                explanation: 'A typical CNN consists of convolutional layers, pooling layers, and fully connected layers.【8†L2】【17†L2】'
+            }, {
+                id: 36,
+                category: 'CNN Basics',
+                question: 'What does "spatial hierarchies" mean in the context of CNNs?',
+                options: [
+                    'Learning features that capture spatial relationships in the data',
+                    'A hierarchy of data storage',
+                    'A hierarchy of algorithms',
+                    'A hierarchy of hardware'
+                ],
+                correct: 0,
+                explanation: 'Spatial hierarchies refer to the ability of CNNs to capture spatial relationships and patterns in the data.【9†L2】'
+            }, {
+                id: 37,
+                category: 'CNN Basics',
+                question: 'CNNs are particularly effective for ________.',
+                options: [
+                    'image-related tasks',
+                    'time series forecasting',
+                    'natural language processing',
+                    'reinforcement learning'
+                ],
+                correct: 0,
+                explanation: 'CNNs are particularly effective for image-related tasks like classification, detection, and segmentation.【8†L2】【11†L2】'
+            }, {
+                id: 38,
+                category: 'CNN Basics',
+                question: 'What is the primary function of a CNN\'s convolutional layer?',
+                options: [
+                    'To extract features using filters',
+                    'To reduce the image size',
+                    'To make final predictions',
+                    'To store weights'
+                ],
+                correct: 0,
+                explanation: 'The convolutional layer extracts features using filters and captures spatial and temporal dependencies.【10†L2】'
+            }, {
+                id: 39,
+                category: 'CNN Basics',
+                question: 'What is the role of CNNs in facial recognition?',
+                options: [
+                    'To identify and recognize faces in images',
+                    'To only detect edges',
+                    'To classify text',
+                    'To process audio'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used in facial recognition as part of their computer vision applications.【11†L2】'
+            }, {
+                id: 40,
+                category: 'CNN Basics',
+                question: 'What is object detection in the context of CNNs?',
+                options: [
+                    'Identifying and locating objects within an image',
+                    'Only classifying the entire image',
+                    'Only detecting edges',
+                    'Only recognizing faces'
+                ],
+                correct: 0,
+                explanation: 'Object detection involves identifying and locating objects within an image, a key application of CNNs.【11†L2】'
+            }, {
+                id: 41,
+                category: 'CNN Basics',
+                question: 'What is image segmentation in CNNs?',
+                options: [
+                    'Partitioning an image into meaningful regions or segments',
+                    'Classifying the entire image',
+                    'Detecting edges only',
+                    'Recognizing faces only'
+                ],
+                correct: 0,
+                explanation: 'Image segmentation partitions an image into meaningful regions, another key application of CNNs.【11†L2】'
+            }, {
+                id: 42,
+                category: 'CNN Basics',
+                question: 'What is the relationship between CNNs and computer vision?',
+                options: [
+                    'CNNs are a fundamental tool in computer vision',
+                    'CNNs are not used in computer vision',
+                    'CNNs are only used for NLP',
+                    'CNNs are used for audio processing'
+                ],
+                correct: 0,
+                explanation: 'CNNs play a crucial role in computer vision for tasks like image classification, object detection, and segmentation.【11†L2】'
+            }, {
+                id: 43,
+                category: 'CNN Basics',
+                question: 'What makes CNNs suitable for image data?',
+                options: [
+                    'Their ability to capture spatial hierarchies and extract features efficiently',
+                    'Their ability to process text',
+                    'Their ability to handle time series',
+                    'Their simplicity'
+                ],
+                correct: 0,
+                explanation: 'CNNs are suitable for image data due to their efficient feature extraction and ability to capture spatial hierarchies.【9†L2】'
+            }, {
+                id: 44,
+                category: 'CNN Basics',
+                question: 'What is the significance of reduced pre-processing in CNNs?',
+                options: [
+                    'It allows CNNs to learn features directly from raw data without extensive manual pre-processing',
+                    'It makes CNNs slower',
+                    'It requires more manual work',
+                    'It reduces accuracy'
+                ],
+                correct: 0,
+                explanation: 'CNNs require reduced pre-processing, meaning they can learn features directly from raw data.【9†L2】'
+            }, {
+                id: 45,
+                category: 'CNN Basics',
+                question: 'What is a "filter" in a CNN?',
+                options: [
+                    'A small matrix used to detect features in the input data',
+                    'A type of layer',
+                    'A loss function',
+                    'A regularization technique'
+                ],
+                correct: 0,
+                explanation: 'A filter (or kernel) is a small matrix that slides over the input to detect features like edges and textures.【15†L2】'
+            }, {
+                id: 46,
+                category: 'CNN Basics',
+                question: 'What is the output of a convolution operation called?',
+                options: [
+                    'Feature map',
+                    'Loss map',
+                    'Weight map',
+                    'Bias map'
+                ],
+                correct: 0,
+                explanation: 'The output of the convolution operation is called a feature map, which highlights specific features.【16†L2】'
+            }, {
+                id: 47,
+                category: 'CNN Basics',
+                question: 'What type of neural network is specifically designed for image data?',
+                options: [
+                    'Convolutional Neural Network (CNN)',
+                    'Recurrent Neural Network (RNN)',
+                    'Transformer',
+                    'Autoencoder'
+                ],
+                correct: 0,
+                explanation: 'CNNs are specifically designed for image data and hierarchical pattern recognition.【8†L2】'
+            }, {
+                id: 48,
+                category: 'CNN Basics',
+                question: 'What is the main advantage of using filters in CNNs?',
+                options: [
+                    'They allow the network to learn spatial features automatically',
+                    'They reduce the number of layers',
+                    'They increase the dataset size',
+                    'They simplify the loss function'
+                ],
+                correct: 0,
+                explanation: 'Filters allow CNNs to automatically learn spatial features like edges, textures, and patterns.【15†L2】'
+            }, {
+                id: 49,
+                category: 'CNN Basics',
+                question: 'What does the term "convolution" refer to in CNNs?',
+                options: [
+                    'A mathematical operation combining two functions to extract features',
+                    'A type of pooling',
+                    'A type of activation function',
+                    'A type of regularization'
+                ],
+                correct: 0,
+                explanation: 'Convolution is a mathematical operation that combines two functions to extract features from input data.【13†L2】'
+            }, {
+                id: 50,
+                category: 'CNN Basics',
+                question: 'What is the role of the convolution operation in feature extraction?',
+                options: [
+                    'It applies filters to the input to produce feature maps',
+                    'It reduces the spatial dimensions',
+                    'It classifies the input',
+                    'It stores the input'
+                ],
+                correct: 0,
+                explanation: 'The convolution operation applies filters to the input to produce feature maps that highlight specific features.【14†L2】'
+            },
+
+            // ---- POOLING & FULLY CONNECTED LAYERS (51–80) ----
+            {
+                id: 51,
+                category: 'Pooling & FC Layers',
+                question: 'What is the purpose of pooling layers in a CNN?',
+                options: [
+                    'To reduce spatial dimensions and simplify computational workload',
+                    'To increase the image size',
+                    'To classify the image',
+                    'To extract more features'
+                ],
+                correct: 0,
+                explanation: 'Pooling layers are positioned after convolutional layers to reduce spatial dimensions and simplify the computational workload.【17†L2】'
+            }, {
+                id: 52,
+                category: 'Pooling & FC Layers',
+                question: 'What are the common types of pooling?',
+                options: [
+                    'Max pooling and average pooling',
+                    'Min pooling and sum pooling',
+                    'Only max pooling',
+                    'Only average pooling'
+                ],
+                correct: 0,
+                explanation: 'The common types of pooling are Max Pooling and Average Pooling.【18†L2】'
+            }, {
+                id: 53,
+                category: 'Pooling & FC Layers',
+                question: 'What does max pooling do?',
+                options: [
+                    'It takes the maximum value from each region of the feature map',
+                    'It takes the average value from each region',
+                    'It takes the minimum value',
+                    'It sums all values'
+                ],
+                correct: 0,
+                explanation: 'Max pooling takes the maximum value from each region of the feature map, reducing dimensions while retaining important features.【18†L2】'
+            }, {
+                id: 54,
+                category: 'Pooling & FC Layers',
+                question: 'What does average pooling do?',
+                options: [
+                    'It takes the average value from each region of the feature map',
+                    'It takes the maximum value',
+                    'It takes the minimum value',
+                    'It sums all values'
+                ],
+                correct: 0,
+                explanation: 'Average pooling takes the average value from each region of the feature map.【18†L2】'
+            }, {
+                id: 55,
+                category: 'Pooling & FC Layers',
+                question: 'Why is pooling important in CNNs?',
+                options: [
+                    'It reduces size without sacrificing feature significance and ensures computational efficiency',
+                    'It increases the number of features',
+                    'It makes the network slower',
+                    'It reduces accuracy'
+                ],
+                correct: 0,
+                explanation: 'Pooling reduces size but not significance, ensuring computational efficiency without sacrificing feature detection.【19†L2】'
+            }, {
+                id: 56,
+                category: 'Pooling & FC Layers',
+                question: 'Where are pooling layers typically positioned in a CNN?',
+                options: [
+                    'After convolutional layers',
+                    'Before convolutional layers',
+                    'At the output layer',
+                    'Only in the input layer'
+                ],
+                correct: 0,
+                explanation: 'Pooling layers are positioned after convolutional layers to reduce spatial dimensions.【17†L2】'
+            }, {
+                id: 57,
+                category: 'Pooling & FC Layers',
+                question: 'What is the role of fully connected layers in a CNN?',
+                options: [
+                    'To bridge feature extraction and prediction, making final predictions',
+                    'To extract features',
+                    'To reduce dimensions',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers are positioned at the end of the network to bridge feature extraction and prediction.【20†L2】'
+            }, {
+                id: 58,
+                category: 'Pooling & FC Layers',
+                question: 'How do fully connected layers work?',
+                options: [
+                    'Every neuron is connected to its predecessor, flattening feature maps into a single vector',
+                    'Only some neurons are connected',
+                    'They are not connected to previous layers',
+                    'They only connect to the input'
+                ],
+                correct: 0,
+                explanation: 'In fully connected layers, every neuron is connected to its predecessor, flattening feature maps into a single vector for processing.【21†L2】'
+            }, {
+                id: 59,
+                category: 'Pooling & FC Layers',
+                question: 'What is the purpose of flattening in fully connected layers?',
+                options: [
+                    'To convert feature maps into a single vector for processing',
+                    'To increase the number of features',
+                    'To reduce the number of parameters',
+                    'To augment data'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers flatten feature maps into a single vector to process and combine extracted features.【21†L2】'
+            }, {
+                id: 60,
+                category: 'Pooling & FC Layers',
+                question: 'What is often used after fully connected layers for classification?',
+                options: [
+                    'A softmax layer',
+                    'A pooling layer',
+                    'A convolutional layer',
+                    'A dropout layer'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers are often followed by a softmax layer for classification tasks.【22†L2】'
+            }, {
+                id: 61,
+                category: 'Pooling & FC Layers',
+                question: 'What is the main function of the fully connected layer in a CNN?',
+                options: [
+                    'To make final predictions based on extracted features',
+                    'To extract features from the input',
+                    'To reduce spatial dimensions',
+                    'To apply filters'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers make final predictions by processing and combining features extracted by previous layers.【22†L2】'
+            }, {
+                id: 62,
+                category: 'Pooling & FC Layers',
+                question: 'Can fully connected layers have multiple layers?',
+                options: [
+                    'Yes, they can have multiple layers for complex tasks',
+                    'No, only one layer is allowed',
+                    'Only if followed by a softmax',
+                    'Only if preceded by pooling'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers can have multiple layers to handle complex tasks.【22†L2】'
+            }, {
+                id: 63,
+                category: 'Pooling & FC Layers',
+                question: 'What is the relationship between pooling layers and computational efficiency?',
+                options: [
+                    'Pooling reduces spatial dimensions, making computation more efficient',
+                    'Pooling increases computation',
+                    'Pooling has no effect on computation',
+                    'Pooling only affects accuracy'
+                ],
+                correct: 0,
+                explanation: 'Pooling reduces spatial dimensions, simplifying the computational workload for deeper networks.【19†L2】'
+            }, {
+                id: 64,
+                category: 'Pooling & FC Layers',
+                question: 'What does pooling ensure about the features?',
+                options: [
+                    'It retains essential information while reducing size',
+                    'It discards all features',
+                    'It doubles the features',
+                    'It randomizes features'
+                ],
+                correct: 0,
+                explanation: 'Pooling reduces size but retains essential information, ensuring computational efficiency without sacrificing feature detection.【19†L2】'
+            }, {
+                id: 65,
+                category: 'Pooling & FC Layers',
+                question: 'What is the typical position of fully connected layers in a CNN?',
+                options: [
+                    'At the end of the network',
+                    'At the beginning of the network',
+                    'In the middle of the network',
+                    'Only in the input layer'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers are positioned at the end of the network to bridge feature extraction and prediction.【20†L2】'
+            }, {
+                id: 66,
+                category: 'Pooling & FC Layers',
+                question: 'What is the effect of pooling on the spatial dimensions of feature maps?',
+                options: [
+                    'It reduces the spatial dimensions',
+                    'It increases the spatial dimensions',
+                    'It keeps the spatial dimensions the same',
+                    'It randomizes the dimensions'
+                ],
+                correct: 0,
+                explanation: 'Pooling reduces the spatial dimensions of feature maps, simplifying the computational workload.【17†L2】'
+            }, {
+                id: 67,
+                category: 'Pooling & FC Layers',
+                question: 'What is the primary purpose of the fully connected layer\'s connections?',
+                options: [
+                    'Every neuron connects to every neuron in the previous layer',
+                    'Only sparse connections are made',
+                    'No connections are made',
+                    'Connections are random'
+                ],
+                correct: 0,
+                explanation: 'In fully connected layers, every neuron is connected to every neuron in the previous layer.【21†L2】'
+            }, {
+                id: 68,
+                category: 'Pooling & FC Layers',
+                question: 'What is the benefit of using max pooling over average pooling?',
+                options: [
+                    'Max pooling retains the most prominent features, which can be beneficial for certain tasks',
+                    'Max pooling is always better',
+                    'Average pooling is always better',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'Max pooling retains the most prominent features, which can be beneficial for tasks where the most activated features are important.【18†L2】'
+            }, {
+                id: 69,
+                category: 'Pooling & FC Layers',
+                question: 'What is the benefit of using average pooling over max pooling?',
+                options: [
+                    'Average pooling provides a smoother representation, which can be useful for certain tasks',
+                    'Average pooling is always better',
+                    'Max pooling is always better',
+                    'There is no difference'
+                ],
+                correct: 0,
+                explanation: 'Average pooling provides a smoother representation, which can be useful for tasks where the overall activation is important.【18†L2】'
+            }, {
+                id: 70,
+                category: 'Pooling & FC Layers',
+                question: 'Why are fully connected layers considered "fully connected"?',
+                options: [
+                    'Because every neuron is connected to every neuron in the previous layer',
+                    'Because they connect to all layers',
+                    'Because they connect to the input only',
+                    'Because they have no connections'
+                ],
+                correct: 0,
+                explanation: 'They are called fully connected because every neuron connects to every neuron in the previous layer.【21†L2】'
+            }, {
+                id: 71,
+                category: 'Pooling & FC Layers',
+                question: 'What is the role of the softmax layer after fully connected layers?',
+                options: [
+                    'To convert outputs into probabilities for classification',
+                    'To extract features',
+                    'To reduce dimensions',
+                    'To apply filters'
+                ],
+                correct: 0,
+                explanation: 'The softmax layer is often used after fully connected layers to produce probability distributions for classification.【22†L2】'
+            }, {
+                id: 72,
+                category: 'Pooling & FC Layers',
+                question: 'What is the main purpose of pooling in CNNs?',
+                options: [
+                    'To reduce the spatial size of the representation and control overfitting',
+                    'To increase the spatial size',
+                    'To extract more features',
+                    'To classify the image'
+                ],
+                correct: 0,
+                explanation: 'Pooling reduces the spatial size of the representation, which helps control overfitting and reduces computation.【17†L2】'
+            }, {
+                id: 73,
+                category: 'Pooling & FC Layers',
+                question: 'What is the relationship between pooling layers and deeper networks?',
+                options: [
+                    'Pooling is critical for deeper networks to manage computational load',
+                    'Pooling is not used in deeper networks',
+                    'Pooling slows down deeper networks',
+                    'Pooling is only used in shallow networks'
+                ],
+                correct: 0,
+                explanation: 'Pooling is critical for deeper networks with multiple layers to manage computational load and retain essential features.【19†L2】'
+            }, {
+                id: 74,
+                category: 'Pooling & FC Layers',
+                question: 'What is the output of a fully connected layer typically used for?',
+                options: [
+                    'Final predictions or classification',
+                    'Feature extraction',
+                    'Dimensionality reduction',
+                    'Data augmentation'
+                ],
+                correct: 0,
+                explanation: 'The output of fully connected layers is used for final predictions or classification.【22†L2】'
+            }, {
+                id: 75,
+                category: 'Pooling & FC Layers',
+                question: 'What is the role of fully connected layers in combining features?',
+                options: [
+                    'They process and combine extracted features to make predictions',
+                    'They extract new features',
+                    'They reduce feature dimensions',
+                    'They augment features'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers process and combine the features extracted by previous layers to make predictions.【21†L2】'
+            }, {
+                id: 76,
+                category: 'Pooling & FC Layers',
+                question: 'What is the effect of pooling on the number of parameters in a CNN?',
+                options: [
+                    'It reduces the number of parameters by reducing spatial dimensions',
+                    'It increases the number of parameters',
+                    'It has no effect on parameters',
+                    'It randomizes parameters'
+                ],
+                correct: 0,
+                explanation: 'Pooling reduces spatial dimensions, which in turn reduces the number of parameters in subsequent layers.【17†L2】'
+            }, {
+                id: 77,
+                category: 'Pooling & FC Layers',
+                question: 'What is the purpose of flattening in fully connected layers?',
+                options: [
+                    'To convert multi-dimensional feature maps into a one-dimensional vector',
+                    'To increase the number of dimensions',
+                    'To reduce the number of features',
+                    'To augment the data'
+                ],
+                correct: 0,
+                explanation: 'Flattening converts multi-dimensional feature maps into a one-dimensional vector for the fully connected layers.【21†L2】'
+            }, {
+                id: 78,
+                category: 'Pooling & FC Layers',
+                question: 'What is a key characteristic of fully connected layers?',
+                options: [
+                    'Every neuron is connected to every neuron in the previous layer',
+                    'Only some neurons are connected',
+                    'No neurons are connected',
+                    'Connections are random'
+                ],
+                correct: 0,
+                explanation: 'In fully connected layers, every neuron is connected to every neuron in the previous layer.【21†L2】'
+            }, {
+                id: 79,
+                category: 'Pooling & FC Layers',
+                question: 'What is the main difference between convolutional layers and fully connected layers?',
+                options: [
+                    'Convolutional layers use filters for feature extraction; fully connected layers make predictions',
+                    'They are the same',
+                    'Convolutional layers make predictions; fully connected layers extract features',
+                    'Fully connected layers use filters'
+                ],
+                correct: 0,
+                explanation: 'Convolutional layers use filters for feature extraction, while fully connected layers process those features to make predictions.【20†L2】'
+            }, {
+                id: 80,
+                category: 'Pooling & FC Layers',
+                question: 'What is the purpose of the fully connected layer in a CNN architecture?',
+                options: [
+                    'To produce the final output based on the features extracted by earlier layers',
+                    'To extract features from the input',
+                    'To reduce the spatial dimensions',
+                    'To apply the convolution operation'
+                ],
+                correct: 0,
+                explanation: 'The fully connected layer produces the final output by processing features extracted by earlier layers.【22†L2】'
+            },
+
+            // ---- CNN CHALLENGES & MEDICAL APPLICATIONS (81–110) ----
+            {
+                id: 81,
+                category: 'CNN Challenges',
+                question: 'What is a major challenge when training CNNs?',
+                options: [
+                    'Requires large datasets',
+                    'Requires small datasets',
+                    'Is computationally cheap',
+                    'Never overfits'
+                ],
+                correct: 0,
+                explanation: 'CNNs require large datasets and are computationally intensive, and are prone to overfitting without regularization.【23†L2】'
+            }, {
+                id: 82,
+                category: 'CNN Challenges',
+                question: 'Why are CNNs computationally intensive?',
+                options: [
+                    'Because of the large number of parameters and operations in convolutional layers',
+                    'Because they are simple',
+                    'Because they use few parameters',
+                    'Because they require no computation'
+                ],
+                correct: 0,
+                explanation: 'CNNs are computationally intensive due to the large number of parameters and operations in their layers.【23†L2】'
+            }, {
+                id: 83,
+                category: 'CNN Challenges',
+                question: 'What is a common problem with CNNs without regularization?',
+                options: [
+                    'Prone to overfitting',
+                    'Prone to underfitting',
+                    'Always accurate',
+                    'Never overfits'
+                ],
+                correct: 0,
+                explanation: 'CNNs are prone to overfitting without proper regularization.【23†L2】'
+            }, {
+                id: 84,
+                category: 'CNN Challenges',
+                question: 'What is the role of regularization in CNNs?',
+                options: [
+                    'To prevent overfitting and improve generalization',
+                    'To increase overfitting',
+                    'To reduce accuracy',
+                    'To slow down training'
+                ],
+                correct: 0,
+                explanation: 'Regularization techniques are used to prevent overfitting in CNNs.【23†L2】'
+            }, {
+                id: 85,
+                category: 'CNN Challenges',
+                question: 'What is a key requirement for training CNNs effectively?',
+                options: [
+                    'Large datasets',
+                    'Small datasets',
+                    'No data',
+                    'Only text data'
+                ],
+                correct: 0,
+                explanation: 'CNNs require large datasets to train effectively.【23†L2】'
+            }, {
+                id: 86,
+                category: 'Medical Imaging',
+                question: 'What types of medical imaging are mentioned in the materials?',
+                options: [
+                    'X-rays, MRIs, CT scans, and Ultrasound',
+                    'Only X-rays',
+                    'Only MRIs',
+                    'Only CT scans'
+                ],
+                correct: 0,
+                explanation: 'The materials mention diverse types of medical imaging techniques: X-rays, MRIs, CT scans, and Ultrasound.【25†L2】'
+            }, {
+                id: 87,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in medical imaging?',
+                options: [
+                    'Pioneering automated disease detection and enhancing diagnostic accuracy',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs are pioneering automated disease detection, minimizing diagnostic discrepancies, and enhancing accuracy in medical imaging.【26†L2】'
+            }, {
+                id: 88,
+                category: 'Medical Imaging',
+                question: 'What is a key application of CNNs in medical imaging?',
+                options: [
+                    'Tumor detection in MRIs',
+                    'Only image storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used for tumor detection in MRIs, lung disease identification in X-rays, and blood vessel segmentation in retinal images.【27†L2】'
+            }, {
+                id: 89,
+                category: 'Medical Imaging',
+                question: 'How do CNNs help in skin lesion diagnosis?',
+                options: [
+                    'They provide advanced differentiation capabilities and proactive early detection',
+                    'They only store images',
+                    'They only print reports',
+                    'They only transmit images'
+                ],
+                correct: 0,
+                explanation: 'CNNs offer advanced differentiation capabilities and proactive early detection in skin lesion diagnosis.【28†L2】'
+            }, {
+                id: 90,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in diabetic retinopathy?',
+                options: [
+                    'Precision grading of disease severity',
+                    'Only image storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide precision grading of disease severity for diabetic retinopathy, a prevalent complication among diabetics.【29†L2】'
+            }, {
+                id: 91,
+                category: 'Medical Imaging',
+                question: 'How are CNNs used in analyzing chest X-rays?',
+                options: [
+                    'For advanced analysis with precise anomaly detection and valuable diagnostic metrics',
+                    'Only for storing images',
+                    'Only for transmitting images',
+                    'Only for printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used for advanced analysis of chest X-rays with precise anomaly detection and diagnostic metrics.【30†L2】'
+            }, {
+                id: 92,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in skeletal age estimation?',
+                options: [
+                    'Providing accurate skeletal age estimation, vital for early detection of growth anomalies',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide accurate skeletal age estimation, which is vital for early detection of growth anomalies.【31†L2】'
+            }, {
+                id: 93,
+                category: 'Medical Imaging',
+                question: 'How are CNNs used in breast cancer detection?',
+                options: [
+                    'Offering advanced mammogram analysis with enhanced diagnostic precision and confidence',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs offer advanced mammogram analysis for breast cancer detection with enhanced diagnostic precision.【32†L2】'
+            }, {
+                id: 94,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in brain tumor segmentation?',
+                options: [
+                    'Bringing precision to MRI tumor segmentation, facilitating accurate diagnosis and tailored treatments',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs bring precision to brain tumor segmentation in MRI scans, facilitating accurate diagnosis and tailored treatments.【33†L2】'
+            }, {
+                id: 95,
+                category: 'Medical Imaging',
+                question: 'How are CNNs used in lung CT scans?',
+                options: [
+                    'Excelling in detecting subtle nodular changes, enabling early intervention',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs excel in detecting subtle nodular changes in lung CT scans, which are potential precursors to lung cancer.【34†L2】'
+            }, {
+                id: 96,
+                category: 'Medical Imaging',
+                question: 'What is a challenge in medical imaging with CNNs?',
+                options: [
+                    'Ensuring data diversity and addressing data privacy concerns',
+                    'Only data storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'Challenges in medical imaging with CNNs include ensuring data diversity, addressing data privacy concerns, and balancing accuracy and interpretability.【35†L2】'
+            }, {
+                id: 97,
+                category: 'Medical Imaging',
+                question: 'What is a future prospect for CNNs in medical imaging?',
+                options: [
+                    'AR integration for improved surgical guidance and real-time analysis',
+                    'Only image storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'Future prospects include AR integration for improved surgical guidance, real-time CNN analysis during procedures, and AI-driven personalized treatment recommendations.【36†L2】'
+            }, {
+                id: 98,
+                category: 'Medical Imaging',
+                question: 'What is the impact of CNNs on diagnostic timelines?',
+                options: [
+                    'Accelerating the diagnostic timeline',
+                    'Slowing down diagnosis',
+                    'No impact on diagnosis',
+                    'Only affecting image storage'
+                ],
+                correct: 0,
+                explanation: 'CNNs accelerate the diagnostic timeline by enabling faster and more accurate analysis.【26†L2】'
+            }, {
+                id: 99,
+                category: 'Medical Imaging',
+                question: 'What is a key benefit of CNNs in medical imaging?',
+                options: [
+                    'Enhancing accuracy and precision in diagnosis',
+                    'Reducing accuracy',
+                    'Increasing diagnostic errors',
+                    'Only affecting image quality'
+                ],
+                correct: 0,
+                explanation: 'CNNs enhance accuracy and precision in medical diagnosis.【26†L2】'
+            }, {
+                id: 100,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in minimizing diagnostic discrepancies?',
+                options: [
+                    'Providing consistent and accurate analysis to reduce human error',
+                    'Increasing discrepancies',
+                    'No effect on discrepancies',
+                    'Only affecting image storage'
+                ],
+                correct: 0,
+                explanation: 'CNNs minimize diagnostic discrepancies by providing consistent and accurate analysis.【26†L2】'
+            }, {
+                id: 101,
+                category: 'Medical Imaging',
+                question: 'What is the significance of early detection in lung nodule analysis?',
+                options: [
+                    'Early detection is a cornerstone for effective intervention',
+                    'Early detection is not important',
+                    'Early detection only affects image quality',
+                    'Early detection only affects storage'
+                ],
+                correct: 0,
+                explanation: 'Early detection of lung nodules is a cornerstone for effective intervention and treatment.【34†L2】'
+            }, {
+                id: 102,
+                category: 'Medical Imaging',
+                question: 'How do CNNs contribute to personalized treatment in healthcare?',
+                options: [
+                    'Through AI-driven personalized treatment recommendations',
+                    'Only through image storage',
+                    'Only through image transmission',
+                    'Only through image printing'
+                ],
+                correct: 0,
+                explanation: 'CNNs contribute to personalized treatment through AI-driven recommendations based on precise analysis.【36†L2】'
+            }, {
+                id: 103,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in blood vessel segmentation?',
+                options: [
+                    'Segmenting blood vessels in retinal images for better diagnosis',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used for blood vessel segmentation in retinal images, aiding in diagnosis.【27†L2】'
+            }, {
+                id: 104,
+                category: 'Medical Imaging',
+                question: 'What is the importance of data diversity in medical imaging?',
+                options: [
+                    'To ensure models generalize well across different populations and conditions',
+                    'Data diversity is not important',
+                    'Data diversity only affects storage',
+                    'Data diversity only affects transmission'
+                ],
+                correct: 0,
+                explanation: 'Data diversity is crucial to ensure that CNNs generalize well across different populations and conditions.【35†L2】'
+            }, {
+                id: 105,
+                category: 'Medical Imaging',
+                question: 'What is a privacy concern in medical imaging with CNNs?',
+                options: [
+                    'Addressing data privacy concerns related to patient information',
+                    'Only storage concerns',
+                    'Only transmission concerns',
+                    'Only printing concerns'
+                ],
+                correct: 0,
+                explanation: 'Data privacy concerns related to patient information must be addressed when using CNNs in medical imaging.【35†L2】'
+            }, {
+                id: 106,
+                category: 'Medical Imaging',
+                question: 'What is the balance needed in medical imaging with CNNs?',
+                options: [
+                    'Balancing accuracy and interpretability',
+                    'Only accuracy',
+                    'Only interpretability',
+                    'Only speed'
+                ],
+                correct: 0,
+                explanation: 'There is a need to balance accuracy and interpretability in medical imaging with CNNs.【35†L2】'
+            }, {
+                id: 107,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in automating disease detection?',
+                options: [
+                    'Pioneering automated disease detection to assist healthcare professionals',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs are pioneering automated disease detection to assist healthcare professionals.【26†L2】'
+            }, {
+                id: 108,
+                category: 'Medical Imaging',
+                question: 'What is the impact of CNNs on diagnostic confidence?',
+                options: [
+                    'Enhancing diagnostic precision and confidence',
+                    'Reducing confidence',
+                    'No impact on confidence',
+                    'Only affecting image quality'
+                ],
+                correct: 0,
+                explanation: 'CNNs enhance diagnostic precision and confidence through advanced analysis.【32†L2】'
+            }, {
+                id: 109,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in real-time medical procedures?',
+                options: [
+                    'Real-time CNN analysis during medical procedures',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'Future prospects include real-time CNN analysis during medical procedures.【36†L2】'
+            }, {
+                id: 110,
+                category: 'Medical Imaging',
+                question: 'What is the overall impact of CNNs on medical imaging?',
+                options: [
+                    'A transformative era with enhanced diagnostic precision and expedited results',
+                    'Only minor improvements',
+                    'No impact',
+                    'Only affecting image storage'
+                ],
+                correct: 0,
+                explanation: 'CNNs are ushering in a transformative era in medical imaging with enhanced diagnostic precision and expedited results.【37†L2】'
+            },
+
+            // ---- ADDITIONAL QUESTIONS to reach 150+ (111–160) ----
+            {
+                id: 111,
+                category: 'Deep Learning Overview',
+                question: 'What is the relationship between deep learning and neural networks?',
+                options: [
+                    'Deep learning uses neural networks with many layers',
+                    'Deep learning does not use neural networks',
+                    'Neural networks are a subset of deep learning',
+                    'They are unrelated'
+                ],
+                correct: 0,
+                explanation: 'Deep learning uses neural networks with many layers (deep architectures).【4†L3】'
+            }, {
+                id: 112,
+                category: 'Deep Learning Overview',
+                question: 'What is a key enabler of deep learning\'s success?',
+                options: [
+                    'Complex model architectures and vast amounts of data',
+                    'Simple algorithms',
+                    'Small datasets',
+                    'Manual feature engineering'
+                ],
+                correct: 0,
+                explanation: 'Deep learning\'s success is driven by complex model architectures and the ability to handle vast amounts of data.【2†L2】'
+            }, {
+                id: 113,
+                category: 'CNN Basics',
+                question: 'What is the primary purpose of a CNN?',
+                options: [
+                    'To process and analyze visual imagery',
+                    'To process text data',
+                    'To process audio data',
+                    'To process tabular data'
+                ],
+                correct: 0,
+                explanation: 'CNNs are primarily designed for processing and analyzing visual imagery.【8†L2】'
+            }, {
+                id: 114,
+                category: 'CNN Basics',
+                question: 'What does the term "convolution" refer to in the context of CNNs?',
+                options: [
+                    'A mathematical operation that applies filters to the input',
+                    'A type of pooling',
+                    'A type of activation function',
+                    'A type of regularization'
+                ],
+                correct: 0,
+                explanation: 'Convolution is a mathematical operation that applies filters to the input to extract features.【13†L2】'
+            }, {
+                id: 115,
+                category: 'Pooling & FC Layers',
+                question: 'What is the main purpose of max pooling?',
+                options: [
+                    'To select the maximum value from each region, reducing dimensions while preserving important features',
+                    'To select the average value from each region',
+                    'To select the minimum value',
+                    'To sum all values'
+                ],
+                correct: 0,
+                explanation: 'Max pooling selects the maximum value from each region, reducing dimensions while preserving important features.【18†L2】'
+            }, {
+                id: 116,
+                category: 'Pooling & FC Layers',
+                question: 'What is the main purpose of average pooling?',
+                options: [
+                    'To take the average value from each region, providing a smoother representation',
+                    'To take the maximum value',
+                    'To take the minimum value',
+                    'To sum all values'
+                ],
+                correct: 0,
+                explanation: 'Average pooling takes the average value from each region, providing a smoother representation.【18†L2】'
+            }, {
+                id: 117,
+                category: 'CNN Challenges',
+                question: 'What is a common cause of overfitting in CNNs?',
+                options: [
+                    'Too many parameters relative to the amount of training data',
+                    'Too few parameters',
+                    'Too much training data',
+                    'Too little regularization'
+                ],
+                correct: 0,
+                explanation: 'Overfitting in CNNs is often caused by too many parameters relative to the amount of training data.【23†L2】'
+            }, {
+                id: 118,
+                category: 'CNN Challenges',
+                question: 'How can overfitting be mitigated in CNNs?',
+                options: [
+                    'Using regularization techniques like dropout and L2 regularization',
+                    'Increasing model complexity',
+                    'Reducing the amount of data',
+                    'Removing all regularization'
+                ],
+                correct: 0,
+                explanation: 'Overfitting can be mitigated using regularization techniques like dropout and L2 regularization.【23†L2】'
+            }, {
+                id: 119,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in detecting lung nodules?',
+                options: [
+                    'Excelling in detecting subtle nodular changes in CT scans',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs excel in detecting subtle nodular changes in lung CT scans.【34†L2】'
+            }, {
+                id: 120,
+                category: 'Medical Imaging',
+                question: 'What is the significance of CNNs in breast cancer detection?',
+                options: [
+                    'Offering advanced mammogram analysis with enhanced diagnostic precision',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs offer advanced mammogram analysis for breast cancer detection with enhanced diagnostic precision.【32†L2】'
+            }, {
+                id: 121,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in diabetic retinopathy grading?',
+                options: [
+                    'Precision grading of disease severity',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide precision grading of disease severity for diabetic retinopathy.【29†L2】'
+            }, {
+                id: 122,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in skeletal age estimation?',
+                options: [
+                    'Providing accurate skeletal age estimation for growth anomaly detection',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide accurate skeletal age estimation, vital for early detection of growth anomalies.【31†L2】'
+            }, {
+                id: 123,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in brain tumor segmentation?',
+                options: [
+                    'Precision segmentation of brain tumors in MRI scans',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs bring precision to brain tumor segmentation in MRI scans.【33†L2】'
+            }, {
+                id: 124,
+                category: 'Medical Imaging',
+                question: 'What is a challenge in medical imaging with CNNs?',
+                options: [
+                    'Balancing accuracy and interpretability',
+                    'Only accuracy',
+                    'Only interpretability',
+                    'Only speed'
+                ],
+                correct: 0,
+                explanation: 'Balancing accuracy and interpretability is a challenge in medical imaging with CNNs.【35†L2】'
+            }, {
+                id: 125,
+                category: 'Medical Imaging',
+                question: 'What is a future prospect for CNNs in medical imaging?',
+                options: [
+                    'AI-driven personalized treatment recommendations',
+                    'Only image storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'Future prospects include AI-driven personalized treatment recommendations.【36†L2】'
+            }, {
+                id: 126,
+                category: 'CNN Basics',
+                question: 'What is the purpose of the activation function in a CNN?',
+                options: [
+                    'To introduce non-linearity after the convolution operation',
+                    'To reduce the image size',
+                    'To classify the image',
+                    'To store weights'
+                ],
+                correct: 0,
+                explanation: 'Activation functions introduce non-linearity after the convolution operation, allowing the network to learn complex patterns.'
+            }, {
+                id: 127,
+                category: 'CNN Basics',
+                question: 'What is the role of stride in a convolution operation?',
+                options: [
+                    'It determines the step size with which the filter moves across the input',
+                    'It determines the size of the filter',
+                    'It determines the number of filters',
+                    'It determines the activation function'
+                ],
+                correct: 0,
+                explanation: 'Stride determines the step size with which the filter moves across the input, affecting the output size.'
+            }, {
+                id: 128,
+                category: 'CNN Basics',
+                question: 'What is padding in the context of CNNs?',
+                options: [
+                    'Adding extra pixels around the input to control the spatial size of the output',
+                    'Removing pixels from the input',
+                    'Changing the filter size',
+                    'Changing the stride'
+                ],
+                correct: 0,
+                explanation: 'Padding adds extra pixels around the input to control the spatial size of the output after convolution.'
+            }, {
+                id: 129,
+                category: 'CNN Basics',
+                question: 'What is the effect of padding on the output size of a convolution?',
+                options: [
+                    'It can keep the output size the same as the input size',
+                    'It always reduces the output size',
+                    'It always increases the output size',
+                    'It has no effect on output size'
+                ],
+                correct: 0,
+                explanation: 'Padding can be used to keep the output size the same as the input size (same padding) or to reduce it.'
+            }, {
+                id: 130,
+                category: 'CNN Basics',
+                question: 'What is the effect of stride on the output size of a convolution?',
+                options: [
+                    'Increasing stride reduces the output size',
+                    'Increasing stride increases the output size',
+                    'Stride has no effect on output size',
+                    'Stride only affects the filter size'
+                ],
+                correct: 0,
+                explanation: 'Increasing the stride reduces the spatial size of the output feature map.'
+            }, {
+                id: 131,
+                category: 'Pooling & FC Layers',
+                question: 'What is the main difference between max pooling and average pooling?',
+                options: [
+                    'Max pooling takes the maximum value; average pooling takes the average',
+                    'Max pooling takes the average; average pooling takes the maximum',
+                    'They are the same',
+                    'Max pooling is used for classification; average pooling for regression'
+                ],
+                correct: 0,
+                explanation: 'Max pooling takes the maximum value from each region, while average pooling takes the average.【18†L2】'
+            }, {
+                id: 132,
+                category: 'Pooling & FC Layers',
+                question: 'What is the role of dropout in CNNs?',
+                options: [
+                    'To randomly deactivate neurons during training to prevent overfitting',
+                    'To increase the number of neurons',
+                    'To reduce the number of layers',
+                    'To augment the data'
+                ],
+                correct: 0,
+                explanation: 'Dropout randomly deactivates neurons during training to prevent overfitting and improve generalization.'
+            }, {
+                id: 133,
+                category: 'Pooling & FC Layers',
+                question: 'What is the effect of dropout on the training process?',
+                options: [
+                    'It introduces noise, making the model more robust and less prone to overfitting',
+                    'It speeds up training',
+                    'It increases overfitting',
+                    'It has no effect'
+                ],
+                correct: 0,
+                explanation: 'Dropout introduces noise by randomly dropping neurons, making the model more robust and less prone to overfitting.'
+            }, {
+                id: 134,
+                category: 'CNN Challenges',
+                question: 'What is the role of data augmentation in CNNs?',
+                options: [
+                    'To increase the diversity of the training set and reduce overfitting',
+                    'To reduce the size of the training set',
+                    'To increase model complexity',
+                    'To speed up training'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation increases the diversity of the training set, helping to reduce overfitting and improve generalization.'
+            }, {
+                id: 135,
+                category: 'CNN Challenges',
+                question: 'What is a common technique to address the need for large datasets in CNNs?',
+                options: [
+                    'Data augmentation and transfer learning',
+                    'Reducing the number of layers',
+                    'Using smaller filters',
+                    'Decreasing the learning rate'
+                ],
+                correct: 0,
+                explanation: 'Data augmentation and transfer learning are common techniques to address the need for large datasets in CNNs.'
+            }, {
+                id: 136,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in chest X-ray analysis?',
+                options: [
+                    'Advanced analysis with precise anomaly detection',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used for advanced analysis of chest X-rays with precise anomaly detection.【30†L2】'
+            }, {
+                id: 137,
+                category: 'Medical Imaging',
+                question: 'What is the significance of CNNs in skin lesion diagnosis?',
+                options: [
+                    'Advanced differentiation capabilities and proactive early detection',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs offer advanced differentiation capabilities and proactive early detection in skin lesion diagnosis.【28†L2】'
+            }, {
+                id: 138,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in retinal image analysis?',
+                options: [
+                    'Blood vessel segmentation and disease detection',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs are used for blood vessel segmentation and disease detection in retinal images.【27†L2】'
+            }, {
+                id: 139,
+                category: 'Medical Imaging',
+                question: 'What is a challenge in medical imaging with CNNs?',
+                options: [
+                    'Ensuring data diversity and addressing privacy concerns',
+                    'Only data storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'Ensuring data diversity and addressing privacy concerns are challenges in medical imaging with CNNs.【35†L2】'
+            }, {
+                id: 140,
+                category: 'Medical Imaging',
+                question: 'What is a future prospect for CNNs in medical imaging?',
+                options: [
+                    'AR integration for improved surgical guidance',
+                    'Only image storage',
+                    'Only image transmission',
+                    'Only image printing'
+                ],
+                correct: 0,
+                explanation: 'Future prospects include AR integration for improved surgical guidance.【36†L2】'
+            }, {
+                id: 141,
+                category: 'CNN Basics',
+                question: 'What is the role of the ReLU activation function in CNNs?',
+                options: [
+                    'To introduce non-linearity and speed up training',
+                    'To reduce the image size',
+                    'To classify the image',
+                    'To store weights'
+                ],
+                correct: 0,
+                explanation: 'ReLU introduces non-linearity and helps speed up training by avoiding saturation.'
+            }, {
+                id: 142,
+                category: 'Pooling & FC Layers',
+                question: 'What is the effect of pooling on translation invariance?',
+                options: [
+                    'Pooling helps achieve translation invariance by reducing sensitivity to small shifts',
+                    'Pooling increases sensitivity to shifts',
+                    'Pooling has no effect on translation invariance',
+                    'Pooling only affects color'
+                ],
+                correct: 0,
+                explanation: 'Pooling helps achieve translation invariance by making the network less sensitive to small shifts in the input.'
+            }, {
+                id: 143,
+                category: 'CNN Challenges',
+                question: 'What is the role of batch normalization in CNNs?',
+                options: [
+                    'To normalize activations, improving training stability and speed',
+                    'To reduce the number of parameters',
+                    'To increase overfitting',
+                    'To slow down training'
+                ],
+                correct: 0,
+                explanation: 'Batch normalization normalizes activations, improving training stability and speed.'
+            }, {
+                id: 144,
+                category: 'CNN Challenges',
+                question: 'What is a common issue with deep CNNs?',
+                options: [
+                    'Vanishing gradients',
+                    'Too few parameters',
+                    'Too little data',
+                    'Too fast training'
+                ],
+                correct: 0,
+                explanation: 'Vanishing gradients are a common issue in deep CNNs, especially with certain activation functions.'
+            }, {
+                id: 145,
+                category: 'CNN Basics',
+                question: 'What is the purpose of using multiple convolutional layers in a CNN?',
+                options: [
+                    'To learn increasingly complex features',
+                    'To reduce the number of parameters',
+                    'To speed up training',
+                    'To simplify the model'
+                ],
+                correct: 0,
+                explanation: 'Multiple convolutional layers allow the network to learn increasingly complex features hierarchically.'
+            }, {
+                id: 146,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in reducing diagnostic discrepancies?',
+                options: [
+                    'Providing consistent and objective analysis to reduce human error',
+                    'Increasing discrepancies',
+                    'No effect on discrepancies',
+                    'Only affecting image quality'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide consistent and objective analysis, helping to reduce diagnostic discrepancies.【26†L2】'
+            }, {
+                id: 147,
+                category: 'Medical Imaging',
+                question: 'What is the significance of early detection in breast cancer with CNNs?',
+                options: [
+                    'Early detection significantly improves treatment outcomes',
+                    'Early detection is not important',
+                    'Early detection only affects image quality',
+                    'Early detection only affects storage'
+                ],
+                correct: 0,
+                explanation: 'Early detection of breast cancer significantly improves treatment outcomes, and CNNs aid in this.【32†L2】'
+            }, {
+                id: 148,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in personalized treatment?',
+                options: [
+                    'AI-driven personalized treatment recommendations based on precise analysis',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs contribute to personalized treatment through AI-driven recommendations.【36†L2】'
+            }, {
+                id: 149,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in accelerating diagnostic timelines?',
+                options: [
+                    'Enabling faster and more accurate analysis to speed up diagnosis',
+                    'Slowing down diagnosis',
+                    'No impact on diagnosis',
+                    'Only affecting image storage'
+                ],
+                correct: 0,
+                explanation: 'CNNs enable faster and more accurate analysis, accelerating diagnostic timelines.【26†L2】'
+            }, {
+                id: 150,
+                category: 'Medical Imaging',
+                question: 'What is the overall goal of using CNNs in medical imaging?',
+                options: [
+                    'To improve diagnostic accuracy, speed, and patient outcomes',
+                    'Only to store images',
+                    'Only to transmit images',
+                    'Only to print images'
+                ],
+                correct: 0,
+                explanation: 'The overall goal of using CNNs in medical imaging is to improve diagnostic accuracy, speed, and patient outcomes.【37†L2】'
+            }, {
+                id: 151,
+                category: 'CNN Basics',
+                question: 'What is the relationship between filters and feature maps in CNNs?',
+                options: [
+                    'Filters are applied to the input to produce feature maps',
+                    'Feature maps are applied to the input to produce filters',
+                    'They are the same',
+                    'Filters are produced by feature maps'
+                ],
+                correct: 0,
+                explanation: 'Filters are applied to the input through convolution to produce feature maps.【14†L2】【15†L2】'
+            }, {
+                id: 152,
+                category: 'Pooling & FC Layers',
+                question: 'What is the role of the fully connected layer in combining features?',
+                options: [
+                    'It processes and combines features extracted by previous layers to make predictions',
+                    'It extracts new features',
+                    'It reduces feature dimensions',
+                    'It augments features'
+                ],
+                correct: 0,
+                explanation: 'Fully connected layers process and combine features extracted by previous layers to make predictions.【21†L2】'
+            }, {
+                id: 153,
+                category: 'CNN Challenges',
+                question: 'What is the role of regularization in preventing overfitting in CNNs?',
+                options: [
+                    'It adds penalties to the loss function to discourage complex models',
+                    'It increases model complexity',
+                    'It reduces the amount of data',
+                    'It speeds up training'
+                ],
+                correct: 0,
+                explanation: 'Regularization adds penalties to the loss function to discourage complex models and prevent overfitting.【23†L2】'
+            }, {
+                id: 154,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in analyzing mammograms?',
+                options: [
+                    'Advanced mammogram analysis with enhanced diagnostic precision',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs offer advanced mammogram analysis with enhanced diagnostic precision.【32†L2】'
+            }, {
+                id: 155,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in detecting lung cancer?',
+                options: [
+                    'Detecting subtle nodular changes in CT scans for early intervention',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs detect subtle nodular changes in lung CT scans, aiding in early detection of lung cancer.【34†L2】'
+            }, {
+                id: 156,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in brain tumor diagnosis?',
+                options: [
+                    'Precision segmentation and analysis of brain tumors in MRI scans',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide precision segmentation and analysis of brain tumors in MRI scans.【33†L2】'
+            }, {
+                id: 157,
+                category: 'Medical Imaging',
+                question: 'What is the significance of CNNs in pediatric growth studies?',
+                options: [
+                    'Accurate skeletal age estimation for early detection of growth anomalies',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide accurate skeletal age estimation, vital for early detection of growth anomalies in pediatric studies.【31†L2】'
+            }, {
+                id: 158,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in diabetic retinopathy screening?',
+                options: [
+                    'Precision grading of disease severity for timely intervention',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs provide precision grading of disease severity for diabetic retinopathy, enabling timely intervention.【29†L2】'
+            }, {
+                id: 159,
+                category: 'Medical Imaging',
+                question: 'What is the role of CNNs in skin cancer detection?',
+                options: [
+                    'Advanced differentiation capabilities for early skin cancer detection',
+                    'Only storing images',
+                    'Only transmitting images',
+                    'Only printing images'
+                ],
+                correct: 0,
+                explanation: 'CNNs offer advanced differentiation capabilities for early skin cancer detection.【28†L2】'
+            }, {
+                id: 160,
+                category: 'CNN Basics',
+                question: 'What is the role of the convolution operation in feature extraction?',
+                options: [
+                    'It applies filters to the input to detect features like edges and textures',
+                    'It reduces the image size',
+                    'It classifies the image',
+                    'It stores the image'
+                ],
+                correct: 0,
+                explanation: 'The convolution operation applies filters to the input to detect features like edges, textures, and patterns.【14†L2】【15†L2】'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            // Visually select the option — do NOT record answer yet
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(`.option-item[data-qindex="${qIndex}"][data-optindex="${optIndex}"]`);
+            if (clicked) clicked.classList.add('selected');
+            // Enable submit button
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            // Find selected option
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

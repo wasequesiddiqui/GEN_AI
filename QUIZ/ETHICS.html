@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gen AI Specialist – Responsible AI & Ethics Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 1.5rem;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(103, 58, 183, 0.06) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 3rem;
+            padding: 2.5rem 2.8rem;
+            box-shadow: 0 25px 60px -12px rgba(0, 20, 50, 0.25),
+                0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        .quiz-title-group h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0b1e3a 0%, #1a3a6b 60%, #2d5aa0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .quiz-title-group .sub {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4a6a8f;
+            letter-spacing: 0.02em;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quiz-title-group .sub .badge {
+            background: #dbeafe;
+            color: #1a4b8c;
+            padding: 0.15rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .score-display {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 30, 60, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.12);
+            text-align: right;
+            min-width: 130px;
+        }
+        .score-display .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .score-display .score-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b1e3a;
+            line-height: 1.2;
+        }
+        .score-display .score-number span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6a7f9b;
+        }
+        .progress-section {
+            margin-bottom: 2.2rem;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: #e6edf6;
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 100px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #3a5a7a;
+        }
+        .progress-stats .q-counter {
+            background: #eef4fa;
+            padding: 0.15rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .category-tag {
+            display: inline-block;
+            background: #e8edf8;
+            color: #1a3a6b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.25rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(66, 133, 244, 0.10);
+        }
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.8rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 28px -8px rgba(0, 20, 50, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.8rem;
+            transition: all 0.25s ease;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0b1e3a;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.01em;
+        }
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: #f8fafd;
+            border-radius: 1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: #1a2e4a;
+        }
+        .option-item:hover:not(.disabled) {
+            background: #edf3fa;
+            border-color: #bfd7f0;
+            transform: translateX(4px);
+        }
+        .option-item .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: #e6edf6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1a3a6b;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .option-item.selected .letter {
+            background: #2563eb;
+            color: #fff;
+        }
+        .option-item.correct {
+            border-color: #16a34a;
+            background: #ecfdf5;
+        }
+        .option-item.correct .letter {
+            background: #16a34a;
+            color: #fff;
+        }
+        .option-item.incorrect {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+        .option-item.incorrect .letter {
+            background: #dc2626;
+            color: #fff;
+        }
+        .option-item.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+        .option-item.disabled:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        .option-item.disabled.selected:hover {
+            border-color: #2563eb;
+        }
+        .option-item.disabled.correct:hover {
+            border-color: #16a34a;
+        }
+        .option-item.disabled.incorrect:hover {
+            border-color: #dc2626;
+        }
+        .explanation-box {
+            margin-top: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: #f0f7ff;
+            border-radius: 1rem;
+            border-left: 4px solid #2563eb;
+            font-size: 0.9rem;
+            color: #1a3a5a;
+            line-height: 1.6;
+            display: none;
+        }
+        .explanation-box.show {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        .explanation-box strong {
+            color: #0b1e3a;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #e8edf8;
+            color: #1a3a6b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #d5e0f0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -6px rgba(0, 30, 60, 0.12);
+        }
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0f2a4a, #1a4fcf);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+            transform: translateY(-2px);
+        }
+        .nav-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 0.5rem;
+        }
+        .results-container.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1e3a, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .results-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a6b;
+            margin-top: 0.2rem;
+        }
+        .results-detail {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .results-detail .stat-box {
+            background: #f8fafd;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #e6edf6;
+        }
+        .results-detail .stat-box .num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b1e3a;
+        }
+        .results-detail .stat-box .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6a7f9b;
+            font-weight: 600;
+        }
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.9rem 3rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.35);
+        }
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -10px rgba(37, 99, 235, 0.45);
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem 0.8rem; }
+            .container { padding: 1.5rem 1.2rem; border-radius: 2rem; }
+            .quiz-title-group h1 { font-size: 1.4rem; }
+            .score-display { padding: 0.4rem 1rem; min-width: 100px; }
+            .score-display .score-number { font-size: 1.2rem; }
+            .question-card { padding: 1.2rem 1.2rem; border-radius: 1.4rem; }
+            .question-text { font-size: 1.05rem; }
+            .option-item { padding: 0.7rem 1rem; font-size: 0.9rem; gap: 0.7rem; }
+            .option-item .letter { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; }
+            .nav-btn { padding: 0.5rem 1.2rem; font-size: 0.8rem; }
+            .results-score { font-size: 3rem; }
+            .container { backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 450px) {
+            .quiz-header { flex-direction: column; align-items: stretch; }
+            .score-display { text-align: left; width: 100%; }
+            .nav-controls { flex-direction: column; align-items: stretch; }
+            .nav-btn { justify-content: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e6edf6; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb { background: #b0c8e0; border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aacd0; }
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #1a3a6b, #2563eb);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px -6px rgba(37, 99, 235, 0.35);
+            display: none;
+        }
+        .submit-btn.show { display: inline-block; }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.45);
+        }
+        .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+        .next-inline-btn {
+            margin-top: 1rem;
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px -4px rgba(22, 163, 74, 0.35);
+            display: none;
+        }
+        .next-inline-btn.show { display: inline-block; }
+        .next-inline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -6px rgba(22, 163, 74, 0.45);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="appContainer">
+        <!-- HEADER -->
+        <div class="quiz-header">
+            <div class="quiz-title-group">
+                <h1>🧠 Gen AI Specialist</h1>
+                <div class="sub">
+                    <span>Responsible AI · Ethics · Privacy</span>
+                    <span class="badge">Beta</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-label">Your Score</div>
+                <div class="score-number" id="scoreDisplay">0 <span>/ <span id="totalQuestionsDisplay">0</span></span></div>
+            </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-section">
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-stats">
+                <span class="q-counter" id="questionCounter">1 / 0</span>
+                <span id="accuracyDisplay">—</span>
+            </div>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div id="questionArea">
+            <div class="category-tag" id="categoryTag">Loading…</div>
+            <div class="question-card">
+                <div class="question-text" id="questionText">Preparing your questions…</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <button class="submit-btn" id="submitBtn" disabled>✓ Submit Answer</button>
+                <div class="explanation-box" id="explanationBox"></div>
+                <button class="next-inline-btn" id="nextInlineBtn">Next →</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="nav-controls" id="navControls">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span class="icon">←</span> Previous
+            </button>
+            <button class="nav-btn primary" id="nextBtn">
+                Next <span class="icon">→</span>
+            </button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-score" id="finalScore">0%</div>
+            <div class="results-label" id="finalLabel">Great effort!</div>
+            <div class="results-detail">
+                <div class="stat-box">
+                    <div class="num" id="statCorrect">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statIncorrect">0</div>
+                    <div class="label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="num" id="statSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  160+ QUESTIONS – Responsible AI, Bias & Fairness, Ethics, Privacy
+        // ============================================================
+        const QUESTIONS = [
+            // ---- RESPONSIBLE AI PRACTICES (1–30) ----
+            {
+                id: 1,
+                category: 'Responsible AI',
+                question: 'What is a key aspect of transparency in AI?',
+                options: [
+                    'Open-source algorithms and clear documentation',
+                    'Keeping algorithms proprietary',
+                    'Avoiding audits',
+                    'Using black-box models'
+                ],
+                correct: 0,
+                explanation: 'Transparency involves open-source algorithms, clear documentation, and explainability to build trust.'
+            }, {
+                id: 2,
+                category: 'Responsible AI',
+                question: 'What does "building equitable AI systems" involve?',
+                options: [
+                    'Tackling algorithmic bias and ensuring fairness',
+                    'Ignoring bias',
+                    'Using only majority group data',
+                    'Avoiding fairness considerations'
+                ],
+                correct: 0,
+                explanation: 'Equitable AI systems actively address algorithmic bias to ensure fair outcomes for all groups.'
+            }, {
+                id: 3,
+                category: 'Responsible AI',
+                question: 'Why is data security a unique responsibility for AI professionals?',
+                options: [
+                    'They handle sensitive data used in algorithms and have a moral obligation to protect it',
+                    'Data security is not their concern',
+                    'Only legal teams handle security',
+                    'Security is optional'
+                ],
+                correct: 0,
+                explanation: 'AI professionals handle sensitive data and must implement comprehensive security measures beyond legal compliance.'
+            }, {
+                id: 4,
+                category: 'Responsible AI',
+                question: 'What is the global impact of GDPR on AI?',
+                options: [
+                    'Sets a global standard for data protection with significant implications for AI',
+                    'Has no impact on AI',
+                    'Only affects European companies',
+                    'Is not enforceable'
+                ],
+                correct: 0,
+                explanation: 'GDPR sets a global standard, affecting how AI systems store and manage data, with financial repercussions for non-compliance.'
+            }, {
+                id: 5,
+                category: 'Responsible AI',
+                question: 'What does the "Right to Know" under CCPA mandate?',
+                options: [
+                    'Transparency in data collection, usage, and sharing',
+                    'The right to delete all data',
+                    'The right to opt-out of all data processing',
+                    'The right to data portability'
+                ],
+                correct: 0,
+                explanation: 'CCPA gives consumers the right to know what personal data is collected and how it is used.'
+            }, {
+                id: 6,
+                category: 'Responsible AI',
+                question: 'What is the "Right to Opt-Out" under CCPA?',
+                options: [
+                    'Gives consumers control over the sale of their personal information',
+                    'Allows consumers to delete all data',
+                    'Allows consumers to transfer data',
+                    'Allows consumers to stop all data collection'
+                ],
+                correct: 0,
+                explanation: 'CCPA allows consumers to opt-out of the sale of their personal information, impacting company practices.'
+            }, {
+                id: 7,
+                category: 'Responsible AI',
+                question: 'What was a key ethical concern in the healthcare AI case study?',
+                options: [
+                    'Data privacy, bias, transparency, and regulatory compliance',
+                    'Only data privacy',
+                    'Only bias',
+                    'Only transparency'
+                ],
+                correct: 0,
+                explanation: 'The healthcare case study highlighted data privacy, bias and fairness, transparency, and regulatory compliance.'
+            }, {
+                id: 8,
+                category: 'Responsible AI',
+                question: 'How is AI regulated in the financial sector?',
+                options: [
+                    'Through risk assessment, automated reporting, and digital identity management',
+                    'Only through risk assessment',
+                    'Only through automated reporting',
+                    'There is no regulation'
+                ],
+                correct: 0,
+                explanation: 'Financial AI is regulated through risk assessment, automated reporting, digital identity management, and evolving regulations.'
+            }, {
+                id: 9,
+                category: 'Responsible AI',
+                question: 'What is a best practice for ethical AI development?',
+                options: [
+                    'Transparency, fairness, and data security',
+                    'Keeping algorithms secret',
+                    'Ignoring bias',
+                    'Using only proprietary data'
+                ],
+                correct: 0,
+                explanation: 'Best practices include transparency, fairness, and robust data security measures.'
+            }, {
+                id: 10,
+                category: 'Responsible AI',
+                question: 'What is the significance of GDPR fines?',
+                options: [
+                    'Over €270 million in fines highlight the cost of non-compliance',
+                    'Fines are negligible',
+                    'Fines are not enforced',
+                    'Fines only apply to US companies'
+                ],
+                correct: 0,
+                explanation: 'GDPR fines have been substantial, emphasizing the importance of compliance for AI developers.'
+            }, {
+                id: 11,
+                category: 'Responsible AI',
+                question: 'What is the ethical obligation of AI developers regarding GDPR?',
+                options: [
+                    'Beyond legal requirements, GDPR compliance is an ethical imperative',
+                    'Only legal compliance is needed',
+                    'Ethics are not relevant',
+                    'GDPR is optional'
+                ],
+                correct: 0,
+                explanation: 'AI developers have an ethical obligation to comply with GDPR, not just a legal one.'
+            }, {
+                id: 12,
+                category: 'Responsible AI',
+                question: 'What is the impact of data breaches on AI adoption?',
+                options: [
+                    'Failure to protect data erodes trust, affecting adoption and success',
+                    'Data breaches have no impact',
+                    'Data breaches increase adoption',
+                    'Trust is not important'
+                ],
+                correct: 0,
+                explanation: 'Data breaches undermine public trust, which is crucial for the adoption and success of AI technologies.'
+            }, {
+                id: 13,
+                category: 'Responsible AI',
+                question: 'What does "data portability" under GDPR empower?',
+                options: [
+                    'Individuals to control their data and transfer it between services',
+                    'Organizations to own all user data',
+                    'The government to access all data',
+                    'Companies to sell data freely'
+                ],
+                correct: 0,
+                explanation: 'Data portability gives individuals control over their data, affecting how AI systems store and manage it.'
+            }, {
+                id: 14,
+                category: 'Responsible AI',
+                question: 'What is a key challenge in ethical AI in healthcare?',
+                options: [
+                    'Balancing accuracy and interpretability while ensuring patient privacy',
+                    'Only accuracy',
+                    'Only privacy',
+                    'Only interpretability'
+                ],
+                correct: 0,
+                explanation: 'Healthcare AI must balance accuracy, interpretability, and privacy, with ethical oversight.'
+            }, {
+                id: 15,
+                category: 'Responsible AI',
+                question: 'What is the role of transparency in AI systems?',
+                options: [
+                    'To enable understanding and trust by making algorithms and decisions clear',
+                    'To hide decision-making processes',
+                    'To reduce accountability',
+                    'To complicate models'
+                ],
+                correct: 0,
+                explanation: 'Transparency builds trust by making AI systems understandable and accountable.'
+            }, {
+                id: 16,
+                category: 'Responsible AI',
+                question: 'What is the purpose of open-source algorithms in responsible AI?',
+                options: [
+                    'To allow public scrutiny and collaboration, enhancing trust and fairness',
+                    'To hide proprietary secrets',
+                    'To reduce competition',
+                    'To avoid regulation'
+                ],
+                correct: 0,
+                explanation: 'Open-source algorithms enable external review, which can identify biases and improve fairness.'
+            }, {
+                id: 17,
+                category: 'Responsible AI',
+                question: 'What is the ethical responsibility of AI professionals regarding data breaches?',
+                options: [
+                    'To implement comprehensive security measures like encryption and access controls',
+                    'To ignore breaches',
+                    'To only report breaches after they happen',
+                    'To rely solely on legal compliance'
+                ],
+                correct: 0,
+                explanation: 'AI professionals must proactively implement security measures to protect data and maintain trust.'
+            }, {
+                id: 18,
+                category: 'Responsible AI',
+                question: 'What is the significance of the CCPA for AI systems?',
+                options: [
+                    'It mandates transparency and consumer rights over personal data, impacting AI practices',
+                    'It only applies to non-AI companies',
+                    'It has no effect on AI',
+                    'It only affects European companies'
+                ],
+                correct: 0,
+                explanation: 'CCPA requires transparency and gives consumers rights, affecting how AI systems collect and use data.'
+            }, {
+                id: 19,
+                category: 'Responsible AI',
+                question: 'What is the "Right to Delete" under CCPA?',
+                options: [
+                    'Consumers can request deletion of their personal data',
+                    'Consumers can delete all company data',
+                    'Companies must delete all data',
+                    'There is no such right'
+                ],
+                correct: 0,
+                explanation: 'CCPA gives consumers the right to request deletion of their personal data held by businesses.'
+            }, {
+                id: 20,
+                category: 'Responsible AI',
+                question: 'What is the role of regulatory compliance in ethical AI?',
+                options: [
+                    'Ensuring AI systems adhere to laws and regulations, protecting individuals and society',
+                    'Compliance is optional',
+                    'Regulations hinder innovation',
+                    'Only legal teams should worry about compliance'
+                ],
+                correct: 0,
+                explanation: 'Regulatory compliance is a foundation for ethical AI, ensuring protection of rights and fairness.'
+            }, {
+                id: 21,
+                category: 'Responsible AI',
+                question: 'What is an example of AI regulation in finance?',
+                options: [
+                    'Automated reporting and risk assessment requirements',
+                    'No regulation',
+                    'Only manual oversight',
+                    'Only data storage rules'
+                ],
+                correct: 0,
+                explanation: 'Financial AI is regulated through automated reporting, risk assessment, and digital identity management.'
+            }, {
+                id: 22,
+                category: 'Responsible AI',
+                question: 'What is the importance of third-party audits in AI?',
+                options: [
+                    'They help identify biases and ensure accountability',
+                    'They are unnecessary',
+                    'They are only for large companies',
+                    'They reduce transparency'
+                ],
+                correct: 0,
+                explanation: 'Third-party audits provide independent assessment of AI systems, identifying biases and ensuring accountability.'
+            }, {
+                id: 23,
+                category: 'Responsible AI',
+                question: 'What does "fairness" in AI entail?',
+                options: [
+                    'Impartial and equitable treatment of all individuals, irrespective of background',
+                    'Treating everyone the same regardless of context',
+                    'Ignoring demographic factors',
+                    'Only focusing on majority groups'
+                ],
+                correct: 0,
+                explanation: 'Fairness means impartial and equitable treatment, considering the impact on different groups.'
+            }, {
+                id: 24,
+                category: 'Responsible AI',
+                question: 'What is the ethical dimension of data security in AI?',
+                options: [
+                    'Protecting sensitive data is a moral obligation beyond legal requirements',
+                    'Only legal compliance matters',
+                    'Security is purely technical',
+                    'Ethics are irrelevant to security'
+                ],
+                correct: 0,
+                explanation: 'AI professionals have a moral obligation to protect sensitive data used in algorithms, beyond legal compliance.'
+            }, {
+                id: 25,
+                category: 'Responsible AI',
+                question: 'What is the relationship between transparency and trust in AI?',
+                options: [
+                    'Greater transparency leads to greater trust',
+                    'Transparency reduces trust',
+                    'There is no relationship',
+                    'Trust is independent of transparency'
+                ],
+                correct: 0,
+                explanation: 'Transparency allows stakeholders to understand AI decisions, building trust in the technology.'
+            }, {
+                id: 26,
+                category: 'Responsible AI',
+                question: 'What is a key lesson from the healthcare algorithm bias case study?',
+                options: [
+                    'Importance of third-party audits and ethical considerations',
+                    'Algorithms are always unbiased',
+                    'Audits are unnecessary',
+                    'Cost should be the only priority'
+                ],
+                correct: 0,
+                explanation: 'The case highlighted the need for third-party audits to identify and correct biases.'
+            }, {
+                id: 27,
+                category: 'Responsible AI',
+                question: 'What is the role of encryption in AI data security?',
+                options: [
+                    'To protect data from unauthorized access and breaches',
+                    'To make data unreadable to everyone',
+                    'To increase processing speed',
+                    'To reduce data size'
+                ],
+                correct: 0,
+                explanation: 'Encryption protects data by making it unreadable to unauthorized parties, ensuring confidentiality.'
+            }, {
+                id: 28,
+                category: 'Responsible AI',
+                question: 'What is the purpose of access controls in AI systems?',
+                options: [
+                    'To restrict data access to authorized personnel only',
+                    'To allow everyone access',
+                    'To slow down the system',
+                    'To complicate user experience'
+                ],
+                correct: 0,
+                explanation: 'Access controls ensure that only authorized individuals can access sensitive data, enhancing security.'
+            }, {
+                id: 29,
+                category: 'Responsible AI',
+                question: 'What is the ethical imperative regarding GDPR compliance?',
+                options: [
+                    'AI developers must treat GDPR compliance as an ethical duty, not just a legal one',
+                    'GDPR is only a legal requirement',
+                    'Ethics and GDPR are unrelated',
+                    'GDPR compliance is optional'
+                ],
+                correct: 0,
+                explanation: 'Beyond legal requirements, GDPR compliance is an ethical imperative for AI developers to protect individual rights.'
+            }, {
+                id: 30,
+                category: 'Responsible AI',
+                question: 'What is the impact of regulatory frameworks like GDPR and CCPA on AI?',
+                options: [
+                    'They shape AI development by mandating transparency, fairness, and data protection',
+                    'They have no impact',
+                    'They only affect non-AI technologies',
+                    'They are optional guidelines'
+                ],
+                correct: 0,
+                explanation: 'Regulatory frameworks set standards for AI development, emphasizing transparency, fairness, and data security.'
+            },
+
+            // ---- BIAS AND FAIRNESS (31–70) ----
+            {
+                id: 31,
+                category: 'Bias & Fairness',
+                question: 'What is "pre-existing bias" in AI?',
+                options: [
+                    'Bias that exists in society and is reflected in the data',
+                    'Bias introduced during algorithm design',
+                    'Bias from sample selection',
+                    'Bias from measurement errors'
+                ],
+                correct: 0,
+                explanation: 'Pre-existing bias refers to societal biases that are present in the data used to train AI models.'
+            }, {
+                id: 32,
+                category: 'Bias & Fairness',
+                question: 'What is "sample bias" in AI?',
+                options: [
+                    'When the training data is not representative of the population',
+                    'Bias in the algorithm\'s objectives',
+                    'Bias from developer\'s personal views',
+                    'Bias from labeling errors'
+                ],
+                correct: 0,
+                explanation: 'Sample bias occurs when the training data does not accurately represent the population, leading to skewed outcomes.'
+            }, {
+                id: 33,
+                category: 'Bias & Fairness',
+                question: 'What is "exclusion bias"?',
+                options: [
+                    'When certain groups are systematically excluded from the training data',
+                    'When the algorithm excludes certain features',
+                    'When developers exclude certain models',
+                    'When labels are biased'
+                ],
+                correct: 0,
+                explanation: 'Exclusion bias arises when specific groups are underrepresented or entirely omitted from the training data.'
+            }, {
+                id: 34,
+                category: 'Bias & Fairness',
+                question: 'What is "measurement bias"?',
+                options: [
+                    'When the data collection method or measurement tool is biased',
+                    'Bias from the algorithm\'s objective',
+                    'Bias from societal norms',
+                    'Bias from confirmation'
+                ],
+                correct: 0,
+                explanation: 'Measurement bias occurs when the data collection process or measurement tools systematically produce inaccurate or biased data.'
+            }, {
+                id: 35,
+                category: 'Bias & Fairness',
+                question: 'What is "algorithmic bias"?',
+                options: [
+                    'Bias resulting from the algorithm\'s design or objectives',
+                    'Bias in the training data',
+                    'Bias in human labeling',
+                    'Bias in societal norms'
+                ],
+                correct: 0,
+                explanation: 'Algorithmic bias arises from the design, objectives, or optimization choices of the algorithm itself.'
+            }, {
+                id: 36,
+                category: 'Bias & Fairness',
+                question: 'What is "label bias"?',
+                options: [
+                    'When the training labels themselves are biased',
+                    'When the algorithm ignores labels',
+                    'When labels are randomly assigned',
+                    'When labels are missing'
+                ],
+                correct: 0,
+                explanation: 'Label bias occurs when the ground truth labels used for training are influenced by human biases.'
+            }, {
+                id: 37,
+                category: 'Bias & Fairness',
+                question: 'What is a real-world example of bias in healthcare algorithms?',
+                options: [
+                    'An algorithm that underestimates the health needs of Black patients due to biased training data',
+                    'An algorithm that perfectly diagnoses all patients',
+                    'An algorithm that is never biased',
+                    'An algorithm that only works for one race'
+                ],
+                correct: 0,
+                explanation: 'A well-known case involved a healthcare algorithm that systematically underestimated the health needs of Black patients.'
+            }, {
+                id: 38,
+                category: 'Bias & Fairness',
+                question: 'What is a consequence of bias in AI?',
+                options: [
+                    'Discrimination and inequality, as well as ethical and legal implications',
+                    'Improved accuracy for all groups',
+                    'No negative consequences',
+                    'Only technical issues'
+                ],
+                correct: 0,
+                explanation: 'Bias in AI can lead to discrimination, inequality, and significant ethical and legal consequences.'
+            }, {
+                id: 39,
+                category: 'Bias & Fairness',
+                question: 'What is "individual fairness" in AI?',
+                options: [
+                    'The principle that similar individuals should receive similar outcomes',
+                    'All individuals should be treated the same regardless of context',
+                    'Only groups are considered',
+                    'Outcomes should be random'
+                ],
+                correct: 0,
+                explanation: 'Individual fairness requires that individuals who are similar with respect to the task should receive similar predictions.'
+            }, {
+                id: 40,
+                category: 'Bias & Fairness',
+                question: 'What is "group fairness" in AI?',
+                options: [
+                    'Ensuring that different demographic groups receive equitable outcomes',
+                    'All individuals are treated the same',
+                    'Only the majority group matters',
+                    'Outcomes are ignored'
+                ],
+                correct: 0,
+                explanation: 'Group fairness focuses on ensuring that outcomes are equitable across demographic groups (e.g., race, gender).'
+            }, {
+                id: 41,
+                category: 'Bias & Fairness',
+                question: 'What is "counterfactual fairness"?',
+                options: [
+                    'An individual\'s outcome should remain the same if their sensitive attribute were different',
+                    'Fairness is not considered',
+                    'Only group fairness matters',
+                    'Outcomes should be random'
+                ],
+                correct: 0,
+                explanation: 'Counterfactual fairness requires that a decision would be the same if a person\'s sensitive attribute (e.g., race) were changed.'
+            }, {
+                id: 42,
+                category: 'Bias & Fairness',
+                question: 'What is a technique for achieving fairness through data preprocessing?',
+                options: [
+                    'Adjusting the training data to remove biases before model training',
+                    'Modifying the algorithm during training',
+                    'Adjusting predictions after training',
+                    'Ignoring bias'
+                ],
+                correct: 0,
+                explanation: 'Preprocessing involves techniques like re-weighting or data transformation to mitigate bias before training.'
+            }, {
+                id: 43,
+                category: 'Bias & Fairness',
+                question: 'What is "in-processing" for algorithmic fairness?',
+                options: [
+                    'Incorporating fairness constraints or modifications during model training',
+                    'Modifying data before training',
+                    'Adjusting outputs after training',
+                    'Removing sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'In-processing adds fairness constraints directly into the training objective or algorithm.'
+            }, {
+                id: 44,
+                category: 'Bias & Fairness',
+                question: 'What is "post-processing" for fairness?',
+                options: [
+                    'Adjusting the model\'s outputs after training to achieve fairness',
+                    'Modifying the data before training',
+                    'Modifying the algorithm during training',
+                    'Removing sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'Post-processing techniques adjust predictions to meet fairness criteria without retraining the model.'
+            }, {
+                id: 45,
+                category: 'Bias & Fairness',
+                question: 'What is a source of bias in generative models like GPT?',
+                options: [
+                    'The models inherit biases present in the training data',
+                    'The models are inherently unbiased',
+                    'Bias is introduced by the architecture',
+                    'Bias is not a concern'
+                ],
+                correct: 0,
+                explanation: 'Generative models like GPT and DALL-E can inherit and amplify biases from their training data.'
+            }, {
+                id: 46,
+                category: 'Bias & Fairness',
+                question: 'What is a technique to mitigate bias in generative models?',
+                options: [
+                    'Use balanced, diverse datasets and apply adversarial training',
+                    'Only use large datasets',
+                    'Ignore bias',
+                    'Use only majority group data'
+                ],
+                correct: 0,
+                explanation: 'Mitigating bias involves using diverse datasets, adversarial training, post-hoc analysis, and multidisciplinary teams.'
+            }, {
+                id: 47,
+                category: 'Bias & Fairness',
+                question: 'What is the "bias-variance trade-off" in fairness?',
+                options: [
+                    'There is often a trade-off between fairness and accuracy',
+                    'Fairness and accuracy are always aligned',
+                    'Fairness does not affect accuracy',
+                    'Accuracy is always more important'
+                ],
+                correct: 0,
+                explanation: 'Implementing fairness constraints can sometimes reduce accuracy, creating a trade-off that must be managed.'
+            }, {
+                id: 48,
+                category: 'Bias & Fairness',
+                question: 'What is the role of human oversight in addressing bias?',
+                options: [
+                    'Humans can identify and correct biases that algorithms might miss',
+                    'Humans always introduce bias',
+                    'Human oversight is not needed',
+                    'Oversight only slows down the process'
+                ],
+                correct: 0,
+                explanation: 'Human oversight is crucial for detecting subtle biases and ensuring ethical outcomes.'
+            }, {
+                id: 49,
+                category: 'Bias & Fairness',
+                question: 'What is the importance of transparency and accountability in bias mitigation?',
+                options: [
+                    'They ensure that biases are identified and addressed, and that stakeholders trust the system',
+                    'They are irrelevant',
+                    'They only benefit developers',
+                    'They increase bias'
+                ],
+                correct: 0,
+                explanation: 'Transparency and accountability are key for identifying biases and building trust in AI systems.'
+            }, {
+                id: 50,
+                category: 'Bias & Fairness',
+                question: 'What is a real-world example of gender bias in job recruitment algorithms?',
+                options: [
+                    'Algorithms that favored male-oriented words, leading to gender discrimination',
+                    'Algorithms that were perfectly gender-neutral',
+                    'Algorithms that favored female candidates',
+                    'Algorithms without any bias'
+                ],
+                correct: 0,
+                explanation: 'Recruitment algorithms have been found to favor male-oriented language, discriminating against female applicants.'
+            }, {
+                id: 51,
+                category: 'Bias & Fairness',
+                question: 'What is a real-world example of bias in credit scoring?',
+                options: [
+                    'Algorithms that lower scores for low-income neighborhoods, leading to financial discrimination',
+                    'Algorithms that are perfectly fair',
+                    'Algorithms that favor low-income areas',
+                    'Algorithms without any bias'
+                ],
+                correct: 0,
+                explanation: 'Credit scoring algorithms have been shown to systematically disadvantage low-income neighborhoods.'
+            }, {
+                id: 52,
+                category: 'Bias & Fairness',
+                question: 'What is the lesson from the healthcare algorithm bias case?',
+                options: [
+                    'The importance of third-party audits and ethical considerations in algorithm design',
+                    'Algorithms are always fair',
+                    'Cost should be the only factor',
+                    'Ethics are not important'
+                ],
+                correct: 0,
+                explanation: 'The case highlighted the need for independent audits and ethical considerations to prevent bias.'
+            }, {
+                id: 53,
+                category: 'Bias & Fairness',
+                question: 'What is the lesson from the job recruitment algorithm bias case?',
+                options: [
+                    'The importance of unbiased training data and careful feature selection',
+                    'Algorithms are always unbiased',
+                    'Feature selection is irrelevant',
+                    'Training data quality does not matter'
+                ],
+                correct: 0,
+                explanation: 'The case demonstrated that training data and feature selection must be scrutinized to avoid gender bias.'
+            }, {
+                id: 54,
+                category: 'Bias & Fairness',
+                question: 'What is a key takeaway from the credit scoring bias case?',
+                options: [
+                    'Ethical considerations are crucial in financial AI systems',
+                    'Financial systems are always fair',
+                    'Bias is not a problem in finance',
+                    'Regulation is unnecessary'
+                ],
+                correct: 0,
+                explanation: 'The case underscored the need for ethical considerations and fairness in financial AI.'
+            }, {
+                id: 55,
+                category: 'Bias & Fairness',
+                question: 'What is "confirmation bias" in AI?',
+                options: [
+                    'The tendency to favor information that confirms existing beliefs or hypotheses',
+                    'Bias in data collection',
+                    'Bias in algorithm design',
+                    'Bias in labeling'
+                ],
+                correct: 0,
+                explanation: 'Confirmation bias can influence the design and evaluation of AI systems, leading to skewed results.'
+            }, {
+                id: 56,
+                category: 'Bias & Fairness',
+                question: 'What is "societal and cultural bias" in AI?',
+                options: [
+                    'Bias that stems from deeply ingrained societal norms and cultural stereotypes',
+                    'Bias in the algorithm\'s code',
+                    'Bias in the training data',
+                    'Bias in the labels'
+                ],
+                correct: 0,
+                explanation: 'Societal and cultural biases are reflected in data and can be perpetuated by AI systems.'
+            }, {
+                id: 57,
+                category: 'Bias & Fairness',
+                question: 'What is the role of adversarial training in bias mitigation?',
+                options: [
+                    'Training a model to be robust against adversarial attacks that could exploit biases',
+                    'Introducing more bias',
+                    'Ignoring bias',
+                    'Removing all sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'Adversarial training can help make models more robust, including reducing sensitivity to biased patterns.'
+            }, {
+                id: 58,
+                category: 'Bias & Fairness',
+                question: 'What is post-hoc analysis in bias detection?',
+                options: [
+                    'Analyzing the model\'s predictions after training to identify biases',
+                    'Modifying the model during training',
+                    'Preprocessing data',
+                    'Ignoring bias'
+                ],
+                correct: 0,
+                explanation: 'Post-hoc analysis involves evaluating model outputs to detect and quantify bias.'
+            }, {
+                id: 59,
+                category: 'Bias & Fairness',
+                question: 'Why should bias mitigation be treated as an ongoing process?',
+                options: [
+                    'Because biases can emerge over time as data and contexts change',
+                    'Because it only needs to be done once',
+                    'Because biases are static',
+                    'Because it is not important'
+                ],
+                correct: 0,
+                explanation: 'Bias mitigation must be continuous, as new biases can arise and societal norms evolve.'
+            }, {
+                id: 60,
+                category: 'Bias & Fairness',
+                question: 'What is the importance of involving multi-disciplinary teams in bias mitigation?',
+                options: [
+                    'Diverse perspectives help identify and address biases that might be missed by a single discipline',
+                    'It complicates the process',
+                    'It is not necessary',
+                    'Only technical experts are needed'
+                ],
+                correct: 0,
+                explanation: 'Multi-disciplinary teams bring ethical, legal, and domain expertise to identify and mitigate bias effectively.'
+            }, {
+                id: 61,
+                category: 'Bias & Fairness',
+                question: 'What is a source of bias in social media algorithms?',
+                options: [
+                    'Algorithms may amplify existing societal biases and create filter bubbles',
+                    'Social media algorithms are always unbiased',
+                    'Bias is introduced by users',
+                    'Algorithms have no bias'
+                ],
+                correct: 0,
+                explanation: 'Social media algorithms can perpetuate and amplify biases, leading to echo chambers and discrimination.'
+            }, {
+                id: 62,
+                category: 'Bias & Fairness',
+                question: 'What is the impact of bias in predictive policing?',
+                options: [
+                    'It can lead to over-policing of minority communities and reinforce systemic discrimination',
+                    'It always reduces crime',
+                    'It is unbiased',
+                    'It has no impact'
+                ],
+                correct: 0,
+                explanation: 'Predictive policing algorithms have been shown to perpetuate racial bias, leading to disproportionate targeting of minorities.'
+            }, {
+                id: 63,
+                category: 'Bias & Fairness',
+                question: 'What is the role of ethical guidelines in AI development?',
+                options: [
+                    'To provide a framework for responsible AI, including fairness, accountability, and transparency',
+                    'To limit innovation',
+                    'To increase costs',
+                    'To ignore ethical concerns'
+                ],
+                correct: 0,
+                explanation: 'Ethical guidelines help developers build AI systems that are fair, accountable, and transparent.'
+            }, {
+                id: 64,
+                category: 'Bias & Fairness',
+                question: 'What is the concept of "algorithmic accountability"?',
+                options: [
+                    'The obligation of developers to be responsible for the outcomes of their algorithms',
+                    'Algorithms are not accountable',
+                    'Only users are accountable',
+                    'Accountability is irrelevant'
+                ],
+                correct: 0,
+                explanation: 'Algorithmic accountability means that developers must take responsibility for the impacts of their AI systems.'
+            }, {
+                id: 65,
+                category: 'Bias & Fairness',
+                question: 'What is "data preprocessing" in the context of fairness?',
+                options: [
+                    'Modifying the training data to remove biases before model training',
+                    'Modifying the algorithm during training',
+                    'Adjusting predictions after training',
+                    'Ignoring bias'
+                ],
+                correct: 0,
+                explanation: 'Preprocessing involves techniques like re-weighting, data augmentation, or transformation to mitigate bias.'
+            }, {
+                id: 66,
+                category: 'Bias & Fairness',
+                question: 'What is "in-processing" for fairness?',
+                options: [
+                    'Incorporating fairness constraints directly into the training process',
+                    'Modifying data before training',
+                    'Adjusting outputs after training',
+                    'Removing sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'In-processing adds fairness objectives or constraints to the training algorithm to produce fairer models.'
+            }, {
+                id: 67,
+                category: 'Bias & Fairness',
+                question: 'What is "post-processing" for fairness?',
+                options: [
+                    'Adjusting model predictions after training to meet fairness criteria',
+                    'Modifying data before training',
+                    'Modifying the algorithm during training',
+                    'Removing sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'Post-processing techniques alter the outputs of a trained model to improve fairness without retraining.'
+            }, {
+                id: 68,
+                category: 'Bias & Fairness',
+                question: 'What is a key challenge in achieving fairness in AI?',
+                options: [
+                    'There is often no single definition of fairness, and trade-offs exist between different fairness criteria',
+                    'Fairness is easy to achieve',
+                    'Fairness is not important',
+                    'Fairness is always aligned with accuracy'
+                ],
+                correct: 0,
+                explanation: 'Fairness is a complex concept with multiple definitions, and achieving it often involves trade-offs between different notions.'
+            }, {
+                id: 69,
+                category: 'Bias & Fairness',
+                question: 'What is the role of continuous monitoring in fairness?',
+                options: [
+                    'To ensure that AI systems remain fair over time as data and contexts change',
+                    'Monitoring is not needed',
+                    'Once fair, always fair',
+                    'Monitoring is only for accuracy'
+                ],
+                correct: 0,
+                explanation: 'Continuous monitoring is essential to detect and correct biases that may emerge over time.'
+            }, {
+                id: 70,
+                category: 'Bias & Fairness',
+                question: 'What is a best practice for detecting bias in AI?',
+                options: [
+                    'Using tools and frameworks for bias detection and conducting regular audits',
+                    'Ignoring bias',
+                    'Only using accuracy metrics',
+                    'Assuming models are unbiased'
+                ],
+                correct: 0,
+                explanation: 'Regular use of bias detection tools and audits is critical to identify and mitigate biases.'
+            },
+
+            // ---- ETHICAL IMPLICATIONS (71–100) ----
+            {
+                id: 71,
+                category: 'Ethical Implications',
+                question: 'Why do ethics matter in AI?',
+                options: [
+                    'Unethical AI can have real-world consequences, and ethical AI provides a competitive advantage',
+                    'Ethics are not important',
+                    'Only legal compliance matters',
+                    'Ethics slow down innovation'
+                ],
+                correct: 0,
+                explanation: 'Ethical AI prevents harm, builds trust, and can be a competitive advantage.'
+            }, {
+                id: 72,
+                category: 'Ethical Implications',
+                question: 'What is an ethical dilemma in AI?',
+                options: [
+                    'A situation where there is a conflict between different ethical principles or values',
+                    'A simple decision',
+                    'A technical error',
+                    'A legal requirement'
+                ],
+                correct: 0,
+                explanation: 'Ethical dilemmas arise when AI systems face decisions that involve conflicting ethical values.'
+            }, {
+                id: 73,
+                category: 'Ethical Implications',
+                question: 'What is a concern with facial recognition in law enforcement?',
+                options: [
+                    'Racial bias in algorithms and privacy concerns',
+                    'It is always accurate',
+                    'It has no ethical issues',
+                    'It is only used for positive purposes'
+                ],
+                correct: 0,
+                explanation: 'Facial recognition has been shown to have racial bias and raises significant privacy concerns.'
+            }, {
+                id: 74,
+                category: 'Ethical Implications',
+                question: 'What is the "black box" nature of healthcare algorithms?',
+                options: [
+                    'The lack of transparency in how algorithms make decisions, making it hard to understand or trust',
+                    'Algorithms are fully transparent',
+                    'Algorithms are simple',
+                    'Algorithms are not used in healthcare'
+                ],
+                correct: 0,
+                explanation: 'The "black box" problem refers to the opacity of complex AI models, which can be problematic in healthcare.'
+            }, {
+                id: 75,
+                category: 'Ethical Implications',
+                question: 'What was the issue with the Optum healthcare algorithm?',
+                options: [
+                    'It was biased against Black patients due to historical data used to train it',
+                    'It was perfectly fair',
+                    'It only worked for one race',
+                    'It had no bias'
+                ],
+                correct: 0,
+                explanation: 'The Optum algorithm systematically underestimated the health needs of Black patients due to biased training data.'
+            }, {
+                id: 76,
+                category: 'Ethical Implications',
+                question: 'What is the ethical dilemma in autonomous vehicle decision-making?',
+                options: [
+                    'How to choose between different outcomes in an unavoidable accident scenario',
+                    'There is no dilemma',
+                    'Vehicles always choose the safest option',
+                    'Ethics are not considered'
+                ],
+                correct: 0,
+                explanation: 'Autonomous vehicles face ethical dilemmas when they must choose between different harmful outcomes, with no consensus on the right action.'
+            }, {
+                id: 77,
+                category: 'Ethical Implications',
+                question: 'What are the conflicting ethical frameworks in autonomous vehicle decisions?',
+                options: [
+                    'Utilitarianism (minimize overall harm) vs. Deontology (follow rules)',
+                    'Only utilitarianism',
+                    'Only deontology',
+                    'No frameworks exist'
+                ],
+                correct: 0,
+                explanation: 'Autonomous vehicle ethics often involve a conflict between utilitarian and deontological ethical frameworks.'
+            }, {
+                id: 78,
+                category: 'Ethical Implications',
+                question: 'What was the significance of Uber\'s self-driving car accident in 2018?',
+                options: [
+                    'It highlighted the lack of societal consensus on ethical rules for autonomous vehicles',
+                    'It proved autonomous vehicles are perfectly safe',
+                    'It had no ethical implications',
+                    'It was a one-time event'
+                ],
+                correct: 0,
+                explanation: 'The accident raised questions about how autonomous vehicles should make decisions in life-and-death situations.'
+            }, {
+                id: 79,
+                category: 'Ethical Implications',
+                question: 'What is the importance of algorithmic auditing?',
+                options: [
+                    'To identify and correct biases and ensure ethical compliance',
+                    'To avoid audits',
+                    'Audits are not needed',
+                    'Audits only check accuracy'
+                ],
+                correct: 0,
+                explanation: 'Algorithmic auditing helps detect biases, ensure fairness, and maintain accountability.'
+            }, {
+                id: 80,
+                category: 'Ethical Implications',
+                question: 'What is Amazon\'s Rekognition software known for?',
+                options: [
+                    'Being a facial recognition tool that raised significant ethical concerns regarding bias and privacy',
+                    'Being perfectly accurate',
+                    'Having no ethical issues',
+                    'Being used only for positive applications'
+                ],
+                correct: 0,
+                explanation: 'Amazon\'s Rekognition has been criticized for racial bias and privacy violations, prompting calls for regulation.'
+            }, {
+                id: 81,
+                category: 'Ethical Implications',
+                question: 'What is the "right to explanation" in AI?',
+                options: [
+                    'The right of individuals to receive an explanation for decisions made by AI systems that affect them',
+                    'The right to avoid AI decisions',
+                    'The right to delete data',
+                    'The right to data portability'
+                ],
+                correct: 0,
+                explanation: 'The right to explanation is a key concept in AI ethics, ensuring that individuals can understand how decisions are made.'
+            }, {
+                id: 82,
+                category: 'Ethical Implications',
+                question: 'What is the ethical concern with using historical data in healthcare algorithms?',
+                options: [
+                    'Historical data may contain biases that lead to discriminatory outcomes',
+                    'Historical data is always unbiased',
+                    'Historical data is the best data',
+                    'There are no concerns'
+                ],
+                correct: 0,
+                explanation: 'Historical data often reflects societal biases, which can be perpetuated by AI systems.'
+            }, {
+                id: 83,
+                category: 'Ethical Implications',
+                question: 'What is the role of public discourse in AI ethics?',
+                options: [
+                    'To shape ethical guidelines and ensure that AI aligns with societal values',
+                    'Public discourse is not important',
+                    'Only experts should decide',
+                    'Discourse slows down progress'
+                ],
+                correct: 0,
+                explanation: 'Public discourse is essential for developing ethical guidelines that reflect societal consensus.'
+            }, {
+                id: 84,
+                category: 'Ethical Implications',
+                question: 'What is a key ethical principle in AI?',
+                options: [
+                    'Transparency and explainability',
+                    'Secrecy',
+                    'Black-box models',
+                    'Ignoring fairness'
+                ],
+                correct: 0,
+                explanation: 'Transparency and explainability are fundamental principles for ethical AI.'
+            }, {
+                id: 85,
+                category: 'Ethical Implications',
+                question: 'What is the ethical implication of AI in surveillance?',
+                options: [
+                    'Potential for mass surveillance and erosion of privacy and civil liberties',
+                    'Surveillance is always ethical',
+                    'There are no privacy concerns',
+                    'Surveillance is only used for security'
+                ],
+                correct: 0,
+                explanation: 'AI-powered surveillance raises significant ethical concerns about privacy and freedom.'
+            }, {
+                id: 86,
+                category: 'Ethical Implications',
+                question: 'What is the importance of ethical AI for competitive advantage?',
+                options: [
+                    'Companies that prioritize ethics can build trust and differentiate themselves',
+                    'Ethics have no business value',
+                    'Ethics reduce profits',
+                    'Ethics are only for compliance'
+                ],
+                correct: 0,
+                explanation: 'Ethical AI can be a competitive advantage by building customer trust and reputation.'
+            }, {
+                id: 87,
+                category: 'Ethical Implications',
+                question: 'What is the "utilitarian" approach in autonomous vehicle ethics?',
+                options: [
+                    'Choosing the action that minimizes overall harm or maximizes overall good',
+                    'Following strict rules regardless of outcome',
+                    'Ignoring consequences',
+                    'Choosing randomly'
+                ],
+                correct: 0,
+                explanation: 'Utilitarianism focuses on outcomes, aiming to minimize total harm.'
+            }, {
+                id: 88,
+                category: 'Ethical Implications',
+                question: 'What is the "deontological" approach in autonomous vehicle ethics?',
+                options: [
+                    'Following moral rules or duties, regardless of consequences',
+                    'Minimizing harm',
+                    'Choosing the most beneficial outcome',
+                    'Ignoring rules'
+                ],
+                correct: 0,
+                explanation: 'Deontology emphasizes duties and rules, such as not intentionally causing harm.'
+            }, {
+                id: 89,
+                category: 'Ethical Implications',
+                question: 'What is a key challenge in implementing AI ethics?',
+                options: [
+                    'Lack of societal consensus on ethical principles and trade-offs',
+                    'Ethics are easy to implement',
+                    'All principles are agreed upon',
+                    'No challenges exist'
+                ],
+                correct: 0,
+                explanation: 'There is often no consensus on what is ethical, making implementation difficult.'
+            }, {
+                id: 90,
+                category: 'Ethical Implications',
+                question: 'What is the role of regulatory compliance in AI ethics?',
+                options: [
+                    'Ensuring that AI systems meet legal standards, which often incorporate ethical principles',
+                    'Compliance is irrelevant to ethics',
+                    'Ethics and compliance are separate',
+                    'Compliance only applies to non-AI'
+                ],
+                correct: 0,
+                explanation: 'Regulatory compliance often enforces ethical standards, such as privacy and non-discrimination.'
+            }, {
+                id: 91,
+                category: 'Ethical Implications',
+                question: 'What is the ethical concern with AI in hiring?',
+                options: [
+                    'Algorithms may perpetuate bias and discriminate against certain groups',
+                    'Hiring algorithms are always fair',
+                    'There are no ethical concerns',
+                    'Algorithms only help HR'
+                ],
+                correct: 0,
+                explanation: 'AI hiring tools have been shown to exhibit gender and racial bias, leading to discrimination.'
+            }, {
+                id: 92,
+                category: 'Ethical Implications',
+                question: 'What is the importance of diversity in AI development teams?',
+                options: [
+                    'Diverse teams can better identify and address biases and ethical issues',
+                    'Diversity is not important',
+                    'Only technical skills matter',
+                    'Diversity slows down development'
+                ],
+                correct: 0,
+                explanation: 'Diverse teams bring varied perspectives, which helps in identifying potential biases and ethical pitfalls.'
+            }, {
+                id: 93,
+                category: 'Ethical Implications',
+                question: 'What is the "right to be forgotten" in the context of AI?',
+                options: [
+                    'The right to have personal data removed from AI systems and databases',
+                    'The right to delete all algorithms',
+                    'The right to avoid AI',
+                    'The right to data portability'
+                ],
+                correct: 0,
+                explanation: 'The right to be forgotten allows individuals to request removal of their personal data from systems.'
+            }, {
+                id: 94,
+                category: 'Ethical Implications',
+                question: 'What is a key ethical consideration for AI in criminal justice?',
+                options: [
+                    'Avoiding biases that could lead to unfair sentencing or policing',
+                    'AI is always fair in criminal justice',
+                    'Ethics are not considered',
+                    'Only accuracy matters'
+                ],
+                correct: 0,
+                explanation: 'AI in criminal justice must be carefully designed to avoid perpetuating racial or socioeconomic biases.'
+            }, {
+                id: 95,
+                category: 'Ethical Implications',
+                question: 'What is the role of transparency in autonomous vehicle ethics?',
+                options: [
+                    'To ensure that decision-making processes are understandable and accountable',
+                    'Transparency is not needed',
+                    'Vehicles should be black boxes',
+                    'Only the final decision matters'
+                ],
+                correct: 0,
+                explanation: 'Transparency is crucial for building trust and allowing scrutiny of autonomous vehicle decisions.'
+            }, {
+                id: 96,
+                category: 'Ethical Implications',
+                question: 'What is a key ethical issue with AI-generated content?',
+                options: [
+                    'Misinformation, deepfakes, and intellectual property concerns',
+                    'AI-generated content is always ethical',
+                    'There are no concerns',
+                    'Only copyright issues'
+                ],
+                correct: 0,
+                explanation: 'AI-generated content raises issues of misinformation, authenticity, and ownership.'
+            }, {
+                id: 97,
+                category: 'Ethical Implications',
+                question: 'What is the importance of ethical guidelines in AI research?',
+                options: [
+                    'To ensure that research is conducted responsibly and with consideration of societal impacts',
+                    'Guidelines are not needed',
+                    'Research is always ethical',
+                    'Only results matter'
+                ],
+                correct: 0,
+                explanation: 'Ethical guidelines help researchers navigate potential harms and ensure responsible innovation.'
+            }, {
+                id: 98,
+                category: 'Ethical Implications',
+                question: 'What is the concept of "algorithmic fairness" in ethics?',
+                options: [
+                    'Ensuring that algorithms do not discriminate and treat all groups equitably',
+                    'Algorithms are always fair',
+                    'Fairness is subjective',
+                    'Only accuracy matters'
+                ],
+                correct: 0,
+                explanation: 'Algorithmic fairness is a central ethical principle, aiming to prevent discrimination.'
+            }, {
+                id: 99,
+                category: 'Ethical Implications',
+                question: 'What is the role of ethics in AI for social good?',
+                options: [
+                    'To guide AI applications that benefit society while minimizing harm',
+                    'Ethics are not relevant to social good',
+                    'Social good does not require ethics',
+                    'Ethics only limit applications'
+                ],
+                correct: 0,
+                explanation: 'Ethics ensures that AI for social good is deployed responsibly and equitably.'
+            }, {
+                id: 100,
+                category: 'Ethical Implications',
+                question: 'What is a key ethical dilemma in AI-powered decision-making?',
+                options: [
+                    'The trade-off between individual rights and collective benefits',
+                    'There is no dilemma',
+                    'All decisions are easy',
+                    'Ethics are not considered'
+                ],
+                correct: 0,
+                explanation: 'AI decision-making often involves balancing individual rights against societal benefits, creating ethical dilemmas.'
+            },
+
+            // ---- PRIVACY AND SECURITY (101–130) ----
+            {
+                id: 101,
+                category: 'Privacy & Security',
+                question: 'How can generative AI misuse personal data?',
+                options: [
+                    'By generating realistic images or videos of individuals without consent',
+                    'It cannot misuse data',
+                    'Only with explicit consent',
+                    'It is always secure'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can create deepfakes and realistic content of individuals, raising serious privacy concerns.'
+            }, {
+                id: 102,
+                category: 'Privacy & Security',
+                question: 'What is a challenge in anonymizing training datasets?',
+                options: [
+                    'Re-identification risks where individuals can be identified from anonymized data',
+                    'Anonymization is always perfect',
+                    'There are no challenges',
+                    'Anonymization is not needed'
+                ],
+                correct: 0,
+                explanation: 'Even anonymized data can sometimes be re-identified, posing privacy risks.'
+            }, {
+                id: 103,
+                category: 'Privacy & Security',
+                question: 'What is a real-world impact of deepfake technology on privacy?',
+                options: [
+                    'Damage to reputations and spread of misinformation',
+                    'Deepfakes are always harmless',
+                    'They only affect celebrities',
+                    'No real impact'
+                ],
+                correct: 0,
+                explanation: 'Deepfakes can be used to spread false information and damage individuals\' reputations.'
+            }, {
+                id: 104,
+                category: 'Privacy & Security',
+                question: 'What is a legal gap regarding deepfakes?',
+                options: [
+                    'Inadequate laws to address the challenges posed by deepfake technology',
+                    'Laws are sufficient',
+                    'No laws are needed',
+                    'Deepfakes are legal'
+                ],
+                correct: 0,
+                explanation: 'Current laws often do not adequately address the unique challenges of deepfakes, creating legal gaps.'
+            }, {
+                id: 105,
+                category: 'Privacy & Security',
+                question: 'What is a security measure in generative AI?',
+                options: [
+                    'Encryption and access controls to protect data',
+                    'No security measures are needed',
+                    'Only passwords',
+                    'Only firewalls'
+                ],
+                correct: 0,
+                explanation: 'Encryption, access controls, data masking, and privacy-preserving training techniques are key security measures.'
+            }, {
+                id: 106,
+                category: 'Privacy & Security',
+                question: 'What is data masking?',
+                options: [
+                    'Technique to obfuscate sensitive data by replacing it with fictitious but realistic data',
+                    'Removing data',
+                    'Encrypting data',
+                    'Ignoring data'
+                ],
+                correct: 0,
+                explanation: 'Data masking replaces sensitive information with realistic but fake data to protect privacy.'
+            }, {
+                id: 107,
+                category: 'Privacy & Security',
+                question: 'What is differential privacy?',
+                options: [
+                    'A technique to add noise to data so that individual information cannot be identified',
+                    'Removing sensitive attributes',
+                    'Encrypting data',
+                    'Access control'
+                ],
+                correct: 0,
+                explanation: 'Differential privacy ensures that the output of a query does not reveal information about any individual.'
+            }, {
+                id: 108,
+                category: 'Privacy & Security',
+                question: 'What is federated learning?',
+                options: [
+                    'A technique where models are trained on decentralized data without sharing raw data',
+                    'Centralized training',
+                    'Data sharing',
+                    'Ignoring privacy'
+                ],
+                correct: 0,
+                explanation: 'Federated learning allows training on data distributed across devices without sharing the data itself, enhancing privacy.'
+            }, {
+                id: 109,
+                category: 'Privacy & Security',
+                question: 'What is the role of blockchain in AI privacy?',
+                options: [
+                    'To provide data integrity and secure data sharing through decentralized ledgers',
+                    'Blockchain is not used in AI',
+                    'Blockchain only for cryptocurrencies',
+                    'Blockchain does not enhance privacy'
+                ],
+                correct: 0,
+                explanation: 'Blockchain can provide tamper-proof records and secure data sharing, supporting privacy.'
+            }, {
+                id: 110,
+                category: 'Privacy & Security',
+                question: 'What is zero-knowledge proof in AI privacy?',
+                options: [
+                    'A method to prove knowledge of a value without revealing the value itself',
+                    'Sharing all data',
+                    'Encrypting data',
+                    'Access control'
+                ],
+                correct: 0,
+                explanation: 'Zero-knowledge proofs allow verification of information without exposing the underlying data, enhancing privacy.'
+            }, {
+                id: 111,
+                category: 'Privacy & Security',
+                question: 'How can generative AI be used for security?',
+                options: [
+                    'By generating synthetic data for training, anomaly detection, and phishing simulation',
+                    'Generative AI is only a threat',
+                    'It cannot be used for security',
+                    'Only for attacks'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can enhance security through synthetic data generation, anomaly detection, and threat simulation.'
+            }, {
+                id: 112,
+                category: 'Privacy & Security',
+                question: 'What is synthetic data generation?',
+                options: [
+                    'Creating artificial data that mimics real data for training without using sensitive information',
+                    'Using real data',
+                    'Copying data',
+                    'Ignoring privacy'
+                ],
+                correct: 0,
+                explanation: 'Synthetic data allows training without exposing sensitive real data, protecting privacy.'
+            }, {
+                id: 113,
+                category: 'Privacy & Security',
+                question: 'What is anomaly detection in the context of AI security?',
+                options: [
+                    'Identifying unusual patterns that could indicate a security threat',
+                    'Ignoring outliers',
+                    'Only detecting known attacks',
+                    'No use'
+                ],
+                correct: 0,
+                explanation: 'Anomaly detection helps identify potential security breaches or suspicious activities.'
+            }, {
+                id: 114,
+                category: 'Privacy & Security',
+                question: 'What is phishing attack simulation using generative AI?',
+                options: [
+                    'Generating realistic phishing emails to train employees and test defenses',
+                    'Actually launching attacks',
+                    'Ignoring phishing',
+                    'Only for research'
+                ],
+                correct: 0,
+                explanation: 'Generative AI can create realistic phishing simulations to improve security awareness and defenses.'
+            }, {
+                id: 115,
+                category: 'Privacy & Security',
+                question: 'What is automated threat intelligence?',
+                options: [
+                    'Using AI to gather, analyze, and act on threat information automatically',
+                    'Manual analysis',
+                    'Ignoring threats',
+                    'Only for known threats'
+                ],
+                correct: 0,
+                explanation: 'Automated threat intelligence uses AI to speed up threat detection and response.'
+            }, {
+                id: 116,
+                category: 'Privacy & Security',
+                question: 'What is a future direction for privacy in generative AI?',
+                options: [
+                    'Differential privacy and federated learning',
+                    'No new techniques',
+                    'Sharing more data',
+                    'Ignoring privacy'
+                ],
+                correct: 0,
+                explanation: 'Differential privacy, federated learning, and zero-knowledge proofs are emerging techniques to enhance privacy.'
+            }, {
+                id: 117,
+                category: 'Privacy & Security',
+                question: 'What is the importance of AI ethics guidelines in privacy?',
+                options: [
+                    'They provide a framework for responsible data use and privacy protection',
+                    'Guidelines are optional',
+                    'They are not needed',
+                    'Only laws matter'
+                ],
+                correct: 0,
+                explanation: 'Ethics guidelines help developers incorporate privacy considerations into AI systems.'
+            }, {
+                id: 118,
+                category: 'Privacy & Security',
+                question: 'What is a privacy-preserving training technique?',
+                options: [
+                    'Methods like differential privacy and federated learning that protect data during training',
+                    'Using public data',
+                    'Ignoring privacy',
+                    'Only encryption'
+                ],
+                correct: 0,
+                explanation: 'Privacy-preserving techniques aim to train models without exposing sensitive raw data.'
+            }, {
+                id: 119,
+                category: 'Privacy & Security',
+                question: 'What is the social impact of deepfakes?',
+                options: [
+                    'They can damage reputations, spread misinformation, and undermine trust',
+                    'Deepfakes have no social impact',
+                    'They are only used for entertainment',
+                    'They are always beneficial'
+                ],
+                correct: 0,
+                explanation: 'Deepfakes can have serious social consequences, including reputational harm and misinformation.'
+            }, {
+                id: 120,
+                category: 'Privacy & Security',
+                question: 'What is the need for regulation on deepfakes?',
+                options: [
+                    'To address the legal and ethical challenges posed by deepfake technology',
+                    'No regulation is needed',
+                    'Regulation is not possible',
+                    'Only voluntary guidelines'
+                ],
+                correct: 0,
+                explanation: 'Regulation is needed to mitigate the harms of deepfakes and protect individuals\' rights.'
+            }, {
+                id: 121,
+                category: 'Privacy & Security',
+                question: 'What is the role of encryption in AI data security?',
+                options: [
+                    'To protect data confidentiality by making it unreadable without a key',
+                    'To speed up processing',
+                    'To reduce data size',
+                    'To share data openly'
+                ],
+                correct: 0,
+                explanation: 'Encryption protects data from unauthorized access, ensuring confidentiality.'
+            }, {
+                id: 122,
+                category: 'Privacy & Security',
+                question: 'What is the purpose of access controls in AI systems?',
+                options: [
+                    'To limit data access to authorized users only',
+                    'To allow everyone access',
+                    'To slow down the system',
+                    'To complicate user experience'
+                ],
+                correct: 0,
+                explanation: 'Access controls are essential for restricting data access and preventing breaches.'
+            }, {
+                id: 123,
+                category: 'Privacy & Security',
+                question: 'What is the ethical implication of using AI for surveillance?',
+                options: [
+                    'Potential for mass surveillance and erosion of privacy',
+                    'Surveillance is always ethical',
+                    'No privacy concerns',
+                    'Surveillance only for security'
+                ],
+                correct: 0,
+                explanation: 'AI surveillance can lead to privacy violations and misuse of personal data.'
+            }, {
+                id: 124,
+                category: 'Privacy & Security',
+                question: 'What is the role of data minimization in AI privacy?',
+                options: [
+                    'Collecting and retaining only the data necessary for a specific purpose',
+                    'Collecting as much data as possible',
+                    'Ignoring privacy',
+                    'Sharing data widely'
+                ],
+                correct: 0,
+                explanation: 'Data minimization is a key principle to reduce privacy risks by limiting data collection.'
+            }, {
+                id: 125,
+                category: 'Privacy & Security',
+                question: 'What is a key challenge in ensuring privacy in AI?',
+                options: [
+                    'Balancing the need for large datasets with privacy protection',
+                    'Privacy is easy to ensure',
+                    'No challenges exist',
+                    'Data is not important'
+                ],
+                correct: 0,
+                explanation: 'AI often requires large amounts of data, making privacy protection challenging.'
+            }, {
+                id: 126,
+                category: 'Privacy & Security',
+                question: 'What is the role of consent in AI data collection?',
+                options: [
+                    'Obtaining explicit and informed consent from individuals before collecting their data',
+                    'Consent is not needed',
+                    'Consent is assumed',
+                    'Only for sensitive data'
+                ],
+                correct: 0,
+                explanation: 'Informed consent is fundamental for ethical data collection and use.'
+            }, {
+                id: 127,
+                category: 'Privacy & Security',
+                question: 'What is the impact of data breaches on public trust?',
+                options: [
+                    'They erode trust, which can hinder AI adoption and innovation',
+                    'Data breaches have no impact on trust',
+                    'Trust is not important',
+                    'Breaches increase trust'
+                ],
+                correct: 0,
+                explanation: 'Data breaches undermine public confidence in AI systems and their developers.'
+            }, {
+                id: 128,
+                category: 'Privacy & Security',
+                question: 'What is the purpose of privacy impact assessments in AI?',
+                options: [
+                    'To evaluate and mitigate privacy risks before deploying AI systems',
+                    'Privacy assessments are not needed',
+                    'They are only for legal compliance',
+                    'They are optional'
+                ],
+                correct: 0,
+                explanation: 'Privacy impact assessments help identify and address potential privacy harms.'
+            }, {
+                id: 129,
+                category: 'Privacy & Security',
+                question: 'What is a technique to ensure data integrity in AI?',
+                options: [
+                    'Using blockchain or cryptographic methods to ensure data has not been tampered with',
+                    'Ignoring data integrity',
+                    'Only using backups',
+                    'No techniques exist'
+                ],
+                correct: 0,
+                explanation: 'Data integrity ensures that data is accurate and unaltered, which is crucial for reliable AI.'
+            }, {
+                id: 130,
+                category: 'Privacy & Security',
+                question: 'What is the future of privacy in generative AI?',
+                options: [
+                    'Greater use of privacy-preserving techniques like federated learning and differential privacy',
+                    'Less privacy',
+                    'No change',
+                    'Privacy will be ignored'
+                ],
+                correct: 0,
+                explanation: 'The future will likely see increased adoption of privacy-preserving techniques to protect user data.'
+            },
+
+            // ---- ADDITIONAL QUESTIONS (131–160) ----
+            {
+                id: 131,
+                category: 'Responsible AI',
+                question: 'What is the importance of third-party audits in AI?',
+                options: [
+                    'They provide independent assessment of fairness, bias, and accountability',
+                    'They are not needed',
+                    'They only check accuracy',
+                    'They are optional'
+                ],
+                correct: 0,
+                explanation: 'Third-party audits help ensure that AI systems are fair, accountable, and free from bias.'
+            }, {
+                id: 132,
+                category: 'Responsible AI',
+                question: 'What is the role of explainability in AI transparency?',
+                options: [
+                    'To make AI decisions understandable to humans',
+                    'To hide decision-making',
+                    'Explainability is not important',
+                    'Only developers need to understand'
+                ],
+                correct: 0,
+                explanation: 'Explainability allows stakeholders to understand and trust AI decisions.'
+            }, {
+                id: 133,
+                category: 'Bias & Fairness',
+                question: 'What is the consequence of algorithmic bias in credit scoring?',
+                options: [
+                    'Unfair denial of credit to certain groups, leading to financial inequality',
+                    'No consequences',
+                    'It only affects accuracy',
+                    'It benefits everyone'
+                ],
+                correct: 0,
+                explanation: 'Biased credit scoring can limit access to financial services for disadvantaged groups.'
+            }, {
+                id: 134,
+                category: 'Bias & Fairness',
+                question: 'What is the role of feature selection in reducing bias?',
+                options: [
+                    'Carefully choosing which features to include to avoid proxies for sensitive attributes',
+                    'Including all features',
+                    'Ignoring sensitive attributes',
+                    'Random selection'
+                ],
+                correct: 0,
+                explanation: 'Feature selection can prevent the model from using proxy variables that indirectly encode sensitive information.'
+            }, {
+                id: 135,
+                category: 'Ethical Implications',
+                question: 'What is the ethical concern with AI in hiring regarding "fairness"?',
+                options: [
+                    'Algorithms may screen out qualified candidates based on gender or ethnicity',
+                    'Hiring algorithms are always fair',
+                    'There are no concerns',
+                    'Fairness is not considered'
+                ],
+                correct: 0,
+                explanation: 'AI hiring tools can inadvertently discriminate against certain groups if not carefully designed.'
+            }, {
+                id: 136,
+                category: 'Ethical Implications',
+                question: 'What is the role of "accountability" in AI ethics?',
+                options: [
+                    'Ensuring that developers and organizations are responsible for the outcomes of their AI systems',
+                    'Accountability is not needed',
+                    'Only the algorithm is accountable',
+                    'Users are accountable'
+                ],
+                correct: 0,
+                explanation: 'Accountability means that those who create and deploy AI systems are responsible for their impacts.'
+            }, {
+                id: 137,
+                category: 'Privacy & Security',
+                question: 'What is the purpose of data masking in AI?',
+                options: [
+                    'To protect sensitive information by replacing it with fictitious data',
+                    'To delete data',
+                    'To encrypt data',
+                    'To share data openly'
+                ],
+                correct: 0,
+                explanation: 'Data masking protects privacy by substituting real data with realistic but fake data.'
+            }, {
+                id: 138,
+                category: 'Privacy & Security',
+                question: 'What is the risk of re-identification in anonymized datasets?',
+                options: [
+                    'Individuals can be identified from anonymized data using other available information',
+                    'Re-identification is impossible',
+                    'No risk exists',
+                    'Anonymization is perfect'
+                ],
+                correct: 0,
+                explanation: 'Anonymized data can often be linked to individuals through external data sources, posing a privacy risk.'
+            }, {
+                id: 139,
+                category: 'Responsible AI',
+                question: 'What is the importance of "open-source" in responsible AI?',
+                options: [
+                    'It allows public scrutiny and collaboration, which can improve fairness and trust',
+                    'It is not important',
+                    'It makes systems less secure',
+                    'It only benefits developers'
+                ],
+                correct: 0,
+                explanation: 'Open-source algorithms enable transparency and community review, helping to identify and fix issues.'
+            }, {
+                id: 140,
+                category: 'Responsible AI',
+                question: 'What is the purpose of "access controls" in AI data security?',
+                options: [
+                    'To ensure that only authorized personnel can access sensitive data',
+                    'To allow everyone access',
+                    'To speed up processing',
+                    'To reduce costs'
+                ],
+                correct: 0,
+                explanation: 'Access controls are a fundamental security measure to protect data from unauthorized access.'
+            }, {
+                id: 141,
+                category: 'Bias & Fairness',
+                question: 'What is "pre-processing" in bias mitigation?',
+                options: [
+                    'Modifying the training data to remove biases before model training',
+                    'Modifying the algorithm during training',
+                    'Adjusting predictions after training',
+                    'Ignoring bias'
+                ],
+                correct: 0,
+                explanation: 'Pre-processing techniques adjust the data to reduce bias, such as re-weighting or sampling.'
+            }, {
+                id: 142,
+                category: 'Bias & Fairness',
+                question: 'What is "in-processing" in bias mitigation?',
+                options: [
+                    'Incorporating fairness constraints directly into the training process',
+                    'Modifying data before training',
+                    'Adjusting predictions after training',
+                    'Removing sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'In-processing adds fairness objectives or constraints to the training algorithm.'
+            }, {
+                id: 143,
+                category: 'Bias & Fairness',
+                question: 'What is "post-processing" in bias mitigation?',
+                options: [
+                    'Adjusting model predictions after training to meet fairness criteria',
+                    'Modifying data before training',
+                    'Modifying the algorithm during training',
+                    'Removing sensitive attributes'
+                ],
+                correct: 0,
+                explanation: 'Post-processing techniques alter the outputs of a trained model to improve fairness without retraining.'
+            }, {
+                id: 144,
+                category: 'Ethical Implications',
+                question: 'What is the "right to explanation" in GDPR?',
+                options: [
+                    'Individuals have the right to obtain an explanation of decisions made by automated systems',
+                    'No such right exists',
+                    'Only for financial decisions',
+                    'Only for public sector'
+                ],
+                correct: 0,
+                explanation: 'GDPR includes the right to explanation for automated decisions, promoting transparency.'
+            }, {
+                id: 145,
+                category: 'Ethical Implications',
+                question: 'What is the ethical dilemma in AI for healthcare?',
+                options: [
+                    'Balancing patient privacy with the need for data to improve treatments',
+                    'No dilemma exists',
+                    'Privacy is not important',
+                    'Data should always be shared'
+                ],
+                correct: 0,
+                explanation: 'Healthcare AI must balance the benefits of data-driven insights with the protection of patient privacy.'
+            }, {
+                id: 146,
+                category: 'Privacy & Security',
+                question: 'What is the role of "zero-knowledge proofs" in AI privacy?',
+                options: [
+                    'To prove a statement is true without revealing any additional information',
+                    'To share all data',
+                    'To encrypt data',
+                    'To ignore privacy'
+                ],
+                correct: 0,
+                explanation: 'Zero-knowledge proofs allow verification without exposing sensitive information.'
+            }, {
+                id: 147,
+                category: 'Responsible AI',
+                question: 'What is the purpose of "data minimization" in AI?',
+                options: [
+                    'To collect only the data necessary for the task to reduce privacy risks',
+                    'To collect as much data as possible',
+                    'To ignore privacy',
+                    'To share data widely'
+                ],
+                correct: 0,
+                explanation: 'Data minimization is a privacy principle that limits data collection to what is necessary.'
+            }, {
+                id: 148,
+                category: 'Bias & Fairness',
+                question: 'What is a key challenge in measuring fairness?',
+                options: [
+                    'There are multiple definitions of fairness, and they can conflict with each other',
+                    'Fairness is easy to measure',
+                    'Only one definition exists',
+                    'Measurement is not needed'
+                ],
+                correct: 0,
+                explanation: 'Different fairness criteria (e.g., individual vs. group fairness) may conflict, making it hard to achieve all simultaneously.'
+            }, {
+                id: 149,
+                category: 'Ethical Implications',
+                question: 'What is the importance of "ethical AI" for long-term sustainability?',
+                options: [
+                    'Ethical AI ensures that technology benefits society without causing harm, promoting long-term trust and adoption',
+                    'Ethics are not important for sustainability',
+                    'Sustainability only concerns the environment',
+                    'AI has no long-term impact'
+                ],
+                correct: 0,
+                explanation: 'Ethical AI helps build trust and ensure that AI systems contribute positively to society over time.'
+            }, {
+                id: 150,
+                category: 'Privacy & Security',
+                question: 'What is the significance of "federated learning" for privacy?',
+                options: [
+                    'It allows training on distributed data without sharing raw data, enhancing privacy',
+                    'It shares all data centrally',
+                    'It has no privacy benefit',
+                    'It is only for research'
+                ],
+                correct: 0,
+                explanation: 'Federated learning trains models on local data without transmitting it, protecting privacy.'
+            }, {
+                id: 151,
+                category: 'Responsible AI',
+                question: 'What is the role of "regulatory compliance" in responsible AI?',
+                options: [
+                    'Ensuring AI systems adhere to laws and regulations that protect individuals and society',
+                    'Compliance is optional',
+                    'Regulations hinder AI',
+                    'Only legal teams should worry about compliance'
+                ],
+                correct: 0,
+                explanation: 'Regulatory compliance is a foundation for responsible AI, ensuring protection of rights and fairness.'
+            }, {
+                id: 152,
+                category: 'Bias & Fairness',
+                question: 'What is "measurement bias" in AI?',
+                options: [
+                    'Bias arising from the data collection instrument or method',
+                    'Bias in the algorithm\'s design',
+                    'Bias in labeling',
+                    'Bias in societal norms'
+                ],
+                correct: 0,
+                explanation: 'Measurement bias occurs when the tools or procedures used to collect data are systematically biased.'
+            }, {
+                id: 153,
+                category: 'Ethical Implications',
+                question: 'What is the "black box" problem in AI?',
+                options: [
+                    'The lack of transparency in complex AI models, making decisions hard to interpret',
+                    'The model is fully transparent',
+                    'The model is simple',
+                    'The model is not used'
+                ],
+                correct: 0,
+                explanation: 'Black box models are difficult to interpret, which can be problematic in high-stakes applications.'
+            }, {
+                id: 154,
+                category: 'Privacy & Security',
+                question: 'What is the purpose of "differential privacy"?',
+                options: [
+                    'To add noise to data to prevent identification of individuals',
+                    'To remove data',
+                    'To encrypt data',
+                    'To share data openly'
+                ],
+                correct: 0,
+                explanation: 'Differential privacy protects individual privacy by adding controlled noise to data or queries.'
+            }, {
+                id: 155,
+                category: 'Responsible AI',
+                question: 'What is a best practice for ethical AI development?',
+                options: [
+                    'Involving diverse stakeholders, conducting impact assessments, and ensuring transparency',
+                    'Developing in isolation',
+                    'Ignoring stakeholders',
+                    'Keeping algorithms secret'
+                ],
+                correct: 0,
+                explanation: 'Ethical AI development involves diverse perspectives, impact assessments, and transparency.'
+            }, {
+                id: 156,
+                category: 'Bias & Fairness',
+                question: 'What is "exclusion bias" in AI?',
+                options: [
+                    'Systematically excluding certain groups from the training data',
+                    'Bias in the algorithm\'s objective',
+                    'Bias in labeling',
+                    'Bias in measurement'
+                ],
+                correct: 0,
+                explanation: 'Exclusion bias occurs when certain populations are underrepresented or entirely missing from the training data.'
+            }, {
+                id: 157,
+                category: 'Ethical Implications',
+                question: 'What is the ethical concern with AI in autonomous weapons?',
+                options: [
+                    'The delegation of life-and-death decisions to machines without human oversight',
+                    'No ethical concerns',
+                    'Autonomous weapons are safe',
+                    'Humans always control them'
+                ],
+                correct: 0,
+                explanation: 'Autonomous weapons raise profound ethical questions about accountability and the value of human life.'
+            }, {
+                id: 158,
+                category: 'Privacy & Security',
+                question: 'What is a key security measure for AI systems?',
+                options: [
+                    'Regular security audits and penetration testing',
+                    'No measures',
+                    'Only using open-source',
+                    'Only using proprietary software'
+                ],
+                correct: 0,
+                explanation: 'Regular security audits help identify vulnerabilities and ensure systems are protected.'
+            }, {
+                id: 159,
+                category: 'Responsible AI',
+                question: 'What is the role of "accountability" in responsible AI?',
+                options: [
+                    'Ensuring that organizations take responsibility for the impacts of their AI systems',
+                    'Accountability is not needed',
+                    'Only developers are accountable',
+                    'Users are accountable'
+                ],
+                correct: 0,
+                explanation: 'Accountability means that organizations must be responsible for the outcomes of their AI systems.'
+            }, {
+                id: 160,
+                category: 'Ethical Implications',
+                question: 'What is the importance of "ethical AI" in building public trust?',
+                options: [
+                    'Ethical AI practices demonstrate responsibility, which builds trust and encourages adoption',
+                    'Trust is not important',
+                    'Ethics do not affect trust',
+                    'Trust is automatic'
+                ],
+                correct: 0,
+                explanation: 'By prioritizing ethics, organizations show they are responsible, fostering public trust in AI.'
+            }
+        ];
+
+        // ---- QUIZ ENGINE ----
+        const totalQ = QUESTIONS.length;
+        let currentIndex = 0;
+        let userAnswers = new Array(totalQ).fill(null);
+        let questionStatus = new Array(totalQ).fill('unanswered');
+        let answeredCount = 0;
+
+        const elements = {
+            questionText: document.getElementById('questionText'),
+            optionsGrid: document.getElementById('optionsGrid'),
+            categoryTag: document.getElementById('categoryTag'),
+            progressFill: document.getElementById('progressFill'),
+            questionCounter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            accuracyDisplay: document.getElementById('accuracyDisplay'),
+            explanationBox: document.getElementById('explanationBox'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            questionArea: document.getElementById('questionArea'),
+            navControls: document.getElementById('navControls'),
+            finalScore: document.getElementById('finalScore'),
+            finalLabel: document.getElementById('finalLabel'),
+            statCorrect: document.getElementById('statCorrect'),
+            statIncorrect: document.getElementById('statIncorrect'),
+            statSkipped: document.getElementById('statSkipped'),
+            resetBtn: document.getElementById('resetBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            nextInlineBtn: document.getElementById('nextInlineBtn'),
+        };
+
+        elements.totalQuestionsDisplay.textContent = totalQ;
+
+        function renderQuestion(index) {
+            const q = QUESTIONS[index];
+            if (!q) return;
+            elements.categoryTag.textContent = q.category;
+            elements.questionText.textContent = `${index + 1}. ${q.question}`;
+            const letters = ['A', 'B', 'C', 'D'];
+            let html = '';
+            q.options.forEach((opt, i) => {
+                let cls = 'option-item';
+                const selected = userAnswers[index] === i;
+                const isAnswered = userAnswers[index] !== null && userAnswers[index] !== undefined;
+                const isCorrect = q.correct === i;
+                if (isAnswered) {
+                    cls += ' disabled';
+                    if (selected) {
+                        cls += isCorrect ? ' correct' : ' incorrect';
+                    } else if (isCorrect) {
+                        cls += ' correct';
+                    }
+                } else {
+                    if (selected) cls += ' selected';
+                }
+                html += `
+                    <div class="${cls}" data-optindex="${i}" data-qindex="${index}">
+                        <span class="letter">${letters[i]}</span>
+                        <span>${opt}</span>
+                    </div>
+                `;
+            });
+            elements.optionsGrid.innerHTML = html;
+
+            const isAnswered2 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            if (isAnswered2) {
+                const isCorrect2 = userAnswers[index] === q.correct;
+                elements.explanationBox.innerHTML = `
+                    <strong>${isCorrect2 ? '✅ Correct' : '❌ Incorrect'}</strong><br>
+                    ${q.explanation}
+                `;
+                elements.explanationBox.classList.add('show');
+                elements.submitBtn.classList.remove('show');
+                const isLast3 = index === totalQ - 1;
+                if (isLast3) {
+                    elements.nextInlineBtn.textContent = '📊 See Results';
+                } else {
+                    elements.nextInlineBtn.textContent = 'Next →';
+                }
+                elements.nextInlineBtn.classList.add('show');
+            } else {
+                elements.explanationBox.classList.remove('show');
+                elements.nextInlineBtn.classList.remove('show');
+                const tempSelected = document.querySelector('.option-item.selected');
+                if (tempSelected) {
+                    elements.submitBtn.disabled = false;
+                } else {
+                    elements.submitBtn.disabled = true;
+                }
+                elements.submitBtn.classList.add('show');
+            }
+
+            document.querySelectorAll('.option-item:not(.disabled)').forEach(el => {
+                el.addEventListener('click', function() {
+                    const qi = parseInt(this.dataset.qindex);
+                    const optIdx = parseInt(this.dataset.optindex);
+                    if (userAnswers[qi] !== null && userAnswers[qi] !== undefined) return;
+                    selectOption(qi, optIdx);
+                });
+            });
+
+            updateProgress();
+            elements.prevBtn.disabled = index === 0;
+            const isLast = index === totalQ - 1;
+            const isAnswered3 = userAnswers[index] !== null && userAnswers[index] !== undefined;
+            elements.nextBtn.textContent = isLast ? '📊 See Results' : 'Next →';
+            elements.nextBtn.disabled = !isAnswered3;
+            if (answeredCount === totalQ) {
+                elements.nextBtn.disabled = false;
+            }
+            updateScore();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers[qIndex] !== null && userAnswers[qIndex] !== undefined) return;
+            document.querySelectorAll('.option-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const clicked = document.querySelector(`.option-item[data-qindex="${qIndex}"][data-optindex="${optIndex}"]`);
+            if (clicked) clicked.classList.add('selected');
+            elements.submitBtn.disabled = false;
+        }
+
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            if (!q) return;
+            if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) return;
+            const selectedEl = document.querySelector('.option-item.selected');
+            if (!selectedEl) return;
+            const optIndex = parseInt(selectedEl.dataset.optindex);
+            userAnswers[currentIndex] = optIndex;
+            const isCorrect = optIndex === q.correct;
+            questionStatus[currentIndex] = isCorrect ? 'correct' : 'incorrect';
+            answeredCount = userAnswers.filter(a => a !== null && a !== undefined).length;
+            renderQuestion(currentIndex);
+            updateScore();
+        }
+
+        function handleNextInline() {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            if (index < 0 || index >= totalQ) return;
+            currentIndex = index;
+            renderQuestion(index);
+            document.querySelector('.question-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+            const pct = totalQ > 0 ? (answered / totalQ) * 100 : 0;
+            elements.progressFill.style.width = `${pct}%`;
+            elements.questionCounter.textContent = `${currentIndex + 1} / ${totalQ}`;
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const attempted = questionStatus.filter(s => s === 'correct' || s === 'incorrect').length;
+            const acc = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+            elements.accuracyDisplay.textContent = attempted > 0 ? `🎯 ${acc}%` : '—';
+        }
+
+        function updateScore() {
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            elements.scoreDisplay.innerHTML = `${correctCount} <span>/ ${totalQ}</span>`;
+        }
+
+        function showResults() {
+            elements.questionArea.style.display = 'none';
+            elements.navControls.style.display = 'none';
+            elements.resultsContainer.classList.add('show');
+            const correctCount = questionStatus.filter(s => s === 'correct').length;
+            const incorrectCount = questionStatus.filter(s => s === 'incorrect').length;
+            const skippedCount = totalQ - correctCount - incorrectCount;
+            const pct = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+            elements.finalScore.textContent = `${pct}%`;
+            let label = 'Keep practicing! 💪';
+            if (pct >= 90) label = '🌟 Excellent! You\'re ready for the exam!';
+            else if (pct >= 70) label = '👏 Good job! Review a few more topics.';
+            else if (pct >= 50) label = '📚 Keep studying — you\'re on the right track!';
+            elements.finalLabel.textContent = label;
+            elements.statCorrect.textContent = correctCount;
+            elements.statIncorrect.textContent = incorrectCount;
+            elements.statSkipped.textContent = skippedCount;
+            elements.progressFill.style.width = '100%';
+            elements.questionCounter.textContent = `${totalQ} / ${totalQ}`;
+            elements.accuracyDisplay.textContent = `🎯 ${pct}%`;
+        }
+
+        elements.prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) goToQuestion(currentIndex - 1);
+        });
+
+        elements.nextBtn.addEventListener('click', () => {
+            if (currentIndex === totalQ - 1) {
+                const allAnswered = userAnswers.every(a => a !== null && a !== undefined);
+                if (allAnswered) {
+                    showResults();
+                } else {
+                    const answered = userAnswers.filter(a => a !== null && a !== undefined).length;
+                    if (answered === totalQ) {
+                        showResults();
+                    } else {
+                        alert(`You've answered ${answered} of ${totalQ} questions. Please answer all questions to see results.`);
+                    }
+                }
+                return;
+            }
+            if (currentIndex < totalQ - 1) {
+                goToQuestion(currentIndex + 1);
+            }
+        });
+
+        elements.submitBtn.addEventListener('click', submitAnswer);
+
+        elements.nextInlineBtn.addEventListener('click', handleNextInline);
+
+        elements.resetBtn.addEventListener('click', () => {
+            userAnswers = new Array(totalQ).fill(null);
+            questionStatus = new Array(totalQ).fill('unanswered');
+            answeredCount = 0;
+            currentIndex = 0;
+            elements.resultsContainer.classList.remove('show');
+            elements.questionArea.style.display = 'block';
+            elements.navControls.style.display = 'flex';
+            renderQuestion(0);
+            updateProgress();
+            updateScore();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !elements.prevBtn.disabled) {
+                elements.prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !elements.nextBtn.disabled) {
+                elements.nextBtn.click();
+            } else if (e.key === 'Enter') {
+                const isAnswered = userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined;
+                if (!isAnswered && !elements.submitBtn.disabled && elements.submitBtn.classList.contains('show')) {
+                    elements.submitBtn.click();
+                } else if (isAnswered && elements.nextInlineBtn.classList.contains('show')) {
+                    elements.nextInlineBtn.click();
+                }
+            } else if (e.key === '1') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 0) opts[0].click();
+            } else if (e.key === '2') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 1) opts[1].click();
+            } else if (e.key === '3') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 2) opts[2].click();
+            } else if (e.key === '4') {
+                const opts = document.querySelectorAll('.option-item:not(.disabled)');
+                if (opts.length > 3) opts[3].click();
+            }
+        });
+
+        renderQuestion(0);
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>

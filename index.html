@@ -25,9 +25,15 @@ body{font-family:'Inter',sans-serif;background:#f4f1fa;color:#2d2d3a;min-height:
 .hero .subtitle{font-size:1.1rem;opacity:.85;position:relative;z-index:1;max-width:600px;margin:0 auto 1.5rem}
 .hero .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);padding:.35rem 1rem;border-radius:20px;font-size:.8rem;position:relative;z-index:1}
 .container{max-width:100%;margin:0 auto;padding:2.5rem 2rem;flex:1}
+.tabs{display:flex;gap:.5rem;margin-bottom:2rem;border-bottom:2px solid #e8dff5;padding-bottom:0}
+.tab-btn{padding:.65rem 1.5rem;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;color:#6b5b7b;cursor:pointer;border-radius:10px 10px 0 0;transition:all .2s ease;position:relative}
+.tab-btn:hover{color:#4a2c7a;background:rgba(108,92,231,.06)}
+.tab-btn.active{color:#4a2c7a;font-weight:600}
+.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:#6c5ce7;border-radius:3px 3px 0 0}
 .section-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:#2d1b4e;margin-bottom:.5rem}
-.section-desc{color:#6b5b7b;margin-bottom:2rem;font-size:.95rem}
+.section-desc{color:#6b5b7b;margin-bottom:1.5rem;font-size:.95rem}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.grid.hidden{display:none}
 @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:500px){.grid{grid-template-columns:1fr}}
@@ -57,11 +63,18 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
 
 <!-- ===== TOPICS GRID ===== -->
 <div class="container">
-  <h2 class="section-title">📚 All Study Guides</h2>
-  <p class="section-desc">Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.</p>
+  <div class="tabs">
+    <button class="tab-btn active" id="tabStudy" onclick="switchTab('study')">📚 Study Guides</button>
+    <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">📝 Practice Quizzes</button>
+  </div>
+  <h2 class="section-title" id="gridTitle">📚 All Study Guides</h2>
+  <p class="section-desc" id="gridDesc">Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.</p>
 
   <div class="grid" id="studyGrid">
     <!-- Cards injected by JS below -->
+  </div>
+  <div class="grid hidden" id="quizGrid">
+    <!-- Quiz cards injected by JS below -->
   </div>
 </div>
 
@@ -100,13 +113,56 @@ const topics = [
   { title:"Importance of Privacy and Security AI", file:"Privacy_Security_AI.html", desc:"AI privacy & security: differential privacy, federated learning, adversarial robustness, GDPR, model inversion, and supply chain protection.", tag:"Ethics &amp; Governance" },
 ];
 
-const grid = document.getElementById('studyGrid');
-topics.forEach(t => {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `<a href="${t.file}"><h3>${t.title}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></a>`;
-  grid.appendChild(card);
-});
+const quizzes = [
+  { title:"CNN & Deep Learning Architectures", file:"QUIZ/CNN.html", desc:"Test your knowledge of convolutional layers, pooling, activation maps, and full CNN architecture design.", tag:"Deep Learning" },
+  { title:"Responsible AI & Ethics", file:"QUIZ/ETHICS.html", desc:"Assess your understanding of AI ethics, bias, fairness, transparency, and responsible deployment practices.", tag:"Ethics & Governance" },
+  { title:"Fundamentals of Generative AI", file:"QUIZ/FUNDAMENTALS.html", desc:"Challenge yourself on core generative AI concepts: generative vs discriminative, likelihood, and latent variables.", tag:"Core Theory" },
+  { title:"Generative Adversarial Networks (GANs)", file:"QUIZ/GAN.html", desc:"Evaluate your grasp of GAN architecture, generator-discriminator dynamics, training stability, and loss functions.", tag:"Generative Models" },
+  { title:"Introduction to Neural Networks", file:"QUIZ/INTRO_NN.html", desc:"Test foundational neural network knowledge — perceptrons, activation functions, backpropagation, and optimization.", tag:"Deep Learning" },
+  { title:"Language Models & NLG", file:"QUIZ/LANG_MODEL.html", desc:"Quiz on language modeling, perplexity, tokenization, and the foundations of natural language generation.", tag:"Deep Learning" },
+  { title:"Multimodal & Zero-Shot Learning", file:"QUIZ/MULTIMODAL_ZEROSHOT.html", desc:"Assess your knowledge of multimodal AI, visual-semantic embeddings, CLIP, and zero-shot recognition.", tag:"Generative Models" },
+  { title:"Natural Language Generation", file:"QUIZ/NLG.html", desc:"Test your expertise in NLG: decoder strategies, beam search, temperature sampling, and transformer-based generation.", tag:"Deep Learning" },
+  { title:"Advanced Neural Network Concepts", file:"QUIZ/NN_DETAIL.html", desc:"Push your limits with advanced topics: deep architectures, regularization, normalization, and training techniques.", tag:"Deep Learning" },
+  { title:"RNN & Transformers", file:"QUIZ/RNN.html", desc:"Challenge yourself on recurrent networks, LSTM/GRU, self-attention, and the transformer architecture.", tag:"Deep Learning" },
+];
+
+function renderGrid(gridId, data) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  data.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<a href="${t.file}"><h3>${t.title}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></a>`;
+    grid.appendChild(card);
+  });
+}
+
+renderGrid('studyGrid', topics);
+renderGrid('quizGrid', quizzes);
+
+function switchTab(tab) {
+  const studyGrid = document.getElementById('studyGrid');
+  const quizGrid = document.getElementById('quizGrid');
+  const tabStudy = document.getElementById('tabStudy');
+  const tabQuiz = document.getElementById('tabQuiz');
+  const gridTitle = document.getElementById('gridTitle');
+  const gridDesc = document.getElementById('gridDesc');
+  if (tab === 'quiz') {
+    studyGrid.classList.add('hidden');
+    quizGrid.classList.remove('hidden');
+    tabStudy.classList.remove('active');
+    tabQuiz.classList.add('active');
+    gridTitle.textContent = '📝 Practice Quizzes';
+    gridDesc.textContent = 'Test your knowledge with interactive quizzes. Each quiz covers a specific CGAI topic with scored questions.';
+  } else {
+    quizGrid.classList.add('hidden');
+    studyGrid.classList.remove('hidden');
+    tabQuiz.classList.remove('active');
+    tabStudy.classList.add('active');
+    gridTitle.textContent = '📚 All Study Guides';
+    gridDesc.textContent = 'Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.';
+  }
+}
 </script>
 
 </body>
