@@ -12,8 +12,9 @@
 body{font-family:'Inter',sans-serif;background:#f4f1fa;color:#2d2d3a;min-height:100vh;display:flex;flex-direction:column}
 .hero{
   background:linear-gradient(135deg,#2d1b4e 0%,#4a2c7a 50%,#6c5ce7 100%);
-  padding:4rem 1.5rem 3rem;text-align:center;color:#fff;
+  padding:4rem 1.5rem 3rem;text-align:left;color:#fff;
   position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;
 }
 .hero::after{
   content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
@@ -22,8 +23,18 @@ body{font-family:'Inter',sans-serif;background:#f4f1fa;color:#2d2d3a;min-height:
 }
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;position:relative;z-index:1;margin-bottom:.5rem}
-.hero .subtitle{font-size:1.1rem;opacity:.85;position:relative;z-index:1;max-width:600px;margin:0 auto 1.5rem}
+.hero .subtitle{font-size:1.1rem;opacity:.85;position:relative;z-index:1;max-width:600px;margin:0 0 1.5rem}
 .hero .badge{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);padding:.35rem 1rem;border-radius:20px;font-size:.8rem;position:relative;z-index:1}
+.hero-profile{display:flex;flex-direction:column;align-items:center;gap:.85rem;position:relative;z-index:1;flex-shrink:0}
+.hero-content{position:relative;z-index:1}
+.hero-img{width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.85);box-shadow:0 4px 18px rgba(0,0,0,.25);position:relative;z-index:1;display:block}
+.hero-link{display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);padding:.45rem 1.1rem;border-radius:20px;color:#fff;text-decoration:none;font-size:.85rem;font-weight:600;position:relative;z-index:1;transition:background .2s ease,transform .2s ease}
+.hero-link:hover{background:rgba(255,255,255,.28);transform:translateY(-2px)}
+@media (max-width:640px){
+  .hero{flex-direction:column;text-align:center;gap:1.25rem}
+  .hero-content{text-align:center}
+  .hero .subtitle{margin:0 auto 1.5rem}
+}
 .container{max-width:100%;margin:0 auto;padding:2.5rem 2rem;flex:1}
 .tabs{display:flex;gap:.5rem;margin-bottom:2rem;border-bottom:2px solid #e8dff5;padding-bottom:0}
 .tab-btn{padding:.65rem 1.5rem;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;color:#6b5b7b;cursor:pointer;border-radius:10px 10px 0 0;transition:all .2s ease;position:relative}
@@ -34,6 +45,14 @@ body{font-family:'Inter',sans-serif;background:#f4f1fa;color:#2d2d3a;min-height:
 .section-desc{color:#6b5b7b;margin-bottom:1.5rem;font-size:.95rem}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
 .grid.hidden{display:none}
+.glossary-controls{display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.glossary-controls.hidden{display:none}
+.glossary-controls input{flex:1;min-width:220px;padding:.65rem 1rem;border:1px solid rgba(108,92,231,.25);border-radius:10px;font-family:'Inter',sans-serif;font-size:.95rem;color:#2d2d3a;background:#fff;outline:none}
+.glossary-controls input:focus{border-color:#6c5ce7;box-shadow:0 0 0 3px rgba(108,92,231,.15)}
+.glossary-controls select{padding:.65rem 1rem;border:1px solid rgba(108,92,231,.25);border-radius:10px;font-family:'Inter',sans-serif;font-size:.95rem;color:#2d2d3a;background:#fff;outline:none;cursor:pointer}
+.card .acro-cat{display:inline-block;font-size:.62rem;padding:.12rem .5rem;border-radius:8px;background:#f3eefc;color:#6b5b7b;font-weight:600;margin-left:.45rem;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
+.card .lib{margin-top:.6rem;font-size:.82rem;color:#4a2c7a;font-weight:600}
+.card .lib code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#f0ebfa;padding:.1rem .35rem;border-radius:5px;color:#6c5ce7;font-size:.78rem}
 @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:500px){.grid{grid-template-columns:1fr}}
@@ -56,9 +75,15 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
 
 <!-- ===== HERO ===== -->
 <header class="hero">
-  <div class="badge">📘 CGAI Exam Preparation</div>
-  <h1>Generative AI Study Hub</h1>
-  <p class="subtitle">A comprehensive collection of interactive study guides, diagrams, and practice quizzes covering every major topic in the CGAI certification.</p>
+  <div class="hero-profile">
+    <img class="hero-img" src="images/MY_IMG.jpg" alt="Profile photo">
+    <a class="hero-link" href="https://www.linkedin.com/in/analyzebig/" target="_blank" rel="noopener">🔗 Connect on LinkedIn</a>
+  </div>
+  <div class="hero-content">
+    <div class="badge">📘 CGAI Exam Preparation</div>
+    <h1>Generative AI Study Hub</h1>
+    <p class="subtitle">A comprehensive collection of interactive study guides, diagrams, and practice quizzes covering every major topic in the CGAI certification.</p>
+  </div>
 </header>
 
 <!-- ===== TOPICS GRID ===== -->
@@ -66,6 +91,8 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
   <div class="tabs">
     <button class="tab-btn active" id="tabStudy" onclick="switchTab('study')">📚 Study Guides</button>
     <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">📝 Practice Quizzes</button>
+    <button class="tab-btn" id="tabAppendix" onclick="switchTab('appendix')">📎 Appendix</button>
+    <button class="tab-btn" id="tabGlossary" onclick="switchTab('glossary')">🔤 Acronym Glossary</button>
   </div>
   <h2 class="section-title" id="gridTitle">📚 All Study Guides</h2>
   <p class="section-desc" id="gridDesc">Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.</p>
@@ -75,6 +102,22 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
   </div>
   <div class="grid hidden" id="quizGrid">
     <!-- Quiz cards injected by JS below -->
+  </div>
+  <div class="grid hidden" id="appendixGrid">
+    <!-- Appendix cards injected by JS below -->
+  </div>
+  <div class="glossary-controls hidden" id="glossaryControls">
+    <input type="text" id="glossarySearch" placeholder="Search acronyms…" oninput="renderGlossary()">
+    <select id="glossaryFilter" onchange="renderGlossary()">
+      <option value="all">All Categories</option>
+      <option value="Python">Python</option>
+      <option value="pandas">pandas</option>
+      <option value="Machine Learning">Machine Learning</option>
+      <option value="AI">AI</option>
+    </select>
+  </div>
+  <div class="grid hidden" id="glossaryGrid">
+    <!-- Glossary cards injected by JS below -->
   </div>
 </div>
 
@@ -126,6 +169,80 @@ const quizzes = [
   { title:"RNN & Transformers", file:"QUIZ/RNN.html", desc:"Challenge yourself on recurrent networks, LSTM/GRU, self-attention, and the transformer architecture.", tag:"Deep Learning" },
 ];
 
+const appendix = [
+  { title:"Matplotlib Cheat Sheet", file:"Appendix_Matplotlib.html", desc:"Quick-reference cheat sheet for Matplotlib — figures, axes, subplots, and common chart types.", tag:"Cheat Sheet" },
+  { title:"Pandas Cheat Sheet", file:"Appendix_Pandas.html", desc:"Pandas quick-reference: DataFrames, Series, indexing, grouping, and common data-wrangling operations.", tag:"Cheat Sheet" },
+  { title:"Plotly Cheat Sheet", file:"Appendix_Plotly.html", desc:"Plotly quick-reference for interactive charts — traces, layout, and interactive visualizations.", tag:"Cheat Sheet" },
+  { title:"PySpark RDD Cheat Sheet", file:"Appendix_PySpark.html", desc:"PySpark RDD quick-reference: transformations, actions, and distributed data processing patterns.", tag:"Cheat Sheet" },
+];
+
+const glossary = [
+  { acro:"PEP", full:"Python Enhancement Proposal", cat:"Python", desc:"A PEP is a design document that proposes changes to the Python language, standard library, or community processes. Every new feature, syntax change, or guideline starts as a numbered PEP that is reviewed by the steering council and the wider community before it is implemented. PEP 8, for example, defines the style conventions for indentation, naming, and line length that most Python code follows. Knowing PEPs helps you understand why language decisions were made and write idiomatic, future-proof code.", lib:"peps (python.org)" },
+  { acro:"PIP", full:"Pip Installs Packages", cat:"Python", desc:"pip is the standard package manager for Python, used to install, upgrade, and remove third-party libraries from the Python Package Index. A command such as pip install numpy downloads the package and all of its dependencies into your environment automatically. pip also supports requirements files, virtual environments, and prebuilt wheels, which makes dependency management reproducible across projects. It ships with every modern Python distribution, so nearly all Python workflows begin with pip.", lib:"pip" },
+  { acro:"REPL", full:"Read-Eval-Print Loop", cat:"Python", desc:"A REPL is an interactive shell that reads a line of input, evaluates it, prints the result, and loops back for more. Python's interactive interpreter, started by running the python command, is a classic REPL used for quick experiments, testing small snippets, and exploring libraries. Tools such as IPython and Jupyter notebooks extend the REPL idea with richer autocomplete, history, and inline plotting, which makes them central to exploratory data science.", lib:"python -i / IPython" },
+  { acro:"GIL", full:"Global Interpreter Lock", cat:"Python", desc:"The GIL is a mutex in CPython that allows only one thread to execute Python bytecode at a time, even on multi-core machines. It protects interpreter internals from race conditions but limits CPU-bound multithreading. As a result, threads work well for I/O-bound tasks, while CPU-bound work should use the multiprocessing module, native extensions such as NumPy, or async patterns to achieve true parallelism.", lib:"threading / multiprocessing" },
+  { acro:"OOP", full:"Object-Oriented Programming", cat:"Python", desc:"OOP is a programming paradigm that organizes code around objects, which bundle data with the methods that operate on that data. Python supports classes, inheritance, encapsulation, and polymorphism, letting you model real-world entities and reuse code cleanly. Nearly everything in Python is an object, from integers and strings to functions and modules. OOP is the foundation of most large frameworks, including pandas, scikit-learn, and Django.", lib:"class" },
+  { acro:"API", full:"Application Programming Interface", cat:"Python", desc:"An API is a contract that lets one program call the functions or endpoints of another. In Python, APIs can be in-process, such as a library's public functions and classes, or remote, such as REST web services accessed over HTTP. Developers use the requests library to consume web APIs, while frameworks such as FastAPI or Flask are used to build them. APIs are the glue of modern systems, from data pipelines to cloud services.", lib:"requests / FastAPI" },
+  { acro:"IDE", full:"Integrated Development Environment", cat:"Python", desc:"An IDE is an application that combines code editing, debugging, testing, and project management in one place. For Python, popular choices include VS Code, PyCharm, and JupyterLab. IDEs provide IntelliSense autocomplete, integrated terminals, refactoring tools, and debuggers that speed up development and catch errors early. They are essential for navigating large codebases and for productive day-to-day programming.", lib:"VS Code / PyCharm (external tools)" },
+  { acro:"CLI", full:"Command-Line Interface", cat:"Python", desc:"A CLI is a text-based way to interact with a program by typing commands into a terminal. Python ships with the argparse module for building friendly command-line tools, and third-party libraries such as click and typer make them even easier to create. Many data and machine learning tools, including pip, pytest, and dvc, are CLIs. Scripts that accept flags and arguments are easy to automate, schedule, and combine in pipelines.", lib:"argparse / click" },
+  { acro:"JSON", full:"JavaScript Object Notation", cat:"Python", desc:"JSON is a lightweight, human-readable data format used to exchange structured data between systems. Python's standard json module converts between JSON text and Python dictionaries using json.loads and json.dumps. Because it is language-independent and supported everywhere, JSON is the default format for web APIs, configuration files, and logging in modern applications and machine learning pipelines.", lib:"json" },
+  { acro:"PyPI", full:"Python Package Index", cat:"Python", desc:"PyPI is the official repository of third-party Python packages, hosting hundreds of thousands of libraries that can be installed with pip. When you run pip install, the package and its metadata are fetched from PyPI by default. PyPI is also where you publish your own packages using build tools and twine, which makes your code available to the entire Python community.", lib:"pip / twine" },
+  { acro:"CPython", full:"C Python (reference implementation)", cat:"Python", desc:"CPython is the reference implementation of Python, written in C, and it is the default interpreter you get when you download Python from python.org. CPython compiles source code to bytecode and runs it on a virtual machine, and it provides the GIL and the standard library. Alternative implementations such as PyPy focus on speed through JIT compilation, while Jython and IronPython target other runtimes.", lib:"sys.implementation" },
+  { acro:"JIT", full:"Just-In-Time compilation", cat:"Python", desc:"JIT compilation translates code into machine language at runtime instead of ahead of time, which dramatically speeds up hot loops. Standard CPython interprets bytecode without a JIT, but PyPy adds one, and the Numba library JIT-compiles numerical Python functions to near-C speed using decorators such as numba.jit. JIT techniques are key to making Python competitive for scientific and high-performance workloads.", lib:"numba / PyPy" },
+  { acro:"NumPy", full:"Numerical Python", cat:"Python", desc:"NumPy is the foundational library for numerical computing in Python. It provides the n-dimensional ndarray, a fast, memory-efficient array type, along with vectorized operations, broadcasting, linear algebra, and random number generation. Nearly the entire scientific Python ecosystem, including pandas, SciPy, and scikit-learn, is built on NumPy arrays, which makes NumPy the first dependency of virtually every data project.", lib:"numpy" },
+  { acro:"SciPy", full:"Scientific Python", cat:"Python", desc:"SciPy builds on NumPy to add higher-level algorithms for science and engineering, including optimization, integration, interpolation, signal processing, statistics, and sparse matrices. Modules such as scipy.optimize and scipy.stats are workhorses in research and machine learning, covering everything from curve fitting to probability distributions. SciPy is a core part of the scientific Python stack.", lib:"scipy" },
+  { acro:"pandas", full:"Panel Data", cat:"pandas", desc:"The name pandas is derived from panel data, an econometrics term for multi-dimensional datasets observed over time. pandas is Python's premier library for data manipulation and analysis, built around two main objects: the one-dimensional Series and the two-dimensional DataFrame. It provides fast, expressive tools for reading, cleaning, reshaping, merging, and aggregating tabular data, which makes it indispensable for data science and machine learning preprocessing.", lib:"pandas" },
+  { acro:"DF", full:"DataFrame", cat:"pandas", desc:"A DataFrame is a two-dimensional, labeled, tabular data structure and the centerpiece of pandas. Rows and columns each have labels, and every column can hold a different data type. You create one with pandas.DataFrame or by reading files with pandas.read_csv. DataFrames support filtering, grouping, joins, pivot tables, and vectorized arithmetic, letting you express complex data transformations in a few readable lines.", lib:"pandas.DataFrame" },
+  { acro:"NaN", full:"Not a Number", cat:"pandas", desc:"NaN stands for Not a Number and represents missing or undefined numeric values, following the IEEE 754 floating-point standard. In pandas, NaN values mark gaps in data and are central to cleaning workflows: they are detected with isna() and handled with dropna() or fillna(). Because NaN propagates through arithmetic and compares unequal even to itself, pandas provides dedicated methods rather than standard comparison operators.", lib:"math.nan / pandas.isna" },
+  { acro:"CSV", full:"Comma-Separated Values", cat:"pandas", desc:"CSV is a plain-text format that stores tabular data with commas, or other delimiters, separating fields and newlines separating rows. It is the most common interchange format for spreadsheets and datasets. pandas reads CSV files with pandas.read_csv, one of the most frequently used functions in data science, and writes them with DataFrame.to_csv, supporting headers, custom delimiters, encodings, and chunked reading for large files.", lib:"pandas.read_csv" },
+  { acro:"TSV", full:"Tab-Separated Values", cat:"pandas", desc:"TSV is a variant of CSV that uses tab characters as field delimiters. It is common in bioinformatics, log files, and clipboard exports because tabs rarely appear inside data fields. pandas handles TSV files with the same pandas.read_csv function by passing a tab separator, which makes conversion between delimited formats trivial and preserves the same DataFrame API regardless of the delimiter used.", lib:"pandas.read_csv" },
+  { acro:"SQL", full:"Structured Query Language", cat:"pandas", desc:"SQL is the standard language for querying and managing relational databases. With pandas, you can load query results directly into a DataFrame using pandas.read_sql together with a database connection from sqlite3 or SQLAlchemy, and you can write DataFrames back with DataFrame.to_sql. Combining pandas with SQL lets you mix flexible in-memory analysis with durable, scalable database storage.", lib:"pandas.read_sql / sqlite3" },
+  { acro:"HDF5", full:"Hierarchical Data Format 5", cat:"pandas", desc:"HDF5 is a binary file format designed to store large, heterogeneous, hierarchical datasets efficiently. pandas uses it through pandas.HDFStore or DataFrame.to_hdf for fast, compressed on-disk storage of big DataFrames, with partial reads for selected columns or rows. It is popular in scientific computing and is also used by deep learning frameworks such as Keras for saving model weights.", lib:"pandas.HDFStore" },
+  { acro:"HTML", full:"HyperText Markup Language", cat:"pandas", desc:"HTML is the standard markup language for web pages. Tables embedded in HTML documents can be scraped directly into DataFrames with pandas.read_html, which parses all table elements on a page and returns a list of DataFrames. This makes pandas a quick tool for extracting tabular data from websites, reports, and Wikipedia pages without needing a separate scraping library.", lib:"pandas.read_html" },
+  { acro:"XML", full:"eXtensible Markup Language", cat:"pandas", desc:"XML is a flexible markup format for encoding structured, hierarchical documents and data, widely used in configuration files, web services, and legacy enterprise systems. pandas reads XML documents into DataFrames with pandas.read_xml and can write them back with DataFrame.to_xml, bridging tabular analysis and hierarchical data representations without manual parsing.", lib:"pandas.read_xml" },
+  { acro:"EDA", full:"Exploratory Data Analysis", cat:"pandas", desc:"EDA is the process of summarizing and visualizing a dataset to understand its structure, distributions, outliers, and relationships before modeling. In Python, EDA typically combines pandas for aggregation and summary statistics with visualization libraries such as matplotlib and seaborn for histograms, box plots, and correlation heatmaps. EDA guides feature engineering and hypothesis generation, and it is the essential first step of any data project.", lib:"pandas + matplotlib / seaborn" },
+  { acro:"IO", full:"Input/Output", cat:"pandas", desc:"In pandas, I/O refers to reading data into memory and writing results back out. pandas provides a family of reader functions, including read_csv, read_json, read_sql, read_excel, and read_html, along with matching to_* writers, all of which return or accept DataFrames. Consistent I/O handling across dozens of formats is one of pandas' greatest strengths, letting you move data between files, databases, and in-memory objects with a uniform API.", lib:"pandas.read_* / DataFrame.to_*" },
+  { acro:"ML", full:"Machine Learning", cat:"Machine Learning", desc:"Machine learning is the field in which systems learn patterns from data to make predictions or decisions without being explicitly programmed. It spans supervised learning, such as regression and classification, unsupervised learning, such as clustering and dimensionality reduction, and reinforcement learning. Python's scikit-learn library provides a consistent estimator API based on fit, predict, and transform, which makes training and evaluating models straightforward.", lib:"scikit-learn" },
+  { acro:"DL", full:"Deep Learning", cat:"Machine Learning", desc:"Deep learning is a subfield of machine learning based on artificial neural networks with many layers. Deep models automatically learn hierarchical features from raw data, powering breakthroughs in vision, speech, and language. Python frameworks such as PyTorch and TensorFlow provide automatic differentiation and GPU acceleration, letting you define and train complex architectures such as CNNs and transformers with high-level building blocks.", lib:"PyTorch / TensorFlow" },
+  { acro:"NN", full:"Neural Network", cat:"Machine Learning", desc:"A neural network is a computational model of connected units called neurons organized in layers, where each connection has a learned weight. Inputs are transformed through hidden layers using activation functions, and weights are updated by backpropagation to minimize a loss. In PyTorch, networks are defined as subclasses of torch.nn.Module, and in Keras by stacking layers such as Dense. Neural networks are the foundation of deep learning.", lib:"torch.nn / keras.layers" },
+  { acro:"CNN", full:"Convolutional Neural Network", cat:"Machine Learning", desc:"A CNN is a neural network specialized for grid-like data such as images. It alternates convolutional layers, which learn local filters, with pooling layers, which reduce spatial size, before final dense layers for classification. CNNs exploit translation invariance and parameter sharing, achieving state-of-the-art image recognition. In Keras you build them with Conv2D and MaxPooling2D; in PyTorch with torch.nn.Conv2d.", lib:"keras.layers.Conv2D / torch.nn.Conv2d" },
+  { acro:"RNN", full:"Recurrent Neural Network", cat:"Machine Learning", desc:"An RNN processes sequences by maintaining a hidden state that carries information from previous time steps, which makes it suited to time series and text. However, plain RNNs suffer from vanishing gradients on long sequences. Keras provides the SimpleRNN layer, and PyTorch provides torch.nn.RNN. In practice, gated variants such as LSTM and GRU are usually preferred because they learn long-range dependencies more reliably.", lib:"keras.layers.SimpleRNN / torch.nn.RNN" },
+  { acro:"LSTM", full:"Long Short-Term Memory", cat:"Machine Learning", desc:"LSTM is a recurrent architecture that uses gated cells with input, forget, and output gates to control what information is remembered or discarded, solving the vanishing-gradient problem of simple RNNs. LSTMs excel at sequence modeling, machine translation, and forecasting. In Keras, use keras.layers.LSTM; in PyTorch, use torch.nn.LSTM. They remain a strong baseline for many sequential tasks.", lib:"keras.layers.LSTM / torch.nn.LSTM" },
+  { acro:"GRU", full:"Gated Recurrent Unit", cat:"Machine Learning", desc:"A GRU is a gated recurrent unit similar to LSTM but with a simpler design: it combines the input and forget gates into a single update gate and merges the cell state with the hidden state. GRUs train faster and use fewer parameters while often matching LSTM performance on sequence tasks. Use keras.layers.GRU or torch.nn.GRU to apply them.", lib:"keras.layers.GRU / torch.nn.GRU" },
+  { acro:"SGD", full:"Stochastic Gradient Descent", cat:"Machine Learning", desc:"SGD is an optimization algorithm that updates model parameters using the gradient of the loss computed on a small random batch of data rather than the full dataset. This makes training fast and scalable, and the noise in each step can help escape local minima. Variants such as momentum and Adam build on SGD. In PyTorch it is torch.optim.SGD; in Keras, keras.optimizers.SGD.", lib:"torch.optim.SGD / keras.optimizers.SGD" },
+  { acro:"GD", full:"Gradient Descent", cat:"Machine Learning", desc:"Gradient descent is the fundamental algorithm for minimizing a loss function by repeatedly stepping parameters in the direction of steepest descent. The learning rate controls step size, and in neural networks the gradient is computed by backpropagation. Batch, stochastic, and mini-batch variants trade accuracy against speed. scikit-learn exposes it indirectly through model solvers, while PyTorch optimizers implement it directly.", lib:"torch.optim / sklearn solvers" },
+  { acro:"MLE", full:"Maximum Likelihood Estimation", cat:"Machine Learning", desc:"MLE is a method for estimating model parameters by choosing the values that make the observed data most probable under the model. It underpins logistic regression, linear regression under Gaussian noise, and many generative models. In Python, statsmodels fits many models by MLE, and you can implement custom likelihoods with scipy.optimize.minimize. MLE is the workhorse of statistical estimation.", lib:"statsmodels / scipy.optimize" },
+  { acro:"MAP", full:"Maximum A Posteriori", cat:"Machine Learning", desc:"MAP estimation extends maximum likelihood by incorporating prior beliefs about parameters, choosing values that maximize the posterior distribution. It is the basis of regularized regression: L2 regularization corresponds to a Gaussian prior, and L1 to a Laplace prior. In Python, MAP estimates arise in Bayesian libraries such as PyMC and in regularized models from scikit-learn such as Ridge and Lasso.", lib:"PyMC / sklearn.linear_model.Ridge" },
+  { acro:"ELBO", full:"Evidence Lower Bound", cat:"Machine Learning", desc:"The ELBO is a lower bound on the log marginal likelihood used in variational inference, where exact posterior computation is intractable. Optimizing the ELBO simultaneously maximizes data fit through reconstruction and minimizes divergence from a simpler variational posterior. It is the core objective of variational autoencoders and Bayesian deep learning, implemented in libraries such as Pyro and TensorFlow Probability.", lib:"Pyro / tensorflow_probability" },
+  { acro:"KL", full:"Kullback-Leibler divergence", cat:"Machine Learning", desc:"KL divergence measures how much one probability distribution differs from another, quantifying the information lost when approximating the true distribution with a model. It is asymmetric and non-negative, equal to zero only when the distributions match. KL is central to variational inference, VAEs, and distribution comparison. In Python, compute it with scipy.stats.entropy or torch.nn.functional.kl_div.", lib:"scipy.stats.entropy / torch.nn.functional.kl_div" },
+  { acro:"PCA", full:"Principal Component Analysis", cat:"Machine Learning", desc:"PCA is an unsupervised technique that reduces dimensionality by projecting data onto orthogonal directions of maximum variance. It finds principal components that capture the most information, enabling visualization, noise reduction, and faster training. Apply it with sklearn.decomposition.PCA, calling fit_transform on standardized data. PCA is a standard first step in exploratory analysis and feature engineering.", lib:"sklearn.decomposition.PCA" },
+  { acro:"SVM", full:"Support Vector Machine", cat:"Machine Learning", desc:"An SVM is a supervised classifier that finds the hyperplane maximizing the margin between classes, optionally using kernel functions to separate non-linear data. SVMs are effective on small-to-medium datasets with clear margins and are robust in high dimensions. scikit-learn provides sklearn.svm.SVC for classification and SVR for regression, with common kernels such as linear, RBF, and polynomial.", lib:"sklearn.svm.SVC" },
+  { acro:"KNN", full:"k-Nearest Neighbors", cat:"Machine Learning", desc:"KNN is a simple, instance-based algorithm that classifies a point by majority vote among its k closest training examples, or averages their values for regression. It requires no training phase but can be slow and memory-heavy at inference. The distance metric and the choice of k strongly affect results. scikit-learn implements it as sklearn.neighbors.KNeighborsClassifier and KNeighborsRegressor.", lib:"sklearn.neighbors.KNeighborsClassifier" },
+  { acro:"MSE", full:"Mean Squared Error", cat:"Machine Learning", desc:"MSE is a regression loss equal to the average of squared differences between predictions and true values. Squaring penalizes large errors heavily, making MSE sensitive to outliers. It is the default objective behind linear regression and many neural network regressors. Compute it with sklearn.metrics.mean_squared_error or torch.nn.MSELoss. Its square root, RMSE, reports error in the original units.", lib:"sklearn.metrics.mean_squared_error" },
+  { acro:"MAE", full:"Mean Absolute Error", cat:"Machine Learning", desc:"MAE is a regression metric equal to the average absolute difference between predictions and true values. Unlike MSE, it penalizes all errors linearly, making it more robust to outliers and easier to interpret in the original units. Use sklearn.metrics.mean_absolute_error or torch.nn.L1Loss. MAE is preferred when occasional large errors should not dominate the objective.", lib:"sklearn.metrics.mean_absolute_error" },
+  { acro:"RMSE", full:"Root Mean Squared Error", cat:"Machine Learning", desc:"RMSE is the square root of MSE, reporting average prediction error in the same units as the target variable, which makes it the most widely interpreted regression metric. Because it inherits squared-error weighting, RMSE is sensitive to large outliers. In Python, compute it as the square root of sklearn.metrics.mean_squared_error using numpy, or directly with libraries such as statsmodels.", lib:"numpy.sqrt(mean_squared_error(...))" },
+  { acro:"ROC", full:"Receiver Operating Characteristic", cat:"Machine Learning", desc:"The ROC curve plots the true-positive rate against the false-positive rate across classification thresholds, visualizing the trade-off between sensitivity and specificity. It is the standard tool for evaluating binary classifiers, especially on imbalanced data. scikit-learn computes ROC points with sklearn.metrics.roc_curve and plots them with sklearn.metrics.RocCurveDisplay.", lib:"sklearn.metrics.roc_curve" },
+  { acro:"AUC", full:"Area Under the Curve", cat:"Machine Learning", desc:"AUC is the area under the ROC curve, summarizing classifier performance as a single number between 0 and 1, where 0.5 means random and 1.0 means perfect ranking. AUC is threshold-independent and widely used for model selection. Compute it with sklearn.metrics.roc_auc_score on predicted probabilities. AUC-ROC is a primary metric in fraud, medical, and ranking problems.", lib:"sklearn.metrics.roc_auc_score" },
+  { acro:"AI", full:"Artificial Intelligence", cat:"AI", desc:"Artificial intelligence is the broad field of building systems that perform tasks requiring human-like intelligence, such as reasoning, perception, language understanding, and decision-making. Machine learning and deep learning are subfields of AI. Python is the dominant AI language, with ecosystems such as scikit-learn, PyTorch, TensorFlow, and Hugging Face Transformers powering everything from chatbots to self-driving systems.", lib:"PyTorch / scikit-learn" },
+  { acro:"LLM", full:"Large Language Model", cat:"AI", desc:"An LLM is a deep neural network, typically a transformer, trained on massive text corpora to predict and generate language. LLMs power chatbots, code assistants, summarization, and translation. Libraries such as Hugging Face transformers provide pretrained LLMs like GPT, LLaMA, and Mistral, along with fine-tuning APIs. Running them requires significant GPU memory, and they are the core of modern generative AI.", lib:"transformers (Hugging Face)" },
+  { acro:"NLP", full:"Natural Language Processing", cat:"AI", desc:"NLP is the branch of AI focused on enabling computers to process and analyze human language. Tasks include tokenization, part-of-speech tagging, named entity recognition, sentiment analysis, and machine translation. Python offers mature libraries such as NLTK for teaching and research and spaCy for fast, production-grade pipelines, along with modern transformer models for state-of-the-art accuracy.", lib:"nltk / spaCy" },
+  { acro:"NLG", full:"Natural Language Generation", cat:"AI", desc:"NLG is the NLP task of producing coherent natural-language text from structured data or prompts. Applications include summarization, report generation, dialogue, and captioning. Transformer decoders are the dominant NLG architecture, with decoding strategies such as greedy search, beam search, and temperature sampling controlling output. Use Hugging Face transformers pipelines for text generation.", lib:"transformers (text-generation pipeline)" },
+  { acro:"NLU", full:"Natural Language Understanding", cat:"AI", desc:"NLU is the NLP subfield concerned with comprehension: extracting meaning, intents, and entities from text. It underlies chatbots, question answering, and semantic search. Libraries such as spaCy provide entity recognition and dependency parsing, while transformer models such as BERT enable context-aware understanding. NLU is the input side of conversational AI, complementing the output side provided by NLG.", lib:"spaCy / transformers" },
+  { acro:"CV", full:"Computer Vision", cat:"AI", desc:"Computer vision is the field of AI that enables machines to interpret images and video, covering classification, detection, segmentation, and tracking. Convolutional networks and vision transformers dominate modern CV. OpenCV, imported as cv2, provides classical image-processing operations, while PyTorch and TensorFlow support deep models, and torchvision ships pretrained backbones and datasets.", lib:"opencv (cv2) / torchvision" },
+  { acro:"RL", full:"Reinforcement Learning", cat:"AI", desc:"Reinforcement learning trains agents to make sequential decisions by maximizing cumulative reward through trial and error with an environment. It powers game-playing agents, robotics, and recommendation systems. Python libraries include Gymnasium for standardized environments and Stable-Baselines3 for ready-made algorithms such as PPO and DQN. RL differs from supervised learning in learning from rewards rather than labeled examples.", lib:"gymnasium / stable-baselines3" },
+  { acro:"GAN", full:"Generative Adversarial Network", cat:"AI", desc:"A GAN is a generative model that pits two networks against each other: a generator that creates synthetic samples and a discriminator that tries to distinguish them from real data. Through adversarial training, the generator learns to produce increasingly realistic outputs such as images, audio, and text. PyTorch and Keras are the standard tools for implementing GANs, which also form the basis of models such as StyleGAN.", lib:"torch / keras" },
+  { acro:"VAE", full:"Variational Autoencoder", cat:"AI", desc:"A VAE is a generative model that learns a probabilistic latent representation of data. It encodes inputs into a distribution over latent variables, samples from that distribution, and decodes back, optimizing the ELBO to balance reconstruction quality against KL-divergence regularization. VAEs enable smooth interpolation, anomaly detection, and controllable generation. Build them with PyTorch or Keras, or via TensorFlow Probability.", lib:"torch / tensorflow_probability" },
+  { acro:"ZSL", full:"Zero-Shot Learning", cat:"AI", desc:"Zero-shot learning enables a model to recognize or generate classes it never saw during training by leveraging shared semantic information such as attributes or text descriptions. CLIP-style models align image and text embeddings so that a caption can classify unseen categories. In Python, Hugging Face transformers exposes CLIP and similar zero-shot models, and zero-shot classification is available through its pipeline API.", lib:"transformers (CLIP)" },
+  { acro:"XAI", full:"Explainable AI", cat:"AI", desc:"Explainable AI comprises techniques that make model predictions interpretable to humans, addressing the black-box problem of complex models. Methods include feature importance, LIME local approximations, SHAP Shapley values, and attention visualization. Python libraries such as shap and lime quantify each feature's contribution to a prediction, supporting transparency, debugging, and regulatory compliance in high-stakes domains.", lib:"shap / lime" },
+  { acro:"GPT", full:"Generative Pre-trained Transformer", cat:"AI", desc:"GPT is a family of decoder-only transformer language models pretrained on vast text corpora using next-token prediction, then adapted to downstream tasks. OpenAI's GPT models power ChatGPT and many assistants. Hugging Face transformers provides GPT-2 and similar open models, and the OpenAI API exposes GPT-class models. Generative pre-training is now the dominant paradigm in language AI.", lib:"transformers / openai" },
+  { acro:"BERT", full:"Bidirectional Encoder Representations from Transformers", cat:"AI", desc:"BERT is an encoder-only transformer pretrained with masked language modeling and next-sentence prediction, producing context-aware word representations by attending to both directions of text. BERT revolutionized NLP benchmarks and remains the backbone for classification, named entity recognition, and search. Load it easily with Hugging Face transformers, for example using AutoModelForSequenceClassification.", lib:"transformers (AutoModel)" },
+  { acro:"ReLU", full:"Rectified Linear Unit", cat:"AI", desc:"ReLU is the activation function max(0, x), outputting zero for negative inputs and the identity for positive ones. Its simplicity, non-saturating gradient for positive values, and computational efficiency made it the default activation for deep networks, though variants such as Leaky ReLU address the dead-neuron issue. Apply it in PyTorch with torch.nn.ReLU or in Keras with keras.layers.ReLU.", lib:"torch.nn.ReLU / keras.layers.ReLU" },
+  { acro:"TPU", full:"Tensor Processing Unit", cat:"AI", desc:"A TPU is Google's custom hardware accelerator designed specifically for tensor operations in neural networks. TPUs accelerate matrix multiplications and are available through Google Cloud and Colab. TensorFlow and PyTorch, via XLA, can target TPUs for large-scale training. They complement GPUs, often delivering high throughput per watt for transformer workloads.", lib:"tensorflow (TPUStrategy)" },
+  { acro:"GPU", full:"Graphics Processing Unit", cat:"AI", desc:"A GPU is a massively parallel processor originally built for graphics and now the primary hardware for deep learning. Thousands of cores make GPUs ideal for the matrix operations behind neural networks. In Python, PyTorch uses torch.cuda to move tensors and models to the GPU, while TensorFlow detects GPUs automatically. GPU acceleration turns days of training into hours.", lib:"torch.cuda / tensorflow" },
+  { acro:"CPU", full:"Central Processing Unit", cat:"AI", desc:"The CPU is a computer's general-purpose processor, optimized for sequential, branch-heavy tasks. In the Python data stack, the CPU handles data loading, preprocessing, and orchestration, while GPUs or TPUs accelerate model training. Libraries such as NumPy run on the CPU, and pandas operations are CPU-bound, which is why vectorization matters so much for performance.", lib:"numpy (CPU arrays)" },
+  { acro:"AGI", full:"Artificial General Intelligence", cat:"AI", desc:"AGI refers to a hypothetical AI with human-level ability to understand, learn, and apply intelligence across any task, rather than excelling only at narrow problems. Today's systems are narrow AI. AGI is a major research goal and a topic of intense debate around safety, alignment, and societal impact. It is not available as a Python library, but research frameworks explore general agent architectures.", lib:"None (research goal)" },
+];
+
 function renderGrid(gridId, data) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = '';
@@ -137,27 +254,69 @@ function renderGrid(gridId, data) {
   });
 }
 
+function renderGlossary() {
+  const grid = document.getElementById('glossaryGrid');
+  const query = (document.getElementById('glossarySearch').value || '').toLowerCase().trim();
+  const category = document.getElementById('glossaryFilter').value;
+  grid.innerHTML = '';
+  glossary.filter(g => {
+    const matchesCategory = category === 'all' || g.cat === category;
+    const haystack = (g.acro + ' ' + g.full + ' ' + g.desc + ' ' + g.lib).toLowerCase();
+    return matchesCategory && (!query || haystack.includes(query));
+  }).forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<h3>' + g.acro + '<span class="acro-cat">' + g.cat + '</span></h3><span class="tag">' + g.full + '</span><p>' + g.desc + '</p><div class="lib">Python: <code>' + g.lib + '</code></div>';
+    grid.appendChild(card);
+  });
+}
+
 renderGrid('studyGrid', topics);
 renderGrid('quizGrid', quizzes);
+renderGrid('appendixGrid', appendix);
+renderGlossary();
 
 function switchTab(tab) {
   const studyGrid = document.getElementById('studyGrid');
   const quizGrid = document.getElementById('quizGrid');
+  const appendixGrid = document.getElementById('appendixGrid');
+  const glossaryGrid = document.getElementById('glossaryGrid');
+  const glossaryControls = document.getElementById('glossaryControls');
   const tabStudy = document.getElementById('tabStudy');
   const tabQuiz = document.getElementById('tabQuiz');
+  const tabAppendix = document.getElementById('tabAppendix');
+  const tabGlossary = document.getElementById('tabGlossary');
   const gridTitle = document.getElementById('gridTitle');
   const gridDesc = document.getElementById('gridDesc');
+
+  studyGrid.classList.add('hidden');
+  quizGrid.classList.add('hidden');
+  appendixGrid.classList.add('hidden');
+  glossaryGrid.classList.add('hidden');
+  glossaryControls.classList.add('hidden');
+  tabStudy.classList.remove('active');
+  tabQuiz.classList.remove('active');
+  tabAppendix.classList.remove('active');
+  tabGlossary.classList.remove('active');
+
   if (tab === 'quiz') {
-    studyGrid.classList.add('hidden');
     quizGrid.classList.remove('hidden');
-    tabStudy.classList.remove('active');
     tabQuiz.classList.add('active');
     gridTitle.textContent = '📝 Practice Quizzes';
     gridDesc.textContent = 'Test your knowledge with interactive quizzes. Each quiz covers a specific CGAI topic with scored questions.';
+  } else if (tab === 'appendix') {
+    appendixGrid.classList.remove('hidden');
+    tabAppendix.classList.add('active');
+    gridTitle.textContent = '📎 Appendix';
+    gridDesc.textContent = 'Reference cheat sheets and quick-reference resources. Click any card to view the full file.';
+  } else if (tab === 'glossary') {
+    glossaryGrid.classList.remove('hidden');
+    glossaryControls.classList.remove('hidden');
+    tabGlossary.classList.add('active');
+    gridTitle.textContent = '🔤 Acronym Glossary';
+    gridDesc.textContent = 'Commonly used acronyms across Python, pandas, machine learning, and AI — each with a short explanation and its related Python library.';
   } else {
-    quizGrid.classList.add('hidden');
     studyGrid.classList.remove('hidden');
-    tabQuiz.classList.remove('active');
     tabStudy.classList.add('active');
     gridTitle.textContent = '📚 All Study Guides';
     gridDesc.textContent = 'Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.';
