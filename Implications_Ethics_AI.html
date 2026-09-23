@@ -489,5 +489,6 @@ function retakeQuiz(){quizState={currentIndex:0,answers:new Array(quizData.lengt
 function initQuiz(){if(quizState.initialized)return;quizState.initialized=true;renderQuiz();document.getElementById('quizOptions').addEventListener('click',e=>{const btn=e.target.closest('.quiz-opt');if(btn&&!quizState.submitted)selectAnswer(parseInt(btn.dataset.idx))});document.getElementById('quizPrev').addEventListener('click',()=>navigateQuiz(-1));document.getElementById('quizNext').addEventListener('click',()=>navigateQuiz(1));document.getElementById('quizSubmit').addEventListener('click',submitQuiz);document.getElementById('quizRetake').addEventListener('click',retakeQuiz)}
 console.log('✅ Implications_Ethics_AI.html ready. 7 tabs + 20-question ethics quiz.');
 </script>
+<script src="image-zoom.js" defer></script>
 </body>
 </html>
