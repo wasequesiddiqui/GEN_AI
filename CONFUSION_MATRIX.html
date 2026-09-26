@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confusion Matrix — Interactive Study Guide</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #6366f1;
+    --primary-soft: #eef2ff;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --success-soft: #ecfdf5;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --warning: #f59e0b;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --sidebar-w: 260px;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-2: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --primary: #818cf8;
+    --primary-soft: #312e81;
+    --success-soft: #064e3b;
+    --danger-soft: #7f1d1d;
+    --code-bg: #0b1120;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 30px; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 1000; transition: width 0.1s;
+  }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    padding: 28px 20px; overflow-y: auto; z-index: 100;
+    transition: transform 0.3s;
+  }
+  .sidebar h1 {
+    font-size: 1.15rem; margin: 0 0 4px 0; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar .subtitle {
+    font-size: 0.75rem; color: var(--text-muted); margin: 0 0 24px 0;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.875rem; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .sidebar nav a:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar nav a.active {
+    background: var(--primary-soft); color: var(--primary); font-weight: 600;
+  }
+  .sidebar nav a .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 6px;
+    background: var(--surface-2); font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sidebar nav a.active .num { background: var(--primary); color: white; }
+
+  main {
+    margin-left: var(--sidebar-w);
+    padding: 40px 48px 120px;
+    max-width: 1100px;
+  }
+
+  section { margin-bottom: 64px; scroll-margin-top: 20px; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px;
+  }
+  .section-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white; font-weight: 800; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  h2 {
+    font-size: 1.75rem; font-weight: 800; margin: 0;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h4 {
+    font-size: 1rem; font-weight: 700; margin: 20px 0 8px;
+  }
+  .lead {
+    font-size: 1.05rem; color: var(--text-muted); margin: 0 0 28px 0;
+    padding-left: 50px;
+  }
+
+  p { margin: 12px 0; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    margin: 16px 0; box-shadow: var(--shadow);
+  }
+  .card-accent { border-left: 4px solid var(--primary); }
+
+  .callout {
+    padding: 16px 20px; border-radius: 10px; margin: 16px 0;
+    border-left: 4px solid var(--primary);
+    background: var(--primary-soft);
+    font-size: 0.95rem;
+  }
+  .callout strong { color: var(--primary); }
+  .callout.danger { border-color: var(--danger); background: var(--danger-soft); }
+  .callout.danger strong { color: var(--danger); }
+  .callout.success { border-color: var(--success); background: var(--success-soft); }
+  .callout.success strong { color: var(--success); }
+  .callout.warn { border-color: var(--warning); background: rgba(245,158,11,0.1); }
+  .callout.warn strong { color: var(--warning); }
+
+  details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin: 12px 0;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  details summary {
+    padding: 16px 22px; cursor: pointer; font-weight: 600;
+    font-size: 1rem; list-style: none;
+    display: flex; align-items: center; gap: 12px;
+    transition: background 0.15s; user-select: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary:hover { background: var(--surface-2); }
+  details summary::before {
+    content: '▸'; color: var(--primary); font-size: 1.1rem;
+    transition: transform 0.2s; display: inline-block;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  details .body { padding: 20px 22px; }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 0.9rem; background: var(--surface);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  th, td {
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--surface-2); font-weight: 700;
+    font-size: 0.82rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  .code-wrap {
+    position: relative; margin: 16px 0;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .code-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px; background: #0f172a;
+    border-bottom: 1px solid #334155;
+    font-size: 0.75rem; color: #94a3b8;
+    font-family: 'SF Mono', Monaco, monospace;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .copy-btn {
+    background: #334155; color: #cbd5e1; border: none;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 0.7rem; font-weight: 600; font-family: inherit;
+    letter-spacing: 0.05em; transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--primary); color: white; }
+  .copy-btn.copied { background: var(--success); color: white; }
+  pre {
+    margin: 0; padding: 18px 20px; background: var(--code-bg);
+    color: var(--code-text); font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 0.82rem; line-height: 1.65; overflow-x: auto;
+  }
+  pre code { font-family: inherit; }
+  .kw { color: #c084fc; font-weight: 600; }
+  .str { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .num { color: #fbbf24; }
+  .bi { color: #60a5fa; }
+  .fn { color: #f472b6; }
+
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .metric {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; text-align: center;
+    transition: transform 0.15s;
+  }
+  .metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .metric .value {
+    font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric .label {
+    font-size: 0.72rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; margin-top: 4px;
+  }
+
+  .chart-container {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    margin: 20px 0; box-shadow: var(--shadow);
+  }
+  .chart-title {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+  }
+  svg { display: block; max-width: 100%; height: auto; }
+  .axis-line { stroke: var(--border); stroke-width: 1.5; }
+  .grid-line { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 4; opacity: 0.5; }
+  .axis-label { fill: var(--text-muted); font-size: 10px; font-family: inherit; }
+  .axis-title { fill: var(--text); font-size: 11px; font-weight: 600; font-family: inherit; }
+
+  /* ========== THE CM GRID (2x2) ========== */
+  .cm-box {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    grid-template-rows: 40px 1fr 1fr;
+    gap: 8px;
+    margin: 20px 0;
+    max-width: 620px;
+  }
+  .cm-corner {
+    background: transparent;
+  }
+  .cm-axis {
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .cm-axis.col-label { padding-bottom: 4px; }
+  .cm-axis.row-label {
+    padding-right: 8px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .cm-cell-box {
+    border-radius: 12px; padding: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    border: 2px solid transparent;
+    min-height: 100px;
+  }
+  .cm-cell-box:hover { transform: scale(1.03); }
+  .cm-cell-box .cm-abbr {
+    font-size: 1.5rem; font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .cm-cell-box .cm-name {
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700;
+    margin-top: 4px;
+  }
+  .cm-cell-box .cm-desc {
+    font-size: 0.75rem; margin-top: 6px; text-align: center;
+    opacity: 0.85; line-height: 1.3;
+  }
+  .cm-tp-box { background: rgba(16,185,129,0.15); color: var(--success); }
+  .cm-tp-box.active { border-color: var(--success); box-shadow: 0 0 0 4px rgba(16,185,129,0.2); }
+  .cm-tn-box { background: rgba(16,185,129,0.08); color: var(--success); }
+  .cm-tn-box.active { border-color: var(--success); box-shadow: 0 0 0 4px rgba(16,185,129,0.15); }
+  .cm-fp-box { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .cm-fp-box.active { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(239,68,68,0.2); }
+  .cm-fn-box { background: rgba(239,68,68,0.25); color: var(--danger); }
+  .cm-fn-box.active { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(239,68,68,0.25); }
+
+  /* ========== INTERACTIVE LAB ========== */
+  .lab {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 2px solid var(--primary); border-radius: 16px;
+    padding: 28px; margin: 24px 0; box-shadow: var(--shadow-lg);
+  }
+  .lab-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .lab-badge {
+    background: var(--primary); color: white;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .lab-title { font-size: 1.15rem; font-weight: 700; margin: 0; }
+
+  .ctrl-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    margin: 20px 0;
+  }
+  .ctrl {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px 16px; border: 1px solid var(--border);
+  }
+  .ctrl-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; font-size: 0.85rem; font-weight: 700;
+  }
+  .ctrl-value {
+    font-family: 'SF Mono', monospace; font-size: 1rem;
+    font-weight: 800; color: var(--primary);
+  }
+  input[type="range"] {
+    width: 100%; height: 6px; border-radius: 3px;
+    outline: none; -webkit-appearance: none;
+    cursor: pointer; background: var(--surface-2);
+  }
+  input[type="range"].range-tp { background: linear-gradient(90deg, var(--success), rgba(16,185,129,0.3)); }
+  input[type="range"].range-tn { background: linear-gradient(90deg, var(--success), rgba(16,185,129,0.3)); }
+  input[type="range"].range-fp { background: linear-gradient(90deg, var(--danger), rgba(239,68,68,0.3)); }
+  input[type="range"].range-fn { background: linear-gradient(90deg, var(--danger), rgba(239,68,68,0.3)); }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    background: white; border: 3px solid var(--primary);
+    border-radius: 50%; cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px; background: white;
+    border: 3px solid var(--primary); border-radius: 50%;
+    cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .preset-row {
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;
+  }
+  .preset-btn {
+    flex: 1; min-width: 120px;
+    padding: 8px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    cursor: pointer; font-family: inherit;
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .preset-btn:hover {
+    border-color: var(--primary); color: var(--primary);
+    background: var(--primary-soft);
+  }
+  .preset-btn.active {
+    background: var(--primary); color: white; border-color: var(--primary);
+  }
+
+  .live-metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-top: 16px;
+  }
+  .live-metric {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .live-metric .lm-val {
+    font-size: 1.4rem; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .live-metric .lm-lbl {
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted);
+    font-weight: 700; margin-top: 2px;
+  }
+  .lm-primary { color: var(--primary); }
+  .lm-accent { color: var(--accent); }
+  .lm-success { color: var(--success); }
+  .lm-danger { color: var(--danger); }
+
+  .metric-bar-wrap {
+    margin: 14px 0;
+    background: var(--surface); border-radius: 10px;
+    padding: 12px 16px; border: 1px solid var(--border);
+  }
+  .metric-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;
+  }
+  .metric-bar-track {
+    height: 10px; background: var(--surface-2); border-radius: 5px;
+    overflow: hidden;
+  }
+  .metric-bar-fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.3s;
+  }
+
+  /* Metric explorer */
+  .metric-explorer {
+    display: grid; grid-template-columns: 240px 1fr;
+    gap: 20px; margin: 20px 0;
+  }
+  .metric-list {
+    background: var(--surface); border-radius: 10px;
+    border: 1px solid var(--border); padding: 8px;
+    max-height: 520px; overflow-y: auto;
+  }
+  .metric-list button {
+    display: block; width: 100%; text-align: left;
+    padding: 10px 12px; border-radius: 8px;
+    border: none; background: transparent;
+    font-family: inherit; font-size: 0.85rem;
+    color: var(--text); cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .metric-list button:hover { background: var(--surface-2); }
+  .metric-list button.active {
+    background: var(--primary-soft); color: var(--primary);
+    font-weight: 700;
+  }
+  .metric-detail {
+    background: var(--surface); border-radius: 10px;
+    border: 1px solid var(--border); padding: 22px 24px;
+    min-height: 400px;
+  }
+  .metric-detail h4 {
+    margin: 0 0 6px; font-size: 1.15rem;
+    color: var(--primary);
+  }
+  .metric-detail .formula {
+    font-family: 'SF Mono', monospace;
+    background: var(--surface-2); padding: 10px 14px;
+    border-radius: 8px; margin: 12px 0;
+    font-size: 0.85rem;
+    color: var(--text);
+    overflow-x: auto;
+  }
+  .metric-detail .live-value {
+    display: inline-block;
+    background: var(--primary-soft); color: var(--primary);
+    padding: 6px 14px; border-radius: 8px;
+    font-family: 'SF Mono', monospace;
+    font-weight: 800; font-size: 1.1rem;
+    margin-left: 8px;
+  }
+
+  /* Quiz */
+  .quiz-q {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin: 14px 0;
+    box-shadow: var(--shadow);
+  }
+  .quiz-q .q-text { font-weight: 600; margin-bottom: 12px; }
+  .quiz-opt {
+    display: block; width: 100%; text-align: left;
+    padding: 10px 14px; margin: 6px 0;
+    background: var(--surface-2); border: 2px solid transparent;
+    border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem; font-family: inherit;
+    color: var(--text); transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--primary); }
+  .quiz-opt.correct {
+    background: var(--success-soft); border-color: var(--success);
+    color: var(--success); font-weight: 600;
+  }
+  .quiz-opt.wrong {
+    background: var(--danger-soft); border-color: var(--danger);
+    color: var(--danger); font-weight: 600;
+  }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 10px; font-size: 0.85rem;
+    padding: 10px 14px; border-radius: 8px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: var(--success-soft); color: var(--success); }
+  .quiz-feedback.no { background: var(--danger-soft); color: var(--danger); }
+
+  .menu-toggle, .theme-toggle {
+    position: fixed; z-index: 200; top: 16px;
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.15s;
+  }
+  .menu-toggle { left: 16px; display: none; }
+  .theme-toggle { right: 16px; }
+  .menu-toggle:hover, .theme-toggle:hover { transform: scale(1.05); }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+    .menu-toggle { display: flex; }
+    main { margin-left: 0; padding: 80px 20px 100px; }
+    .lead { padding-left: 0; }
+    h2 { font-size: 1.4rem; }
+    .metric-explorer { grid-template-columns: 1fr; }
+    .ctrl-grid { grid-template-columns: 1fr; }
+    .live-metrics { grid-template-columns: 1fr 1fr; }
+    .cm-box { grid-template-columns: 40px 1fr 1fr; }
+  }
+
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-good { background: rgba(16,185,129,0.15); color: var(--success); }
+  .badge-bad { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+
+  code {
+    background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
+    font-family: 'SF Mono', monospace; font-size: 0.85em;
+    color: var(--primary); font-weight: 600;
+  }
+  pre code { background: none; padding: 0; color: inherit; font-weight: normal; }
+
+  ul li, ol li { margin: 6px 0; }
+  strong { color: var(--text); font-weight: 700; }
+
+  /* Multi-class table */
+  .mc-table {
+    font-family: 'SF Mono', monospace;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .mc-table td, .mc-table th { text-align: center; }
+  .mc-table .diag { background: rgba(16,185,129,0.15); color: var(--success); font-weight: 700; }
+  .mc-table .err { background: rgba(239,68,68,0.08); }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+<aside class="sidebar" id="sidebar">
+  <h1>Confusion Matrix</h1>
+  <p class="subtitle">Interactive Study Guide</p>
+  <nav id="navList">
+    <a href="#intro"><span class="num">1</span> Introduction</a>
+    <a href="#fundamentals"><span class="num">2</span> Fundamentals</a>
+    <a href="#metrics"><span class="num">3</span> The Metric Zoo</a>
+    <a href="#choosing"><span class="num">4</span> Choosing a Metric</a>
+    <a href="#use-cases"><span class="num">5</span> Use Cases</a>
+    <a href="#visual"><span class="num">6</span> Visual Guide</a>
+    <a href="#multiclass"><span class="num">7</span> Multi-Class</a>
+    <a href="#lab"><span class="num">8</span> Interactive Lab</a>
+    <a href="#quiz"><span class="num">9</span> Quiz</a>
+    <a href="#code"><span class="num">10</span> Python Reference</a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ==================== 1. INTRO ==================== -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <h2>Introduction</h2>
+  </div>
+  <p class="lead">The 2×2 grid that every classifier's decisions can be sorted into — and the source of every classification metric you'll ever use.</p>
+
+  <p>A classifier doesn't just say "yes" or "no." Every prediction it makes is either <strong>correct</strong> or <strong>incorrect</strong>, and it's either a prediction of the <strong>positive</strong> class or the <strong>negative</strong> class. That gives exactly <strong>four</strong> possible outcomes for each prediction. The confusion matrix arranges those four outcomes into a 2×2 grid.</p>
+
+  <p>It sounds almost trivially simple — but it's the foundation of <strong>every single classification metric</strong>. Accuracy, precision, recall, F1, specificity, MCC, Cohen's Kappa, balanced accuracy, Youden's J — every one of them is just an arithmetic combination of these four numbers.</p>
+
+  <div class="callout">
+    <strong>Why it matters:</strong> A confusion matrix tells you <em>exactly how</em> your model is wrong, not just <em>how often</em>. Two models with identical accuracy can have completely different confusion matrices — one might catch every fraud but flood you with false alarms; the other might be conservative but miss half the frauds. Same accuracy, completely different business implications.
+  </div>
+
+  <div class="callout success">
+    <strong>Study tip:</strong> Whenever you evaluate a classifier, ask three questions: (1) What's my confusion matrix? (2) Which of the four cells matters most for my problem? (3) Which metric best reflects that? The rest of this guide gives you the tools to answer all three.
+  </div>
+</section>
+
+<!-- ==================== 2. FUNDAMENTALS ==================== -->
+<section id="fundamentals">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <h2>Fundamentals</h2>
+  </div>
+  <p class="lead">The four quadrants and what they mean.</p>
+
+  <h3>The 2×2 Grid</h3>
+
+  <div class="cm-box">
+    <div class="cm-corner"></div>
+    <div class="cm-axis col-label">Predicted Positive</div>
+    <div class="cm-axis col-label">Predicted Negative</div>
+
+    <div class="cm-axis row-label">Actual Positive</div>
+    <div class="cm-cell-box cm-tp-box">
+      <div class="cm-abbr">TP</div>
+      <div class="cm-name">True Positive</div>
+      <div class="cm-desc">Model said yes, and it was yes.<br><strong>Correct hit.</strong></div>
+    </div>
+    <div class="cm-cell-box cm-fn-box">
+      <div class="cm-abbr">FN</div>
+      <div class="cm-name">False Negative</div>
+      <div class="cm-desc">Model said no, but it was yes.<br><strong>Miss.</strong></div>
+    </div>
+
+    <div class="cm-axis row-label">Actual Negative</div>
+    <div class="cm-cell-box cm-fp-box">
+      <div class="cm-abbr">FP</div>
+      <div class="cm-name">False Positive</div>
+      <div class="cm-desc">Model said yes, but it was no.<br><strong>False alarm.</strong></div>
+    </div>
+    <div class="cm-cell-box cm-tn-box">
+      <div class="cm-abbr">TN</div>
+      <div class="cm-name">True Negative</div>
+      <div class="cm-desc">Model said no, and it was no.<br><strong>Correct rejection.</strong></div>
+    </div>
+  </div>
+
+  <h3>Plain-English Definitions</h3>
+  <table>
+    <thead>
+      <tr><th>Cell</th><th>Meaning</th><th>Memorable phrase</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>TP</strong></td>
+        <td>Actual positive, predicted positive</td>
+        <td>"We caught it."</td>
+      </tr>
+      <tr>
+        <td><strong>FP</strong></td>
+        <td>Actual negative, predicted positive</td>
+        <td>"We cried wolf."</td>
+      </tr>
+      <tr>
+        <td><strong>FN</strong></td>
+        <td>Actual positive, predicted negative</td>
+        <td>"We missed it."</td>
+      </tr>
+      <tr>
+        <td><strong>TN</strong></td>
+        <td>Actual negative, predicted negative</td>
+        <td>"We correctly ignored it."</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>What "Positive" and "Negative" Mean</h3>
+  <p>The "positive" class is whatever you're trying to <em>detect</em> — usually the rare or interesting thing. The "negative" class is the default, uninteresting class.</p>
+
+  <table>
+    <thead>
+      <tr><th>Problem</th><th>Positive class</th><th>Negative class</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Medical screening</td><td>Patient has disease</td><td>Patient is healthy</td></tr>
+      <tr><td>Spam filter</td><td>Email is spam</td><td>Email is legitimate</td></tr>
+      <tr><td>Fraud detection</td><td>Transaction is fraud</td><td>Transaction is legitimate</td></tr>
+      <tr><td>Manufacturing QA</td><td>Product is defective</td><td>Product is fine</td></tr>
+      <tr><td>Search ranking</td><td>Document is relevant</td><td>Document is not relevant</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>Critical:</strong> The choice of which class is "positive" is <em>yours</em> — it's a framing decision. It changes the labels TP/FP/FN/TN, but it does <em>not</em> change the underlying reality. A model that catches 95% of frauds still catches 95% of frauds regardless of whether you call fraud "positive" or "negative" — but the formula names shift. Always state your convention explicitly.
+  </div>
+
+  <h3>Reading a Real Confusion Matrix</h3>
+  <p>Suppose we test a fraud detection model on 1,000 transactions:</p>
+
+  <div class="cm-box" style="max-width:520px;">
+    <div class="cm-corner"></div>
+    <div class="cm-axis col-label">Pred Fraud</div>
+    <div class="cm-axis col-label">Pred Legit</div>
+
+    <div class="cm-axis row-label">Actual Fraud</div>
+    <div class="cm-cell-box cm-tp-box">
+      <div class="cm-abbr">45</div>
+      <div class="cm-name">TP</div>
+    </div>
+    <div class="cm-cell-box cm-fn-box">
+      <div class="cm-abbr">5</div>
+      <div class="cm-name">FN</div>
+    </div>
+
+    <div class="cm-axis row-label">Actual Legit</div>
+    <div class="cm-cell-box cm-fp-box">
+      <div class="cm-abbr">90</div>
+      <div class="cm-name">FP</div>
+    </div>
+    <div class="cm-cell-box cm-tn-box">
+      <div class="cm-abbr">860</div>
+      <div class="cm-name">TN</div>
+    </div>
+  </div>
+
+  <p>From this one grid, we can read every important fact:</p>
+  <ul>
+    <li><strong>50 frauds</strong> existed in the data (TP + FN = 45 + 5).</li>
+    <li><strong>950 legitimate</strong> transactions existed (FP + TN = 90 + 860).</li>
+    <li>The model caught <strong>45 of 50 frauds (90% recall)</strong>.</li>
+    <li>When the model flagged fraud, it was right <strong>45 of 135 times (33% precision)</strong>.</li>
+    <li>Accuracy = (45 + 860) / 1000 = <strong>90.5%</strong>.</li>
+    <li>But — <em>90 legitimate transactions were flagged</em>. If each false alarm costs $5 to investigate, that's $450/day wasted. On a million transactions, it becomes $450,000/day.</li>
+  </ul>
+
+  <div class="callout danger">
+    <strong>Beware accuracy:</strong> 90.5% accuracy sounds great. But a "predict legit for everything" model gets 95% accuracy on this dataset. <em>The confusion matrix reveals this; accuracy hides it.</em>
+  </div>
+</section>
+
+<!-- ==================== 3. METRICS ==================== -->
+<section id="metrics">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <h2>The Metric Zoo</h2>
+  </div>
+  <p class="lead">Every classification metric is a formula over TP, FP, FN, TN. Click a metric to see its formula, intuition, and what it's used for.</p>
+
+  <div class="metric-explorer">
+    <div class="metric-list" id="metricList">
+      <!-- Populated by JS -->
+    </div>
+    <div class="metric-detail" id="metricDetail">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <h3>Quick Reference Table</h3>
+  <table>
+    <thead>
+      <tr><th>Metric</th><th>Formula</th><th>Answers the question…</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Accuracy</strong></td><td>(TP+TN)/(TP+FP+FN+TN)</td><td>Overall, how often is the model correct?</td></tr>
+      <tr><td><strong>Precision</strong></td><td>TP/(TP+FP)</td><td>When the model predicts positive, how often is it right?</td></tr>
+      <tr><td><strong>Recall</strong> (Sensitivity, TPR)</td><td>TP/(TP+FN)</td><td>Of all actual positives, how many did we catch?</td></tr>
+      <tr><td><strong>Specificity</strong> (TNR)</td><td>TN/(TN+FP)</td><td>Of all actual negatives, how many did we correctly ignore?</td></tr>
+      <tr><td><strong>F1 Score</strong></td><td>2·P·R/(P+R)</td><td>Harmonic mean of precision and recall.</td></tr>
+      <tr><td><strong>FPR</strong></td><td>FP/(FP+TN)</td><td>Of all actual negatives, how many did we wrongly flag?</td></tr>
+      <tr><td><strong>FNR</strong></td><td>FN/(FN+TP)</td><td>Of all actual positives, how many did we miss?</td></tr>
+      <tr><td><strong>NPV</strong></td><td>TN/(TN+FN)</td><td>When the model says negative, how often is it right?</td></tr>
+      <tr><td><strong>Balanced Accuracy</strong></td><td>(Recall + Specificity)/2</td><td>Average accuracy across both classes.</td></tr>
+      <tr><td><strong>MCC</strong></td><td>see metric explorer</td><td>Correlation between predictions and truth (−1 to +1).</td></tr>
+      <tr><td><strong>Cohen's Kappa</strong></td><td>see metric explorer</td><td>Agreement above what chance would give.</td></tr>
+      <tr><td><strong>Youden's J</strong></td><td>Recall + Specificity − 1</td><td>How much better than random on both classes.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Notice:</strong> Every formula uses only TP, FP, FN, TN. There are dozens of metrics in the literature — but they're all arithmetic combinations of these four numbers. Once you internalize the 2×2 grid, no metric ever surprises you again.
+  </div>
+</section>
+
+<!-- ==================== 4. CHOOSING ==================== -->
+<section id="choosing">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <h2>Choosing the Right Metric</h2>
+  </div>
+  <p class="lead">Accuracy is almost never the right answer. Here's how to pick.</p>
+
+  <h3>The Three Questions</h3>
+  <ol>
+    <li><strong>Are the classes balanced?</strong> If not, accuracy is misleading. Use recall, precision, F1, or MCC.</li>
+    <li><strong>Which error is worse — FP or FN?</strong> This is a business question, not a statistics one.</li>
+    <li><strong>Do you need one number or a tradeoff curve?</strong> F1 collapses to one number; ROC/PR curves show the full tradeoff.</li>
+  </ol>
+
+  <h3>Decision Guide</h3>
+  <table>
+    <thead>
+      <tr><th>Situation</th><th>Best metric</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Balanced classes, equal error costs</td>
+        <td>Accuracy</td>
+        <td>Rare case where accuracy is fine.</td>
+      </tr>
+      <tr>
+        <td>FN is much worse than FP</td>
+        <td>Recall (Sensitivity)</td>
+        <td>Medical screening, fraud detection — missing the positive is catastrophic.</td>
+      </tr>
+      <tr>
+        <td>FP is much worse than FN</td>
+        <td>Precision or Specificity</td>
+        <td>Spam filters (don't block real email), or legal cases (don't convict the innocent).</td>
+      </tr>
+      <tr>
+        <td>Both errors matter but you want one number</td>
+        <td>F1 Score</td>
+        <td>Harmonic mean balances precision and recall.</td>
+      </tr>
+      <tr>
+        <td>Severe class imbalance</td>
+        <td>PR-AUC, MCC, or Balanced Accuracy</td>
+        <td>Accuracy and ROC-AUC can be optimistic.</td>
+      </tr>
+      <tr>
+        <td>You want the whole tradeoff, not one point</td>
+        <td>ROC or PR curve</td>
+        <td>Visualizes precision/recall at every threshold.</td>
+      </tr>
+      <tr>
+        <td>You need a "single number for model selection"</td>
+        <td>MCC or F1</td>
+        <td>Both are balanced and robust; MCC also handles all four cells symmetrically.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The "Accuracy Paradox"</h3>
+  <div class="callout danger">
+    <strong>Example:</strong> Fraud rate = 1%. A model that predicts "legitimate" for every transaction gets 99% accuracy but catches zero frauds. Its confusion matrix is TN = 9,900, FN = 100, TP = 0, FP = 0. Accuracy = 99%. Recall = 0%. The model is useless — but accuracy alone would rank it highest.
+  </div>
+
+  <div class="callout success">
+    <strong>Rule of thumb:</strong> If your classes are imbalanced (say 90/10 or worse), <em>never</em> report accuracy alone. Always report the confusion matrix and at least one of: precision, recall, F1, or MCC.
+  </div>
+</section>
+
+<!-- ==================== 5. USE CASES ==================== -->
+<section id="use-cases">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <h2>Real-World Use Cases</h2>
+  </div>
+  <p class="lead">Where the confusion matrix decides the fate of products, patients, and profits.</p>
+
+  <details open>
+    <summary>🏥 Medical screening — Cancer detection</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A model screens mammograms for signs of breast cancer.</p>
+      <p><strong>Costs:</strong> A false negative (missing a cancer) is potentially fatal. A false positive leads to an anxious patient, additional imaging, and possibly a biopsy — expensive but not life-threatening.</p>
+      <p><strong>Priorities:</strong> <span class="badge badge-good">Recall is king</span> The model must catch as many cancers as possible. Precision can be lower — false alarms are tolerable if they save lives.</p>
+
+      <table>
+        <thead><tr><th></th><th>Pred Cancer</th><th>Pred Healthy</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Actual Cancer</strong></td><td style="color:var(--success);font-weight:700;">TP = 480</td><td style="color:var(--danger);font-weight:700;">FN = 20</td></tr>
+          <tr><td><strong>Actual Healthy</strong></td><td style="color:var(--danger);">FP = 1,500</td><td style="color:var(--success);">TN = 8,000</td></tr>
+        </tbody>
+      </table>
+
+      <ul>
+        <li>Recall = 480 / 500 = <strong>96%</strong> — only 20 cancers missed.</li>
+        <li>Precision = 480 / 1,980 = <strong>24%</strong> — most "cancer" flags are false alarms.</li>
+        <li>Accuracy = 8,480 / 10,000 = <strong>84.8%</strong> — but this is not the point.</li>
+      </ul>
+
+      <p>The hospital accepts a low precision because the <em>cost</em> of a missed cancer dwarfs the cost of a follow-up test.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>📧 Spam filter — Gmail-style</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> An email provider classifies incoming messages as spam or legitimate.</p>
+      <p><strong>Costs:</strong> A false positive (legitimate email marked spam) means a user misses an important message — very costly. A false negative (spam in the inbox) is annoying but recoverable.</p>
+      <p><strong>Priorities:</strong> <span class="badge badge-good">Precision matters more</span> — don't block real email, even at the cost of letting some spam through.</p>
+
+      <table>
+        <thead><tr><th></th><th>Pred Spam</th><th>Pred Legit</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Actual Spam</strong></td><td style="color:var(--success);">TP = 950</td><td style="color:var(--danger);">FN = 50</td></tr>
+          <tr><td><strong>Actual Legit</strong></td><td style="color:var(--danger);font-weight:700;">FP = 5</td><td style="color:var(--success);">TN = 1,995</td></tr>
+        </tbody>
+      </table>
+
+      <ul>
+        <li>Precision = 950 / 955 = <strong>99.5%</strong> — only 5 real emails blocked.</li>
+        <li>Recall = 950 / 1,000 = <strong>95%</strong> — 50 spam messages got through.</li>
+      </ul>
+
+      <p>The tradeoff is deliberate: the filter would rather let some spam through than block a single real email.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>💳 Fraud detection</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A payment processor scores transactions for fraud risk.</p>
+      <p><strong>Costs:</strong> A false negative (missed fraud) means a chargeback, fees, and possibly customer churn. A false positive means a briefly declined transaction and possibly an annoyed customer.</p>
+      <p><strong>Priorities:</strong> Depends on the business. Many processors prioritize <strong>recall</strong> but watch precision carefully because too many false declines destroy customer trust.</p>
+
+      <table>
+        <thead><tr><th></th><th>Pred Fraud</th><th>Pred Legit</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Actual Fraud</strong></td><td style="color:var(--success);">TP = 4,800</td><td style="color:var(--danger);">FN = 200</td></tr>
+          <tr><td><strong>Actual Legit</strong></td><td style="color:var(--danger);">FP = 5,000</td><td style="color:var(--success);">TN = 990,000</td></tr>
+        </tbody>
+      </table>
+
+      <ul>
+        <li>Recall = 96%, Precision = 49%, Accuracy = 99.5%.</li>
+        <li>Accuracy looks amazing — but it's the wrong metric. Precision and recall tell the real story.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>⚖️ Legal — Criminal risk assessment</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A model predicts whether a defendant will reoffend if released.</p>
+      <p><strong>Costs:</strong> A false positive means denying release to someone who wouldn't have reoffended — a serious civil rights violation. A false negative means releasing someone who does reoffend — a public safety risk.</p>
+      <p><strong>Priorities:</strong> Depends heavily on legal and ethical framework. This is precisely why COMPAS and similar systems are controversial — the confusion matrix exposes the tradeoff, but <em>who</em> decides the tradeoff is a societal question, not a statistical one.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🏭 Manufacturing QA — Defect detection</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A vision system detects defective products on an assembly line.</p>
+      <p><strong>Costs:</strong> A false negative ships a defective product (returns, reputation damage). A false positive scraps a good product (wasted material).</p>
+      <p><strong>Priorities:</strong> Depending on defect cost vs. material cost, the threshold is tuned toward recall (catch all defects) or precision (don't waste good product).</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🎯 Hiring — Resume screening</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A model flags resumes that should be shortlisted for interview.</p>
+      <p><strong>Costs:</strong> A false negative means a great candidate never gets seen (opportunity loss). A false positive means a recruiter wastes 10 minutes on a poor fit (small cost).</p>
+      <p><strong>Priorities:</strong> <span class="badge badge-warn">Recall matters</span> — better to interview a few extra candidates than to miss top talent. Also note: regulatory frameworks (EEOC, GDPR) heavily constrain how such models may be used.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔬 Scientific research — Hypothesis testing</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A statistical test decides whether to reject the null hypothesis.</p>
+      <p><strong>Analogy:</strong> The confusion matrix maps directly onto hypothesis testing terms:</p>
+      <ul>
+        <li><strong>TP</strong> = true positive: correctly rejecting a false null.</li>
+        <li><strong>FP</strong> = Type I error (α): false positive.</li>
+        <li><strong>FN</strong> = Type II error (β): missed true effect.</li>
+        <li><strong>TN</strong> = correctly failing to reject.</li>
+      </ul>
+      <p><strong>Priorities:</strong> The choice of α (typically 0.05) is precisely a statement about the tolerable false-positive rate.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ==================== 6. VISUAL GUIDE ==================== -->
+<section id="visual">
+  <div class="section-header">
+    <div class="section-number">6</div>
+    <h2>Visual Guide</h2>
+  </div>
+  <p class="lead">Four charts that build intuition for the confusion matrix and its derived metrics.</p>
+
+  <h3>① The Anatomy of the Matrix</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot"></span> Confusion Matrix Quadrants</div>
+    <svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- Grid -->
+      <rect x="120" y="60" width="180" height="110" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="2" rx="8"/>
+      <rect x="300" y="60" width="180" height="110" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="2" rx="8"/>
+      <rect x="120" y="170" width="180" height="110" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="2" rx="8"/>
+      <rect x="300" y="170" width="180" height="110" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="2" rx="8"/>
+
+      <!-- Cell labels -->
+      <text x="210" y="105" text-anchor="middle" font-weight="800" font-size="26" fill="#10b981">TP</text>
+      <text x="210" y="130" text-anchor="middle" font-weight="600" font-size="11" fill="#10b981">True Positive</text>
+      <text x="210" y="150" text-anchor="middle" font-size="9" fill="#10b981">"We caught it"</text>
+
+      <text x="390" y="105" text-anchor="middle" font-weight="800" font-size="26" fill="#ef4444">FN</text>
+      <text x="390" y="130" text-anchor="middle" font-weight="600" font-size="11" fill="#ef4444">False Negative</text>
+      <text x="390" y="150" text-anchor="middle" font-size="9" fill="#ef4444">"We missed it"</text>
+
+      <text x="210" y="215" text-anchor="middle" font-weight="800" font-size="26" fill="#ef4444">FP</text>
+      <text x="210" y="240" text-anchor="middle" font-weight="600" font-size="11" fill="#ef4444">False Positive</text>
+      <text x="210" y="260" text-anchor="middle" font-size="9" fill="#ef4444">"We cried wolf"</text>
+
+      <text x="390" y="215" text-anchor="middle" font-weight="800" font-size="26" fill="#10b981">TN</text>
+      <text x="390" y="240" text-anchor="middle" font-weight="600" font-size="11" fill="#10b981">True Negative</text>
+      <text x="390" y="260" text-anchor="middle" font-size="9" fill="#10b981">"We ignored it"</text>
+
+      <!-- Axis labels -->
+      <text x="300" y="35" text-anchor="middle" font-weight="700" font-size="13" fill="#64748b">PREDICTED</text>
+      <text x="210" y="45" text-anchor="middle" font-weight="600" font-size="11" fill="#64748b">Positive</text>
+      <text x="390" y="45" text-anchor="middle" font-weight="600" font-size="11" fill="#64748b">Negative</text>
+
+      <text x="60" y="130" text-anchor="middle" font-weight="600" font-size="11" fill="#64748b">Positive</text>
+      <text x="60" y="225" text-anchor="middle" font-weight="600" font-size="11" fill="#64748b">Negative</text>
+      <text x="30" y="175" text-anchor="middle" font-weight="700" font-size="13" fill="#64748b" transform="rotate(-90, 30, 175)">ACTUAL</text>
+
+      <!-- Arrow annotations -->
+      <path d="M 110 90 Q 90 130 110 190" stroke="#94a3b8" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+      <path d="M 110 250 Q 90 220 110 160" stroke="#94a3b8" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      The green cells (TP, TN) are correct predictions. The red cells (FP, FN) are errors — but <em>different kinds</em> of errors.
+    </p>
+  </div>
+
+  <h3>② Why Accuracy Alone is Misleading</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#ef4444;"></span> Same accuracy, very different models</div>
+    <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- Left: All-neg model -->
+      <g>
+        <text x="170" y="25" text-anchor="middle" font-weight="800" font-size="13" fill="var(--text)">"Always Negative" Model</text>
+        <text x="170" y="42" text-anchor="middle" font-size="10" fill="var(--text-muted)">accuracy = 95%</text>
+
+        <rect x="70" y="70" width="100" height="90" fill="rgba(239,68,68,0.3)" stroke="#ef4444" stroke-width="1.5" rx="6"/>
+        <rect x="170" y="70" width="100" height="90" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="1.5" rx="6"/>
+        <rect x="70" y="160" width="100" height="90" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="1.5" rx="6"/>
+        <rect x="170" y="160" width="100" height="90" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="1.5" rx="6"/>
+
+        <text x="120" y="120" text-anchor="middle" font-weight="800" font-size="20" fill="#ef4444">0</text>
+        <text x="220" y="120" text-anchor="middle" font-weight="800" font-size="20" fill="#ef4444">50</text>
+        <text x="120" y="210" text-anchor="middle" font-weight="800" font-size="20" fill="#ef4444">0</text>
+        <text x="220" y="210" text-anchor="middle" font-weight="800" font-size="20" fill="#10b981">950</text>
+
+        <text x="170" y="278" text-anchor="middle" font-size="11" fill="var(--text-muted)">Recall = 0%</text>
+        <text x="170" y="294" text-anchor="middle" font-size="11" fill="var(--danger)" font-weight="700">Useless!</text>
+      </g>
+
+      <!-- Right: Actual classifier -->
+      <g transform="translate(360, 0)">
+        <text x="170" y="25" text-anchor="middle" font-weight="800" font-size="13" fill="var(--text)">Real Classifier</text>
+        <text x="170" y="42" text-anchor="middle" font-size="10" fill="var(--text-muted)">accuracy = 95%</text>
+
+        <rect x="70" y="70" width="100" height="90" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="1.5" rx="6"/>
+        <rect x="170" y="70" width="100" height="90" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="1.5" rx="6"/>
+        <rect x="70" y="160" width="100" height="90" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="1.5" rx="6"/>
+        <rect x="170" y="160" width="100" height="90" fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="1.5" rx="6"/>
+
+        <text x="120" y="120" text-anchor="middle" font-weight="800" font-size="20" fill="#10b981">45</text>
+        <text x="220" y="120" text-anchor="middle" font-weight="800" font-size="20" fill="#ef4444">5</text>
+        <text x="120" y="210" text-anchor="middle" font-weight="800" font-size="20" fill="#ef4444">45</text>
+        <text x="220" y="210" text-anchor="middle" font-weight="800" font-size="20" fill="#10b981">905</text>
+
+        <text x="170" y="278" text-anchor="middle" font-size="11" fill="var(--text-muted)">Recall = 90%</text>
+        <text x="170" y="294" text-anchor="middle" font-size="11" fill="var(--success)" font-weight="700">Useful!</text>
+      </g>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      Both models are 95% accurate. Only one catches any frauds. The confusion matrix reveals the difference — accuracy does not.
+    </p>
+  </div>
+
+  <h3>③ Precision vs Recall — The Tradeoff</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#f59e0b;"></span> Adjusting the threshold slides you along the curve</div>
+    <svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="40" x2="60" y2="270" class="axis-line"/>
+      <line x1="60" y1="270" x2="580" y2="270" class="axis-line"/>
+
+      <!-- Precision and recall curves vs threshold -->
+      <path d="M 60 60 Q 200 70 350 130 Q 500 200 580 255"
+            fill="none" stroke="#10b981" stroke-width="3"/>
+      <text x="480" y="90" font-weight="700" font-size="12" fill="#10b981">Precision</text>
+
+      <path d="M 60 255 Q 200 220 350 155 Q 500 100 580 70"
+            fill="none" stroke="#6366f1" stroke-width="3"/>
+      <text x="480" y="55" font-weight="700" font-size="12" fill="#6366f1">Recall</text>
+
+      <!-- Crossover annotation -->
+      <circle cx="300" cy="145" r="6" fill="#f59e0b" stroke="white" stroke-width="2"/>
+      <line x1="300" y1="40" x2="300" y2="270" stroke="#f59e0b" stroke-dasharray="4 3" stroke-width="1.5"/>
+      <text x="300" y="295" text-anchor="middle" font-size="11" font-weight="700" fill="#f59e0b">Balance point</text>
+
+      <text x="320" y="315" text-anchor="middle" font-size="11" fill="var(--text-muted)">← Higher threshold        Lower threshold →</text>
+      <text x="25" y="155" font-weight="700" font-size="11" fill="var(--text)" transform="rotate(-90, 25, 155)">Score</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      Raising the threshold increases precision but lowers recall. Lowering it does the opposite. The confusion matrix at any one threshold shows you where on this tradeoff you're standing.
+    </p>
+  </div>
+
+  <h3>④ Class Imbalance — Why the Matrix Matters More</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#8b5cf6;"></span> Imbalance distorts accuracy, but the matrix stays honest</div>
+    <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- Bar chart: accuracy across prevalences -->
+      <text x="310" y="22" text-anchor="middle" font-weight="700" font-size="12" fill="var(--text)">Accuracy of "Predict Legit" model</text>
+
+      <line x1="60" y1="230" x2="580" y2="230" class="axis-line"/>
+
+      <!-- Bars -->
+      <rect x="90"  y="80" width="70" height="150" fill="rgba(239,68,68,0.5)" rx="6"/>
+      <text x="125" y="75" text-anchor="middle" font-weight="800" font-size="13" fill="#ef4444">50%</text>
+      <text x="125" y="255" text-anchor="middle" font-size="10" fill="var(--text-muted)">50/50</text>
+
+      <rect x="200" y="40" width="70" height="190" fill="rgba(245,158,11,0.5)" rx="6"/>
+      <text x="235" y="35" text-anchor="middle" font-weight="800" font-size="13" fill="#f59e0b">90%</text>
+      <text x="235" y="255" text-anchor="middle" font-size="10" fill="var(--text-muted)">90/10</text>
+
+      <rect x="310" y="20" width="70" height="210" fill="rgba(239,68,68,0.6)" rx="6"/>
+      <text x="345" y="15" text-anchor="middle" font-weight="800" font-size="13" fill="#ef4444">99%</text>
+      <text x="345" y="255" text-anchor="middle" font-size="10" fill="var(--text-muted)">99/1</text>
+
+      <rect x="420" y="8" width="70" height="222" fill="rgba(239,68,68,0.75)" rx="6"/>
+      <text x="455" y="3" text-anchor="middle" font-weight="800" font-size="13" fill="#ef4444">99.9%</text>
+      <text x="455" y="255" text-anchor="middle" font-size="10" fill="var(--text-muted)">999/1</text>
+
+      <text x="25" y="130" font-weight="700" font-size="11" fill="var(--text)" transform="rotate(-90, 25, 130)">Accuracy</text>
+      <text x="310" y="285" text-anchor="middle" font-size="11" fill="var(--text-muted)">Class Ratio (neg/pos)</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      As classes become imbalanced, a useless "always predict majority" model looks better and better on accuracy. The confusion matrix — and metrics derived from it like recall — reveals the truth.
+    </p>
+  </div>
+</section>
+
+<!-- ==================== 7. MULTI-CLASS ==================== -->
+<section id="multiclass">
+  <div class="section-header">
+    <div class="section-number">7</div>
+    <h2>Multi-Class Confusion Matrices</h2>
+  </div>
+  <p class="lead">The 2×2 grid generalizes to K×K when you have more than two classes.</p>
+
+  <p>For a 3-class problem (say, classifying animals into Cat, Dog, Bird), the confusion matrix becomes a 3×3 grid. Every prediction is categorized by <em>actual class</em> (rows) and <em>predicted class</em> (columns).</p>
+
+  <h3>Example — 3-Class Animal Classifier</h3>
+
+  <table class="mc-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Pred Cat</th>
+        <th>Pred Dog</th>
+        <th>Pred Bird</th>
+        <th>Total Actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Actual Cat</strong></td>
+        <td class="diag">85</td>
+        <td class="err">10</td>
+        <td class="err">5</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td><strong>Actual Dog</strong></td>
+        <td class="err">8</td>
+        <td class="diag">88</td>
+        <td class="err">4</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td><strong>Actual Bird</strong></td>
+        <td class="err">3</td>
+        <td class="err">2</td>
+        <td class="diag">95</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td><strong>Total Predicted</strong></td>
+        <td>96</td>
+        <td>100</td>
+        <td>104</td>
+        <td>300</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Per-Class Metrics</h3>
+  <p>For each class, you can compute precision and recall by treating that class as "positive" and all others as "negative" (one-vs-rest):</p>
+
+  <table>
+    <thead>
+      <tr><th>Class</th><th>TP</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Cat</strong></td>
+        <td>85</td><td>11</td><td>15</td>
+        <td>85/96 = 88.5%</td>
+        <td>85/100 = 85.0%</td>
+        <td>0.867</td>
+      </tr>
+      <tr>
+        <td><strong>Dog</strong></td>
+        <td>88</td><td>12</td><td>12</td>
+        <td>88/100 = 88.0%</td>
+        <td>88/100 = 88.0%</td>
+        <td>0.880</td>
+      </tr>
+      <tr>
+        <td><strong>Bird</strong></td>
+        <td>95</td><td>9</td><td>5</td>
+        <td>95/104 = 91.3%</td>
+        <td>95/100 = 95.0%</td>
+        <td>0.932</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Aggregating Across Classes</h3>
+  <p>To get one number for the whole model:</p>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="value" style="font-size:1rem;">Micro</div>
+      <div class="label">Sum all TP, FP, FN across classes, then compute. Dominated by frequent classes.</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="font-size:1rem;">Macro</div>
+      <div class="label">Average the metric across classes. Treats every class equally.</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="font-size:1rem;">Weighted</div>
+      <div class="label">Average weighted by class support. Balances frequency and fairness.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Try this:</strong> The 3×3 matrix above reveals that the model confuses Cat and Dog with each other more than it confuses either with Bird. That is business-relevant information the aggregate metrics hide.
+  </div>
+
+  <h3>Normalized Confusion Matrix</h3>
+  <p>Divide each row by its total to see <strong>recall per class</strong>:</p>
+
+  <table class="mc-table">
+    <thead>
+      <tr><th></th><th>Pred Cat</th><th>Pred Dog</th><th>Pred Bird</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Actual Cat</strong></td>
+        <td class="diag">0.85</td>
+        <td class="err">0.10</td>
+        <td class="err">0.05</td>
+      </tr>
+      <tr>
+        <td><strong>Actual Dog</strong></td>
+        <td class="err">0.08</td>
+        <td class="diag">0.88</td>
+        <td class="err">0.04</td>
+      </tr>
+      <tr>
+        <td><strong>Actual Bird</strong></td>
+        <td class="err">0.03</td>
+        <td class="err">0.02</td>
+        <td class="diag">0.95</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <strong>Diagnostic insight:</strong> The diagonal of a <em>normalized</em> matrix gives per-class recall directly. Off-diagonal cells tell you <em>which classes are being confused</em> — often the most actionable output for improving a model.
+  </div>
+</section>
+
+<!-- ==================== 8. INTERACTIVE LAB ==================== -->
+<section id="lab">
+  <div class="section-header">
+    <div class="section-number">8</div>
+    <h2>Interactive Lab</h2>
+  </div>
+  <p class="lead">Drag the sliders to change the four cells. Watch all the derived metrics update live.</p>
+
+  <div class="lab">
+    <div class="lab-header">
+      <span class="lab-badge">Live Demo</span>
+      <h3 class="lab-title" style="margin:0;">Build Your Own Confusion Matrix</h3>
+    </div>
+
+    <p style="font-size:0.9rem;">Adjust TP, FP, FN, TN with the sliders — or click a preset scenario below. Every metric updates instantly.</p>
+
+    <div class="preset-row">
+      <button class="preset-btn" data-tp="45" data-fp="90" data-fn="5" data-tn="860">💳 Fraud detector</button>
+      <button class="preset-btn" data-tp="480" data-fp="1500" data-fn="20" data-tn="8000">🏥 Cancer screening</button>
+      <button class="preset-btn" data-tp="950" data-fp="5" data-fn="50" data-tn="1995">📧 Spam filter</button>
+      <button class="preset-btn" data-tp="0" data-fp="0" data-fn="100" data-tn="9900">☠️ Always-negative</button>
+      <button class="preset-btn active" data-tp="85" data-fp="15" data-fn="15" data-tn="885">✅ Balanced model</button>
+      <button class="preset-btn" data-tp="100" data-fp="0" data-fn="0" data-tn="900">⭐ Perfect</button>
+    </div>
+
+    <div class="ctrl-grid">
+      <div class="ctrl">
+        <div class="ctrl-label"><span style="color:var(--success);">TP — True Positive</span><span class="ctrl-value" id="valTP">85</span></div>
+        <input type="range" class="range-tp" id="sliderTP" min="0" max="1000" value="85">
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-label"><span style="color:var(--success);">TN — True Negative</span><span class="ctrl-value" id="valTN">885</span></div>
+        <input type="range" class="range-tn" id="sliderTN" min="0" max="10000" value="885">
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-label"><span style="color:var(--danger);">FP — False Positive</span><span class="ctrl-value" id="valFP">15</span></div>
+        <input type="range" class="range-fp" id="sliderFP" min="0" max="2000" value="15">
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-label"><span style="color:var(--danger);">FN — False Negative</span><span class="ctrl-value" id="valFN">15</span></div>
+        <input type="range" class="range-fn" id="sliderFN" min="0" max="1000" value="15">
+      </div>
+    </div>
+
+    <!-- CM visual -->
+    <div class="cm-box" style="max-width:520px;margin:20px auto;">
+      <div class="cm-corner"></div>
+      <div class="cm-axis col-label">Pred Positive</div>
+      <div class="cm-axis col-label">Pred Negative</div>
+
+      <div class="cm-axis row-label">Actual Positive</div>
+      <div class="cm-cell-box cm-tp-box" id="cellTP">
+        <div class="cm-abbr" id="cmTPDisplay">85</div>
+        <div class="cm-name">TP</div>
+      </div>
+      <div class="cm-cell-box cm-fn-box" id="cellFN">
+        <div class="cm-abbr" id="cmFNDisplay">15</div>
+        <div class="cm-name">FN</div>
+      </div>
+
+      <div class="cm-axis row-label">Actual Negative</div>
+      <div class="cm-cell-box cm-fp-box" id="cellFP">
+        <div class="cm-abbr" id="cmFPDisplay">15</div>
+        <div class="cm-name">FP</div>
+      </div>
+      <div class="cm-cell-box cm-tn-box" id="cellTN">
+        <div class="cm-abbr" id="cmTNDisplay">885</div>
+        <div class="cm-name">TN</div>
+      </div>
+    </div>
+
+    <!-- Metric bars -->
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Recall (Sensitivity)</span><span id="barRecallVal">85.0%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" id="barRecall" style="background:var(--primary);width:85%;"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Precision</span><span id="barPrecVal">85.0%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" id="barPrec" style="background:var(--accent);width:85%;"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Specificity</span><span id="barSpecVal">98.3%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" id="barSpec" style="background:var(--success);width:98.3%;"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>F1 Score</span><span id="barF1Val">85.0%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" id="barF1" style="background:#8b5cf6;width:85%;"></div></div>
+    </div>
+
+    <!-- Live metrics grid -->
+    <div class="live-metrics">
+      <div class="live-metric">
+        <div class="lm-val lm-primary" id="lmAccuracy">97.0%</div>
+        <div class="lm-lbl">Accuracy</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val lm-accent" id="lmPrecision">85.0%</div>
+        <div class="lm-lbl">Precision</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val lm-primary" id="lmRecall">85.0%</div>
+        <div class="lm-lbl">Recall</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val lm-success" id="lmSpecificity">98.3%</div>
+        <div class="lm-lbl">Specificity</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val lm-danger" id="lmFPR">1.7%</div>
+        <div class="lm-lbl">FPR</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:#8b5cf6;" id="lmF1">85.0%</div>
+        <div class="lm-lbl">F1 Score</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val lm-primary" id="lmMCC">0.84</div>
+        <div class="lm-lbl">MCC</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val lm-accent" id="lmBalanced">91.6%</div>
+        <div class="lm-lbl">Balanced Acc.</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--text);" id="lmTotal">1,000</div>
+        <div class="lm-lbl">Total Samples</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <strong>Try these experiments:</strong> Move TP to 0 and see recall collapse to 0% while accuracy stays near 99%. Set FP to a high value and watch precision drop. Watch how MCC drops to 0 when the model is no better than random — but accuracy barely moves.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 9. QUIZ ==================== -->
+<section id="quiz">
+  <div class="section-header">
+    <div class="section-number">9</div>
+    <h2>Quiz Yourself</h2>
+  </div>
+  <p class="lead">Seven questions to check whether you really understand the confusion matrix.</p>
+
+  <div id="quizContainer"></div>
+
+  <div class="card" style="text-align:center;margin-top:24px;">
+    <div style="font-size:1rem;font-weight:600;">Score: <span id="quizScore" style="color:var(--primary);font-size:1.4rem;">0 / 7</span></div>
+    <button id="resetQuiz" style="margin-top:10px;padding:8px 20px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;">Reset Quiz</button>
+  </div>
+</section>
+
+<!-- ==================== 10. PYTHON ==================== -->
+<section id="code">
+  <div class="section-header">
+    <div class="section-number">10</div>
+    <h2>Python Reference</h2>
+  </div>
+  <p class="lead">Ready-to-run code for the most common confusion matrix tasks.</p>
+
+  <h3>Basic Confusion Matrix</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — basic_cm.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report
+
+# 1. Dataset
+X, y = make_classification(
+    n_samples=2000, n_features=20, n_informative=10,
+    weights=[0.9, 0.1], random_state=42,
+)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42,
+)
+
+# 2. Train
+clf = LogisticRegression(max_iter=1000).fit(X_tr, y_tr)
+y_pred = clf.predict(X_te)
+
+# 3. Confusion matrix
+# By default: rows = actual, columns = predicted
+cm = confusion_matrix(y_te, y_pred)
+print("Confusion matrix:")
+print(cm)
+
+# Extract the four cells
+tn, fp, fn, tp = cm.ravel()
+print(f"TP={tp}, FP={fp}, FN={fn}, TN={tn}")
+
+# 4. Full report (precision, recall, F1, support for each class)
+print(classification_report(y_te, y_pred, target_names=['Legit', 'Fraud']))
+</code></pre>
+  </div>
+
+  <h3>Compute Every Common Metric</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — all_metrics.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import numpy as np
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, f1_score,
+    confusion_matrix, matthews_corrcoef, cohen_kappa_score,
+    balanced_accuracy_score, roc_auc_score,
+)
+
+tn, fp, fn, tp = confusion_matrix(y_te, y_pred).ravel()
+
+accuracy    = (tp + tn) / (tp + tn + fp + fn)
+precision   = tp / (tp + fp) if (tp + fp) else 0
+recall      = tp / (tp + fn) if (tp + fn) else 0
+specificity = tn / (tn + fp) if (tn + fp) else 0
+f1          = 2 * precision * recall / (precision + recall) if (precision + recall) else 0
+fpr         = fp / (fp + tn) if (fp + tn) else 0
+fnr         = fn / (fn + tp) if (fn + tp) else 0
+npv         = tn / (tn + fn) if (tn + fn) else 0
+balanced    = (recall + specificity) / 2
+
+print(f"Accuracy:           {accuracy:.4f}")
+print(f"Precision:          {precision:.4f}")
+print(f"Recall:             {recall:.4f}")
+print(f"Specificity:        {specificity:.4f}")
+print(f"F1 Score:           {f1:.4f}")
+print(f"FPR:                {fpr:.4f}")
+print(f"FNR:                {fnr:.4f}")
+print(f"NPV:                {npv:.4f}")
+print(f"Balanced Accuracy:  {balanced:.4f}")
+print(f"MCC:                {matthews_corrcoef(y_te, y_pred):.4f}")
+print(f"Cohen's Kappa:      {cohen_kappa_score(y_te, y_pred):.4f}")
+</code></pre>
+  </div>
+
+  <h3>Visualize the Confusion Matrix</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — plot_cm.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import matplotlib.pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+
+# Raw counts
+cm = confusion_matrix(y_te, y_pred)
+ConfusionMatrixDisplay(cm, display_labels=['Legit', 'Fraud']).plot(
+    ax=axes[0], cmap='Blues', colorbar=False,
+)
+axes[0].set_title('Raw Counts')
+
+# Normalized (row percentages = recall per class)
+cm_norm = confusion_matrix(y_te, y_pred, normalize='true')
+ConfusionMatrixDisplay(cm_norm, display_labels=['Legit', 'Fraud']).plot(
+    ax=axes[1], cmap='Greens', colorbar=False, values_format='.2f',
+)
+axes[1].set_title('Normalized (Recall per Class)')
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+  </div>
+
+  <h3>Multi-Class Confusion Matrix</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — multiclass_cm.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+
+# 3-class problem
+X, y = load_iris(return_X_y=True)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42,
+)
+
+clf = RandomForestClassifier(random_state=42).fit(X_tr, y_tr)
+y_pred = clf.predict(X_te)
+
+# 3x3 confusion matrix
+cm = confusion_matrix(y_te, y_pred)
+print(cm)
+
+# Per-class precision, recall, F1
+print(classification_report(
+    y_te, y_pred,
+    target_names=['setosa', 'versicolor', 'virginica'],
+))
+
+# Normalized matrix shows recall per class on the diagonal
+cm_norm = confusion_matrix(y_te, y_pred, normalize='true')
+print("\nNormalized (rows sum to 1):")
+print(cm_norm.round(2))
+</code></pre>
+  </div>
+
+  <h3>The Accuracy Paradox in Action</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — accuracy_paradox.py</span><button class="copy-btn">Copy</button></div>
+<pre><code># Simulate 1% fraud rate — a useless "always negative" model
+n = 100_000
+y_true = np.zeros(n, dtype=int)
+y_true[:1000] = 1   # 1,000 frauds out of 100,000
+
+# Useless model: predicts 0 (legit) for everything
+y_pred = np.zeros(n, dtype=int)
+
+tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+accuracy = accuracy_score(y_true, y_pred)
+recall   = recall_score(y_true, y_pred, zero_division=0)
+
+print(f"Accuracy: {accuracy:.4f}")  # 0.99 — looks amazing!
+print(f"Recall:   {recall:.4f}")    # 0.00 — catches nothing
+
+# Accuracy alone would rank this as an excellent model.
+# The confusion matrix reveals the truth:
+print(confusion_matrix(y_true, y_pred))
+# [[99000     0]
+#  [ 1000     0]]
+</code></pre>
+  </div>
+
+  <h3>When to Use Which Metric</h3>
+  <table>
+    <thead>
+      <tr><th>Situation</th><th>Best metric</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Balanced classes, equal costs</td><td>Accuracy</td><td>Only case where accuracy is safe</td></tr>
+      <tr><td>FN worse than FP</td><td>Recall</td><td>Medical screening, fraud detection</td></tr>
+      <tr><td>FP worse than FN</td><td>Precision</td><td>Spam filters, legal cases</td></tr>
+      <tr><td>Both matter, need one number</td><td>F1</td><td>Harmonic mean of P &amp; R</td></tr>
+      <tr><td>Severe class imbalance</td><td>MCC, Balanced Accuracy, PR-AUC</td><td>Accuracy and ROC-AUC can mislead</td></tr>
+      <tr><td>Multi-class</td><td>Macro F1, Weighted F1</td><td>Aggregated per-class performance</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout success" style="margin-top:24px;">
+    <strong>Bottom line:</strong> Always look at the confusion matrix first. It tells you <em>how</em> your model is wrong, which no single number can. Then choose the metric that reflects which error hurts more in your problem.
+  </div>
+</section>
+
+</main>
+
+<script>
+// ============================================================
+// THEME TOGGLE
+// ============================================================
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('cm-theme') || 'light';
+document.body.dataset.theme = savedTheme;
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('cm-theme', next);
+});
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('#navList a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth < 900) sidebar.classList.remove('open');
+  });
+});
+
+// ============================================================
+// PROGRESS & ACTIVE NAV
+// ============================================================
+const progressBar = document.getElementById('progressBar');
+const sections = [...document.querySelectorAll('section')];
+const navLinks = [...document.querySelectorAll('#navList a')];
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+
+  let current = sections[0].id;
+  for (const sec of sections) {
+    if (sec.getBoundingClientRect().top <= 120) current = sec.id;
+  }
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// ============================================================
+// CODE HIGHLIGHTING
+// ============================================================
+function highlightPython(code) {
+  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const placeholders = [];
+  const store = (m) => {
+    const id = `\x00${placeholders.length}\x00`;
+    placeholders.push(m);
+    return id;
+  };
+  code = code.replace(/#[^\n]*/g, store);
+  code = code.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"[^"\n]*"|'[^'\n]*')/g, store);
+  code = code.replace(/\b(import|from|as|def|return|if|elif|else|for|while|in|not|and|or|is|None|True|False|class|try|except|finally|with|lambda|yield|pass|break|continue|global|nonlocal|assert|del|raise|async|await)\b/g,
+    '<span class="kw">$1</span>');
+  code = code.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
+  code = code.replace(/\b(print|len|range|sum|min|max|abs|round|sorted|list|dict|set|tuple|str|int|float|bool|type|enumerate|zip|map|filter|open|input|fit|predict|train_test_split|confusion_matrix|classification_report|accuracy_score|precision_score|recall_score|f1_score|matthews_corrcoef|cohen_kappa_score|balanced_accuracy_score|roc_auc_score|ConfusionMatrixDisplay|load_iris|RandomForestClassifier|LogisticRegression|make_classification|train_test_split)\b/g,
+    '<span class="bi">$1</span>');
+  code = code.replace(/\x00(\d+)\x00/g, (_, i) => {
+    const s = placeholders[+i];
+    if (s.startsWith('#')) return `<span class="cm">${s}</span>`;
+    return `<span class="str">${s}</span>`;
+  });
+  return code;
+}
+
+document.querySelectorAll('pre code').forEach(block => {
+  block.innerHTML = highlightPython(block.textContent);
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-wrap').querySelector('pre code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1600);
+    });
+  });
+});
+
+// ============================================================
+// METRIC EXPLORER
+// ============================================================
+const METRICS = [
+  {
+    id: 'accuracy',
+    name: 'Accuracy',
+    formula: '(TP + TN) / (TP + FP + FN + TN)',
+    what: 'The overall fraction of predictions the model got right. The simplest metric — and the most commonly misused.',
+    when: 'Use only when classes are balanced AND both types of errors cost roughly the same. Otherwise it can be dangerously misleading.',
+    caveat: 'A model that always predicts the majority class gets very high accuracy on imbalanced data, but is useless.',
+    compute: (tp, fp, fn, tn) => (tp + tn) / (tp + fp + fn + tn),
+    format: 'pct',
+  },
+  {
+    id: 'precision',
+    name: 'Precision',
+    formula: 'TP / (TP + FP)',
+    what: 'Of all the times the model predicted positive, what fraction were actually positive? Also called Positive Predictive Value (PPV).',
+    when: 'Use when false positives are expensive. Spam filters, legal convictions, loan approvals.',
+    caveat: 'Does not tell you how many positives you missed.',
+    compute: (tp, fp, fn, tn) => (tp + fp) ? tp / (tp + fp) : 0,
+    format: 'pct',
+  },
+  {
+    id: 'recall',
+    name: 'Recall (Sensitivity, TPR)',
+    formula: 'TP / (TP + FN)',
+    what: 'Of all the actual positives, what fraction did the model catch?',
+    when: 'Use when false negatives are expensive. Medical screening, fraud detection, safety systems.',
+    caveat: 'Does not tell you how many false alarms you generated.',
+    compute: (tp, fp, fn, tn) => (tp + fn) ? tp / (tp + fn) : 0,
+    format: 'pct',
+  },
+  {
+    id: 'specificity',
+    name: 'Specificity (TNR)',
+    formula: 'TN / (TN + FP)',
+    what: 'Of all the actual negatives, what fraction did the model correctly ignore?',
+    when: 'The mirror of recall for the negative class. Useful in medical testing (ruling out disease).',
+    caveat: 'Does not tell you how many positives you missed.',
+    compute: (tp, fp, fn, tn) => (tn + fp) ? tn / (tn + fp) : 0,
+    format: 'pct',
+  },
+  {
+    id: 'f1',
+    name: 'F1 Score',
+    formula: '2 × (Precision × Recall) / (Precision + Recall)',
+    what: 'The harmonic mean of precision and recall. A single number that balances both.',
+    when: 'Use when you need one number that reflects both false positives and false negatives, and both matter.',
+    caveat: 'Ignores TN entirely. Also treats precision and recall as equally important — sometimes they are not.',
+    compute: (tp, fp, fn, tn) => {
+      const p = (tp + fp) ? tp / (tp + fp) : 0;
+      const r = (tp + fn) ? tp / (tp + fn) : 0;
+      return (p + r) ? 2 * p * r / (p + r) : 0;
+    },
+    format: 'pct',
+  },
+  {
+    id: 'fpr',
+    name: 'False Positive Rate (FPR)',
+    formula: 'FP / (FP + TN)',
+    what: 'Of all the actual negatives, what fraction did the model wrongly flag as positive?',
+    when: 'Used in ROC curves. Equivalent to 1 − Specificity.',
+    caveat: 'On imbalanced data, small FPR can still mean many absolute false positives.',
+    compute: (tp, fp, fn, tn) => (fp + tn) ? fp / (fp + tn) : 0,
+    format: 'pct',
+  },
+  {
+    id: 'fnr',
+    name: 'False Negative Rate (FNR)',
+    formula: 'FN / (FN + TP)',
+    what: 'Of all the actual positives, what fraction did the model miss?',
+    when: 'Equivalent to 1 − Recall. Useful when thinking about missed detections.',
+    caveat: 'Same limitation as recall — ignores false positives.',
+    compute: (tp, fp, fn, tn) => (fn + tp) ? fn / (fn + tp) : 0,
+    format: 'pct',
+  },
+  {
+    id: 'npv',
+    name: 'Negative Predictive Value (NPV)',
+    formula: 'TN / (TN + FN)',
+    what: 'When the model predicts negative, how often is it right?',
+    when: 'Useful in medical testing — "if the test says you don\'t have it, how sure can you be?"',
+    caveat: 'Highly sensitive to prevalence.',
+    compute: (tp, fp, fn, tn) => (tn + fn) ? tn / (tn + fn) : 0,
+    format: 'pct',
+  },
+  {
+    id: 'balanced',
+    name: 'Balanced Accuracy',
+    formula: '(Recall + Specificity) / 2',
+    what: 'The average of recall and specificity — i.e., the average per-class accuracy.',
+    when: 'Preferred over accuracy for imbalanced data. Each class contributes equally.',
+    caveat: 'Still ignores the relative costs of FP vs FN.',
+    compute: (tp, fp, fn, tn) => {
+      const r = (tp + fn) ? tp / (tp + fn) : 0;
+      const s = (tn + fp) ? tn / (tn + fp) : 0;
+      return (r + s) / 2;
+    },
+    format: 'pct',
+  },
+  {
+    id: 'mcc',
+    name: "Matthews Correlation Coefficient (MCC)",
+    formula: '(TP·TN − FP·FN) / √((TP+FP)(TP+FN)(TN+FP)(TN+FN))',
+    what: 'The correlation between predictions and truth. Ranges from −1 (fully wrong) through 0 (random) to +1 (perfect).',
+    when: 'The most honest single metric for imbalanced classification. Uses all four cells symmetrically.',
+    caveat: 'Undefined when any denominator factor is 0.',
+    compute: (tp, fp, fn, tn) => {
+      const num = tp * tn - fp * fn;
+      const den = Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+      return den ? num / den : 0;
+    },
+    format: 'num',
+  },
+  {
+    id: 'kappa',
+    name: "Cohen's Kappa",
+    formula: '(p_o − p_e) / (1 − p_e)',
+    what: 'Agreement between predictions and truth, corrected for agreement expected by chance.',
+    when: 'Useful when you want to know how much better than random your classifier is.',
+    caveat: 'Can be unstable when class prevalence is very different between the two raters.',
+    compute: (tp, fp, fn, tn) => {
+      const total = tp + fp + fn + tn;
+      if (total === 0) return 0;
+      const po = (tp + tn) / total;
+      const pYes = ((tp + fp) / total) * ((tp + fn) / total);
+      const pNo  = ((fn + tn) / total) * ((fp + tn) / total);
+      const pe = pYes + pNo;
+      return pe === 1 ? 0 : (po - pe) / (1 - pe);
+    },
+    format: 'num',
+  },
+  {
+    id: 'youden',
+    name: "Youden's J",
+    formula: 'Recall + Specificity − 1',
+    what: 'How much better the model is than random on both classes combined.',
+    when: 'Used to pick the optimal threshold from an ROC curve.',
+    caveat: 'Weights FP and FN equally — ignores actual costs.',
+    compute: (tp, fp, fn, tn) => {
+      const r = (tp + fn) ? tp / (tp + fn) : 0;
+      const s = (tn + fp) ? tn / (tn + fp) : 0;
+      return r + s - 1;
+    },
+    format: 'num',
+  },
+];
+
+let metricState = { tp: 45, fp: 90, fn: 5, tn: 860 };
+let activeMetricId = 'precision';
+
+function renderMetricList() {
+  const list = document.getElementById('metricList');
+  list.innerHTML = '';
+  METRICS.forEach(m => {
+    const btn = document.createElement('button');
+    btn.textContent = m.name;
+    if (m.id === activeMetricId) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      activeMetricId = m.id;
+      renderMetricList();
+      renderMetricDetail();
+    });
+    list.appendChild(btn);
+  });
+}
+
+function renderMetricDetail() {
+  const m = METRICS.find(x => x.id === activeMetricId);
+  const detail = document.getElementById('metricDetail');
+  const { tp, fp, fn, tn } = metricState;
+  const value = m.compute(tp, fp, fn, tn);
+  const display = m.format === 'pct'
+    ? (value * 100).toFixed(1) + '%'
+    : value.toFixed(3);
+
+  detail.innerHTML = `
+    <h4>${m.name}</h4>
+    <div class="formula">${m.formula}</div>
+    <p><strong>What it measures:</strong> ${m.what}</p>
+    <p><strong>When to use:</strong> ${m.when}</p>
+    <p style="color:var(--danger);"><strong>Watch out:</strong> ${m.caveat}</p>
+    <p style="margin-top:20px;">
+      <strong>Current value (from the fraud example):</strong>
+      <span class="live-value">${display}</span>
+    </p>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-top:14px;">
+      Computed from TP=${tp}, FP=${fp}, FN=${fn}, TN=${tn}.
+      Scroll down to the <a href="#lab" style="color:var(--primary);font-weight:600;">Interactive Lab</a>
+      to change these values and see the metric update live.
+    </p>
+  `;
+}
+
+renderMetricList();
+renderMetricDetail();
+
+// Keep metric detail in sync with the lab
+function syncMetricState() {
+  renderMetricDetail();
+}
+
+// ============================================================
+// INTERACTIVE LAB
+// ============================================================
+const sliders = {
+  tp: document.getElementById('sliderTP'),
+  fp: document.getElementById('sliderFP'),
+  fn: document.getElementById('sliderFN'),
+  tn: document.getElementById('sliderTN'),
+};
+const displays = {
+  tp: document.getElementById('valTP'),
+  fp: document.getElementById('valFP'),
+  fn: document.getElementById('valFN'),
+  tn: document.getElementById('valTN'),
+};
+
+function computeAll() {
+  const tp = +sliders.tp.value;
+  const fp = +sliders.fp.value;
+  const fn = +sliders.fn.value;
+  const tn = +sliders.tn.value;
+  metricState = { tp, fp, fn, tn };
+  return { tp, fp, fn, tn };
+}
+
+function updateLab() {
+  const { tp, fp, fn, tn } = computeAll();
+  const total = tp + fp + fn + tn;
+
+  // Update value labels
+  displays.tp.textContent = tp.toLocaleString();
+  displays.fp.textContent = fp.toLocaleString();
+  displays.fn.textContent = fn.toLocaleString();
+  displays.tn.textContent = tn.toLocaleString();
+
+  // Update CM display
+  document.getElementById('cmTPDisplay').textContent = tp.toLocaleString();
+  document.getElementById('cmFPDisplay').textContent = fp.toLocaleString();
+  document.getElementById('cmFNDisplay').textContent = fn.toLocaleString();
+  document.getElementById('cmTNDisplay').textContent = tn.toLocaleString();
+
+  // Compute metrics
+  const accuracy    = total ? (tp + tn) / total : 0;
+  const precision   = (tp + fp) ? tp / (tp + fp) : 0;
+  const recall      = (tp + fn) ? tp / (tp + fn) : 0;
+  const specificity = (tn + fp) ? tn / (tn + fp) : 0;
+  const fpr         = (fp + tn) ? fp / (fp + tn) : 0;
+  const f1          = (precision + recall) ? 2 * precision * recall / (precision + recall) : 0;
+  const balanced    = (recall + specificity) / 2;
+  const mccNum      = tp * tn - fp * fn;
+  const mccDen      = Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+  const mcc         = mccDen ? mccNum / mccDen : 0;
+
+  const fmtPct = v => (v * 100).toFixed(1) + '%';
+
+  document.getElementById('lmAccuracy').textContent    = fmtPct(accuracy);
+  document.getElementById('lmPrecision').textContent   = fmtPct(precision);
+  document.getElementById('lmRecall').textContent      = fmtPct(recall);
+  document.getElementById('lmSpecificity').textContent = fmtPct(specificity);
+  document.getElementById('lmFPR').textContent         = fmtPct(fpr);
+  document.getElementById('lmF1').textContent          = fmtPct(f1);
+  document.getElementById('lmMCC').textContent         = mcc.toFixed(3);
+  document.getElementById('lmBalanced').textContent    = fmtPct(balanced);
+  document.getElementById('lmTotal').textContent       = total.toLocaleString();
+
+  // Update bars
+  document.getElementById('barRecall').style.width = (recall * 100) + '%';
+  document.getElementById('barRecallVal').textContent = fmtPct(recall);
+  document.getElementById('barPrec').style.width = (precision * 100) + '%';
+  document.getElementById('barPrecVal').textContent = fmtPct(precision);
+  document.getElementById('barSpec').style.width = (specificity * 100) + '%';
+  document.getElementById('barSpecVal').textContent = fmtPct(specificity);
+  document.getElementById('barF1').style.width = (f1 * 100) + '%';
+  document.getElementById('barF1Val').textContent = fmtPct(f1);
+
+  // Sync metric detail
+  syncMetricState();
+}
+
+Object.values(sliders).forEach(s => s.addEventListener('input', updateLab));
+
+// Preset buttons
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    sliders.tp.value = btn.dataset.tp;
+    sliders.fp.value = btn.dataset.fp;
+    sliders.fn.value = btn.dataset.fn;
+    sliders.tn.value = btn.dataset.tn;
+    updateLab();
+  });
+});
+
+// Initial render
+updateLab();
+
+// ============================================================
+// QUIZ
+// ============================================================
+const quizData = [
+  {
+    q: "A confusion matrix has TP=50, FP=200, FN=10, TN=1740. What is the recall?",
+    options: ['50/60 = 83.3%', '50/250 = 20%', '50/1790 = 2.8%', '50/2000 = 2.5%'],
+    correct: 0,
+    explain: 'Recall = TP / (TP + FN) = 50 / (50 + 10) = 50/60 = 83.3%. It measures how many of the actual positives the model caught.'
+  },
+  {
+    q: "Why is accuracy often misleading on imbalanced data?",
+    options: [
+      "Because the math is wrong.",
+      "Because a model that always predicts the majority class achieves high accuracy while catching none of the minority class.",
+      "Because accuracy can exceed 100%.",
+      "Because accuracy is not defined for imbalanced data."
+    ],
+    correct: 1,
+    explain: 'On 1%-fraud data, an "always legit" model gets 99% accuracy but zero recall. The confusion matrix reveals this — accuracy alone hides it.'
+  },
+  {
+    q: "You're building a cancer screening model. Which error is worse — a false positive or a false negative?",
+    options: [
+      "False positive — unnecessary tests are expensive.",
+      "False negative — missing a cancer could be fatal.",
+      "They're equally bad.",
+      "Depends on the patient's insurance."
+    ],
+    correct: 1,
+    explain: 'In medical screening, a false negative (missing the cancer) is generally far more costly than a false positive (a follow-up test). So you optimize for recall.'
+  },
+  {
+    q: "What does the F1 score balance?",
+    options: [
+      "Accuracy and specificity",
+      "Precision and recall",
+      "True positives and true negatives",
+      "Training error and test error"
+    ],
+    correct: 1,
+    explain: 'F1 = 2 × (Precision × Recall) / (Precision + Recall). It is the harmonic mean of precision and recall — useful when you need one number that reflects both error types.'
+  },
+  {
+    q: "A model predicts positive for every single sample. What does its confusion matrix look like?",
+    options: [
+      "All four cells are equal.",
+      "TP = 0, FP = 0.",
+      "TP = total positives, FN = 0, FP = total negatives, TN = 0.",
+      "TP = 0, TN = 0, FP = 0, FN = total positives."
+    ],
+    correct: 2,
+    explain: 'If it predicts positive for everything, it catches every actual positive (FN = 0) but also flags every actual negative (TN = 0). So TP = all positives, FP = all negatives. Precision is very low, recall is 100%.'
+  },
+  {
+    q: "On a dataset with 1% positives, which metric is the most honest single-number summary?",
+    options: [
+      "Accuracy",
+      "MCC (Matthews Correlation Coefficient)",
+      "FNR",
+      "Total predictions"
+    ],
+    correct: 1,
+    explain: 'MCC uses all four cells of the confusion matrix symmetrically and ranges from −1 to +1, with 0 meaning no better than random. It does not get fooled by class imbalance the way accuracy does.'
+  },
+  {
+    q: "If FN is much worse than FP, which metric should you primarily optimize?",
+    options: [
+      "Precision",
+      "Specificity",
+      "Recall (Sensitivity)",
+      "Accuracy"
+    ],
+    correct: 2,
+    explain: 'Recall = TP / (TP + FN). It directly measures how many actual positives you catch. When FN is the costly error (medical, fraud, safety), you optimize recall — accepting more false positives as the tradeoff.'
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+const quizScoreEl = document.getElementById('quizScore');
+let score = 0;
+const answered = new Set();
+
+function renderQuiz() {
+  quizContainer.innerHTML = '';
+  score = 0;
+  answered.clear();
+  quizScoreEl.textContent = '0 / ' + quizData.length;
+
+  quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `
+      <div class="q-text">Q${i + 1}. ${item.q}</div>
+      <div class="q-opts"></div>
+      <div class="quiz-feedback"></div>
+    `;
+    const optsWrap = div.querySelector('.q-opts');
+    const feedback = div.querySelector('.quiz-feedback');
+
+    item.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        if (answered.has(i)) return;
+        answered.add(i);
+        const isCorrect = j === item.correct;
+
+        optsWrap.querySelectorAll('.quiz-opt').forEach((b, k) => {
+          b.disabled = true;
+          if (k === item.correct) b.classList.add('correct');
+          if (k === j && !isCorrect) b.classList.add('wrong');
+        });
+
+        feedback.textContent = (isCorrect ? '✓ Correct! ' : '✗ Not quite. ') + item.explain;
+        feedback.classList.add('show', isCorrect ? 'ok' : 'no');
+
+        if (isCorrect) score++;
+        quizScoreEl.textContent = score + ' / ' + quizData.length;
+      });
+      optsWrap.appendChild(btn);
+    });
+
+    quizContainer.appendChild(div);
+  });
+}
+
+document.getElementById('resetQuiz').addEventListener('click', renderQuiz);
+renderQuiz();
+
+// ============================================================
+// Smooth scroll
+// ============================================================
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

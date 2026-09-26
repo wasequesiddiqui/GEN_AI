@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lasso Regression Model — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#db2777;
+    --accent-dark:#9d174d;
+    --accent2:#7c3aed;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#831843 0%,#9d174d 25%,#db2777 55%,#7c3aed 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(219,39,119,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:860px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent-dark);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#db2777,#7c3aed);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(219,39,119,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#fdf2f8,#f5f3ff);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent-dark);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#fdf2f8;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent-dark);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.reg{border-left-color:var(--amber);}
+  .metric.lasso{border-left-color:var(--accent);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.reg h4{color:#b45309;}
+  .metric.lasso h4{color:var(--accent-dark);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.reg .badge{background:#fffbeb;color:#b45309;}
+  .metric.lasso .badge{background:#fdf2f8;color:#9d174d;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin:20px 0;
+  }
+  .calc-grid label{
+    display:block;
+    font-size:.82rem;
+    font-weight:800;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:5px;
+  }
+  .calc-grid input{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border-strong);
+    border-radius:8px;
+    font-size:1rem;
+    font-family:'Segoe UI',sans-serif;
+    font-weight:600;
+    color:#1e293b;
+    background:#ffffff;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .calc-grid input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(219,39,119,.13);
+  }
+  @media(max-width:700px){.calc-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin:18px 0;
+  }
+  .result-card{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    border-top:3px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .result-card .name{
+    font-size:.76rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:800;
+    margin-bottom:4px;
+  }
+  .result-card .value{
+    font-size:1.45rem;
+    font-weight:800;
+    color:var(--text);
+    line-height:1.2;
+  }
+  .result-card .formula-small{
+    font-size:.74rem;
+    color:var(--muted);
+    font-family:'Consolas',monospace;
+    margin-top:6px;
+    line-height:1.4;
+  }
+
+  .fit-demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .fit-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .fit-controls .info{flex:1;min-width:130px;}
+  .fit-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .fit-controls .info .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);
+  }
+  .fit-sliders{padding:4px 0 12px;}
+  .fit-sliders label{
+    display:block;font-size:.82rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-top:10px;
+  }
+  .fit-sliders input[type=range]{
+    width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0;
+  }
+  .btn{
+    background:linear-gradient(135deg,#db2777,#7c3aed);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(219,39,119,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(219,39,119,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#9d174d;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#fdf2f8;
+    color:#9d174d;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .assumptions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .assumptions .item{
+    background:linear-gradient(135deg,#fdf2f8,#f5f3ff);
+    border:1px solid #fbcfe8;border-radius:10px;padding:14px 16px;
+    text-align:center;
+  }
+  .assumptions .item .letter{
+    font-size:1.6rem;font-weight:900;color:#9d174d;line-height:1;
+  }
+  .assumptions .item .name{
+    font-size:.85rem;font-weight:800;color:#1e293b;margin-top:4px;
+  }
+  .assumptions .item .desc{
+    font-size:.76rem;color:#64748b;margin-top:2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 Lasso Regression Model — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine a hiring committee with 100 applicants. A naive manager (OLS) would give every applicant a little bit of the workload — even the useless ones. A <em>ruthless</em> manager (Lasso) says: "If you don't add real value, you're out." The final team is small, focused, and every member earns their spot. That's Lasso — it selects the few features that matter and sets the rest to <strong>exactly zero</strong>.
+  </div>
+
+  <h3>What is Lasso Regression?</h3>
+  <p><span class="highlight">Lasso</span> stands for <strong>Least Absolute Shrinkage and Selection Operator</strong>. It is a variant of linear regression that adds a penalty proportional to the <em>sum of absolute coefficient values</em> (the L1 norm) to the cost function. This penalty does two things: it shrinks coefficients toward zero <em>and</em> it sets many of them to exactly zero — performing automatic feature selection.</p>
+
+  <p>It solves two problems simultaneously:</p>
+  <ul class="clean">
+    <li><strong>Overfitting</strong> — the penalty discourages complex models.</li>
+    <li><strong>Feature selection</strong> — irrelevant features get coefficient = 0 and are dropped from the model entirely.</li>
+  </ul>
+
+  <h3>How Lasso Differs from OLS and Ridge</h3>
+  <table>
+    <tr><th>Aspect</th><th>OLS</th><th>Ridge (L2)</th><th>Lasso (L1)</th></tr>
+    <tr><td>Penalty</td><td>None</td><td>λ·Σβⱼ²</td><td>λ·Σ|βⱼ|</td></tr>
+    <tr><td>Closed-form solution</td><td>Yes</td><td>Yes</td><td>No (uses coordinate descent)</td></tr>
+    <tr><td>Coefficients shrink</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Zero coefficients</td><td>Never</td><td>Never</td><td><strong>Yes, many</strong></td></tr>
+    <tr><td>Feature selection</td><td>No</td><td>No</td><td><strong>Yes (automatic)</strong></td></tr>
+    <tr><td>Correlated features</td><td>Unstable</td><td>Groups them</td><td>Picks one arbitrarily</td></tr>
+    <tr><td>Constraint shape</td><td>None</td><td>Circle (L2 ball)</td><td>Diamond (L1 ball)</td></tr>
+    <tr><td>p &gt; N case</td><td>Ill-posed</td><td>Well-posed</td><td>Well-posed, sparse solution</td></tr>
+    <tr><td>Best for</td><td>Small p, low noise</td><td>Many correlated features</td><td>Sparse, high-dim problems</td></tr>
+  </table>
+
+  <h3>The Core Idea in Three Sentences</h3>
+  <div class="box" style="background:linear-gradient(90deg,#fdf2f8,#f5f3ff);">
+    <p style="font-size:1.02rem;"><strong>1.</strong> Fit a linear model, but add a penalty for large absolute coefficients: <code>Cost = SSE + λ·Σ|βⱼ|</code>.</p>
+    <p style="font-size:1.02rem;"><strong>2.</strong> Because the L1 penalty has a sharp "corner" at zero, many coefficients end up exactly 0 — the model performs feature selection automatically.</p>
+    <p style="font-size:1.02rem;"><strong>3.</strong> Choose λ by cross-validation: larger λ = sparser model, smaller λ = closer to OLS.</p>
+  </div>
+
+  <h3>How the Algorithm Learns (Step by Step)</h3>
+  <div class="box">
+    <h4>Step 1 — Standardise features</h4>
+    <p>Like Ridge, Lasso is sensitive to feature scale because the penalty treats all coefficients equally. Centre each feature to mean 0 and scale to standard deviation 1. Also centre the target y.</p>
+
+    <h4>Step 2 — State the penalised cost function</h4>
+    <div class="formula">
+      J(β) = Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − β<sub>0</sub> − Σ<sub>j=1</sub><sup>p</sup> β<sub>j</sub>x<sub>ij</sub> )² + λ · Σ<sub>j=1</sub><sup>p</sup> |β<sub>j</sub>|
+    </div>
+    <p>Note: the intercept β₀ is <em>not</em> penalised — only the slope coefficients are.</p>
+
+    <h4>Step 3 — Solve using coordinate descent</h4>
+    <p>Unlike Ridge, Lasso has <em>no closed-form solution</em>. The L1 penalty |β| is not differentiable at β = 0, so we cannot just set the gradient to zero. Instead, Lasso is solved by <strong>coordinate descent</strong>: optimise one coefficient at a time while holding the others fixed. Each update is a simple formula called the <strong>soft-thresholding operator</strong>:</p>
+    <div class="formula">
+      β<sub>j</sub> ← S<sub>λ</sub>( ρ<sub>j</sub> ) &nbsp; / &nbsp; ( Σ<sub>i</sub> x<sub>ij</sub>² )
+      <br><br>
+      where ρ<sub>j</sub> = Σ<sub>i</sub> x<sub>ij</sub> ( y<sub>i</sub> − ŷ<sub>i</sub><sup>(−j)</sup> ) &nbsp;(partial residual correlation)
+      <br><br>
+      S<sub>λ</sub>(z) = sign(z) · max( |z| − λ, 0 ) &nbsp;(soft-thresholding)
+    </div>
+    <p>Iterate over all j = 1…p, then repeat until convergence. Each coefficient either stays at its current value (if |ρⱼ| &gt; λ), shrinks toward zero, or snaps to exactly 0 (if |ρⱼ| ≤ λ). <em>This is where the sparsity comes from.</em></p>
+
+    <h4>Step 4 — Choose λ by cross-validation</h4>
+    <p>λ controls the trade-off between fit and sparsity. Use K-fold CV to find the λ that minimises out-of-sample error. Two common rules:</p>
+    <ul class="clean">
+      <li><strong>λ<sub>min</sub></strong> — the λ that gives the lowest CV error. More features.</li>
+      <li><strong>λ<sub>1SE</sub></strong> — the largest λ within 1 standard error of λ<sub>min</sub>. Sparser model, often preferred when interpretability matters.</li>
+    </ul>
+
+    <h4>Step 5 — Refit and evaluate</h4>
+    <p>Refit Lasso with the chosen λ on the full training set. Only the non-zero coefficients are the "selected features". Evaluate on a held-out test set or via cross-validation.</p>
+  </div>
+
+  <h3>🔬 Interactive: Lasso Coefficient Path — Watch Features Drop Out</h3>
+  <p style="color:var(--muted);font-size:.93rem;">This is the signature Lasso visual. Drag the λ slider to increase the penalty. Notice how coefficients <em>snap to exactly zero</em> one by one as λ grows. This is fundamentally different from Ridge, where coefficients shrink smoothly but never hit zero.</p>
+
+  <div class="fit-demo">
+    <div class="fit-controls">
+      <div class="info">
+        <div class="lbl">λ (lambda)</div>
+        <div class="val" id="lambdaVal" style="color:#db2777;">0.00</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Active features</div>
+        <div class="val" id="activeCount" style="color:#059669;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Sparsity</div>
+        <div class="val" id="sparsityVal" style="color:#7c3aed;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">||β||₁ (L1 norm)</div>
+        <div class="val" id="l1Norm" style="color:#dc2626;">—</div>
+      </div>
+      <button class="btn secondary" id="lambdaReset">↺ λ = 0 (OLS)</button>
+    </div>
+
+    <div class="fit-sliders">
+      <label>λ (log scale): <span id="lambdaLbl" style="color:var(--accent-dark);">0.00</span></label>
+      <input type="range" id="lambdaSlider" min="0" max="100" value="0" step="1">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Lasso Coefficient Paths — Features Drop Out as λ Increases</div>
+      <div id="coefPathChart" style="height:420px;"></div>
+      <div class="chart-note">Each line is a coefficient βⱼ. Watch them <strong>snap to zero</strong> one by one as λ grows. The dashed vertical line marks the current λ. Features whose coefficients reach zero are dropped from the model.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Lasso vs Ridge Paths — Side by Side</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The crucial difference: Ridge shrinks coefficients smoothly but keeps them all non-zero. Lasso drives coefficients to exactly zero, producing sparse models. This is why Lasso does feature selection but Ridge does not.</p>
+
+  <div class="grid2">
+    <div class="chart">
+      <div class="chart-title">🟣 Ridge (L2) Paths — Smooth Shrinkage</div>
+      <div id="ridgePathChart" style="height:380px;"></div>
+      <div class="chart-note">Coefficients shrink smoothly but never reach exactly zero.</div>
+    </div>
+    <div class="chart">
+      <div class="chart-title">🔴 Lasso (L1) Paths — Sparse Solutions</div>
+      <div id="lassoPathChart" style="height:380px;"></div>
+      <div class="chart-note">Coefficients hit exactly zero at different λ values — feature selection happens automatically.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Number of Non-Zero Features vs. λ</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The number of non-zero coefficients is called the <strong>active set</strong>. As λ increases, Lasso drops features one by one. This chart shows exactly when each feature is eliminated — the "regularisation path" of the active set.</p>
+
+  <div class="chart">
+    <div class="chart-title">Active Set Size vs. λ</div>
+    <div id="activeSetChart" style="height:400px;"></div>
+    <div class="chart-note">Each step down is a feature being eliminated. At λ = 0, all features are active (OLS). At λ = ∞, no features are active. Cross-validation typically chooses a λ in the middle.</div>
+  </div>
+
+  <h3>🔬 Interactive: L1 vs L2 Constraint Geometry</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Lasso minimises SSE subject to <code>Σ|βⱼ| ≤ t</code>. Geometrically, this constraint region is a <em>diamond</em> (L1 ball). The SSE ellipses touch the diamond at its <strong>corners</strong>, which lie on the axes — that's exactly where one or more coefficients equal zero. Ridge uses a circle, which touches the ellipses at smooth points that are never on an axis.</p>
+
+  <div class="chart">
+    <div class="chart-title">Why Lasso Produces Sparse Solutions: The Diamond vs. Circle</div>
+    <div id="geometryChart" style="height:480px;"></div>
+    <div class="chart-note">Blue ellipses = SSE contours. Purple diamond = L1 (Lasso) constraint. Green circle = L2 (Ridge) constraint. Red dot = Lasso solution (lands on a corner → β₂ = 0). Orange dot = Ridge solution (never on a corner → all β non-zero).</div>
+  </div>
+
+  <h3>🔬 Interactive: The Soft-Thresholding Operator</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Soft-thresholding is the beating heart of Lasso. Given a correlation ρⱼ, if |ρⱼ| ≤ λ, the coefficient becomes exactly zero. If |ρⱼ| &gt; λ, it's shrunk by λ toward zero. This is why Lasso is sparse — the "dead zone" around 0 removes weak signals entirely.</p>
+
+  <div class="fit-demo">
+    <div class="fit-controls">
+      <div class="info">
+        <div class="lbl">λ (threshold)</div>
+        <div class="val" id="softLambdaVal" style="color:#db2777;">1.00</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Dead zone width</div>
+        <div class="val" id="softDeadZone" style="color:#7c3aed;">±1.00</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Non-zero if</div>
+        <div class="val" id="softCondition" style="color:#059669;">|ρ| &gt; 1.00</div>
+      </div>
+    </div>
+    <div class="fit-sliders">
+      <label>λ (soft-threshold): <span id="softLambdaLbl" style="color:var(--accent-dark);">1.00</span></label>
+      <input type="range" id="softLambdaSlider" min="0" max="5" value="1" step="0.05">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Soft-Thresholding Operator S<sub>λ</sub>(ρ) = sign(ρ) · max(|ρ| − λ, 0)</div>
+      <div id="softChart" style="height:400px;"></div>
+      <div class="chart-note">X-axis = input correlation ρ. Y-axis = output coefficient β. The red dashed lines show the dead zone (−λ, +λ) where the coefficient is forced to exactly zero. Outside the dead zone, the coefficient is shifted by λ toward zero.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Lasso on Correlated Features — The Instability Problem</h3>
+  <p style="color:var(--muted);font-size:.93rem;">When two features are highly correlated, Lasso tends to pick one arbitrarily and drop the other. Click "Generate New Dataset" to see how the chosen feature flips between runs — this is Lasso's biggest weakness.</p>
+
+  <div class="fit-demo">
+    <div class="fit-controls">
+      <div class="info">
+        <div class="lbl">Correlation</div>
+        <div class="val" id="corrVal" style="color:#7c3aed;">0.95</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Chosen feature</div>
+        <div class="val" id="chosenFeat" style="color:#db2777;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">β₁ / β₂</div>
+        <div class="val" id="coefRatio" style="color:#059669;">—</div>
+      </div>
+      <button class="btn" id="corrRegen">🔀 Generate New Dataset</button>
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Lasso Coefficient Distribution Across 20 Random Datasets</div>
+      <div id="corrChart" style="height:400px;"></div>
+      <div class="chart-note">Two highly correlated features (r ≈ 0.95). Lasso randomly picks one to keep and sets the other to zero. The choice flips between runs — bad for interpretation, though predictions remain stable.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>Lasso is the go-to tool whenever you have <em>many features, sparse signals, and a need for interpretability</em>. It is the workhorse of high-dimensional statistics.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🧬 Genomics &amp; Bioinformatics</h4>
+      <ul class="clean">
+        <li><strong>SNP selection (GWAS)</strong> — identify the few genetic variants associated with a disease out of millions.</li>
+        <li><strong>Gene expression classifiers</strong> — pick biomarkers from 20,000 genes with only 100 samples.</li>
+        <li><strong>Microbiome analysis</strong> — sparse selection of bacterial taxa.</li>
+        <li><strong>Single-cell RNA-seq</strong> — feature selection from thousands of genes.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📝 Text &amp; NLP</h4>
+      <ul class="clean">
+        <li><strong>Document classification</strong> — Lasso on TF-IDF features picks the most discriminative words.</li>
+        <li><strong>Spam filtering</strong> — sparse model using only informative tokens.</li>
+        <li><strong>Sentiment analysis</strong> — sparse feature selection from n-grams.</li>
+        <li><strong>Topic modelling</strong> — sparse topic-word associations.</li>
+        <li><strong>Named entity recognition</strong> — sparse feature sets.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏥 Healthcare &amp; Epidemiology</h4>
+      <ul class="clean">
+        <li><strong>Biomarker discovery</strong> — from hundreds of clinical variables.</li>
+        <li><strong>Risk score construction</strong> — sparse, interpretable medical scores.</li>
+        <li><strong>Radiomics feature selection</strong> — from hundreds of image features.</li>
+        <li><strong>Drug response prediction</strong> — sparse genomic signatures.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>💰 Finance &amp; Economics</h4>
+      <ul class="clean">
+        <li><strong>Sparse portfolio construction</strong> — few assets, easier to trade.</li>
+        <li><strong>Index tracking</strong> — pick a small subset to replicate an index.</li>
+        <li><strong>Factor selection</strong> — identify which factors matter for returns.</li>
+        <li><strong>Credit scoring</strong> — sparse interpretable scorecards.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📈 Marketing &amp; Business</h4>
+      <ul class="clean">
+        <li><strong>Marketing mix modelling</strong> — identify which channels actually drive sales.</li>
+        <li><strong>Customer segmentation</strong> — sparse behavioural features.</li>
+        <li><strong>Feature selection for downstream models</strong> — Lasso as a preprocessing step.</li>
+        <li><strong>A/B test analysis</strong> — sparse covariate adjustment.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Engineering &amp; Signal Processing</h4>
+      <ul class="clean">
+        <li><strong>Compressed sensing</strong> — recover sparse signals from few measurements.</li>
+        <li><strong>Sensor selection</strong> — choose informative sensors out of many.</li>
+        <li><strong>System identification</strong> — sparse models of dynamical systems.</li>
+        <li><strong>Image denoising</strong> — sparse wavelet coefficients.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>When is Lasso the right tool?</strong> If you have many features, you suspect only a few matter, and you want an interpretable sparse model, Lasso is the natural choice. It is the modern default for high-dimensional regression in genomics, text, and signal processing.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Automatic feature selection</strong> — the biggest selling point. Lasso drives many coefficients to exactly zero, so the model only uses the features that matter.</li>
+    <li><strong>Sparse, interpretable models</strong> — with only a handful of non-zero coefficients, the model is easy to explain and audit.</li>
+    <li><strong>Works when p &gt; N</strong> — with more features than samples, Lasso still produces a unique sparse solution (unlike OLS which is ill-posed).</li>
+    <li><strong>Handles high-dimensional data</strong> — designed for the p ≫ N regime. Genomics, text, and imaging are all natural fits.</li>
+    <li><strong>Reduces overfitting</strong> — the L1 penalty provides strong regularisation, especially for noisy or sparse problems.</li>
+    <li><strong>Faster than L0 regularisation</strong> — exact L0 (best subset selection) is NP-hard. Lasso is a convex relaxation solvable in polynomial time.</li>
+    <li><strong>Coordinate descent is very fast</strong> — for typical p, Lasso trains in milliseconds to seconds.</li>
+    <li><strong>Handles multicollinearity by picking one</strong> — when two features are correlated, Lasso drops one and keeps the other, producing a simpler model (though which one is arbitrary).</li>
+    <li><strong>Produces exact zero coefficients</strong> — the model file is smaller because zero coefficients don't need to be stored.</li>
+    <li><strong>Theoretical guarantees</strong> — under the irrepresentable condition, Lasso recovers the true support with high probability.</li>
+    <li><strong>Foundation for advanced methods</strong> — Adaptive Lasso, Group Lasso, Fused Lasso, Sparse Group Lasso, and Elastic Net all build on Lasso.</li>
+    <li><strong>Used as a feature selector for other models</strong> — run Lasso, keep the non-zero features, then fit a nonlinear model (e.g. XGBoost) on just those.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">✂️</div>
+      <h4 style="color:var(--accent-dark);">Sparse</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Automatically selects features.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🔍</div>
+      <h4 style="color:var(--accent-dark);">Interpretable</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Only non-zero features matter.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent-dark);">Fast</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Coordinate descent converges quickly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Unstable with correlated features</strong> — when two features are highly correlated, Lasso arbitrarily picks one and drops the other. The chosen feature can flip across runs, which is bad for interpretation.</li>
+    <li><strong>No grouping of correlated features</strong> — Ridge keeps correlated features together (splitting the weight), Lasso drops all but one. Use Group Lasso or Elastic Net if grouping matters.</li>
+    <li><strong>Biased estimates</strong> — the L1 penalty introduces bias. Lasso is great for prediction but not for estimating unbiased effects.</li>
+    <li><strong>No closed-form solution</strong> — requires iterative coordinate descent. Slower than Ridge's single matrix inversion on moderate p.</li>
+    <li><strong>Requires standardisation</strong> — because the penalty treats coefficients equally, features must be on the same scale.</li>
+    <li><strong>Sensitive to λ</strong> — λ must be tuned by cross-validation. Poor λ gives either overfitting (small λ) or over-sparse models (large λ).</li>
+    <li><strong>Inconsistent feature selection under collinearity</strong> — even with large samples, Lasso may pick the "wrong" correlated feature. Adaptive Lasso fixes this asymptotically.</li>
+    <li><strong>Limited to p &lt; N for consistent selection</strong> — support recovery requires strong conditions (irrepresentable condition). Under weaker conditions, Lasso may not find the true features.</li>
+    <li><strong>Can drop true signals if they're correlated with irrelevant features</strong> — this is the "double-edged sword" of L1.</li>
+    <li><strong>No p-values or confidence intervals directly</strong> — the estimates are biased, so standard OLS inference doesn't apply. Use bootstrap or post-selection inference.</li>
+    <li><strong>Cannot represent smooth effects</strong> — if a feature's true effect is smooth but weak, Lasso may drop it. Fusion penalties or smoothing splines help.</li>
+    <li><strong>Sensitive to outliers</strong> — squared error loss means outliers dominate. Use Huber-Lasso or quantile-Lasso for robustness.</li>
+    <li><strong>Assumes linearity</strong> — inherits all the linear-regression assumptions (linearity, independence, homoscedasticity).</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#fdf2f8);">
+    <strong>The correlated-features trap:</strong> Imagine you have "Income" and "Salary" — two features with 0.98 correlation. Lasso will randomly drop one and keep the other. Run the model again on a new sample and it might flip. Your prediction is fine, but you cannot confidently say "Income matters more than Salary." For that, use Ridge, Elastic Net, or Group Lasso.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>These are measured <strong>before</strong> the model goes live, using a held-out test set or cross-validation. They answer: <em>"Is this model good enough to ship?"</em></p>
+
+  <h3>5.1 Regression Accuracy KPIs</h3>
+
+  <div class="metric reg">
+    <h4>MAE (Mean Absolute Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The average size of the prediction error, in the same units as the target. Robust to outliers.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> | y<sub>i</sub> − ŷ<sub>i</sub> |
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Actual = [100, 200, 300], Predicted = [110, 190, 320]<br>
+      Errors = |−10|, |10|, |−20| = 10, 10, 20<br>
+      MAE = (10 + 10 + 20) / 3 = <code>13.33</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> On average, the prediction is off by 13.33 units. Easy to explain to stakeholders.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want an easy-to-explain metric and all errors have equal importance.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Large errors are dramatically worse than small ones (use RMSE).</div>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>MSE (Mean Squared Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The average of squared errors. Lasso minimises this plus the L1 penalty.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MSE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )²
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Errors = [−10, 10, −20]<br>
+      MSE = (100 + 100 + 400) / 3 = <code>200</code>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>RMSE (Root Mean Squared Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The square root of MSE, bringing the metric back to the original units of the target.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      RMSE = √[ (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )² ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> MSE = 200<br>
+      RMSE = √200 = <code>14.14</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> RMSE ≥ MAE always. The ratio RMSE/MAE ≈ 1.25 suggests roughly Gaussian residuals.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Large errors are genuinely worse (e.g. financial forecasting).</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> The target has outliers you don't care about — use MAE.</div>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>R² (Coefficient of Determination) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The proportion of the target's variance that the model explains.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      R² = 1 − ( SS<sub>res</sub> / SS<sub>tot</sub> )
+      <br><br>
+      SS<sub>res</sub> = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² &nbsp;&nbsp;(residual sum of squares)
+      <br>
+      SS<sub>tot</sub> = Σ ( y<sub>i</sub> − ȳ )² &nbsp;&nbsp;(total sum of squares)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> y = [100, 200, 300], ŷ = [110, 190, 320], ȳ = 200<br>
+      SS<sub>res</sub> = 600, SS<sub>tot</sub> = 20,000<br>
+      R² = 1 − (600 / 20,000) = <code>0.97</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> R² = 1 → perfect; R² = 0 → no better than predicting the mean.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want a scale-free measure of how well the model fits.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Comparing models with different numbers of features — use Adjusted R².</div>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>Adjusted R² <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> R² penalised for the number of predictors. Useful when comparing Lasso models with different active-set sizes.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Adjusted R² = 1 − [ (1 − R²) · (N − 1) ] / (N − p<sub>active</sub> − 1)
+      <br><br>
+      p<sub>active</sub> = number of non-zero coefficients (the active set size)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> R² = 0.97, N = 100, p<sub>active</sub> = 5<br>
+      Adjusted R² = 1 − [(1 − 0.97) · 99] / 94 = 1 − 2.97/94 = <code>0.968</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Use p<sub>active</sub> (non-zero coefficients) — not the total number of features — for Lasso.</div>
+  </div>
+
+  <div class="metric reg">
+    <h4>MAPE (Mean Absolute Percentage Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAPE = (100% / N) · Σ<sub>i=1</sub><sup>N</sup> | ( y<sub>i</sub> − ŷ<sub>i</sub> ) / y<sub>i</sub> |
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> y = [100, 200, 300], ŷ = [110, 190, 320]<br>
+      Errors % = 0.10, 0.05, 0.0667<br>
+      MAPE = (0.10 + 0.05 + 0.0667) / 3 × 100 = <code>7.22%</code>
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Reporting to business stakeholders and actual values are well above zero.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Actual values can be zero — MAPE explodes.</div>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>SMAPE (Symmetric Mean Absolute Percentage Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      SMAPE = (100% / N) · Σ<sub>i=1</sub><sup>N</sup> | y<sub>i</sub> − ŷ<sub>i</sub> | / [ (|y<sub>i</sub>| + |ŷ<sub>i</sub>|) / 2 ]
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0% to 200% (lower is better). Handles zero values better than MAPE.</div>
+  </div>
+
+  <div class="metric reg">
+    <h4>MSLE (Mean Squared Logarithmic Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MSLE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( log(1 + y<sub>i</sub>) − log(1 + ŷ<sub>i</sub>) )²
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> The target spans several orders of magnitude.</div>
+    </div>
+  </div>
+
+  <h3>5.2 Lasso-Specific KPIs</h3>
+
+  <div class="metric lasso">
+    <h4>Sparsity Ratio <span class="badge">Lasso-Specific</span></h4>
+    <p><strong>What it measures:</strong> The fraction of coefficients that are exactly zero. Higher = sparser model = fewer features needed at inference.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Sparsity = ( # of zero coefficients ) / ( total # of coefficients ) = ( p − p<sub>active</sub> ) / p
+      <br><br>
+      <span class="lbl">Interpretation</span>
+      Sparsity = 0 → OLS (no features dropped)
+      <br>
+      Sparsity = 1 → no features used (all dropped)
+      <br>
+      Typical: 0.7–0.99 in high-dimensional problems
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> If sparsity is 0.98, only 2% of features are used in the final model. This is a huge win for interpretability and inference speed.</div>
+  </div>
+
+  <div class="metric lasso">
+    <h4>Active Set Size (p<sub>active</sub>) <span class="badge">Lasso-Specific</span></h4>
+    <p><strong>What it measures:</strong> The number of non-zero coefficients. This is the "true" number of parameters used.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      p<sub>active</sub> = Σ<sub>j=1</sub><sup>p</sup> 𝟙( β̂<sub>j</sub> ≠ 0 )
+      <br><br>
+      <span class="lbl">Relationship to λ</span>
+      Larger λ → smaller p<sub>active</sub> (monotonically decreasing).
+      <br>
+      At λ = 0, p<sub>active</sub> = p (OLS).
+      <br>
+      At λ = λ<sub>max</sub>, p<sub>active</sub> = 0 (all coefficients zero).
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> p<sub>active</sub> is the Lasso model's effective complexity. It's what you report to stakeholders: "Our model uses 12 features out of 500."</div>
+  </div>
+
+  <div class="metric lasso">
+    <h4>λ<sub>max</sub> — the Smallest Penalty that Zeroes Everything <span class="badge">Lasso-Specific</span></h4>
+    <p><strong>What it measures:</strong> The value of λ at which all coefficients become exactly zero. This is the natural upper bound for λ search.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      λ<sub>max</sub> = max<sub>j</sub> | Σ<sub>i=1</sub><sup>N</sup> x<sub>ij</sub> y<sub>i</sub> |
+      <br><br>
+      (assuming standardised features and centred y)
+      <br><br>
+      <span class="lbl">Typical λ grid</span>
+      Log-spaced from λ<sub>max</sub> down to λ<sub>max</sub> × 10<sup>−4</sup>.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Never search for λ above λ<sub>max</sub> — the model would be all-zero. Most software (glmnet, sklearn) generates the path automatically.</div>
+  </div>
+
+  <div class="metric lasso">
+    <h4>Support Recovery (When True Model is Known) <span class="badge">Lasso-Specific</span></h4>
+    <p><strong>What it measures:</strong> How well the Lasso-selected features match the true non-zero features (in simulation studies).</p>
+    <div class="formula">
+      <span class="lbl">Precision of Selection</span>
+      Precision<sub>sel</sub> = |S<sub>true</sub> ∩ S<sub>est</sub>| / |S<sub>est</sub>|
+      <br><br>
+      <span class="lbl">Recall of Selection</span>
+      Recall<sub>sel</sub> = |S<sub>true</sub> ∩ S<sub>est</sub>| / |S<sub>true</sub>|
+      <br><br>
+      <span class="lbl">F1 of Selection</span>
+      F1<sub>sel</sub> = 2 · P · R / (P + R)
+      <br><br>
+      S<sub>true</sub> = true set of non-zero coefficients
+      <br>
+      S<sub>est</sub> = estimated set (Lasso non-zeros)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Precision high = few false discoveries. Recall high = few missed features. F1 balances both.</div>
+  </div>
+
+  <div class="metric lasso">
+    <h4>λ (Lambda) — Regularisation Strength <span class="badge">Lasso-Specific</span></h4>
+    <div class="formula">
+      <span class="lbl">Range</span>
+      λ ∈ [0, λ<sub>max</sub>]
+      <br><br>
+      <span class="lbl">Special cases</span>
+      λ = 0 → OLS (no penalty, all features)
+      <br>
+      λ → λ<sub>max</sub> → all β<sub>j</sub> = 0 (empty model)
+      <br><br>
+      <span class="lbl">Selection method</span>
+      K-fold CV. Choose λ<sub>min</sub> (min CV error) or λ<sub>1SE</sub> (largest λ within 1 SE of the minimum).
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> λ<sub>1SE</sub> is often preferred because it gives a sparser, more interpretable model with almost identical predictive performance.</div>
+  </div>
+
+  <div class="metric lasso">
+    <h4>L1 Norm of Coefficients ||β||₁ <span class="badge">Lasso-Specific</span></h4>
+    <p><strong>What it measures:</strong> The total absolute magnitude of the coefficients.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ||β||₁ = Σ<sub>j=1</sub><sup>p</sup> |β<sub>j</sub>|
+      <br><br>
+      <span class="lbl">Effect of λ</span>
+      As λ increases, ||β||₁ monotonically decreases.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Track ||β||₁ across λ values to see how aggressively Lasso is shrinking. It hits 0 at λ = λ<sub>max</sub>.</div>
+  </div>
+
+  <h3>5.3 Model Quality &amp; Robustness KPIs</h3>
+
+  <div class="metric">
+    <h4>Cross-Validation Score <span class="badge">Robustness</span></h4>
+    <div class="formula">
+      <span class="lbl">K-Fold CV Score</span>
+      CV = (1/K) · Σ<sub>k=1</sub><sup>K</sup> Metric<sub>k</sub>
+      <br><br>
+      <span class="lbl">Standard deviation (stability)</span>
+      σ<sub>CV</sub> = √[ (1/K) · Σ<sub>k</sub> ( Metric<sub>k</sub> − CV )² ]
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The CV curve over λ is what tells you the optimal penalty. Always plot CV error vs. log(λ).</div>
+  </div>
+
+  <div class="metric">
+    <h4>Train–Test Gap (Overfitting Indicator) <span class="badge">Robustness</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Gap = Metric<sub>test</sub> − Metric<sub>train</sub>
+      <br><br>
+      For R²: Gap = R²<sub>train</sub> − R²<sub>test</sub>
+    </div>
+    <div class="interp">
+      <strong>Rule of thumb:</strong><br>
+      • Gap &lt; 5% → healthy<br>
+      • Gap 5–10% → mild overfitting, increase λ<br>
+      • Gap &gt; 10% → serious overfitting, increase λ significantly
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Residual Diagnostics <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> Whether the linear-model assumptions hold.</p>
+    <ul class="clean">
+      <li><strong>Residuals vs. Fitted</strong> — random scatter around 0. Curves = non-linearity. Funnels = heteroscedasticity.</li>
+      <li><strong>QQ Plot</strong> — residuals should lie on a 45° line.</li>
+      <li><strong>Residuals vs. Order</strong> — check for autocorrelation (Durbin-Watson).</li>
+      <li><strong>Residuals vs. Selected Features</strong> — patterns indicate misspecification.</li>
+    </ul>
+  </div>
+
+  <div class="metric lasso">
+    <h4>VIF (Variance Inflation Factor) <span class="badge">Multicollinearity</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      VIF<sub>j</sub> = 1 / (1 − R²<sub>j</sub>)
+      <br><br>
+      R²<sub>j</sub> = R² from regressing feature j on the other selected features.
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong><br>
+      • VIF = 1 → no correlation<br>
+      • VIF 1–5 → moderate<br>
+      • VIF 5–10 → concerning<br>
+      • VIF &gt; 10 → severe multicollinearity
+      <br><br>
+      Lasso reduces VIF by dropping correlated features, but the remaining features may still have high VIF.
+    </div>
+  </div>
+
+  <div class="metric lasso">
+    <h4>AIC / BIC for Lasso <span class="badge">Model Selection</span></h4>
+    <div class="formula">
+      <span class="lbl">AIC (approx.)</span>
+      AIC = 2·p<sub>active</sub> − 2·ℓ̂ + constant
+      <br><br>
+      <span class="lbl">BIC (approx.)</span>
+      BIC = ln(N)·p<sub>active</sub> − 2·ℓ̂ + constant
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Use p<sub>active</sub> (non-zero coefficients) as the effective degrees of freedom. Lower AIC/BIC is better.</div>
+  </div>
+
+  <h3>5.4 📊 Interactive: Actual vs. Predicted &amp; Residuals</h3>
+  <div class="chart">
+    <div class="chart-title">Diagnostic Plots for Lasso Regression</div>
+    <div id="diagnosticChart" style="height:420px;"></div>
+    <div class="chart-note">Left: predicted vs. actual — a well-fit Lasso model lies on the 45° line. Right: residuals vs. fitted — should be randomly scattered around zero with no funnel shape.</div>
+  </div>
+
+  <h3>5.5 📊 Interactive: R² Decomposition</h3>
+  <div class="chart">
+    <div class="chart-title">R² — Explained vs. Unexplained Variance</div>
+    <div id="r2Chart" style="height:400px;"></div>
+    <div class="chart-note">Total variance = SS<sub>tot</sub>. Explained variance = SS<sub>tot</sub> − SS<sub>res</sub>. R² = explained / total.</div>
+  </div>
+
+  <h3>5.6 🧮 Interactive: KPI Calculator</h3>
+  <p>Enter your own actual and predicted values (comma-separated) to compute every regression KPI live.</p>
+
+  <div class="calc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;">
+    <div>
+      <label style="display:block;font-size:.82rem;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Actual values (y)</label>
+      <input type="text" id="inActual" value="100, 200, 300, 400, 500" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:.95rem;font-weight:600;font-family:monospace;">
+    </div>
+    <div>
+      <label style="display:block;font-size:.82rem;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;">Predicted values (ŷ)</label>
+      <input type="text" id="inPredicted" value="110, 190, 320, 380, 520" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:.95rem;font-weight:600;font-family:monospace;">
+    </div>
+  </div>
+
+  <div class="results-grid" id="kpiResults" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0;"></div>
+
+  <div class="chart">
+    <div class="chart-title">Live Actual vs. Predicted &amp; Residuals</div>
+    <div id="liveKpiChart" style="height:400px;"></div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once the model is live, you're no longer asking <em>"is it accurate?"</em> — you're asking <em>"is it still accurate today, and is anything silently breaking?"</em></p>
+
+  <h3>6.1 Data &amp; Model Health KPIs</h3>
+
+  <div class="metric post">
+    <h4>PSI (Population Stability Index) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI = Σ<sub>i=1</sub><sup>B</sup> ( Actual%<sub>i</sub> − Expected%<sub>i</sub> ) · ln( Actual%<sub>i</sub> / Expected%<sub>i</sub> )
+      <br><br>
+      B = number of bins (usually 10 deciles)
+      <br>
+      Expected%<sub>i</sub> = % of training samples in bin i
+      <br>
+      Actual%<sub>i</sub> = % of production samples in bin i
+    </div>
+    <div class="interp">
+      <strong>Interpretation thresholds:</strong><br>
+      • PSI &lt; 0.10 → no significant change, model is stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → moderate shift, monitor closely ⚠️<br>
+      • PSI ≥ 0.25 → major shift, retrain the model 🚨
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>KS Statistic (Kolmogorov–Smirnov) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      KS = max<sub>x</sub> | F<sub>train</sub>(x) − F<sub>prod</sub>(x) |
+      <br><br>
+      F(x) = empirical cumulative distribution function
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. Higher = more drift. A p-value &lt; 0.05 indicates statistically significant drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>KL Divergence (Kullback–Leibler) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      D<sub>KL</sub>(P ‖ Q) = Σ<sub>i</sub> P(i) · log( P(i) / Q(i) )
+      <br><br>
+      P = production distribution &nbsp;|&nbsp; Q = training distribution
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 0 = identical distributions. Higher = more drift. Not symmetric.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Concept Drift (Performance Decay) <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Drift Magnitude = Metric<sub>validation</sub> − Metric<sub>live</sub>
+      <br><br>
+      <span class="lbl">Relative decay</span>
+      Decay % = ( Metric<sub>validation</sub> − Metric<sub>live</sub> ) / Metric<sub>validation</sub> × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Decay &gt; 10% typically triggers a retraining investigation.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Prediction Distribution Shift <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI<sub>pred</sub> = Σ ( ProdPred%<sub>i</sub> − TrainPred%<sub>i</sub> ) · ln( ProdPred%<sub>i</sub> / TrainPred%<sub>i</sub> )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A sudden jump signals a pipeline problem or concept drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Active Set Stability <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the same features remain selected across production retrains. Highly relevant for Lasso because feature selection can be unstable.</p>
+    <div class="formula">
+      <span class="lbl">Stability</span>
+      Stability = |S<sub>train</sub> ∩ S<sub>prod</sub>| / |S<sub>train</sub> ∪ S<sub>prod</sub>|
+      <br><br>
+      Jaccard index between the training active set and the production refit active set.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Stability close to 1 = the same features keep getting selected. Low values suggest collinearity or drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Missing Value Rate <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Missing % = ( Missing values / Total values ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lasso cannot handle missing values natively, so a spike in missingness directly degrades predictions.</div>
+  </div>
+
+  <h3>6.2 Live Performance KPIs</h3>
+
+  <div class="metric post">
+    <h4>Live RMSE / MAE / R² <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Same formulas as pre-deployment</span>
+      Live RMSE = √[ (1/N<sub>live</sub>) · Σ ( y<sub>live</sub> − ŷ<sub>live</sub> )² ]
+      <br>
+      Live R² = 1 − SS<sub>res,live</sub> / SS<sub>tot,live</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ground truth often arrives with a delay. Set up automated pipelines to compute these as soon as labels arrive.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Actual vs. Predicted Monitoring <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Delta<sub>t</sub> = Metric<sub>predicted,t</sub> − Metric<sub>actual,t</sub>
+      <br><br>
+      <span class="lbl">CUSUM (cumulative sum control chart)</span>
+      CUSUM<sub>t</sub> = max(0, CUSUM<sub>t−1</sub> + Delta<sub>t</sub> − k)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A steadily rising CUSUM indicates systematic drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Model Age / Time Since Retrain <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Model Age = Current Date − Last Retrain Date
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Many teams set a hard limit (e.g. 90 days) as a retraining trigger.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Latency Percentiles (p50, p95, p99) <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Definition</span>
+      p95 = the latency value below which 95% of requests fall
+    </div>
+    <div class="interp"><strong>Target example:</strong> Lasso with a sparse model is extremely fast. p50 &lt; 1 ms, p95 &lt; 5 ms, p99 &lt; 20 ms is typical.</div>
+  </div>
+
+  <h3>6.3 Operational &amp; Business KPIs</h3>
+
+  <div class="metric post">
+    <h4>Throughput <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Throughput = Total predictions served / Time window
+      <br><br>
+      <span class="lbl">Utilisation</span>
+      Utilisation % = (Actual throughput / Peak capacity) × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Error Rate / Failure Rate <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Error Rate % = ( Failed requests / Total requests ) × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Uptime / Availability <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Uptime % = ( Total time − Downtime ) / Total time × 100%
+      <br><br>
+      <span class="lbl">Common targets</span>
+      99% &nbsp;→ 3.65 days downtime/year<br>
+      99.9% &nbsp;→ 8.77 hours downtime/year<br>
+      99.99% → 52.6 minutes downtime/year
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Business Impact KPI <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Example formulas</span>
+      Revenue Uplift = Revenue<sub>with model</sub> − Revenue<sub>without model</sub>
+      <br>
+      Cost Saved = ( Errors<sub>without</sub> − Errors<sub>with</sub> ) × Cost per error
+      <br>
+      Forecast Accuracy % = ( 1 − MAPE ) × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>ROI (Return on Investment) <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ROI % = ( Net Gain / Total Cost ) × 100%
+      <br><br>
+      Net Gain = Business Value Generated − Total Cost
+      <br>
+      Total Cost = Development + Infrastructure + Maintenance + Monitoring
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Value generated = ₹5,00,000. Total cost = ₹1,00,000.<br>
+      Net Gain = ₹4,00,000. ROI = (4,00,000 / 1,00,000) × 100 = <code>400%</code>
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Human Override Rate <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Override Rate % = ( Overrides / Total decisions ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A high override rate (e.g. &gt; 30%) means users don't trust the model.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Alert / Incident Count <span class="badge">Governance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Alert Rate = Alerts triggered / Time period
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#fdf2f8);">
+    <strong>Golden rule:</strong> A Lasso Regression model is not "done" when it's deployed. It's done when it's retired. Post-deployment monitoring is what keeps it from silently degrading.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How Lasso Regression Actually Works</h2>
+  <p>The core idea: <strong>minimise the sum of squared errors subject to a penalty on the sum of absolute coefficients.</strong> Here are the formulas.</p>
+
+  <h3>7.1 The Lasso Cost Function</h3>
+  <div class="formula">
+    <span class="lbl">Cost function</span>
+    J(β) = Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − β<sub>0</sub> − Σ<sub>j=1</sub><sup>p</sup> β<sub>j</sub>x<sub>ij</sub> )² + λ · Σ<sub>j=1</sub><sup>p</sup> |β<sub>j</sub>|
+    <br><br>
+    <span class="lbl">Matrix form</span>
+    J(β) = ||y − Xβ||² + λ · ||β||₁
+    <br><br>
+    <span class="lbl">Note</span>
+    The intercept β<sub>0</sub> is <strong>not</strong> penalised.
+  </div>
+
+  <h3>7.2 No Closed-Form Solution</h3>
+  <p>Unlike Ridge, Lasso cannot be solved by a single matrix inversion. The reason: the L1 penalty |β| has a kink at β = 0, so it is not differentiable there. The gradient is:</p>
+  <div class="formula">
+    <span class="lbl">Subgradient of |β| at 0</span>
+    ∂|β| / ∂β = 
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;+1 &nbsp;&nbsp;if β &gt; 0
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;−1 &nbsp;&nbsp;if β &lt; 0
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;[−1, +1] &nbsp;&nbsp;if β = 0
+    <br><br>
+    <span class="lbl">Why this matters</span>
+    Because the subgradient at 0 contains the entire interval [−1, +1],
+    <br>
+    the optimal solution can have βⱼ = 0 exactly (unlike Ridge, where the gradient is smooth).
+  </div>
+
+  <h3>7.3 Constrained (Lagrangian) Form</h3>
+  <div class="formula">
+    <span class="lbl">Constrained optimisation</span>
+    minimise&nbsp;&nbsp; Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )²
+    <br>
+    subject to&nbsp;&nbsp; Σ<sub>j=1</sub><sup>p</sup> |β<sub>j</sub>| ≤ t
+    <br><br>
+    <span class="lbl">Lagrangian</span>
+    L(β, λ) = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² + λ ( Σ |β<sub>j</sub>| − t )
+    <br><br>
+    <span class="lbl">Relationship</span>
+    Larger λ ↔ smaller t ↔ sparser solution.
+  </div>
+
+  <h3>7.4 Coordinate Descent Algorithm</h3>
+  <p>Lasso is solved one coefficient at a time, holding all others fixed.</p>
+  <div class="formula">
+    <span class="lbl">For each j = 1, …, p, repeat until convergence:</span>
+    <br><br>
+    1. Compute the partial residual (excluding feature j):
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;r<sub>i</sub><sup>(−j)</sup> = y<sub>i</sub> − Σ<sub>k ≠ j</sub> β<sub>k</sub> x<sub>ik</sub>
+    <br><br>
+    2. Compute the correlation of feature j with the partial residual:
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;ρ<sub>j</sub> = Σ<sub>i=1</sub><sup>N</sup> x<sub>ij</sub> · r<sub>i</sub><sup>(−j)</sup>
+    <br><br>
+    3. Apply the soft-thresholding operator:
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;β<sub>j</sub> ← S<sub>λ</sub>( ρ<sub>j</sub> ) / ( Σ<sub>i</sub> x<sub>ij</sub>² )
+    <br><br>
+    <span class="lbl">Soft-thresholding operator</span>
+    S<sub>λ</sub>(z) = sign(z) · max( |z| − λ, 0 )
+    <br><br>
+    <span class="lbl">Interpretation</span>
+    If |ρ<sub>j</sub>| ≤ λ → β<sub>j</sub> = 0 &nbsp;(feature dropped)
+    <br>
+    If |ρ<sub>j</sub>| &gt; λ → β<sub>j</sub> shrunk by λ toward zero
+  </div>
+
+  <h3>7.5 Soft-Thresholding Explained</h3>
+  <p>This is the key operator that makes Lasso sparse.</p>
+  <div class="formula">
+    <span class="lbl">Definition</span>
+    S<sub>λ</sub>(z) = 
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;z − λ &nbsp;&nbsp;if z &gt; λ
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if −λ ≤ z ≤ λ
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;z + λ &nbsp;&nbsp;if z &lt; −λ
+    <br><br>
+    <span class="lbl">Compact form</span>
+    S<sub>λ</sub>(z) = sign(z) · max( |z| − λ, 0 )
+    <br><br>
+    <span class="lbl">Why it produces zeros</span>
+    Any |z| ≤ λ is forced to 0. The larger λ, the wider the "dead zone".
+    <br>
+    This is fundamentally different from Ridge's multiplicative shrinkage
+    <br>
+    (Ridge shrinks by a factor; Lasso shifts by a constant).
+  </div>
+
+  <h3>7.6 Ridge vs. Lasso Shrinkage Operators</h3>
+  <div class="formula">
+    <span class="lbl">Ridge (L2) shrinkage</span>
+    β̂<sub>Ridge,j</sub> = ρ<sub>j</sub> / ( 1 + λ )
+    <br>
+    (multiplicative — shrinks by a constant factor, never reaches zero)
+    <br><br>
+    <span class="lbl">Lasso (L1) shrinkage</span>
+    β̂<sub>Lasso,j</sub> = sign(ρ<sub>j</sub>) · max( |ρ<sub>j</sub>| − λ, 0 )
+    <br>
+    (additive — shifts by λ, produces exact zeros)
+    <br><br>
+    <span class="lbl">This is the fundamental difference</span>
+    Multiplicative shrinkage → smooth, non-sparse (Ridge).
+    <br>
+    Additive shrinkage → piecewise-linear, sparse (Lasso).
+  </div>
+
+  <h3>7.7 λ<sub>max</sub> — The Upper Bound for λ</h3>
+  <div class="formula">
+    <span class="lbl">Formula</span>
+    λ<sub>max</sub> = max<sub>j</sub> | Σ<sub>i=1</sub><sup>N</sup> x<sub>ij</sub> y<sub>i</sub> |
+    <br><br>
+    (assuming standardised features and centred y)
+    <br><br>
+    <span class="lbl">Interpretation</span>
+    At λ ≥ λ<sub>max</sub>, all soft-thresholded correlations are zero → all β̂<sub>j</sub> = 0.
+    <br>
+    The typical λ grid runs log-spaced from λ<sub>max</sub> down to λ<sub>max</sub> × 10<sup>−4</sup>.
+  </div>
+
+  <h3>7.8 Bayesian Interpretation</h3>
+  <p>Lasso is the MAP estimate under a <strong>Laplace prior</strong> on the coefficients (Ridge uses a Gaussian prior).</p>
+  <div class="formula">
+    <span class="lbl">Prior on coefficients</span>
+    P(β<sub>j</sub>) ∝ exp( − |β<sub>j</sub>| / b ) &nbsp;&nbsp;(Laplace / double-exponential)
+    <br><br>
+    <span class="lbl">MAP estimate</span>
+    β̂<sub>MAP</sub> = argmax<sub>β</sub> [ log P(y | X, β) + log P(β) ]
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= argmin<sub>β</sub> [ ||y − Xβ||² + λ||β||₁ ]
+    <br><br>
+    <span class="lbl">Key insight</span>
+    The Laplace prior has a sharp peak at 0, which is why the posterior mode
+    <br>
+    puts many coefficients at exactly zero.
+  </div>
+
+  <h3>7.9 Assumptions of Lasso Regression</h3>
+  <div class="assumptions">
+    <div class="item">
+      <div class="letter">L</div>
+      <div class="name">Linearity</div>
+      <div class="desc">y is linear in X</div>
+    </div>
+    <div class="item">
+      <div class="letter">I</div>
+      <div class="name">Independence</div>
+      <div class="desc">Independent errors</div>
+    </div>
+    <div class="item">
+      <div class="letter">H</div>
+      <div class="name">Homoscedasticity</div>
+      <div class="desc">Constant error variance</div>
+    </div>
+    <div class="item">
+      <div class="letter">S</div>
+      <div class="name">Sparsity</div>
+      <div class="desc">True coefficients are sparse</div>
+    </div>
+    <div class="item">
+      <div class="letter">I</div>
+      <div class="name">Irrepresentable</div>
+      <div class="desc">Features not too correlated with irrelevant ones</div>
+    </div>
+    <div class="item">
+      <div class="letter">N</div>
+      <div class="name">Standardised</div>
+      <div class="desc">Features on the same scale</div>
+    </div>
+  </div>
+
+  <h3>7.10 Adaptive Lasso (Addressing the Instability)</h3>
+  <p>Adaptive Lasso adds per-feature weights to make selection consistent even with correlated features.</p>
+  <div class="formula">
+    <span class="lbl">Adaptive Lasso objective</span>
+    J(β) = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² + λ · Σ<sub>j</sub> w<sub>j</sub> |β<sub>j</sub>|
+    <br><br>
+    <span class="lbl">Common weight choice</span>
+    w<sub>j</sub> = 1 / |β̂<sub>j</sub><sup>init</sup>|<sup>γ</sup>
+    <br><br>
+    β̂<sup>init</sup> is an initial estimate (often from OLS or Ridge)
+    <br>
+    γ &gt; 0 is a tuning parameter (γ = 1 is common)
+    <br><br>
+    <span class="lbl">Effect</span>
+    Features with strong initial coefficients get small weights (less penalised).
+    <br>
+    Features with weak initial coefficients get large weights (more likely to be dropped).
+    <br>
+    Result: consistent selection, oracle property asymptotically.
+  </div>
+
+  <h3>7.11 Group Lasso (Handling Correlated Groups)</h3>
+  <p>When features come in natural groups, Group Lasso selects entire groups at once.</p>
+  <div class="formula">
+    <span class="lbl">Group Lasso objective</span>
+    J(β) = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² + λ · Σ<sub>g=1</sub><sup>G</sup> √p<sub>g</sub> · ||β<sub>g</sub>||₂
+    <br><br>
+    β<sub>g</sub> = coefficient subvector for group g
+    <br>
+    p<sub>g</sub> = number of features in group g
+    <br>
+    ||β<sub>g</sub>||₂ = L2 norm of the group's coefficients
+    <br><br>
+    <span class="lbl">Effect</span>
+    Entire groups are either all-in or all-out — correlated features within a group
+    <br>
+    are kept together, fixing Lasso's instability problem.
+  </div>
+
+  <h3>7.12 Elastic Net (Combining Ridge and Lasso)</h3>
+  <p>Elastic Net uses both L1 and L2 penalties to get the best of both worlds.</p>
+  <div class="formula">
+    <span class="lbl">Elastic Net objective</span>
+    J(β) = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² + λ [ (1 − α) · Σβ<sub>j</sub>² + α · Σ|β<sub>j</sub>| ]
+    <br><br>
+    α ∈ [0, 1] controls the L1/L2 mix:
+    <br>
+    α = 0 → pure Ridge (dense)
+    <br>
+    α = 1 → pure Lasso (sparse)
+    <br>
+    0 &lt; α &lt; 1 → hybrid
+    <br><br>
+    <span class="lbl">Why use it</span>
+    Elastic Net groups correlated features (like Ridge) while still producing sparse solutions (like Lasso).
+    <br>
+    It's the recommended default when you have correlated features.
+  </div>
+
+  <h3>📊 Interactive: Ridge vs. Lasso Shrinkage Curves</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Ridge shrinks multiplicatively (β̂ = ρ/(1+λ)). Lasso shrinks additively (β̂ = sign(ρ)·max(|ρ|−λ, 0)). Notice the different shapes: Ridge never reaches zero, Lasso has a hard dead zone.</p>
+  <div class="chart">
+    <div class="chart-title">Shrinkage: Ridge vs. Lasso</div>
+    <div id="shrinkageChart" style="height:400px;"></div>
+    <div class="chart-note">X-axis = input correlation ρ. Y-axis = output coefficient β̂. Ridge (purple) shrinks smoothly. Lasso (pink) has a dead zone |ρ| ≤ λ where the coefficient is exactly zero.</div>
+  </div>
+
+  <h3>📊 Interactive: λ Path of the Objective Function</h3>
+  <p style="color:var(--muted);font-size:.93rem;">As λ increases, the total cost J(β) increases (because the penalty grows) but the SSE part also increases (because coefficients are constrained). Lasso walks a balance between fitting the data and staying sparse.</p>
+  <div class="chart">
+    <div class="chart-title">SSE, L1 Penalty, and Total Cost vs. λ</div>
+    <div id="objectiveChart" style="height:400px;"></div>
+    <div class="chart-note">The total cost (red) is SSE + λ·||β||₁. As λ grows, the optimal coefficients shrink, SSE rises, but the penalty term ensures the total cost stays finite.</div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithm &amp; Model Concepts</h3>
+  <div class="gloss">
+    <div>ML</div><div><strong>Machine Learning</strong> — a field of AI where systems learn patterns from data instead of being explicitly programmed.</div>
+    <div>Lasso</div><div><strong>Least Absolute Shrinkage and Selection Operator</strong> — linear regression with an L1 penalty that produces sparse models.</div>
+    <div>OLS</div><div><strong>Ordinary Least Squares</strong> — standard linear regression without any penalty.</div>
+    <div>Ridge</div><div><strong>Ridge Regression</strong> — linear regression with an L2 penalty. Shrinks coefficients but never zeroes them.</div>
+    <div>Elastic Net</div><div>Linear regression with both L1 and L2 penalties combined.</div>
+    <div>L1</div><div>Penalty on the sum of absolute coefficients: Σ|βⱼ|. Used by Lasso.</div>
+    <div>L2</div><div>Penalty on the sum of squared coefficients: Σβⱼ². Used by Ridge.</div>
+    <div>L0</div><div>Penalty on the number of non-zero coefficients. NP-hard; Lasso is its convex relaxation.</div>
+    <div>Adaptive Lasso</div><div>Lasso with feature-specific weights for consistent selection under collinearity.</div>
+    <div>Group Lasso</div><div>Lasso that selects entire groups of features at once.</div>
+    <div>Fused Lasso</div><div>Lasso variant that penalises differences between adjacent coefficients — useful for ordered features (e.g. time).</div>
+    <div>Sparse Group Lasso</div><div>Combines Lasso (within-group sparsity) with Group Lasso (between-group sparsity).</div>
+    <div>Compressed Sensing</div><div>A signal-processing field where Lasso is used to recover sparse signals from few measurements.</div>
+  </div>
+
+  <h3>Coefficients &amp; Math</h3>
+  <div class="gloss">
+    <div>β</div><div>Coefficient vector — the weights learned by the model.</div>
+    <div>β̂ (Beta-hat)</div><div>The estimated coefficients.</div>
+    <div>β₀</div><div>Intercept — the predicted y when all features are zero. <strong>Not</strong> penalised in Lasso.</div>
+    <div>λ (Lambda)</div><div>The Lasso regularisation strength. Larger λ = sparser model.</div>
+    <div>α (alpha)</div><div>In Elastic Net, the L1/L2 mix parameter. In scikit-learn's Lasso, it is the same as λ.</div>
+    <div>L1 Norm</div><div>||β||₁ = Σ|βⱼ|. The sum of absolute values.</div>
+    <div>||β||₁</div><div>The L1 norm of the coefficient vector. Lasso penalises this.</div>
+    <div>Active Set</div><div>The set of features with non-zero coefficients. Size = p<sub>active</sub>.</div>
+    <div>Sparsity</div><div>The fraction of coefficients that are exactly zero.</div>
+    <div>Soft-Thresholding</div><div>The operator S<sub>λ</sub>(z) = sign(z)·max(|z|−λ, 0) that produces sparse solutions.</div>
+    <div>Hard-Thresholding</div><div>The operator that keeps z if |z| &gt; λ, else sets it to 0. Non-convex, hard to optimise.</div>
+    <div>Coordinate Descent</div><div>The iterative algorithm that solves Lasso by optimising one coefficient at a time.</div>
+    <div>Subgradient</div><div>Generalisation of the gradient for non-differentiable functions (like |β| at 0).</div>
+    <div>Irrepresentable Condition</div><div>A technical condition under which Lasso recovers the true support.</div>
+    <div>Oracle Property</div><div>A theoretical guarantee that a method selects the right features and estimates them as if the true model were known.</div>
+    <div>Support</div><div>The set of indices of the true non-zero coefficients.</div>
+    <div>λ<sub>max</sub></div><div>The smallest λ that zeroes all coefficients. Upper bound for the λ grid.</div>
+    <div>λ<sub>min</sub></div><div>The λ that minimises cross-validation error.</div>
+    <div>λ<sub>1SE</sub></div><div>The largest λ within 1 SE of λ<sub>min</sub>. Sparser alternative.</div>
+  </div>
+
+  <h3>Regression Metrics</h3>
+  <div class="gloss">
+    <div>MAE</div><div><strong>Mean Absolute Error</strong> — average of |actual − predicted|.</div>
+    <div>MSE</div><div><strong>Mean Squared Error</strong> — average of (actual − predicted)².</div>
+    <div>RMSE</div><div><strong>Root Mean Squared Error</strong> — √MSE. Same units as the target.</div>
+    <div>R²</div><div><strong>Coefficient of Determination</strong> — proportion of variance explained.</div>
+    <div>Adjusted R²</div><div>R² penalised for the number of features (or active set size).</div>
+    <div>MAPE</div><div><strong>Mean Absolute Percentage Error</strong> — average error as a percentage.</div>
+    <div>SMAPE</div><div><strong>Symmetric MAPE</strong> — bounded version of MAPE.</div>
+    <div>MSLE</div><div><strong>Mean Squared Logarithmic Error</strong> — squared error on the log scale.</div>
+    <div>AIC</div><div><strong>Akaike Information Criterion</strong> — fit penalised by complexity.</div>
+    <div>BIC</div><div><strong>Bayesian Information Criterion</strong> — like AIC but penalises complexity more.</div>
+    <div>CV</div><div><strong>Cross-Validation</strong> — evaluating on held-out folds.</div>
+    <div>GCV</div><div><strong>Generalised Cross-Validation</strong> — fast approximation for tuning λ.</div>
+  </div>
+
+  <h3>Data &amp; Training Concepts</h3>
+  <div class="gloss">
+    <div>Feature</div><div>An input variable used by the model.</div>
+    <div>Target</div><div>The output variable the model is trying to predict.</div>
+    <div>Design Matrix</div><div>The matrix X of shape (N, p+1) containing all features plus a column of 1s for the intercept.</div>
+    <div>Standardisation</div><div>Rescaling features to mean 0 and standard deviation 1. <strong>Required</strong> for Lasso.</div>
+    <div>Centering</div><div>Subtracting the mean from each feature so it has mean 0.</div>
+    <div>Multicollinearity</div><div>When predictor features are highly correlated.</div>
+    <div>VIF</div><div><strong>Variance Inflation Factor</strong> — measures multicollinearity.</div>
+    <div>High-Dimensional</div><div>A dataset with p ≫ N (more features than samples).</div>
+    <div>Overfitting</div><div>When a model fits training data too well and performs poorly on new data.</div>
+    <div>Underfitting</div><div>When a model is too simple to capture the pattern.</div>
+    <div>Bias</div><div>Systematic error from overly simplistic assumptions. Lasso introduces bias by design.</div>
+    <div>Variance</div><div>Error from sensitivity to training data fluctuations.</div>
+    <div>Bias–Variance Tradeoff</div><div>The central trade-off Lasso navigates via λ.</div>
+    <div>Shrinkage</div><div>Pulling coefficients toward zero.</div>
+    <div>Regularisation</div><div>Penalising complexity to prevent overfitting.</div>
+    <div>Sparsity</div><div>Having many exactly-zero coefficients.</div>
+    <div>Bootstrap</div><div>Resampling with replacement to estimate variance.</div>
+    <div>K-Fold</div><div>Cross-validation with K folds.</div>
+    <div>Hyperparameter</div><div>A setting you choose before training (e.g. λ).</div>
+    <div>Grid Search</div><div>Exhaustively trying each λ from a grid.</div>
+    <div>Warm Start</div><div>Using the previous λ solution as the starting point for the next λ — speeds up path computation.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model performance.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift between training and production.</div>
+    <div>KS Test</div><div><strong>Kolmogorov–Smirnov Test</strong> — a statistical test for whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback–Leibler Divergence</strong> — measures how one probability distribution diverges from another.</div>
+    <div>CSI</div><div><strong>Characteristic Stability Index</strong> — the per-feature version of PSI.</div>
+    <div>Data Drift</div><div>A change in the distribution of input features over time.</div>
+    <div>Concept Drift</div><div>A change in the relationship between features and the target over time.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — sequential analysis for change detection.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — deploying, monitoring and maintaining ML models in production.</div>
+    <div>CI/CD</div><div><strong>Continuous Integration / Continuous Deployment</strong> — automated pipelines for testing and shipping.</div>
+    <div>p50/p95/p99</div><div><strong>Percentile latency</strong> — p95 = 95% of requests are faster than this value.</div>
+    <div>Uptime</div><div>The percentage of time a service is available.</div>
+    <div>ROI</div><div><strong>Return On Investment</strong> — (gain − cost) ÷ cost.</div>
+    <div>Shadow Deployment</div><div>Running a new model alongside the old one without acting on its output.</div>
+    <div>A/B Test</div><div>Splitting live traffic between two model versions.</div>
+    <div>Champion/Challenger</div><div>The current production model vs. a candidate model.</div>
+  </div>
+
+  <h3>Explainability</h3>
+  <div class="gloss">
+    <div>XAI</div><div><strong>Explainable AI</strong> — methods that make model decisions understandable to humans.</div>
+    <div>SHAP</div><div><strong>SHapley Additive exPlanations</strong> — game-theory-based feature attribution.</div>
+    <div>Feature Importance</div><div>A score showing how much each feature contributed to predictions.</div>
+    <div>Standardised Coefficient</div><div>A coefficient after standardising features — comparable across features.</div>
+    <div>Support Recovery</div><div>How well the Lasso-selected features match the true non-zero features (in simulations).</div>
+    <div>White-box</div><div>A model whose internals are directly interpretable (Lasso is a white-box model).</div>
+    <div>Black-box</div><div>A model whose internals are opaque.</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs and core formulas in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:22%;">KPI / Formula</th>
+      <th style="width:14%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>MAE</td><td>Reg.</td><td>1/N · Σ |y − ŷ|</td><td>↓ Lower</td></tr>
+    <tr><td>MSE</td><td>Reg.</td><td>1/N · Σ (y − ŷ)²</td><td>↓ Lower</td></tr>
+    <tr><td>RMSE</td><td>Reg.</td><td>√MSE</td><td>↓ Lower</td></tr>
+    <tr><td>R²</td><td>Reg.</td><td>1 − SS<sub>res</sub>/SS<sub>tot</sub></td><td>↑ → 1.0</td></tr>
+    <tr><td>Adjusted R²</td><td>Reg.</td><td>1 − [(1−R²)(N−1)]/(N−p<sub>active</sub>−1)</td><td>↑ → 1.0</td></tr>
+    <tr><td>MAPE</td><td>Reg.</td><td>100/N · Σ |(y−ŷ)/y|</td><td>↓ Lower</td></tr>
+    <tr><td>SMAPE</td><td>Reg.</td><td>100/N · Σ |y−ŷ| / [(|y|+|ŷ|)/2]</td><td>↓ Lower</td></tr>
+    <tr><td>MSLE</td><td>Reg.</td><td>1/N · Σ (log(1+y) − log(1+ŷ))²</td><td>↓ Lower</td></tr>
+    <tr><td>Lasso Cost</td><td>Lasso</td><td>Σ(y−ŷ)² + λ·Σ|βⱼ|</td><td>↓ Minimum</td></tr>
+    <tr><td>Soft-thresholding</td><td>Lasso</td><td>S<sub>λ</sub>(z) = sign(z)·max(|z|−λ, 0)</td><td>Produces zeros</td></tr>
+    <tr><td>Coordinate Update</td><td>Lasso</td><td>βⱼ ← S<sub>λ</sub>(ρⱼ) / Σxᵢⱼ²</td><td>Iterate to converge</td></tr>
+    <tr><td>λ<sub>max</sub></td><td>Lasso</td><td>maxⱼ |Σxᵢⱼyᵢ|</td><td>Upper bound for λ</td></tr>
+    <tr><td>Sparsity</td><td>Lasso</td><td>(p − p<sub>active</sub>) / p</td><td>↑ Higher</td></tr>
+    <tr><td>Active Set Size</td><td>Lasso</td><td>Σⱼ 𝟙(β̂ⱼ ≠ 0)</td><td>Choose via CV</td></tr>
+    <tr><td>Selection Precision</td><td>Lasso</td><td>|S<sub>true</sub> ∩ S<sub>est</sub>| / |S<sub>est</sub>|</td><td>↑ → 1.0</td></tr>
+    <tr><td>Selection Recall</td><td>Lasso</td><td>|S<sub>true</sub> ∩ S<sub>est</sub>| / |S<sub>true</sub>|</td><td>↑ → 1.0</td></tr>
+    <tr><td>Adaptive Lasso</td><td>Lasso</td><td>Σ(y−ŷ)² + λ·Σwⱼ|βⱼ|</td><td>Consistent selection</td></tr>
+    <tr><td>Group Lasso</td><td>Lasso</td><td>Σ(y−ŷ)² + λ·Σ<sub>g</sub>√p<sub>g</sub>·||β<sub>g</sub>||₂</td><td>Group selection</td></tr>
+    <tr><td>Elastic Net</td><td>Lasso</td><td>Σ(y−ŷ)² + λ[(1−α)Σβⱼ² + αΣ|βⱼ|]</td><td>Hybrid penalty</td></tr>
+    <tr><td>VIF</td><td>Stat.</td><td>1 / (1 − R²ⱼ)</td><td>↓ &lt; 5</td></tr>
+    <tr><td>AIC</td><td>Stat.</td><td>2·p<sub>active</sub> − 2·ℓ̂</td><td>↓ Lower</td></tr>
+    <tr><td>BIC</td><td>Stat.</td><td>ln(N)·p<sub>active</sub> − 2·ℓ̂</td><td>↓ Lower</td></tr>
+    <tr><td>Cross-Val Score</td><td>Robust.</td><td>1/K · Σ Metric<sub>k</sub></td><td>↑ Higher</td></tr>
+    <tr><td>Train-Test Gap</td><td>Robust.</td><td>Metric<sub>test</sub> − Metric<sub>train</sub></td><td>↓ Smaller</td></tr>
+    <tr><td>PSI</td><td>Post</td><td>Σ (A% − E%)·ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>KS Statistic</td><td>Post</td><td>max |F<sub>train</sub>(x) − F<sub>prod</sub>(x)|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>KL Divergence</td><td>Post</td><td>Σ P(i)·log(P(i)/Q(i))</td><td>↓ → 0</td></tr>
+    <tr><td>Uptime</td><td>Post</td><td>(Total − Downtime)/Total × 100%</td><td>↑ → 100%</td></tr>
+    <tr><td>Error Rate</td><td>Post</td><td>Failed / Total × 100%</td><td>↓ → 0%</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+    <tr><td>Override Rate</td><td>Post</td><td>Overrides / Total decisions × 100%</td><td>↓ Lower</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> Lasso is the right tool when you suspect the true model is sparse and you want an interpretable, minimal feature set. If features are highly correlated and grouping matters, use Elastic Net or Group Lasso. If you need maximum predictive accuracy without caring about sparsity, use Ridge. If you want to select features and then fit a nonlinear model, use Lasso as a preprocessing step.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Lasso Regression Model — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   1. LASSO COEFFICIENT PATHS vs LAMBDA
+   ============================================================ */
+(function(){
+  const featureNames = ['β₁', 'β₂', 'β₃', 'β₄', 'β₅', 'β₆'];
+  const featureColors = ['#db2777', '#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626'];
+  const olsCoefs = [3.2, -2.1, 1.6, 0.9, -0.6, 0.35];
+  // Threshold lambda at which each coefficient becomes zero (proportional to |coef|)
+  const zeroThresholds = olsCoefs.map(c => Math.abs(c) * 0.9);
+
+  const lambdas = [];
+  for (let i = 0; i <= 60; i++){
+    lambdas.push(Math.pow(10, -2 + i * 0.06));
+  }
+
+  function lassoCoef(olsVal, lam, zeroThr){
+    const sign = Math.sign(olsVal);
+    const absVal = Math.abs(olsVal);
+    const shrunk = Math.max(0, absVal - lam * zeroThr);
+    return sign * shrunk;
+  }
+
+  const paths = olsCoefs.map((c, j) =>
+    lambdas.map(l => lassoCoef(c, l, zeroThresholds[j] / zeroThresholds[j]))
+  );
+
+  // Correct: each feature has its own zero threshold
+  const pathsCorrected = olsCoefs.map((c, j) =>
+    lambdas.map(l => {
+      const threshold = zeroThresholds[j];
+      const sign = Math.sign(c);
+      const absVal = Math.abs(c);
+      const shrunk = Math.max(0, absVal - l);
+      return sign * shrunk;
+    })
+  );
+
+  const traces = featureNames.map((name, j) => ({
+    x: lambdas, y: pathsCorrected[j], mode:'lines', name: name + ' (|coef₀| = ' + Math.abs(olsCoefs[j]) + ')',
+    line: {color: featureColors[j], width: 3}
+  }));
+
+  const lambdaSlider = document.getElementById('lambdaSlider');
+  const lambdaVal = document.getElementById('lambdaVal');
+  const lambdaLbl = document.getElementById('lambdaLbl');
+  const activeCountEl = document.getElementById('activeCount');
+  const sparsityEl = document.getElementById('sparsityVal');
+  const l1NormEl = document.getElementById('l1Norm');
+  const resetBtn = document.getElementById('lambdaReset');
+
+  function getLambdaFromSlider(v){
+    if (v === 0) return 0;
+    return Math.pow(10, -2 + (v/100) * 4);
+  }
+
+  function update(){
+    const v = parseInt(lambdaSlider.value);
+    const lam = getLambdaFromSlider(v);
+
+    lambdaVal.textContent = lam < 1 ? lam.toFixed(4) : lam.toFixed(2);
+    lambdaLbl.textContent = lam < 1 ? lam.toFixed(4) : lam.toFixed(2);
+
+    const coefs = olsCoefs.map((c) => {
+      const sign = Math.sign(c);
+      const absVal = Math.abs(c);
+      return sign * Math.max(0, absVal - lam);
+    });
+    const activeCount = coefs.filter(c => c !== 0).length;
+    const sparsity = (coefs.length - activeCount) / coefs.length;
+    const l1 = coefs.reduce((a,c) => a + Math.abs(c), 0);
+
+    activeCountEl.textContent = activeCount + ' / ' + coefs.length;
+    sparsityEl.textContent = (sparsity * 100).toFixed(0) + '%';
+    l1NormEl.textContent = l1.toFixed(3);
+
+    const vline = {
+      type:'line', xref:'x', yref:'paper',
+      x0: lam === 0 ? 0.0001 : lam, x1: lam === 0 ? 0.0001 : lam,
+      y0: 0, y1: 1,
+      line: {color: '#0f172a', width: 2, dash: 'dash'}
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{
+        title:{text:'λ (log scale)', font:{size:13}},
+        gridcolor:'#e2e8f0', type:'log',
+        showline:true, linecolor:'#cbd5e1', mirror:true,
+        range:[-2, 2]
+      },
+      yaxis:{
+        title:{text:'Coefficient value βⱼ', font:{size:13}},
+        gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5,
+        showline:true, linecolor:'#cbd5e1', mirror:true,
+        range:[-2.5, 3.5]
+      },
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.62, y:0.98, font:{size:10}},
+      margin:{l:60, r:20, t:20, b:55}, height: 420, hovermode:'x unified',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+      shapes: [vline]
+    };
+    Plotly.react('coefPathChart', traces, layout, {responsive:true, displayModeBar:false});
+  }
+
+  lambdaSlider.addEventListener('input', update);
+  resetBtn.addEventListener('click', () => { lambdaSlider.value = 0; update(); });
+  update();
+})();
+
+/* ============================================================
+   2. RIDGE vs LASSO PATH COMPARISON
+   ============================================================ */
+(function(){
+  const olsCoefs = [3.2, -2.1, 1.6, 0.9, -0.6, 0.35];
+  const signals = [4.0, 3.2, 2.5, 1.8, 1.2, 0.7];
+  const colors = ['#db2777', '#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626'];
+
+  const lambdas = [];
+  for (let i = 0; i <= 60; i++){
+    lambdas.push(Math.pow(10, -2 + i * 0.06));
+  }
+
+  // Ridge: β = ols * s²/(s²+λ)
+  const ridgePaths = signals.map((s, j) =>
+    lambdas.map(l => olsCoefs[j] * (s*s) / (s*s + l))
+  );
+
+  // Lasso: β = sign(ols) * max(|ols| - λ_effective, 0)
+  // We scale λ so it's comparable to the ridge lambda grid
+  const lassoPaths = olsCoefs.map((c) =>
+    lambdas.map(l => {
+      const sign = Math.sign(c);
+      const absVal = Math.abs(c);
+      // Scale lambda so that coefficients drop at similar lambdas as ridge shrinks significantly
+      const scaledLam = l * 0.6;
+      return sign * Math.max(0, absVal - scaledLam);
+    })
+  );
+
+  const tracesRidge = olsCoefs.map((c, j) => ({
+    x: lambdas, y: ridgePaths[j], mode:'lines', name: 'β' + (j+1),
+    line: {color: colors[j], width: 2.5}
+  }));
+  const tracesLasso = olsCoefs.map((c, j) => ({
+    x: lambdas, y: lassoPaths[j], mode:'lines', name: 'β' + (j+1),
+    line: {color: colors[j], width: 2.5}
+  }));
+
+  const commonLayout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'λ (log scale)', font:{size:11}}, gridcolor:'#e2e8f0', type:'log', range:[-2,2], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'βⱼ', font:{size:11}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-2.5, 3.5]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.62, y:0.98, font:{size:9}},
+    margin:{l:50, r:15, t:15, b:45}, height: 380, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('ridgePathChart', tracesRidge, JSON.parse(JSON.stringify(commonLayout)), {responsive:true, displayModeBar:false});
+  Plotly.newPlot('lassoPathChart', tracesLasso, JSON.parse(JSON.stringify(commonLayout)), {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   3. ACTIVE SET SIZE vs LAMBDA
+   ============================================================ */
+(function(){
+  const olsCoefs = [3.2, -2.1, 1.6, 0.9, -0.6, 0.35];
+
+  const lambdas = [];
+  for (let i = 0; i <= 100; i++){
+    lambdas.push(Math.pow(10, -2 + i * 0.04));
+  }
+
+  // Active set size = number of features with |ols| > lambda
+  const activeSet = lambdas.map(l => olsCoefs.filter(c => Math.abs(c) > l).length);
+
+  const trace = {
+    x: lambdas, y: activeSet, mode:'lines+markers',
+    name:'Active set size',
+    line: {color: '#db2777', width: 3, shape: 'hv'},
+    marker: {size: 4, color: '#db2777'},
+    hovertemplate: 'λ = %{x:.4f}<br>Active features: %{y}<extra></extra>'
+  };
+
+  // Annotate the drop points
+  const dropPoints = [];
+  const uniqueCoefs = [...new Set(olsCoefs.map(c => Math.abs(c)))].sort((a,b)=>b-a);
+  uniqueCoefs.forEach((v, i) => {
+    dropPoints.push({
+      x: v, y: i, text: `drop → ${i+1} features left`,
+      showarrow: false, font: {color: '#9d174d', size: 9, weight: 'bold'},
+      bgcolor: 'rgba(255,255,255,0.85)',
+      borderpad: 2
+    });
+  });
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'λ (log scale)', font:{size:12}}, gridcolor:'#e2e8f0', type:'log', range:[-2,2], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Number of non-zero coefficients', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick:1, range:[-0.2, 6.5]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+    margin:{l:65, r:30, t:30, b:55}, height: 400, hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('activeSetChart', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   4. L1 vs L2 GEOMETRY
+   ============================================================ */
+(function(){
+  const gridN = 80;
+  const b1Range = [], b2Range = [];
+  for (let i = 0; i <= gridN; i++){
+    b1Range.push(-2.5 + i * 5 / gridN);
+    b2Range.push(-2.5 + i * 5 / gridN);
+  }
+  const Z = [];
+  for (let j = 0; j < b2Range.length; j++){
+    const row = [];
+    for (let i = 0; i < b1Range.length; i++){
+      const b1 = b1Range[i], b2 = b2Range[j];
+      const a = b1 - 1.5, b = b2 - 1.0;
+      row.push(1.0*a*a + 2.5*a*b + 2.0*b*b);
+    }
+    Z.push(row);
+  }
+
+  const traceContour = {
+    x: b1Range, y: b2Range, z: Z, type:'contour',
+    colorscale: [[0,'#fce7f3'],[0.3,'#f9a8d4'],[0.6,'#db2777'],[1,'#831843']],
+    contours:{showlabels:false, coloring:'lines', showlines:true},
+    showscale:false, hoverinfo:'skip', line:{width:1.5}
+  };
+
+  // L2 circle (Ridge)
+  const theta = [];
+  for (let i = 0; i <= 100; i++) theta.push(i * 2 * Math.PI / 100);
+  const rL2 = 1.4;
+  const circleX = theta.map(t => rL2 * Math.cos(t));
+  const circleY = theta.map(t => rL2 * Math.sin(t));
+
+  // L1 diamond (Lasso)
+  const rL1 = 1.4;
+  const diamondX = [rL1, 0, -rL1, 0, rL1];
+  const diamondY = [0, rL1, 0, -rL1, 0];
+
+  const traceL2 = {x:circleX, y:circleY, mode:'lines', name:'L2 (Ridge) constraint',
+    line:{color:'#7c3aed', width:3}};
+  const traceL1 = {x:diamondX, y:diamondY, mode:'lines', name:'L1 (Lasso) constraint',
+    line:{color:'#db2777', width:3}};
+
+  const traceOLS = {x:[1.5], y:[1.0], mode:'markers', name:'OLS solution',
+    marker:{color:'#059669', size:13, symbol:'star', line:{color:'#ffffff', width:2}}};
+
+  // Ridge solution — on the circle in the direction of (1.5, 1.0)
+  const ridgeSol = {x: rL2*Math.cos(Math.atan2(1.0, 1.5)), y: rL2*Math.sin(Math.atan2(1.0, 1.5))};
+  const traceRidgeSol = {x:[ridgeSol.x], y:[ridgeSol.y], mode:'markers', name:'Ridge solution (both non-zero)',
+    marker:{color:'#7c3aed', size:14, symbol:'x', line:{color:'#ffffff', width:2}}};
+
+  // Lasso solution — on the diamond corner
+  const traceLassoSol = {x:[0], y:[rL1], mode:'markers', name:'Lasso solution (β₁ = 0, sparse)',
+    marker:{color:'#db2777', size:14, symbol:'x', line:{color:'#ffffff', width:2}}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'β₁', font:{size:12}}, gridcolor:'#e2e8f0', range:[-2.5,2.5], showline:true, linecolor:'#cbd5e1', mirror:true, zerolinecolor:'#94a3b8'},
+    yaxis:{title:{text:'β₂', font:{size:12}}, gridcolor:'#e2e8f0', range:[-2.5,2.5], showline:true, linecolor:'#cbd5e1', mirror:true, zerolinecolor:'#94a3b8'},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+    margin:{l:55, r:20, t:20, b:50}, height: 480
+  };
+  Plotly.newPlot('geometryChart', [traceContour, traceL2, traceL1, traceOLS, traceRidgeSol, traceLassoSol], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   5. SOFT-THRESHOLDING OPERATOR
+   ============================================================ */
+(function(){
+  const slider = document.getElementById('softLambdaSlider');
+  const lambdaValEl = document.getElementById('softLambdaVal');
+  const lambdaLblEl = document.getElementById('softLambdaLbl');
+  const deadZoneEl = document.getElementById('softDeadZone');
+  const conditionEl = document.getElementById('softCondition');
+
+  function update(){
+    const lam = parseFloat(slider.value);
+    lambdaValEl.textContent = lam.toFixed(2);
+    lambdaLblEl.textContent = lam.toFixed(2);
+    deadZoneEl.textContent = '±' + lam.toFixed(2);
+    conditionEl.textContent = '|ρ| > ' + lam.toFixed(2);
+
+    const rhoRange = [];
+    for (let i = -60; i <= 60; i++) rhoRange.push(i/10);
+
+    const softThreshold = rhoRange.map(r => {
+      const sign = Math.sign(r);
+      return sign * Math.max(Math.abs(r) - lam, 0);
+    });
+
+    const identityLine = rhoRange.map(r => r);
+
+    const traceIdentity = {x:rhoRange, y:identityLine, mode:'lines', name:'Identity (no shrinkage)',
+      line:{color:'#94a3b8', width:1.5, dash:'dash'}};
+    const traceSoft = {x:rhoRange, y:softThreshold, mode:'lines', name:'Soft-threshold S_λ(ρ)',
+      line:{color:'#db2777', width:3.5}};
+
+    // Dead zone shading
+    const shapes = [
+      {type:'rect', xref:'x', yref:'paper', x0:-lam, x1:lam, y0:0, y1:1,
+        fillcolor:'rgba(219,39,119,0.10)', line:{width:0}, layer:'below'}
+    ];
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'Input correlation ρ', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-6, 6]},
+      yaxis:{title:{text:'Output coefficient β', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-6, 6]},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+      margin:{l:60, r:20, t:20, b:55}, height: 400, hovermode:'x unified',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+      shapes: shapes,
+      annotations:[{
+        x:0, y:0, text:'DEAD ZONE → β = 0', showarrow:false,
+        font:{color:'#9d174d', size:11, weight:'bold'},
+        bgcolor:'rgba(255,255,255,0.9)', borderpad:3,
+        yshift:-30
+      }]
+    };
+    Plotly.react('softChart', [traceIdentity, traceSoft], layout, {responsive:true, displayModeBar:false});
+  }
+
+  slider.addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================
+   6. CORRELATED FEATURES INSTABILITY
+   ============================================================ */
+(function(){
+  function generateData(){
+    const N = 40;
+    const x1 = [], x2 = [], y = [];
+    const rho = 0.95;
+    for (let i = 0; i < N; i++){
+      const z1 = (Math.random() - 0.5) * 2;
+      const z2 = (Math.random() - 0.5) * 2;
+      const a = z1;
+      const b = rho * z1 + Math.sqrt(1 - rho*rho) * z2;
+      x1.push(a);
+      x2.push(b);
+      y.push(1.0 * a + 1.0 * b + 0.3 + (Math.random() - 0.5) * 0.5);
+    }
+    return {x1, x2, y};
+  }
+
+  function lassoFit(x1, x2, y, lambda){
+    // Simple coordinate descent for 2 features
+    const N = y.length;
+    const m1 = x1.reduce((a,b)=>a+b,0)/N;
+    const m2 = x2.reduce((a,b)=>a+b,0)/N;
+    const my = y.reduce((a,b)=>a+b,0)/N;
+    const s1 = Math.sqrt(x1.reduce((a,x)=>a+(x-m1)*(x-m1),0)/N);
+    const s2 = Math.sqrt(x2.reduce((a,x)=>a+(x-m2)*(x-m2),0)/N);
+    const z1 = x1.map(v => (v-m1)/s1);
+    const z2 = x2.map(v => (v-m2)/s2);
+    const zy = y.map(v => v-my);
+
+    let b1 = 0, b2 = 0;
+    const maxIter = 200;
+    for (let it = 0; it < maxIter; it++){
+      const r1 = z1.reduce((a,v,i)=>a+v*(zy[i] - b2*z2[i]), 0);
+      const denom1 = z1.reduce((a,v)=>a+v*v,0);
+      const newB1 = Math.sign(r1) * Math.max(Math.abs(r1) - lambda, 0) / denom1;
+
+      const r2 = z2.reduce((a,v,i)=>a+v*(zy[i] - newB1*z1[i]), 0);
+      const denom2 = z2.reduce((a,v)=>a+v*v,0);
+      const newB2 = Math.sign(r2) * Math.max(Math.abs(r2) - lambda, 0) / denom2;
+
+      if (Math.abs(newB1 - b1) < 1e-6 && Math.abs(newB2 - b2) < 1e-6){ b1 = newB1; b2 = newB2; break; }
+      b1 = newB1; b2 = newB2;
+    }
+    return {b1, b2};
+  }
+
+  let results = [];
+
+  function regen(){
+    results = [];
+    let b1Wins = 0, b2Wins = 0, bothWins = 0;
+    for (let rep = 0; rep < 20; rep++){
+      const d = generateData();
+      const r = lassoFit(d.x1, d.x2, d.y, 0.15);
+      results.push(r);
+      const b1Active = Math.abs(r.b1) > 1e-4;
+      const b2Active = Math.abs(r.b2) > 1e-4;
+      if (b1Active && !b2Active) b1Wins++;
+      else if (!b1Active && b2Active) b2Wins++;
+      else if (b1Active && b2Active) bothWins++;
+    }
+    document.getElementById('chosenFeat').textContent =
+      b1Wins > b2Wins ? 'X₁ (' + b1Wins + 'x) vs X₂ (' + b2Wins + 'x)' : 'X₂ (' + b2Wins + 'x) vs X₁ (' + b1Wins + 'x)';
+    document.getElementById('coefRatio').textContent =
+      results[0] ? results[0].b1.toFixed(2) + ' / ' + results[0].b2.toFixed(2) : '—';
+    render();
+  }
+
+  function render(){
+    const xIdx = results.map((_, i) => i + 1);
+    const b1Vals = results.map(r => r.b1);
+    const b2Vals = results.map(r => r.b2);
+
+    const traceB1 = {x: xIdx, y: b1Vals, mode:'markers', name:'β₁ (X₁)',
+      marker:{color:'#db2777', size:11, line:{color:'#ffffff', width:1.5}}};
+    const traceB2 = {x: xIdx, y: b2Vals, mode:'markers', name:'β₂ (X₂)',
+      marker:{color:'#7c3aed', size:11, line:{color:'#ffffff', width:1.5}}};
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'Random dataset #', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick:2},
+      yaxis:{title:{text:'Coefficient value', font:{size:12}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+      margin:{l:60, r:20, t:20, b:50}, height: 400,
+      hovermode:'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('corrChart', [traceB1, traceB2], layout, {responsive:true, displayModeBar:false});
+  }
+
+  document.getElementById('corrRegen').addEventListener('click', regen);
+  regen();
+})();
+
+/* ============================================================
+   7. DIAGNOSTIC PLOTS
+   ============================================================ */
+(function(){
+  const N = 60;
+  const actual = [], pred = [];
+  for (let i = 0; i < N; i++){
+    const a = 20 + i * 1.5 + (Math.random() - 0.5) * 12;
+    actual.push(a);
+    pred.push(a + (Math.random() - 0.5) * 5.5 - 1.2);
+  }
+  const residuals = actual.map((y, i) => y - pred[i]);
+
+  const traceAVP = {x:pred, y:actual, mode:'markers', name:'Points',
+    marker:{color:'#db2777', size:8, line:{color:'#ffffff', width:1}}};
+  const minV = Math.min(...actual, ...pred) - 5;
+  const maxV = Math.max(...actual, ...pred) + 5;
+  const traceLine = {x:[minV, maxV], y:[minV, maxV], mode:'lines', name:'Perfect fit (45°)',
+    line:{color:'#059669', width:2.5, dash:'dash'}};
+  const traceResid = {x:pred, y:residuals, mode:'markers', name:'Residuals',
+    marker:{color:'#dc2626', size:7, symbol:'x'}, yaxis:'y2'};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'Predicted values', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Actual values', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis2:{title:{text:'Residuals', font:{size:12}}, overlaying:'y', side:'right',
+      gridcolor:'rgba(0,0,0,0)', zerolinecolor:'#94a3b8', zerolinewidth:1.5,
+      showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{color:'#dc2626'}},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+    margin:{l:60, r:60, t:20, b:50}, height: 420, hovermode:'closest'
+  };
+  Plotly.newPlot('diagnosticChart', [traceAVP, traceLine, traceResid], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   8. R² DECOMPOSITION
+   ============================================================ */
+(function(){
+  const explained = 84;
+  const residual = 16;
+
+  const trace1 = {y:['Variance'], x:[explained], type:'bar', orientation:'h', name:'Explained by model (R²)',
+    marker:{color:'#db2777'}, text:['Explained: ' + explained + '%'], textposition:'inside',
+    textfont:{color:'#ffffff', size:12, weight:'bold'},
+    hovertemplate:'Explained variance<br>%{x}%<extra></extra>'};
+  const trace2 = {y:['Variance'], x:[residual], type:'bar', orientation:'h', name:'Unexplained (residual)',
+    marker:{color:'#dc2626'}, text:['Unexplained: ' + residual + '%'], textposition:'inside',
+    textfont:{color:'#ffffff', size:12, weight:'bold'},
+    hovertemplate:'Unexplained variance<br>%{x}%<extra></extra>'};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Percentage of total variance', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,100], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    barmode:'stack', legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, orientation:'h', font:{size:11}},
+    margin:{l:80, r:30, t:30, b:50}, height: 400
+  };
+  Plotly.newPlot('r2Chart', [trace1, trace2], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   9. KPI CALCULATOR
+   ============================================================ */
+(function(){
+  const inActual = document.getElementById('inActual');
+  const inPredicted = document.getElementById('inPredicted');
+  const resultsGrid = document.getElementById('kpiResults');
+
+  function parseArr(s){ return s.split(',').map(t => parseFloat(t.trim())).filter(v => !isNaN(v)); }
+  function fmt(v, d){ return isFinite(v) ? v.toFixed(d) : '—'; }
+
+  function update(){
+    const y = parseArr(inActual.value);
+    const p = parseArr(inPredicted.value);
+    const N = Math.min(y.length, p.length);
+    if (N < 2){
+      resultsGrid.innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;color:#64748b;">Enter at least 2 matching values in both fields.</div>';
+      return;
+    }
+    const yy = y.slice(0, N), pp = p.slice(0, N);
+    const residuals = yy.map((v, i) => v - pp[i]);
+    const yMean = yy.reduce((a,b)=>a+b,0) / N;
+    const mae = residuals.reduce((a,r)=>a+Math.abs(r),0) / N;
+    const mse = residuals.reduce((a,r)=>a+r*r,0) / N;
+    const rmse = Math.sqrt(mse);
+    const ssRes = residuals.reduce((a,r)=>a+r*r,0);
+    const ssTot = yy.reduce((a,v)=>a+(v-yMean)*(v-yMean),0);
+    const r2 = ssTot === 0 ? 0 : 1 - ssRes/ssTot;
+    const adjR2 = 1 - (1 - r2) * (N - 1) / (N - 2);
+    const mape = 100/N * yy.reduce((a,v,i)=>a + (v !== 0 ? Math.abs((v - pp[i])/v) : 0), 0);
+    const smape = 100/N * yy.reduce((a,v,i)=>{
+      const d = Math.abs(v) + Math.abs(pp[i]);
+      return a + (d !== 0 ? 2*Math.abs(v - pp[i])/d : 0);
+    }, 0);
+
+    const cards = [
+      { name:'MAE', value: fmt(mae, 3), color:'#db2777' },
+      { name:'MSE', value: fmt(mse, 3), color:'#db2777' },
+      { name:'RMSE', value: fmt(rmse, 3), color:'#db2777' },
+      { name:'R²', value: fmt(r2, 4), color:'#059669' },
+      { name:'Adjusted R²', value: fmt(adjR2, 4), color:'#059669' },
+      { name:'MAPE', value: mape.toFixed(2) + '%', color:'#d97706' },
+      { name:'SMAPE', value: smape.toFixed(2) + '%', color:'#d97706' },
+      { name:'Mean Residual', value: fmt(residuals.reduce((a,b)=>a+b,0)/N, 3), color:'#64748b' }
+    ];
+
+    resultsGrid.innerHTML = cards.map(c =>
+      '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;border-top:3px solid ' + c.color + ';box-shadow:0 1px 3px rgba(15,23,42,.05);">' +
+        '<div style="font-size:.76rem;color:#64748b;text-transform:uppercase;letter-spacing:.6px;font-weight:800;margin-bottom:4px;">' + c.name + '</div>' +
+        '<div style="font-size:1.4rem;font-weight:800;color:#1e293b;line-height:1.2;">' + c.value + '</div>' +
+      '</div>'
+    ).join('');
+
+    const traceAVP = {x:pp, y:yy, mode:'markers', name:'Points',
+      marker:{color:'#db2777', size:9, line:{color:'#ffffff', width:1.5}}};
+    const minV = Math.min(...yy, ...pp) - 5;
+    const maxV = Math.max(...yy, ...pp) + 5;
+    const traceLine = {x:[minV, maxV], y:[minV, maxV], mode:'lines', name:'Perfect fit',
+      line:{color:'#059669', width:2.5, dash:'dash'}};
+    const traceResid = {x:pp, y:residuals, mode:'markers', name:'Residuals',
+      marker:{color:'#dc2626', size:8, symbol:'x'}, yaxis:'y2'};
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Predicted values', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Actual values', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis2:{title:{text:'Residuals', font:{size:12}}, overlaying:'y', side:'right',
+        gridcolor:'rgba(0,0,0,0)', zerolinecolor:'#94a3b8', zerolinewidth:1.5,
+        showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{color:'#dc2626'}},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+      margin:{l:60, r:60, t:20, b:50}, height: 400, hovermode:'closest'
+    };
+    Plotly.react('liveKpiChart', [traceAVP, traceLine, traceResid], layout, {responsive:true, displayModeBar:false});
+  }
+
+  inActual.addEventListener('input', update);
+  inPredicted.addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================
+   10. RIDGE vs LASSO SHRINKAGE CURVES
+   ============================================================ */
+(function(){
+  const rhoRange = [];
+  for (let i = -60; i <= 60; i++) rhoRange.push(i/10);
+
+  const lam = 1.5;
+
+  // Ridge: β = ρ / (1 + λ)
+  const ridgeShrink = rhoRange.map(r => r / (1 + lam));
+
+  // Lasso: β = sign(ρ) * max(|ρ| - λ, 0)
+  const lassoShrink = rhoRange.map(r => {
+    const sign = Math.sign(r);
+    return sign * Math.max(Math.abs(r) - lam, 0);
+  });
+
+  const identity = rhoRange.map(r => r);
+
+  const traceIdentity = {x:rhoRange, y:identity, mode:'lines', name:'Identity (no shrinkage)',
+    line:{color:'#94a3b8', width:1.5, dash:'dash'}};
+  const traceRidge = {x:rhoRange, y:ridgeShrink, mode:'lines', name:'Ridge (L2)',
+    line:{color:'#7c3aed', width:3}};
+  const traceLasso = {x:rhoRange, y:lassoShrink, mode:'lines', name:'Lasso (L1)',
+    line:{color:'#db2777', width:3.5}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Input correlation ρ', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-6, 6]},
+    yaxis:{title:{text:'Output coefficient β̂', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-4, 4]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+    margin:{l:60, r:20, t:20, b:55}, height: 400, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'rect', xref:'x', yref:'paper', x0:-lam, x1:lam, y0:0, y1:1,
+      fillcolor:'rgba(219,39,119,0.08)', line:{width:0}, layer:'below'}]
+  };
+  Plotly.newPlot('shrinkageChart', [traceIdentity, traceRidge, traceLasso], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   11. OBJECTIVE FUNCTION vs LAMBDA
+   ============================================================ */
+(function(){
+  const lambdas = [];
+  for (let i = 0; i <= 100; i++){
+    lambdas.push(Math.pow(10, -2 + i * 0.04));
+  }
+
+  // Simulate: as λ grows, SSE rises (worse fit) but L1 penalty falls (sparser)
+  const olsSSE = 20;
+  const olsL1 = 8.85;
+
+  // Simple model: SSE(λ) = olsSSE * (1 + 0.3 * λ^0.7), L1(λ) = olsL1 / (1 + λ)
+  const sse = lambdas.map(l => olsSSE * (1 + 0.3 * Math.pow(l, 0.7)));
+  const l1Penalty = lambdas.map(l => olsL1 / (1 + l));
+  const weightedPenalty = lambdas.map((l, i) => l * l1Penalty[i]);
+  const totalCost = lambdas.map((l, i) => sse[i] + weightedPenalty[i]);
+
+  const traceSSE = {x:lambdas, y:sse, mode:'lines', name:'SSE (fit error)',
+    line:{color:'#2563eb', width:2.5}};
+  const tracePenalty = {x:lambdas, y:weightedPenalty, mode:'lines', name:'λ · ||β||₁ (weighted penalty)',
+    line:{color:'#d97706', width:2.5}};
+  const traceTotal = {x:lambdas, y:totalCost, mode:'lines', name:'Total cost J(β)',
+    line:{color:'#dc2626', width:3.5, dash:'dash'}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'λ (log scale)', font:{size:13}}, gridcolor:'#e2e8f0', type:'log', range:[-2,2], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Cost', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+    margin:{l:65, r:30, t:30, b:55}, height: 400, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('objectiveChart', [traceSSE, tracePenalty, traceTotal], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   12. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

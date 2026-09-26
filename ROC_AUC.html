@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROC & AUC — Interactive Study Guide</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #6366f1;
+    --primary-soft: #eef2ff;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --success-soft: #ecfdf5;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --warning: #f59e0b;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --sidebar-w: 260px;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-2: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --primary: #818cf8;
+    --primary-soft: #312e81;
+    --success-soft: #064e3b;
+    --danger-soft: #7f1d1d;
+    --code-bg: #0b1120;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 30px; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ========== Progress bar ========== */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 1000; transition: width 0.1s;
+  }
+
+  /* ========== Sidebar ========== */
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    padding: 28px 20px; overflow-y: auto; z-index: 100;
+    transition: transform 0.3s;
+  }
+  .sidebar h1 {
+    font-size: 1.15rem; margin: 0 0 4px 0; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar .subtitle {
+    font-size: 0.75rem; color: var(--text-muted); margin: 0 0 24px 0;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.875rem; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .sidebar nav a:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar nav a.active {
+    background: var(--primary-soft); color: var(--primary); font-weight: 600;
+  }
+  .sidebar nav a .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 6px;
+    background: var(--surface-2); font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sidebar nav a.active .num { background: var(--primary); color: white; }
+
+  /* ========== Main ========== */
+  main {
+    margin-left: var(--sidebar-w);
+    padding: 40px 48px 120px;
+    max-width: 1100px;
+  }
+
+  section {
+    margin-bottom: 64px;
+    scroll-margin-top: 20px;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px;
+  }
+  .section-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white; font-weight: 800; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  h2 {
+    font-size: 1.75rem; font-weight: 800; margin: 0;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h4 {
+    font-size: 1rem; font-weight: 700; margin: 20px 0 8px;
+    color: var(--text);
+  }
+  .lead {
+    font-size: 1.05rem; color: var(--text-muted); margin: 0 0 28px 0;
+    padding-left: 50px;
+  }
+
+  p { margin: 12px 0; }
+
+  /* ========== Cards ========== */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    margin: 16px 0; box-shadow: var(--shadow);
+  }
+  .card-accent { border-left: 4px solid var(--primary); }
+  .card-success { border-left: 4px solid var(--success); background: var(--success-soft); }
+  .card-danger { border-left: 4px solid var(--danger); background: var(--danger-soft); }
+  .card-warning { border-left: 4px solid var(--warning); }
+
+  .callout {
+    padding: 16px 20px; border-radius: 10px; margin: 16px 0;
+    border-left: 4px solid var(--primary);
+    background: var(--primary-soft);
+    font-size: 0.95rem;
+  }
+  .callout strong { color: var(--primary); }
+  .callout.danger { border-color: var(--danger); background: var(--danger-soft); }
+  .callout.danger strong { color: var(--danger); }
+  .callout.success { border-color: var(--success); background: var(--success-soft); }
+  .callout.success strong { color: var(--success); }
+
+  /* ========== Collapsible ========== */
+  details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin: 12px 0;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  details summary {
+    padding: 16px 22px; cursor: pointer; font-weight: 600;
+    font-size: 1rem; list-style: none;
+    display: flex; align-items: center; gap: 12px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary:hover { background: var(--surface-2); }
+  details summary::before {
+    content: '▸'; color: var(--primary); font-size: 1.1rem;
+    transition: transform 0.2s; display: inline-block;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  details .body { padding: 20px 22px; }
+
+  /* ========== Tables ========== */
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 0.9rem; background: var(--surface);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  th, td {
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--surface-2); font-weight: 700;
+    font-size: 0.82rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  /* ========== Code blocks ========== */
+  .code-wrap {
+    position: relative; margin: 16px 0;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .code-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px; background: #0f172a;
+    border-bottom: 1px solid #334155;
+    font-size: 0.75rem; color: #94a3b8;
+    font-family: 'SF Mono', Monaco, monospace;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .copy-btn {
+    background: #334155; color: #cbd5e1; border: none;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 0.7rem; font-weight: 600; font-family: inherit;
+    letter-spacing: 0.05em; transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--primary); color: white; }
+  .copy-btn.copied { background: var(--success); color: white; }
+  pre {
+    margin: 0; padding: 18px 20px; background: var(--code-bg);
+    color: var(--code-text); font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 0.82rem; line-height: 1.65; overflow-x: auto;
+  }
+  pre code { font-family: inherit; }
+  .kw { color: #c084fc; font-weight: 600; }
+  .str { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .num { color: #fbbf24; }
+  .bi { color: #60a5fa; }
+  .fn { color: #f472b6; }
+
+  /* ========== Metric pills ========== */
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .metric {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; text-align: center;
+    transition: transform 0.15s;
+  }
+  .metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .metric .value {
+    font-size: 1.6rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric .label {
+    font-size: 0.75rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; margin-top: 4px;
+  }
+
+  /* ========== SVG Charts ========== */
+  .chart-container {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    margin: 20px 0; box-shadow: var(--shadow);
+  }
+  .chart-title {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+  }
+  svg { display: block; max-width: 100%; height: auto; }
+  .axis-line { stroke: var(--border); stroke-width: 1.5; }
+  .grid-line { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 4; opacity: 0.5; }
+  .axis-label { fill: var(--text-muted); font-size: 10px; font-family: inherit; }
+  .axis-title { fill: var(--text); font-size: 11px; font-weight: 600; font-family: inherit; }
+
+  /* ========== Interactive Lab ========== */
+  .lab {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 2px solid var(--primary); border-radius: 16px;
+    padding: 28px; margin: 24px 0; box-shadow: var(--shadow-lg);
+  }
+  .lab-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .lab-badge {
+    background: var(--primary); color: white;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .lab-title { font-size: 1.15rem; font-weight: 700; margin: 0; }
+
+  .slider-wrap {
+    background: var(--surface); border-radius: 12px;
+    padding: 20px; margin: 16px 0;
+    border: 1px solid var(--border);
+  }
+  .slider-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; font-size: 0.85rem; font-weight: 600;
+  }
+  .slider-value {
+    font-family: 'SF Mono', monospace; font-size: 1.1rem;
+    color: var(--primary); font-weight: 800;
+  }
+  input[type="range"] {
+    width: 100%; height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--success) 0%, var(--warning) 50%, var(--danger) 100%);
+    outline: none; -webkit-appearance: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px;
+    background: white; border: 3px solid var(--primary);
+    border-radius: 50%; cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.1s;
+  }
+  input[type="range"]::-webkit-slider-thumb:active {
+    cursor: grabbing; transform: scale(1.15);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px; background: white;
+    border: 3px solid var(--primary); border-radius: 50%;
+    cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .threshold-quick {
+    display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .threshold-quick button {
+    flex: 1; min-width: 70px; padding: 8px 12px;
+    border: 1px solid var(--border); background: var(--surface);
+    border-radius: 8px; cursor: pointer; font-size: 0.82rem;
+    font-weight: 600; color: var(--text-muted);
+    transition: all 0.15s; font-family: inherit;
+  }
+  .threshold-quick button:hover {
+    border-color: var(--primary); color: var(--primary);
+    background: var(--primary-soft);
+  }
+  .threshold-quick button.active {
+    background: var(--primary); color: white; border-color: var(--primary);
+  }
+
+  /* Confusion matrix mini */
+  .cm-grid {
+    display: grid; grid-template-columns: 100px 1fr 1fr;
+    gap: 6px; margin: 16px 0;
+    font-size: 0.85rem;
+  }
+  .cm-cell {
+    padding: 12px; border-radius: 8px; text-align: center;
+    font-weight: 700; transition: all 0.25s;
+  }
+  .cm-head {
+    background: var(--surface-2); color: var(--text-muted);
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.05em; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cm-tp { background: rgba(16,185,129,0.15); color: var(--success); }
+  .cm-tn { background: rgba(16,185,129,0.08); color: var(--success); }
+  .cm-fp { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .cm-fn { background: rgba(239,68,68,0.25); color: var(--danger); }
+  .cm-cell .cm-num { font-size: 1.3rem; display: block; }
+  .cm-cell .cm-sub { font-size: 0.65rem; opacity: 0.7; font-weight: 500; }
+
+  .live-metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-top: 16px;
+  }
+  .live-metric {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .live-metric .lm-val {
+    font-size: 1.5rem; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.2s;
+  }
+  .live-metric .lm-lbl {
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted);
+    font-weight: 700; margin-top: 2px;
+  }
+  .lm-recall { color: var(--primary); }
+  .lm-prec { color: var(--accent); }
+  .lm-fpr { color: var(--danger); }
+
+  /* ========== Quiz ========== */
+  .quiz-q {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin: 14px 0;
+    box-shadow: var(--shadow);
+  }
+  .quiz-q .q-text { font-weight: 600; margin-bottom: 12px; }
+  .quiz-opt {
+    display: block; width: 100%; text-align: left;
+    padding: 10px 14px; margin: 6px 0;
+    background: var(--surface-2); border: 2px solid transparent;
+    border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem; font-family: inherit;
+    color: var(--text); transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--primary); }
+  .quiz-opt.correct {
+    background: var(--success-soft); border-color: var(--success);
+    color: var(--success); font-weight: 600;
+  }
+  .quiz-opt.wrong {
+    background: var(--danger-soft); border-color: var(--danger);
+    color: var(--danger); font-weight: 600;
+  }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 10px; font-size: 0.85rem;
+    padding: 10px 14px; border-radius: 8px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: var(--success-soft); color: var(--success); }
+  .quiz-feedback.no { background: var(--danger-soft); color: var(--danger); }
+
+  /* ========== Mobile ========== */
+  .menu-toggle, .theme-toggle {
+    position: fixed; z-index: 200; top: 16px;
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.15s;
+  }
+  .menu-toggle { left: 16px; display: none; }
+  .theme-toggle { right: 16px; }
+  .menu-toggle:hover, .theme-toggle:hover { transform: scale(1.05); }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+    .menu-toggle { display: flex; }
+    main { margin-left: 0; padding: 80px 20px 100px; }
+    .lead { padding-left: 0; }
+    h2 { font-size: 1.4rem; }
+  }
+
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-good { background: rgba(16,185,129,0.15); color: var(--success); }
+  .badge-bad { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+
+  .kbd {
+    display: inline-block; padding: 2px 6px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 4px; font-family: 'SF Mono', monospace;
+    font-size: 0.8em; font-weight: 600;
+  }
+
+  ul li, ol li { margin: 6px 0; }
+  strong { color: var(--text); font-weight: 700; }
+  code {
+    background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
+    font-family: 'SF Mono', monospace; font-size: 0.85em;
+    color: var(--primary); font-weight: 600;
+  }
+  pre code { background: none; padding: 0; color: inherit; font-weight: normal; }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+<aside class="sidebar" id="sidebar">
+  <h1>ROC & AUC</h1>
+  <p class="subtitle">Interactive Study Guide</p>
+  <nav id="navList">
+    <a href="#intro"><span class="num">1</span> Introduction</a>
+    <a href="#fundamentals"><span class="num">2</span> Fundamentals</a>
+    <a href="#advantages"><span class="num">3</span> Advantages</a>
+    <a href="#use-cases"><span class="num">4</span> Use Cases</a>
+    <a href="#graphs"><span class="num">5</span> Visual Guide</a>
+    <a href="#fraud"><span class="num">6</span> Fraud Deep Dive</a>
+    <a href="#lab"><span class="num">7</span> Interactive Lab</a>
+    <a href="#quiz"><span class="num">8</span> Quiz</a>
+    <a href="#code"><span class="num">9</span> Python Reference</a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ==================== 1. INTRO ==================== -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <h2>Introduction</h2>
+  </div>
+  <p class="lead">Why ROC-AUC became the universal yardstick for binary classifiers.</p>
+
+  <p>In machine learning, a classifier rarely just says "yes" or "no" — it outputs a <strong>probability</strong> like <code>0.73</code>. To turn that into a decision, you must pick a <strong>threshold</strong>. But the best threshold depends on things you often don't know: the cost of false positives vs false negatives, the prevalence of the positive class, or how many cases a team can review.</p>
+
+  <p>ROC-AUC sidesteps this problem entirely. It evaluates your model's <strong>ranking ability across all possible thresholds at once</strong>, giving you a single number that captures how well the model separates the two classes.</p>
+
+  <div class="callout">
+    <strong>Key idea:</strong> AUC = the probability that a randomly chosen positive example gets a higher score than a randomly chosen negative example.
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric"><div class="value">0.5</div><div class="label">Random</div></div>
+    <div class="metric"><div class="value">0.7–0.8</div><div class="label">Fair</div></div>
+    <div class="metric"><div class="value">0.8–0.9</div><div class="label">Good</div></div>
+    <div class="metric"><div class="value">0.9+</div><div class="label">Excellent</div></div>
+    <div class="metric"><div class="value">1.0</div><div class="label">Perfect</div></div>
+  </div>
+</section>
+
+<!-- ==================== 2. FUNDAMENTALS ==================== -->
+<section id="fundamentals">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <h2>ROC & AUC Fundamentals</h2>
+  </div>
+  <p class="lead">The confusion matrix, the curve, and what the area really means.</p>
+
+  <h3>The Confusion Matrix</h3>
+  <p>Every binary classifier decision can be categorized into four outcomes:</p>
+
+  <table>
+    <thead>
+      <tr><th></th><th>Predicted Positive</th><th>Predicted Negative</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Actual Positive</strong></td><td><span class="badge badge-good">TP</span> True Positive</td><td><span class="badge badge-bad">FN</span> False Negative</td></tr>
+      <tr><td><strong>Actual Negative</strong></td><td><span class="badge badge-bad">FP</span> False Positive</td><td><span class="badge badge-good">TN</span> True Negative</td></tr>
+    </tbody>
+  </table>
+
+  <div class="metric-grid">
+    <div class="metric"><div class="value" style="font-size:1rem;">TPR</div><div class="label">TP / (TP + FN)<br>Recall / Sensitivity</div></div>
+    <div class="metric"><div class="value" style="font-size:1rem;">FPR</div><div class="label">FP / (FP + TN)<br>False alarm rate</div></div>
+    <div class="metric"><div class="value" style="font-size:1rem;">Precision</div><div class="label">TP / (TP + FP)<br>Positive predictive value</div></div>
+  </div>
+
+  <h3>Building the ROC Curve</h3>
+  <ol>
+    <li>Get predicted probabilities from your model.</li>
+    <li>Sweep the classification threshold from <code>1.0</code> down to <code>0.0</code>.</li>
+    <li>At each threshold, compute (FPR, TPR) and plot it.</li>
+    <li>Connect the points — that's the ROC curve.</li>
+  </ol>
+
+  <div class="callout">
+    <strong>Endpoints:</strong> Threshold = 1.0 → predict all negative → point (0, 0). Threshold = 0.0 → predict all positive → point (1, 1). A perfect model hits (0, 1) — the top-left corner.
+  </div>
+
+  <h3>AUC — The Area Under the Curve</h3>
+  <p>AUC is the area under that ROC curve, ranging from 0 to 1:</p>
+  <ul>
+    <li><strong>0.5</strong> — random guessing (diagonal line)</li>
+    <li><strong>1.0</strong> — perfect separation</li>
+    <li><strong>&lt; 0.5</strong> — worse than random (flip your predictions!)</li>
+  </ul>
+
+  <div class="callout success">
+    <strong>Probabilistic meaning:</strong> AUC = P(score of random positive &gt; score of random negative). This is mathematically equivalent to the Wilcoxon-Mann-Whitney U statistic, also known in medicine as the <em>c-statistic</em> or <em>concordance index</em>.
+  </div>
+</section>
+
+<!-- ==================== 3. ADVANTAGES ==================== -->
+<section id="advantages">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <h2>Advantages of ROC-AUC</h2>
+  </div>
+  <p class="lead">Eight reasons it's the default metric for binary classification — click each to expand.</p>
+
+  <details open>
+    <summary>1. Threshold independence</summary>
+    <div class="body">
+      <p>A classifier outputs a probability; you must choose a cutoff to make decisions. But the optimal cutoff depends on costs, prevalence, and operational capacity — often unknown at model-selection time.</p>
+      <p><strong>AUC evaluates the model across every possible threshold simultaneously.</strong> You can compare models fairly before committing to any threshold policy. Adjusting the threshold later doesn't change the AUC.</p>
+      <div class="callout">
+        <strong>Example:</strong> Hospital compares two sepsis models. Model A has AUC 0.91 but lower accuracy at threshold 0.5; Model B has AUC 0.86 but higher accuracy at 0.5. Model A is actually better at ranking — it just needs a different threshold.
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>2. Scale invariance / rank-based</summary>
+    <div class="body">
+      <p>AUC depends only on the <em>ordering</em> of predictions, not their absolute values. Any monotonic transformation (log, square, sigmoid) leaves AUC unchanged.</p>
+      <p>This means you can compare an SVM's raw <code>decision_function</code> scores (e.g., <code>[-2.3, 0.5, 1.8]</code>) directly against a random forest's probabilities <code>[0.12, 0.55, 0.91]</code> without any rescaling.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>3. Robust to class imbalance</summary>
+    <div class="body">
+      <p>Accuracy is dominated by the majority class. On 1%-fraud data, a "always predict legitimate" model gets 99% accuracy but catches zero frauds. AUC measures how well the model <em>separates</em> the classes, regardless of their proportions.</p>
+      <div class="callout danger">
+        <strong>Caveat:</strong> For <em>extreme</em> imbalance (e.g., 0.01% positives), even AUC can be optimistic because FPR is computed over a massive negative class. In those cases, <strong>PR-AUC</strong> (Precision-Recall AUC) is more informative.
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>4. Intuitive probabilistic interpretation</summary>
+    <div class="body">
+      <p>AUC has a clean, communicable meaning: the probability that a random positive outranks a random negative. You can say to stakeholders:</p>
+      <div class="callout success">
+        "Our model gives a higher fraud score to a randomly chosen fraudster than to a randomly chosen legitimate customer 95% of the time."
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>5. Model-agnostic</summary>
+    <div class="body">
+      <p>Works with any classifier that outputs scores or probabilities: logistic regression, SVM, random forests, XGBoost, neural networks, or hand-crafted risk scores. No assumptions about the model family, loss, or output distribution.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>6. Single number for comparison & tuning</summary>
+    <div class="body">
+      <p>AUC condenses the whole curve into one scalar — easy to rank models on leaderboards, drive hyperparameter search (<code>scoring='roc_auc'</code> in scikit-learn), and communicate progress over time.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>7. Visualizes the full tradeoff space</summary>
+    <div class="body">
+      <p>The curve itself is informative — it shows TPR vs FPR at every threshold, helping you pick an operating point based on business constraints. If one model's curve dominates another's, that model is strictly better at all thresholds.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>8. Prevalence-insensitive</summary>
+    <div class="body">
+      <p>If score distributions remain stable, the ROC curve is invariant to class prevalence. A model trained on 10% positives can be evaluated on 1% positives without the curve changing — unlike precision, which collapses as positives become rare.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ==================== 4. USE CASES ==================== -->
+<section id="use-cases">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <h2>Real-World Use Cases</h2>
+  </div>
+  <p class="lead">Where and why AUC is used in production systems.</p>
+
+  <details open>
+    <summary>🏥 Medical diagnosis — Sepsis prediction</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> An ICU predicts sepsis onset within 6 hours using vitals, labs, and demographics.</p>
+      <p><strong>Why AUC:</strong> Missing sepsis (FN) is catastrophic; false alarms (FP) waste scarce clinician time. The hospital hasn't fixed a threshold, so they need a threshold-free comparison metric.</p>
+      <table>
+        <thead><tr><th>Model</th><th>AUC</th></tr></thead>
+        <tbody>
+          <tr><td>Logistic Regression</td><td>0.82</td></tr>
+          <tr><td>XGBoost</td><td><strong>0.89</strong></td></tr>
+          <tr><td>LSTM</td><td>0.87</td></tr>
+        </tbody>
+      </table>
+      <p>XGBoost wins on AUC. Then the ICU uses the ROC curve to pick a threshold based on capacity: flag top 15% → catch 80% of sepsis; flag top 25% → catch 90%.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>💳 Credit scoring — Loan default prediction</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A bank ranks loan applicants by default risk to decide approvals and interest rates.</p>
+      <p><strong>Why AUC:</strong> Regulatory frameworks (Basel III) use the c-statistic to validate credit models. The approve/reject cutoff is a separate business decision based on capital requirements and risk appetite.</p>
+      <p>In finance, AUC is reported as the <strong>Gini coefficient</strong>: <code>Gini = 2 × AUC − 1</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🚨 Fraud detection — Real-time transaction scoring</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A payment processor scores millions of daily transactions for fraud risk.</p>
+      <p><strong>Why AUC (and PR-AUC):</strong> Fraud is extremely rare (0.1–1%). AUC measures ranking quality; PR-AUC is used alongside because FPR is computed over a massive negative class.</p>
+      <p><strong>Example:</strong> 1M transactions/day, 0.5% fraud (5,000 frauds), AUC = 0.96.</p>
+      <table>
+        <thead><tr><th>Threshold</th><th>Flagged</th><th>Frauds caught</th><th>Recall</th><th>FP</th></tr></thead>
+        <tbody>
+          <tr><td>Top 0.5%</td><td>5,000</td><td>3,500</td><td>70%</td><td>1,500</td></tr>
+          <tr><td>Top 1%</td><td>10,000</td><td>4,500</td><td>90%</td><td>5,500</td></tr>
+          <tr><td>Top 2%</td><td>20,000</td><td>4,750</td><td>95%</td><td>15,250</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details>
+    <summary>📧 Spam filtering</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> Email provider classifies incoming messages as spam or not.</p>
+      <p><strong>Why AUC:</strong> Marking legitimate email as spam (FP) is very costly — users miss important messages. AUC = 0.98 tells you the model separates well; a high threshold minimizes false positives.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>📊 Ad click-through rate prediction</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> An ad platform ranks ads by predicted click probability in an auction.</p>
+      <p><strong>Why AUC:</strong> Ranking is the core task — AUC literally measures "probability a clicked ad is ranked above a non-clicked ad." No threshold needed; the platform just sorts. Typical CTR AUC is around 0.75.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>📉 Customer churn prediction</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A subscription company predicts which customers will cancel, to target retention offers.</p>
+      <p><strong>Why AUC:</strong> The company wants to rank customers by churn risk. The threshold (who gets a retention offer) depends on budget.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🏭 Manufacturing defect detection</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> Computer vision inspects products on an assembly line for defects.</p>
+      <p><strong>Why AUC:</strong> Defects are rare (~2%). AUC measures how well the model ranks defective vs. non-defective products. Threshold balances cost of scrapping good products vs. shipping defective ones.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔍 Search ranking / information retrieval</summary>
+    <div class="body">
+      <p><strong>Scenario:</strong> A search engine ranks documents by relevance.</p>
+      <p><strong>Why AUC:</strong> AUC = probability a relevant document is ranked above a non-relevant one — exactly the ranking objective. Equivalent to pairwise ranking accuracy.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ==================== 5. GRAPHS ==================== -->
+<section id="graphs">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <h2>Visual Guide</h2>
+  </div>
+  <p class="lead">Seven canonical charts that together tell the whole ROC-AUC story.</p>
+
+  <h3>① Anatomy of an ROC Curve</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot"></span> ROC Curve Components</div>
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+      <!-- grid -->
+      <line x1="60" y1="40" x2="60" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="340" class="axis-line"/>
+      <!-- grid lines -->
+      <g>
+        <line x1="60" y1="265" x2="460" y2="265" class="grid-line"/>
+        <line x1="60" y1="190" x2="460" y2="190" class="grid-line"/>
+        <line x1="60" y1="115" x2="460" y2="115" class="grid-line"/>
+        <line x1="60" y1="40" x2="460" y2="40" class="grid-line"/>
+        <line x1="160" y1="40" x2="160" y2="340" class="grid-line"/>
+        <line x1="260" y1="40" x2="260" y2="340" class="grid-line"/>
+        <line x1="360" y1="40" x2="360" y2="340" class="grid-line"/>
+        <line x1="460" y1="40" x2="460" y2="340" class="grid-line"/>
+      </g>
+      <!-- diagonal (random) -->
+      <line x1="60" y1="340" x2="460" y2="40" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <!-- AUC shaded -->
+      <path d="M 60 340 L 60 100 Q 120 60 200 55 Q 300 55 380 70 L 460 40 L 460 340 Z" fill="rgba(99,102,241,0.12)"/>
+      <!-- ROC curve -->
+      <path d="M 60 340 L 60 100 Q 120 60 200 55 Q 300 55 380 70 L 460 40"
+            fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+      <!-- perfect point -->
+      <circle cx="60" cy="40" r="7" fill="#10b981" stroke="white" stroke-width="2"/>
+      <text x="70" y="35" class="axis-label" font-weight="600" fill="#10b981">Perfect (0,1)</text>
+      <!-- random label -->
+      <text x="330" y="100" class="axis-label" fill="#64748b">Random classifier</text>
+      <!-- threshold dot -->
+      <circle cx="180" cy="75" r="6" fill="#ef4444" stroke="white" stroke-width="2"/>
+      <text x="192" y="72" class="axis-label" fill="#ef4444" font-weight="600">Threshold = 0.5</text>
+      <!-- AUC label -->
+      <text x="200" y="220" class="axis-label" fill="#6366f1" font-weight="700" font-size="13">AUC</text>
+      <!-- axis labels -->
+      <text x="250" y="380" class="axis-title" text-anchor="middle">False Positive Rate (FPR)</text>
+      <text x="25" y="190" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 190)">True Positive Rate (TPR)</text>
+      <!-- ticks -->
+      <text x="60" y="358" class="axis-label" text-anchor="middle">0.0</text>
+      <text x="260" y="358" class="axis-label" text-anchor="middle">0.5</text>
+      <text x="460" y="358" class="axis-label" text-anchor="middle">1.0</text>
+      <text x="45" y="343" class="axis-label" text-anchor="end">0.0</text>
+      <text x="45" y="193" class="axis-label" text-anchor="end">0.5</text>
+      <text x="45" y="44" class="axis-label" text-anchor="end">1.0</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;">
+      The shaded area is the AUC. The diagonal is random. The dot on the curve is one specific threshold.
+    </p>
+  </div>
+
+  <h3>② Model Comparison</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#10b981;"></span> ROC Curves for Four Models</div>
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="40" x2="60" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="40" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <!-- XGBoost -->
+      <path d="M 60 340 L 60 90 Q 100 45 180 40 Q 300 38 460 40" fill="none" stroke="#ef4444" stroke-width="3"/>
+      <!-- Random Forest -->
+      <path d="M 60 340 L 60 140 Q 110 85 220 75 Q 340 70 460 40" fill="none" stroke="#10b981" stroke-width="3"/>
+      <!-- Logistic Regression -->
+      <path d="M 60 340 L 80 220 Q 140 130 250 105 Q 360 90 460 40" fill="none" stroke="#6366f1" stroke-width="3"/>
+      <!-- Naive Bayes -->
+      <path d="M 60 340 L 110 240 Q 180 160 300 120 Q 400 95 460 40" fill="none" stroke="#f59e0b" stroke-width="3"/>
+      <!-- legend -->
+      <g transform="translate(300, 90)">
+        <rect x="0" y="0" width="150" height="100" fill="var(--surface)" stroke="var(--border)" rx="6"/>
+        <line x1="10" y1="20" x2="30" y2="20" stroke="#ef4444" stroke-width="3"/>
+        <text x="36" y="24" class="axis-label" fill="var(--text)">XGBoost 0.94</text>
+        <line x1="10" y1="42" x2="30" y2="42" stroke="#10b981" stroke-width="3"/>
+        <text x="36" y="46" class="axis-label" fill="var(--text)">Rand Forest 0.91</text>
+        <line x1="10" y1="64" x2="30" y2="64" stroke="#6366f1" stroke-width="3"/>
+        <text x="36" y="68" class="axis-label" fill="var(--text)">Logistic 0.86</text>
+        <line x1="10" y1="86" x2="30" y2="86" stroke="#f59e0b" stroke-width="3"/>
+        <text x="36" y="90" class="axis-label" fill="var(--text)">Naive Bayes 0.78</text>
+      </g>
+      <text x="250" y="380" class="axis-title" text-anchor="middle">False Positive Rate</text>
+      <text x="25" y="190" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 190)">True Positive Rate</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;">
+      When one curve dominates another, that model is strictly better at every threshold. When curves cross, the best choice depends on the operating region.
+    </p>
+  </div>
+
+  <h3>③ ROC vs PR on Extreme Imbalance</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#f59e0b;"></span> Same Model, Two Very Different Stories</div>
+    <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- LEFT: ROC -->
+      <g>
+        <line x1="60" y1="40" x2="60" y2="320" class="axis-line"/>
+        <line x1="60" y1="320" x2="400" y2="320" class="axis-line"/>
+        <line x1="60" y1="320" x2="400" y2="40" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 5"/>
+        <path d="M 60 320 L 60 70 Q 90 45 150 42 Q 260 40 400 40" fill="none" stroke="#6366f1" stroke-width="3"/>
+        <text x="230" y="30" class="axis-title" text-anchor="middle" font-size="12">ROC — looks great</text>
+        <text x="230" y="360" class="axis-title" text-anchor="middle">FPR</text>
+        <text x="230" y="200" class="axis-label" text-anchor="middle" font-size="20" font-weight="800" fill="#10b981">AUC = 0.92</text>
+        <text x="230" y="225" class="axis-label" text-anchor="middle" font-size="10">(misleading!)</text>
+      </g>
+      <!-- RIGHT: PR -->
+      <g transform="translate(480, 0)">
+        <line x1="60" y1="40" x2="60" y2="320" class="axis-line"/>
+        <line x1="60" y1="320" x2="400" y2="320" class="axis-line"/>
+        <line x1="60" y1="308" x2="400" y2="308" stroke="#64748b" stroke-width="1" stroke-dasharray="5 5"/>
+        <text x="70" y="302" class="axis-label" fill="#64748b">baseline = 0.01</text>
+        <path d="M 60 50 Q 80 70 120 150 Q 180 240 300 290 Q 360 305 400 315"
+              fill="none" stroke="#10b981" stroke-width="3"/>
+        <text x="230" y="30" class="axis-title" text-anchor="middle" font-size="12">PR — honest</text>
+        <text x="230" y="360" class="axis-title" text-anchor="middle">Recall</text>
+        <text x="230" y="200" class="axis-label" text-anchor="middle" font-size="20" font-weight="800" fill="#ef4444">PR-AUC = 0.38</text>
+        <text x="230" y="225" class="axis-label" text-anchor="middle" font-size="10">(the truth)</text>
+      </g>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;">
+      On 1%-positive data, ROC-AUC looks excellent while PR-AUC reveals the model's precision is poor when recall is high. If positives &lt; 5%, plot both — trust PR-AUC.
+    </p>
+  </div>
+
+  <h3>④ Calibration vs Discrimination</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#8b5cf6;"></span> AUC's Blind Spot</div>
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="40" x2="60" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="340" class="axis-line"/>
+      <!-- perfect diagonal -->
+      <line x1="60" y1="340" x2="460" y2="40" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <!-- well calibrated -->
+      <path d="M 60 335 Q 150 280 230 220 Q 320 150 460 45"
+            fill="none" stroke="#10b981" stroke-width="3"/>
+      <circle cx="60" cy="335" r="5" fill="#10b981"/>
+      <circle cx="150" cy="280" r="5" fill="#10b981"/>
+      <circle cx="230" cy="220" r="5" fill="#10b981"/>
+      <circle cx="320" cy="150" r="5" fill="#10b981"/>
+      <circle cx="460" cy="45" r="5" fill="#10b981"/>
+      <!-- overconfident -->
+      <path d="M 60 340 Q 130 320 230 240 Q 330 140 460 40"
+            fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="6 4"/>
+      <text x="250" y="380" class="axis-title" text-anchor="middle">Predicted probability</text>
+      <text x="25" y="190" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 190)">Actual fraction positive</text>
+      <g transform="translate(280, 250)">
+        <rect x="0" y="0" width="160" height="70" fill="var(--surface)" stroke="var(--border)" rx="6"/>
+        <line x1="10" y1="22" x2="30" y2="22" stroke="#10b981" stroke-width="3"/>
+        <text x="36" y="26" class="axis-label" fill="var(--text)">Well calibrated</text>
+        <line x1="10" y1="48" x2="30" y2="48" stroke="#ef4444" stroke-width="3" stroke-dasharray="4 3"/>
+        <text x="36" y="52" class="axis-label" fill="var(--text)">Over-confident</text>
+      </g>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;">
+      Two models with identical AUC can have very different calibration. AUC only measures ranking; it says nothing about whether a predicted 0.8 means "80% likely."
+    </p>
+  </div>
+</section>
+
+<!-- ==================== 6. FRAUD DEEP DIVE ==================== -->
+<section id="fraud">
+  <div class="section-header">
+    <div class="section-number">6</div>
+    <h2>Fraud Detection Deep Dive</h2>
+  </div>
+  <p class="lead">Why recall and false positives always rise together — the most important intuition in all of classification.</p>
+
+  <h3>The Fishing Net Analogy</h3>
+  <p>You're fishing in a lake with two types of fish: <strong>target fish</strong> (fraud) you want to catch, and <strong>protected fish</strong> (legitimate transactions) you must not catch. Your net has an adjustable mesh size — that's your threshold.</p>
+
+  <div class="card">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-family:monospace; font-size:0.8rem; line-height:1.5;">
+      <div>
+        <strong style="display:block;margin-bottom:8px;font-family:inherit;">Large mesh (high threshold)</strong>
+        <pre style="background:var(--surface-2);color:var(--text);padding:14px;border-radius:8px;margin:0;">│                     │
+│   ○ ○ ○             │
+│ ○ ○ ○ ○ ○           │
+│   ○ ○ ○             │
+│                     │</pre>
+        <p style="margin-top:8px;">Only big fish caught.<br>Low recall, low FP.</p>
+      </div>
+      <div>
+        <strong style="display:block;margin-bottom:8px;font-family:inherit;">Small mesh (low threshold)</strong>
+        <pre style="background:var(--surface-2);color:var(--text);padding:14px;border-radius:8px;margin:0;">│                     │
+│   ○ ○ ○ ● ●         │
+│ ○ ○ ○ ○ ○ ● ●       │
+│   ○ ○ ○ ● ● ●       │
+│                     │</pre>
+        <p style="margin-top:8px;">More fish caught.<br>High recall, high FP.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>The key insight:</strong> You cannot change the mesh size to catch more target fish without also catching more protected fish — unless the two types are perfectly separated by size. In fraud detection, "size" = the fraud probability score. Fraud and legitimate transactions <strong>overlap</strong> in their scores. That overlap is why recall and false positives move together.
+  </div>
+
+  <h3>Why the Score Distributions Overlap</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:#ef4444;"></span> Score Distributions — The Overlap Zone</div>
+    <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- axes -->
+      <line x1="50" y1="40" x2="50" y2="230" class="axis-line"/>
+      <line x1="50" y1="230" x2="560" y2="230" class="axis-line"/>
+      <!-- Legitimate distribution (green) -->
+      <path d="M 50 230 L 100 230 Q 180 228 240 200 Q 280 175 320 130 Q 360 90 400 60 Q 440 45 480 60 Q 520 90 560 140 L 560 230 Z"
+            fill="rgba(16,185,129,0.35)" stroke="#10b981" stroke-width="2"/>
+      <!-- Fraud distribution (red) -->
+      <path d="M 50 230 L 200 230 Q 280 228 340 200 Q 400 165 440 120 Q 480 70 510 45 Q 540 55 560 100 L 560 230 Z"
+            fill="rgba(239,68,68,0.35)" stroke="#ef4444" stroke-width="2"/>
+      <!-- overlap highlight -->
+      <rect x="320" y="40" width="140" height="190" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-dasharray="4 3"/>
+      <text x="390" y="30" class="axis-label" text-anchor="middle" font-weight="700" fill="#f59e0b">OVERLAP ZONE</text>
+      <!-- labels -->
+      <text x="90" y="215" class="axis-label" font-weight="700" fill="#10b981">Legitimate</text>
+      <text x="510" y="215" class="axis-label" font-weight="700" fill="#ef4444" text-anchor="end">Fraud</text>
+      <text x="300" y="260" class="axis-title" text-anchor="middle">Fraud Probability Score</text>
+      <text x="25" y="140" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 140)">Density</text>
+      <text x="55" y="248" class="axis-label">0.0</text>
+      <text x="555" y="248" class="axis-label" text-anchor="end">1.0</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;">
+      Legitimate scores cluster low, fraud scores cluster high — but they <em>overlap</em> in the middle. That overlap is why no threshold can perfectly separate them.
+    </p>
+  </div>
+
+  <h3>Concrete Worked Example — 32 Transactions</h3>
+  <p>Let's build a tiny, fully traceable example. We have <strong>32 transactions</strong>: 10 frauds and 22 legitimate. Each gets a fraud score. Here they are, ranked highest to lowest:</p>
+
+  <div class="card" style="font-family:'SF Mono', monospace; font-size:0.8rem; line-height:1.7;">
+    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px;">
+      <div><strong>Rank 1:</strong> <span style="color:#ef4444;font-weight:700;">0.97 F</span></div>
+      <div><strong>Rank 2:</strong> <span style="color:#ef4444;font-weight:700;">0.94 F</span></div>
+      <div><strong>Rank 3:</strong> <span style="color:#10b981;">0.91 L</span></div>
+      <div><strong>Rank 4:</strong> <span style="color:#ef4444;font-weight:700;">0.88 F</span></div>
+      <div><strong>Rank 5:</strong> <span style="color:#ef4444;font-weight:700;">0.85 F</span></div>
+      <div><strong>Rank 6:</strong> <span style="color:#10b981;">0.82 L</span></div>
+      <div><strong>Rank 7:</strong> <span style="color:#ef4444;font-weight:700;">0.78 F</span></div>
+      <div><strong>Rank 8:</strong> <span style="color:#10b981;">0.75 L</span></div>
+      <div><strong>Rank 9:</strong> <span style="color:#ef4444;font-weight:700;">0.71 F</span></div>
+      <div><strong>Rank 10:</strong> <span style="color:#10b981;">0.68 L</span></div>
+      <div><strong>Rank 11:</strong> <span style="color:#ef4444;font-weight:700;">0.65 F</span></div>
+      <div><strong>Rank 12:</strong> <span style="color:#10b981;">0.62 L</span></div>
+      <div><strong>Rank 13:</strong> <span style="color:#ef4444;font-weight:700;">0.58 F</span></div>
+      <div><strong>Rank 14:</strong> <span style="color:#10b981;">0.55 L</span></div>
+      <div><strong>Rank 15:</strong> <span style="color:#10b981;">0.52 L</span></div>
+      <div><strong>Rank 16:</strong> <span style="color:#ef4444;font-weight:700;">0.48 F</span></div>
+      <div><strong>Rank 17:</strong> <span style="color:#10b981;">0.45 L</span></div>
+      <div><strong>Rank 18:</strong> <span style="color:#ef4444;font-weight:700;">0.42 F</span></div>
+      <div><strong>Rank 19:</strong> <span style="color:#10b981;">0.38 L</span></div>
+      <div><strong>Rank 20:</strong> <span style="color:#ef4444;font-weight:700;">0.35 F</span></div>
+      <div><strong>Rank 21–32:</strong> <span style="color:#10b981;">0.32 → 0.02 (all L)</span></div>
+    </div>
+  </div>
+
+  <h3>Three Thresholds — Watch the Tradeoff</h3>
+
+  <table>
+    <thead>
+      <tr><th>Threshold</th><th>TP</th><th>FN</th><th>FP</th><th>TN</th><th>Recall</th><th>FPR</th><th>Precision</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>0.80</strong> (conservative)</td>
+        <td style="color:var(--success);font-weight:700;">4</td>
+        <td style="color:var(--danger);">6</td>
+        <td style="color:var(--danger);font-weight:700;">2</td>
+        <td>20</td>
+        <td>40%</td><td>9.1%</td><td>67%</td>
+      </tr>
+      <tr>
+        <td><strong>0.50</strong> (moderate)</td>
+        <td style="color:var(--success);font-weight:700;">8</td>
+        <td style="color:var(--danger);">2</td>
+        <td style="color:var(--danger);font-weight:700;">7</td>
+        <td>15</td>
+        <td>80%</td><td>31.8%</td><td>53%</td>
+      </tr>
+      <tr>
+        <td><strong>0.30</strong> (aggressive)</td>
+        <td style="color:var(--success);font-weight:700;">10</td>
+        <td style="color:var(--danger);">0</td>
+        <td style="color:var(--danger);font-weight:700;">11</td>
+        <td>11</td>
+        <td>100%</td><td>50.0%</td><td>48%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    As threshold <strong>decreases</strong> (0.80 → 0.50 → 0.30): Recall <strong>increases</strong> (40% → 80% → 100%), and false positives <strong>increase</strong> (2 → 7 → 11). They move together because they're both driven by the same action: <strong>flagging more transactions</strong>.
+  </div>
+
+  <h3>Why This Happens — Step by Step</h3>
+  <ol>
+    <li>You lower the threshold from 0.80 to 0.50.</li>
+    <li>Transactions with scores between 0.50 and 0.80 are now flagged (they weren't before).</li>
+    <li>Among those newly flagged: ranks 7, 8, 9, 10, 11, 12, 13, 14, 15 — some are F, some are L.</li>
+    <li>The 4 new F's become new true positives → recall increases.</li>
+    <li>The 5 new L's become new false positives → FP increases.</li>
+  </ol>
+
+  <div class="callout danger">
+    <strong>You cannot selectively catch only the frauds in the expanded region</strong>, because you don't know which ones are fraud until after the fact. The model has already told you its best guess (the score), and some frauds and some legitimate transactions have similar scores.
+  </div>
+
+  <h3>Why You Can't Increase Recall Without Increasing FP</h3>
+  <p>Suppose you want to increase recall from 80% to 100%. At recall 80% (t = 0.50) you're missing 2 frauds — ranks 16 and 18 (scores 0.48, 0.42). To catch them you must lower the threshold to at least 0.42. But then you also flag everything between 0.42 and 0.50 — including ranks 17, 19, and 21 (all legitimate). So catching those last 2 frauds costs you <strong>3 extra false positives</strong>.</p>
+
+  <p><strong>Unless the model can perfectly separate frauds from legitimate transactions (no overlap in scores), there is always a tradeoff.</strong> Real fraud detection always has overlap, so the tradeoff always exists.</p>
+
+  <h3>The Business Decision — Choosing Where to Sit on the Curve</h3>
+  <p>The ROC curve doesn't tell you which threshold to use — it shows you the menu. The business picks based on costs. Suppose 1M transactions/day, 0.5% fraud. Assume FP costs $5 (investigation) and FN costs $500 (chargeback + churn):</p>
+
+  <table>
+    <thead>
+      <tr><th>Threshold</th><th>Flagged</th><th>Fraud Caught</th><th>Recall</th><th>FP Cost</th><th>FN Cost</th><th>Total Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>0.80</td><td>5,000</td><td>3,000</td><td>60%</td><td>$10K</td><td>$1,000K</td><td style="color:var(--danger);font-weight:700;">$1,010K</td></tr>
+      <tr><td>0.50</td><td>15,000</td><td>4,500</td><td>90%</td><td>$52.5K</td><td>$250K</td><td>$302.5K</td></tr>
+      <tr style="background:var(--success-soft);">
+        <td><strong>0.30</strong></td><td>40,000</td><td>4,900</td><td>98%</td><td>$175.5K</td><td>$50K</td>
+        <td style="color:var(--success);font-weight:800;">$225.5K ← optimal</td>
+      </tr>
+      <tr><td>0.20</td><td>80,000</td><td>4,980</td><td>99.6%</td><td>$375K</td><td>$10K</td><td style="color:var(--danger);font-weight:700;">$385K</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <strong>Key takeaway:</strong> The optimal threshold minimizes <em>total business cost</em> — not recall, not false positives, not AUC. AUC tells you how good the model can be; the cost curve tells you where to operate it.
+  </div>
+</section>
+
+<!-- ==================== 7. INTERACTIVE LAB ==================== -->
+<section id="lab">
+  <div class="section-header">
+    <div class="section-number">7</div>
+    <h2>Interactive Lab</h2>
+  </div>
+  <p class="lead">Drag the threshold slider and watch recall and false positives move together in real time.</p>
+
+  <div class="lab">
+    <div class="lab-header">
+      <span class="lab-badge">Live Demo</span>
+      <h3 class="lab-title" style="margin:0;">Fraud Detection Threshold Explorer</h3>
+    </div>
+
+    <p style="font-size:0.9rem;">32 transactions (10 frauds, 22 legitimate). Each dot below is one transaction. Slide the threshold to see how the confusion matrix, recall, precision, and FPR change together.</p>
+
+    <!-- Dot plot -->
+    <div class="chart-container" style="margin-top:16px;">
+      <div class="chart-title"><span class="dot" style="background:#ef4444;"></span> Transaction Scores & Threshold</div>
+      <svg id="dotPlot" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- gridlines -->
+        <g id="gridLines"></g>
+        <!-- Fraud band label -->
+        <text x="20" y="55" class="axis-label" font-weight="700" fill="#ef4444">Fraud</text>
+        <!-- Legit band label -->
+        <text x="20" y="155" class="axis-label" font-weight="700" fill="#10b981">Legit</text>
+        <!-- Dots (JS-generated) -->
+        <g id="dotsGroup"></g>
+        <!-- Threshold line (JS) -->
+        <g id="thresholdGroup"></g>
+        <!-- Axis -->
+        <line x1="60" y1="180" x2="580" y2="180" class="axis-line"/>
+        <text x="60" y="196" class="axis-label" text-anchor="middle">0.0</text>
+        <text x="320" y="196" class="axis-label" text-anchor="middle">0.5</text>
+        <text x="580" y="196" class="axis-label" text-anchor="middle">1.0</text>
+      </svg>
+    </div>
+
+    <!-- Slider -->
+    <div class="slider-wrap">
+      <div class="slider-label">
+        <span>Classification Threshold</span>
+        <span class="slider-value" id="thresholdValue">0.50</span>
+      </div>
+      <input type="range" id="thresholdSlider" min="0" max="1" step="0.01" value="0.5">
+      <div class="threshold-quick">
+        <button data-t="0.8">Conservative 0.80</button>
+        <button data-t="0.5" class="active">Balanced 0.50</button>
+        <button data-t="0.3">Aggressive 0.30</button>
+      </div>
+    </div>
+
+    <!-- Confusion matrix + live metrics -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
+      <div>
+        <h4 style="margin-top:0;">Confusion Matrix</h4>
+        <div class="cm-grid">
+          <div class="cm-cell cm-head"></div>
+          <div class="cm-cell cm-head">Predicted Fraud</div>
+          <div class="cm-cell cm-head">Predicted Legit</div>
+          <div class="cm-cell cm-head">Actual Fraud</div>
+          <div class="cm-cell cm-tp"><span class="cm-num" id="cmTP">8</span><span class="cm-sub">True Pos</span></div>
+          <div class="cm-cell cm-fn"><span class="cm-num" id="cmFN">2</span><span class="cm-sub">False Neg</span></div>
+          <div class="cm-cell cm-head">Actual Legit</div>
+          <div class="cm-cell cm-fp"><span class="cm-num" id="cmFP">7</span><span class="cm-sub">False Pos</span></div>
+          <div class="cm-cell cm-tn"><span class="cm-num" id="cmTN">15</span><span class="cm-sub">True Neg</span></div>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-top:0;">Live Metrics</h4>
+        <div class="live-metrics" style="grid-template-columns:1fr 1fr;">
+          <div class="live-metric">
+            <div class="lm-val lm-recall" id="lmRecall">80%</div>
+            <div class="lm-lbl">Recall (TPR)</div>
+          </div>
+          <div class="live-metric">
+            <div class="lm-val lm-prec" id="lmPrec">53%</div>
+            <div class="lm-lbl">Precision</div>
+          </div>
+          <div class="live-metric">
+            <div class="lm-val lm-fpr" id="lmFPR">32%</div>
+            <div class="lm-lbl">FPR</div>
+          </div>
+          <div class="live-metric">
+            <div class="lm-val" style="color:var(--text);" id="lmFlagged">15</div>
+            <div class="lm-lbl">Flagged</div>
+          </div>
+        </div>
+        <div class="chart-container" style="margin-top:16px;padding:12px;">
+          <div class="chart-title" style="font-size:0.82rem;margin-bottom:6px;"><span class="dot" style="width:6px;height:6px;"></span> Position on ROC Curve</div>
+          <svg id="miniROC" viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
+            <line x1="30" y1="170" x2="240" y2="170" class="axis-line"/>
+            <line x1="30" y1="170" x2="30" y2="20" class="axis-line"/>
+            <line x1="30" y1="170" x2="240" y2="20" stroke="#64748b" stroke-width="1" stroke-dasharray="4 4"/>
+            <path id="rocPath" d="" fill="none" stroke="#6366f1" stroke-width="2.5"/>
+            <circle id="rocDot" cx="0" cy="0" r="6" fill="#ef4444" stroke="white" stroke-width="2"/>
+            <text x="135" y="192" class="axis-label" text-anchor="middle" font-size="9">FPR →</text>
+            <text x="12" y="95" class="axis-label" text-anchor="middle" font-size="9" transform="rotate(-90,12,95)">TPR →</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <strong>Watch this:</strong> as you slide the threshold down, recall goes up <em>and</em> FPR goes up. They move together. You cannot have one without the other — unless the model can perfectly separate the classes.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8. QUIZ ==================== -->
+<section id="quiz">
+  <div class="section-header">
+    <div class="section-number">8</div>
+    <h2>Quiz Yourself</h2>
+  </div>
+  <p class="lead">Six questions to test whether you really understand AUC.</p>
+
+  <div id="quizContainer"></div>
+
+  <div class="card" style="text-align:center;margin-top:24px;">
+    <div style="font-size:1rem;font-weight:600;">Score: <span id="quizScore" style="color:var(--primary);font-size:1.4rem;">0 / 6</span></div>
+    <button id="resetQuiz" style="margin-top:10px;padding:8px 20px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;">Reset Quiz</button>
+  </div>
+</section>
+
+<!-- ==================== 9. PYTHON REFERENCE ==================== -->
+<section id="code">
+  <div class="section-header">
+    <div class="section-number">9</div>
+    <h2>Python Reference</h2>
+  </div>
+  <p class="lead">Ready-to-run code for the most common ROC-AUC tasks.</p>
+
+  <h3>Basic ROC & AUC</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — basic_roc.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_curve, roc_auc_score
+
+# 1. Create dataset
+X, y = make_classification(
+    n_samples=2000, n_features=20, n_informative=10,
+    n_redundant=5, weights=[0.8, 0.2], random_state=42
+)
+
+# 2. Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42
+)
+
+# 3. Train classifier
+clf = LogisticRegression(max_iter=1000)
+clf.fit(X_train, y_train)
+
+# 4. Get predicted probabilities for the positive class
+y_probs = clf.predict_proba(X_test)[:, 1]
+
+# 5. Compute ROC curve and AUC
+fpr, tpr, thresholds = roc_curve(y_test, y_probs)
+auc = roc_auc_score(y_test, y_probs)
+print(f"AUC = {auc:.4f}")
+
+# 6. Plot
+plt.figure(figsize=(7, 6))
+plt.plot(fpr, tpr, color='darkorange', lw=2,
+         label=f'ROC curve (AUC = {auc:.3f})')
+plt.plot([0, 1], [0, 1], 'navy', lw=1, linestyle='--',
+         label='Random classifier')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate (Recall)')
+plt.title('ROC Curve')
+plt.legend(loc='lower right')
+plt.grid(alpha=0.3)
+plt.show()</code></pre>
+  </div>
+
+  <h3>Pick an Optimal Threshold (Youden's J)</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — optimal_threshold.py</span><button class="copy-btn">Copy</button></div>
+<pre><code># Youden's J = TPR - FPR, maximized at the "best" threshold
+J = tpr - fpr
+best_idx = np.argmax(J)
+best_threshold = thresholds[best_idx]
+
+print(f"Best threshold: {best_threshold:.3f}")
+print(f"TPR: {tpr[best_idx]:.3f}, FPR: {fpr[best_idx]:.3f}")
+
+# Apply it
+y_pred = (y_probs >= best_threshold).astype(int)
+
+from sklearn.metrics import confusion_matrix
+print("Confusion matrix:\n", confusion_matrix(y_test, y_pred))</code></pre>
+  </div>
+
+  <h3>Compare Multiple Models</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — compare_models.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+
+models = {
+    'Logistic Regression': LogisticRegression(max_iter=1000),
+    'Random Forest':       RandomForestClassifier(n_estimators=200, random_state=42),
+    'SVM (RBF)':           SVC(probability=True, random_state=42),
+    'Naive Bayes':         GaussianNB(),
+}
+
+plt.figure(figsize=(8, 6))
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    probs = model.predict_proba(X_test)[:, 1]
+    fpr_i, tpr_i, _ = roc_curve(y_test, probs)
+    auc_i = roc_auc_score(y_test, probs)
+    plt.plot(fpr_i, tpr_i, lw=2, label=f'{name} (AUC = {auc_i:.3f})')
+
+plt.plot([0, 1], [0, 1], 'k--', lw=1, label='Random')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curves — Model Comparison')
+plt.legend(loc='lower right')
+plt.grid(alpha=0.3)
+plt.show()</code></pre>
+  </div>
+
+  <h3>ROC-AUC vs PR-AUC on Imbalanced Data</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — roc_vs_pr.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.metrics import average_precision_score, precision_recall_curve
+
+# 1% positives
+X, y = make_classification(
+    n_samples=10000, n_features=20, weights=[0.99, 0.01], random_state=0
+)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=0
+)
+
+clf = LogisticRegression(max_iter=1000).fit(X_tr, y_tr)
+probs = clf.predict_proba(X_te)[:, 1]
+
+roc_auc = roc_auc_score(y_te, probs)
+pr_auc  = average_precision_score(y_te, probs)
+
+print(f"ROC-AUC: {roc_auc:.3f}")   # Looks great
+print(f"PR-AUC : {pr_auc:.3f}")    # Reveals the truth
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# ROC
+fpr, tpr, _ = roc_curve(y_te, probs)
+axes[0].plot(fpr, tpr, label=f'ROC-AUC={roc_auc:.3f}', color='darkorange')
+axes[0].plot([0, 1], [0, 1], 'k--')
+axes[0].set_xlabel('FPR'); axes[0].set_ylabel('TPR')
+axes[0].set_title('ROC Curve'); axes[0].legend(); axes[0].grid(alpha=0.3)
+
+# PR
+prec, rec, _ = precision_recall_curve(y_te, probs)
+axes[1].plot(rec, prec, label=f'PR-AUC={pr_auc:.3f}', color='green')
+axes[1].set_xlabel('Recall'); axes[1].set_ylabel('Precision')
+axes[1].set_title('Precision-Recall Curve')
+axes[1].legend(); axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()</code></pre>
+  </div>
+
+  <h3>Optimize AUC During Hyperparameter Search</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — tune_for_auc.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'n_estimators': [100, 300, 500],
+    'max_depth': [5, 10, None],
+}
+grid = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    scoring='roc_auc',   # directly optimize AUC
+    cv=5,
+)
+grid.fit(X_train, y_train)
+print(grid.best_params_, grid.best_score_)</code></pre>
+  </div>
+
+  <h3>When to Use Which Metric</h3>
+  <table>
+    <thead><tr><th>Situation</th><th>Better Metric</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Extreme class imbalance (1:10,000)</td><td>PR-AUC</td><td>FPR is computed over a huge negative class; AUC can be optimistic</td></tr>
+      <tr><td>Calibration matters</td><td>Brier score, calibration curves</td><td>AUC doesn't measure whether probabilities are accurate</td></tr>
+      <tr><td>Specific threshold performance matters</td><td>Precision, Recall, F1 at chosen threshold</td><td>AUC is threshold-independent by design</td></tr>
+      <tr><td>Cost-sensitive decisions</td><td>Expected cost / profit curves</td><td>AUC doesn't incorporate business costs</td></tr>
+      <tr><td>Multi-class problems</td><td>Macro/micro AUC, per-class metrics</td><td>One-vs-rest AUC can be misleading</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout success" style="margin-top:24px;">
+    <strong>Bottom line:</strong> Use ROC-AUC when you care about <em>ranking quality</em>, haven't fixed a threshold, and want a model-agnostic, imbalance-robust measure. Supplement with PR-AUC for extreme imbalance, calibration curves for probability trust, and cost curves for the business decision.
+  </div>
+</section>
+
+</main>
+
+<script>
+// ============================================================
+// 1. THEME TOGGLE
+// ============================================================
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.body.dataset.theme = savedTheme;
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+});
+
+// ============================================================
+// 2. MOBILE MENU
+// ============================================================
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('#navList a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth < 900) sidebar.classList.remove('open');
+  });
+});
+
+// ============================================================
+// 3. PROGRESS BAR & ACTIVE NAV
+// ============================================================
+const progressBar = document.getElementById('progressBar');
+const sections = [...document.querySelectorAll('section')];
+const navLinks = [...document.querySelectorAll('#navList a')];
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+
+  let current = sections[0].id;
+  for (const sec of sections) {
+    if (sec.getBoundingClientRect().top <= 120) current = sec.id;
+  }
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// ============================================================
+// 4. CODE HIGHLIGHTING & COPY BUTTONS
+// ============================================================
+function highlightPython(code) {
+  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const placeholders = [];
+  const store = (match) => {
+    const id = `\x00${placeholders.length}\x00`;
+    placeholders.push(match);
+    return id;
+  };
+
+  // Comments first
+  code = code.replace(/#[^\n]*/g, store);
+  // Strings
+  code = code.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"[^"\n]*"|'[^'\n]*')/g, store);
+
+  // Keywords
+  code = code.replace(/\b(import|from|as|def|return|if|elif|else|for|while|in|not|and|or|is|None|True|False|class|try|except|finally|with|lambda|yield|pass|break|continue|global|nonlocal|assert|del|raise|async|await)\b/g,
+    '<span class="kw">$1</span>');
+
+  // Numbers
+  code = code.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
+
+  // Built-ins
+  code = code.replace(/\b(print|len|range|sum|min|max|abs|round|sorted|list|dict|set|tuple|str|int|float|bool|type|enumerate|zip|map|filter|open|input|fit|predict|predict_proba|train_test_split|roc_curve|roc_auc_score|confusion_matrix|make_classification|GridSearchCV|precision_recall_curve|average_precision_score|calibration_curve)\b/g,
+    '<span class="bi">$1</span>');
+
+  // Restore placeholders
+  code = code.replace(/\x00(\d+)\x00/g, (_, i) => {
+    const s = placeholders[+i];
+    if (s.startsWith('#')) return `<span class="cm">${s}</span>`;
+    return `<span class="str">${s}</span>`;
+  });
+
+  return code;
+}
+
+document.querySelectorAll('pre code').forEach(block => {
+  block.innerHTML = highlightPython(block.textContent);
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-wrap').querySelector('pre code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1600);
+    });
+  });
+});
+
+// ============================================================
+// 5. INTERACTIVE LAB — FRAUD DETECTION
+// ============================================================
+// 32 transactions: [score, isFraud]
+const transactions = [
+  [0.97, 1], [0.94, 1], [0.91, 0], [0.88, 1], [0.85, 1],
+  [0.82, 0], [0.78, 1], [0.75, 0], [0.71, 1], [0.68, 0],
+  [0.65, 1], [0.62, 0], [0.58, 1], [0.55, 0], [0.52, 0],
+  [0.48, 1], [0.45, 0], [0.42, 1], [0.38, 0], [0.35, 1],
+  [0.32, 0], [0.28, 0], [0.25, 0], [0.22, 0], [0.19, 0],
+  [0.16, 0], [0.13, 0], [0.10, 0], [0.08, 0], [0.05, 0],
+  [0.03, 0], [0.02, 0]
+];
+
+const totalPos = transactions.filter(t => t[1] === 1).length;
+const totalNeg = transactions.length - totalPos;
+
+// --- Draw dot plot ---
+const dotsGroup = document.getElementById('dotsGroup');
+const gridLines = document.getElementById('gridLines');
+const X0 = 60, X1 = 580, W = X1 - X0;
+const Y_FRAUD = 50, Y_LEGIT = 140;
+
+// Gridlines at 0.1 intervals
+for (let i = 0; i <= 10; i++) {
+  const x = X0 + (i / 10) * W;
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', x);
+  line.setAttribute('y1', 30);
+  line.setAttribute('x2', x);
+  line.setAttribute('y2', 175);
+  line.setAttribute('class', 'grid-line');
+  gridLines.appendChild(line);
+}
+
+// Place dots
+const dotElements = [];
+transactions.forEach(([score, isFraud], idx) => {
+  const x = X0 + score * W;
+  const y = isFraud ? Y_FRAUD : Y_LEGIT;
+  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', x);
+  c.setAttribute('cy', y);
+  c.setAttribute('r', 5.5);
+  c.setAttribute('fill', isFraud ? '#ef4444' : '#10b981');
+  c.setAttribute('stroke', 'white');
+  c.setAttribute('stroke-width', '1.5');
+  c.setAttribute('opacity', '0.9');
+  dotsGroup.appendChild(c);
+  dotElements.push({ el: c, score, isFraud, idx });
+});
+
+// --- Threshold line group ---
+const thresholdGroup = document.getElementById('thresholdGroup');
+const tLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+tLine.setAttribute('y1', 25);
+tLine.setAttribute('y2', 175);
+tLine.setAttribute('stroke', '#f59e0b');
+tLine.setAttribute('stroke-width', '2.5');
+tLine.setAttribute('stroke-dasharray', '5 4');
+thresholdGroup.appendChild(tLine);
+
+const tLabelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+tLabelBg.setAttribute('y', 5);
+tLabelBg.setAttribute('height', 18);
+tLabelBg.setAttribute('width', 56);
+tLabelBg.setAttribute('rx', 4);
+tLabelBg.setAttribute('fill', '#f59e0b');
+thresholdGroup.appendChild(tLabelBg);
+
+const tLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+tLabel.setAttribute('y', 18);
+tLabel.setAttribute('fill', 'white');
+tLabel.setAttribute('font-size', '11');
+tLabel.setAttribute('font-weight', '700');
+tLabel.setAttribute('text-anchor', 'middle');
+thresholdGroup.appendChild(tLabel);
+
+// --- Compute ROC from transactions ---
+function computeROC(data) {
+  const sorted = [...data].sort((a, b) => b[0] - a[0]);
+  const points = [{ fpr: 0, tpr: 0 }];
+  let tp = 0, fp = 0;
+  for (const [score, isFraud] of sorted) {
+    if (isFraud) tp++; else fp++;
+    points.push({ fpr: fp / totalNeg, tpr: tp / totalPos });
+  }
+  // dedupe consecutive identical points for cleaner path
+  return points;
+}
+const rocPoints = computeROC(transactions);
+
+// Draw mini ROC
+const miniX0 = 30, miniY0 = 170, miniW = 210, miniH = 150;
+const rocPathStr = rocPoints.map((p, i) =>
+  `${i === 0 ? 'M' : 'L'} ${miniX0 + p.fpr * miniW} ${miniY0 - p.tpr * miniH}`
+).join(' ');
+document.getElementById('rocPath').setAttribute('d', rocPathStr);
+
+// --- Update function ---
+const slider = document.getElementById('thresholdSlider');
+const thresholdValue = document.getElementById('thresholdValue');
+const quickBtns = document.querySelectorAll('.threshold-quick button');
+const rocDot = document.getElementById('rocDot');
+
+function updateAll(threshold) {
+  thresholdValue.textContent = threshold.toFixed(2);
+
+  // Position threshold line
+  const xT = X0 + threshold * W;
+  tLine.setAttribute('x1', xT);
+  tLine.setAttribute('x2', xT);
+  tLabelBg.setAttribute('x', Math.max(X0, Math.min(X1 - 56, xT - 28)));
+  tLabel.setAttribute('x', Math.max(X0 + 28, Math.min(X1 - 28, xT)));
+  tLabel.textContent = threshold.toFixed(2);
+
+  // Highlight flagged dots
+  let tp = 0, fp = 0, fn = 0, tn = 0;
+  dotElements.forEach(({ el, score, isFraud }) => {
+    const flagged = score >= threshold;
+    if (flagged) {
+      el.setAttribute('opacity', '1');
+      el.setAttribute('r', '6');
+      el.setAttribute('stroke-width', '2');
+    } else {
+      el.setAttribute('opacity', '0.3');
+      el.setAttribute('r', '5');
+      el.setAttribute('stroke-width', '1');
+    }
+    if (isFraud && flagged) tp++;
+    else if (isFraud && !flagged) fn++;
+    else if (!isFraud && flagged) fp++;
+    else tn++;
+  });
+
+  // Update confusion matrix
+  document.getElementById('cmTP').textContent = tp;
+  document.getElementById('cmFN').textContent = fn;
+  document.getElementById('cmFP').textContent = fp;
+  document.getElementById('cmTN').textContent = tn;
+
+  // Metrics
+  const recall = totalPos ? tp / totalPos : 0;
+  const precision = (tp + fp) ? tp / (tp + fp) : 0;
+  const fpr = totalNeg ? fp / totalNeg : 0;
+
+  document.getElementById('lmRecall').textContent = (recall * 100).toFixed(0) + '%';
+  document.getElementById('lmPrec').textContent = (precision * 100).toFixed(0) + '%';
+  document.getElementById('lmFPR').textContent = (fpr * 100).toFixed(0) + '%';
+  document.getElementById('lmFlagged').textContent = tp + fp;
+
+  // ROC dot
+  const rocX = miniX0 + fpr * miniW;
+  const rocY = miniY0 - recall * miniH;
+  rocDot.setAttribute('cx', rocX);
+  rocDot.setAttribute('cy', rocY);
+
+  // Update quick button active state
+  quickBtns.forEach(b => {
+    b.classList.toggle('active', Math.abs(parseFloat(b.dataset.t) - threshold) < 0.005);
+  });
+}
+
+slider.addEventListener('input', e => updateAll(parseFloat(e.target.value)));
+
+quickBtns.forEach(b => {
+  b.addEventListener('click', () => {
+    const t = parseFloat(b.dataset.t);
+    slider.value = t;
+    updateAll(t);
+  });
+});
+
+// Initial render
+updateAll(0.5);
+
+// ============================================================
+// 6. QUIZ
+// ============================================================
+const quizData = [
+  {
+    q: "A model has AUC = 0.85. What does this mean?",
+    options: [
+      "The model is correct 85% of the time.",
+      "A random positive example gets a higher score than a random negative example 85% of the time.",
+      "The model's accuracy at threshold 0.5 is 85%.",
+      "85% of predictions are true positives."
+    ],
+    correct: 1,
+    explain: "AUC is the probability that a randomly chosen positive outranks a randomly chosen negative. It's a ranking metric, not accuracy."
+  },
+  {
+    q: "Why does lowering the classification threshold increase both recall and false positives?",
+    options: [
+      "Because the model becomes more accurate.",
+      "Because more transactions are flagged, and some of those are legitimate.",
+      "Because the AUC increases.",
+      "Because the model retrains itself automatically."
+    ],
+    correct: 1,
+    explain: "Lowering the threshold flags more transactions. In the overlap zone, both frauds and legitimate transactions get flagged — so TP increases (recall ↑) and FP increases (FPR ↑)."
+  },
+  {
+    q: "On a dataset with 0.5% positives, which metric is most honest?",
+    options: [
+      "Accuracy",
+      "ROC-AUC only",
+      "Precision-Recall AUC (PR-AUC)",
+      "Mean squared error"
+    ],
+    correct: 2,
+    explain: "With extreme imbalance, ROC-AUC can look optimistic because FPR is computed over a huge negative class. PR-AUC better reflects precision at useful recall levels."
+  },
+  {
+    q: "Two models have identical AUC = 0.90. What does this tell you about their calibration?",
+    options: [
+      "They must have identical calibration.",
+      "Nothing — AUC measures ranking, not calibration.",
+      "The one with more features is better calibrated.",
+      "They have identical precision at all thresholds."
+    ],
+    correct: 1,
+    explain: "AUC is threshold-independent and rank-based. Two models with the same AUC can have completely different calibration curves. Check calibration separately if you'll use the probabilities directly."
+  },
+  {
+    q: "What is the single biggest advantage of AUC over accuracy?",
+    options: [
+      "It is faster to compute.",
+      "It works on any dataset size.",
+      "It evaluates the model across all thresholds and is robust to class imbalance.",
+      "It always gives a higher number."
+    ],
+    correct: 2,
+    explain: "AUC is threshold-free and measures separability regardless of class prevalence — unlike accuracy, which is dominated by the majority class."
+  },
+  {
+    q: "You have 1M transactions/day, 0.5% fraud, and FP costs $5 while FN costs $500. Where should you operate the model?",
+    options: [
+      "At the threshold that maximizes accuracy.",
+      "At the threshold that maximizes AUC.",
+      "At the threshold that minimizes total business cost (FP cost + FN cost).",
+      "At threshold = 0.5 always."
+    ],
+    correct: 2,
+    explain: "AUC tells you how good the model can be. The cost curve tells you where to operate it. The optimal threshold minimizes total expected cost — not accuracy, not AUC."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+const quizScoreEl = document.getElementById('quizScore');
+let score = 0;
+const answered = new Set();
+
+function renderQuiz() {
+  quizContainer.innerHTML = '';
+  score = 0;
+  answered.clear();
+  quizScoreEl.textContent = '0 / ' + quizData.length;
+
+  quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `
+      <div class="q-text">Q${i + 1}. ${item.q}</div>
+      <div class="q-opts"></div>
+      <div class="quiz-feedback"></div>
+    `;
+    const optsWrap = div.querySelector('.q-opts');
+    const feedback = div.querySelector('.quiz-feedback');
+
+    item.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        if (answered.has(i)) return;
+        answered.add(i);
+        const isCorrect = j === item.correct;
+
+        optsWrap.querySelectorAll('.quiz-opt').forEach((b, k) => {
+          b.disabled = true;
+          if (k === item.correct) b.classList.add('correct');
+          if (k === j && !isCorrect) b.classList.add('wrong');
+        });
+
+        feedback.textContent = (isCorrect ? '✓ Correct! ' : '✗ Not quite. ') + item.explain;
+        feedback.classList.add('show', isCorrect ? 'ok' : 'no');
+
+        if (isCorrect) score++;
+        quizScoreEl.textContent = score + ' / ' + quizData.length;
+      });
+      optsWrap.appendChild(btn);
+    });
+
+    quizContainer.appendChild(div);
+  });
+}
+
+document.getElementById('resetQuiz').addEventListener('click', renderQuiz);
+renderQuiz();
+
+// ============================================================
+// 7. Smooth scroll fallback for older browsers
+// ============================================================
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

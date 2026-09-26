@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR-AUC — Interactive Study Guide</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #6366f1;
+    --primary-soft: #eef2ff;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --success-soft: #ecfdf5;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --warning: #f59e0b;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --sidebar-w: 260px;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-2: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --primary: #818cf8;
+    --primary-soft: #312e81;
+    --success-soft: #064e3b;
+    --danger-soft: #7f1d1d;
+    --code-bg: #0b1120;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 30px; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 1000; transition: width 0.1s;
+  }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    padding: 28px 20px; overflow-y: auto; z-index: 100;
+    transition: transform 0.3s;
+  }
+  .sidebar h1 {
+    font-size: 1.15rem; margin: 0 0 4px 0; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar .subtitle {
+    font-size: 0.75rem; color: var(--text-muted); margin: 0 0 24px 0;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.875rem; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .sidebar nav a:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar nav a.active {
+    background: var(--primary-soft); color: var(--primary); font-weight: 600;
+  }
+  .sidebar nav a .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 6px;
+    background: var(--surface-2); font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sidebar nav a.active .num { background: var(--primary); color: white; }
+
+  main {
+    margin-left: var(--sidebar-w);
+    padding: 40px 48px 120px;
+    max-width: 1100px;
+  }
+
+  section { margin-bottom: 64px; scroll-margin-top: 20px; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px;
+  }
+  .section-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white; font-weight: 800; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  h2 {
+    font-size: 1.75rem; font-weight: 800; margin: 0;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h4 {
+    font-size: 1rem; font-weight: 700; margin: 20px 0 8px;
+  }
+  .lead {
+    font-size: 1.05rem; color: var(--text-muted); margin: 0 0 28px 0;
+    padding-left: 50px;
+  }
+
+  p { margin: 12px 0; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    margin: 16px 0; box-shadow: var(--shadow);
+  }
+  .card-accent { border-left: 4px solid var(--primary); }
+
+  .callout {
+    padding: 16px 20px; border-radius: 10px; margin: 16px 0;
+    border-left: 4px solid var(--primary);
+    background: var(--primary-soft);
+    font-size: 0.95rem;
+  }
+  .callout strong { color: var(--primary); }
+  .callout.danger { border-color: var(--danger); background: var(--danger-soft); }
+  .callout.danger strong { color: var(--danger); }
+  .callout.success { border-color: var(--success); background: var(--success-soft); }
+  .callout.success strong { color: var(--success); }
+  .callout.warn { border-color: var(--warning); background: rgba(245,158,11,0.1); }
+  .callout.warn strong { color: var(--warning); }
+
+  details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin: 12px 0;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  details summary {
+    padding: 16px 22px; cursor: pointer; font-weight: 600;
+    font-size: 1rem; list-style: none;
+    display: flex; align-items: center; gap: 12px;
+    transition: background 0.15s; user-select: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary:hover { background: var(--surface-2); }
+  details summary::before {
+    content: '▸'; color: var(--primary); font-size: 1.1rem;
+    transition: transform 0.2s; display: inline-block;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  details .body { padding: 20px 22px; }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 0.9rem; background: var(--surface);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  th, td {
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--surface-2); font-weight: 700;
+    font-size: 0.82rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  .code-wrap {
+    position: relative; margin: 16px 0;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .code-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px; background: #0f172a;
+    border-bottom: 1px solid #334155;
+    font-size: 0.75rem; color: #94a3b8;
+    font-family: 'SF Mono', Monaco, monospace;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .copy-btn {
+    background: #334155; color: #cbd5e1; border: none;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 0.7rem; font-weight: 600; font-family: inherit;
+    letter-spacing: 0.05em; transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--primary); color: white; }
+  .copy-btn.copied { background: var(--success); color: white; }
+  pre {
+    margin: 0; padding: 18px 20px; background: var(--code-bg);
+    color: var(--code-text); font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 0.82rem; line-height: 1.65; overflow-x: auto;
+  }
+  pre code { font-family: inherit; }
+  .kw { color: #c084fc; font-weight: 600; }
+  .str { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .num { color: #fbbf24; }
+  .bi { color: #60a5fa; }
+
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .metric {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; text-align: center;
+    transition: transform 0.15s;
+  }
+  .metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .metric .value {
+    font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric .label {
+    font-size: 0.72rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; margin-top: 4px;
+  }
+
+  .chart-container {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    margin: 20px 0; box-shadow: var(--shadow);
+  }
+  .chart-title {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+  }
+  svg { display: block; max-width: 100%; height: auto; }
+  .axis-line { stroke: var(--border); stroke-width: 1.5; }
+  .grid-line { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 4; opacity: 0.5; }
+  .axis-label { fill: var(--text-muted); font-size: 10px; font-family: inherit; }
+  .axis-title { fill: var(--text); font-size: 11px; font-weight: 600; font-family: inherit; }
+
+  /* Side-by-side comparison */
+  .side-by-side {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin: 20px 0;
+  }
+  .side-panel {
+    background: var(--surface); border-radius: 12px;
+    padding: 18px; border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .side-panel.deceptive { border-top: 4px solid var(--warning); }
+  .side-panel.realistic { border-top: 4px solid var(--danger); }
+  .side-panel h4 {
+    margin: 0 0 10px; font-size: 1rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .side-panel .verdict {
+    display: inline-block; padding: 3px 10px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  /* Interactive lab */
+  .lab {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 2px solid var(--primary); border-radius: 16px;
+    padding: 28px; margin: 24px 0; box-shadow: var(--shadow-lg);
+  }
+  .lab-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .lab-badge {
+    background: var(--primary); color: white;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .lab-title { font-size: 1.15rem; font-weight: 700; margin: 0; }
+
+  .slider-wrap {
+    background: var(--surface); border-radius: 12px;
+    padding: 20px; margin: 16px 0;
+    border: 1px solid var(--border);
+  }
+  .slider-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; font-size: 0.85rem; font-weight: 600;
+  }
+  .slider-value {
+    font-family: 'SF Mono', monospace; font-size: 1.1rem;
+    color: var(--primary); font-weight: 800;
+  }
+  input[type="range"] {
+    width: 100%; height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%);
+    outline: none; -webkit-appearance: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px;
+    background: white; border: 3px solid var(--primary);
+    border-radius: 50%; cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px; background: white;
+    border: 3px solid var(--primary); border-radius: 50%;
+    cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .quick-btns {
+    display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .quick-btns button {
+    flex: 1; min-width: 90px; padding: 8px 12px;
+    border: 1px solid var(--border); background: var(--surface);
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+    font-weight: 600; color: var(--text-muted);
+    transition: all 0.15s; font-family: inherit;
+  }
+  .quick-btns button:hover {
+    border-color: var(--primary); color: var(--primary);
+    background: var(--primary-soft);
+  }
+  .quick-btns button.active {
+    background: var(--primary); color: white; border-color: var(--primary);
+  }
+
+  .cm-grid-lab {
+    display: grid; grid-template-columns: 110px 1fr 1fr;
+    gap: 6px; margin: 16px 0;
+    font-size: 0.85rem;
+  }
+  .cm-cell {
+    padding: 12px; border-radius: 8px; text-align: center;
+    font-weight: 700; transition: all 0.25s;
+  }
+  .cm-head {
+    background: var(--surface-2); color: var(--text-muted);
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.05em; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cm-tp { background: rgba(16,185,129,0.2); color: var(--success); }
+  .cm-tn { background: rgba(16,185,129,0.08); color: var(--success); }
+  .cm-fp { background: rgba(239,68,68,0.2); color: var(--danger); }
+  .cm-fn { background: rgba(239,68,68,0.3); color: var(--danger); }
+  .cm-cell .cm-num { font-size: 1.2rem; display: block; font-variant-numeric: tabular-nums; }
+  .cm-cell .cm-sub { font-size: 0.62rem; opacity: 0.75; font-weight: 600; }
+
+  .live-metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-top: 16px;
+  }
+  .live-metric {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .live-metric .lm-val {
+    font-size: 1.4rem; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.2s;
+  }
+  .live-metric .lm-lbl {
+    font-size: 0.66rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted);
+    font-weight: 700; margin-top: 2px;
+  }
+
+  .lab-charts {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-top: 20px;
+  }
+  .lab-chart-card {
+    background: var(--surface); border-radius: 12px;
+    padding: 14px; border: 1px solid var(--border);
+  }
+  .lab-chart-card .title {
+    font-size: 0.82rem; font-weight: 700;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .auc-pill {
+    display: inline-block;
+    padding: 4px 12px; border-radius: 20px;
+    font-family: 'SF Mono', monospace;
+    font-weight: 800; font-size: 0.9rem;
+  }
+  .auc-roc { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .auc-pr  { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+  /* Quiz */
+  .quiz-q {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin: 14px 0;
+    box-shadow: var(--shadow);
+  }
+  .quiz-q .q-text { font-weight: 600; margin-bottom: 12px; }
+  .quiz-opt {
+    display: block; width: 100%; text-align: left;
+    padding: 10px 14px; margin: 6px 0;
+    background: var(--surface-2); border: 2px solid transparent;
+    border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem; font-family: inherit;
+    color: var(--text); transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--primary); }
+  .quiz-opt.correct {
+    background: var(--success-soft); border-color: var(--success);
+    color: var(--success); font-weight: 600;
+  }
+  .quiz-opt.wrong {
+    background: var(--danger-soft); border-color: var(--danger);
+    color: var(--danger); font-weight: 600;
+  }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 10px; font-size: 0.85rem;
+    padding: 10px 14px; border-radius: 8px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: var(--success-soft); color: var(--success); }
+  .quiz-feedback.no { background: var(--danger-soft); color: var(--danger); }
+
+  .menu-toggle, .theme-toggle {
+    position: fixed; z-index: 200; top: 16px;
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.15s;
+  }
+  .menu-toggle { left: 16px; display: none; }
+  .theme-toggle { right: 16px; }
+  .menu-toggle:hover, .theme-toggle:hover { transform: scale(1.05); }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+    .menu-toggle { display: flex; }
+    main { margin-left: 0; padding: 80px 20px 100px; }
+    .lead { padding-left: 0; }
+    h2 { font-size: 1.4rem; }
+    .side-by-side { grid-template-columns: 1fr; }
+    .lab-charts { grid-template-columns: 1fr; }
+    .live-metrics { grid-template-columns: 1fr 1fr; }
+  }
+
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-good { background: rgba(16,185,129,0.15); color: var(--success); }
+  .badge-bad { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+
+  code {
+    background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
+    font-family: 'SF Mono', monospace; font-size: 0.85em;
+    color: var(--primary); font-weight: 600;
+  }
+  pre code { background: none; padding: 0; color: inherit; font-weight: normal; }
+
+  ul li, ol li { margin: 6px 0; }
+  strong { color: var(--text); font-weight: 700; }
+
+  .math {
+    font-family: 'SF Mono', monospace;
+    background: var(--surface-2);
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin: 14px 0;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    line-height: 1.7;
+    border-left: 3px solid var(--primary);
+  }
+  .math .hl { color: var(--danger); font-weight: 800; }
+  .math .hl2 { color: var(--success); font-weight: 800; }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+<aside class="sidebar" id="sidebar">
+  <h1>PR-AUC</h1>
+  <p class="subtitle">Interactive Study Guide</p>
+  <nav id="navList">
+    <a href="#intro"><span class="num">1</span> Introduction</a>
+    <a href="#scenario"><span class="num">2</span> The Fraud Scenario</a>
+    <a href="#roc"><span class="num">3</span> The ROC Perspective</a>
+    <a href="#pr"><span class="num">4</span> The PR Perspective</a>
+    <a href="#divergence"><span class="num">5</span> The Divergence</a>
+    <a href="#lab"><span class="num">6</span> Interactive Lab</a>
+    <a href="#when"><span class="num">7</span> When to Use PR-AUC</a>
+    <a href="#quiz"><span class="num">8</span> Quiz</a>
+    <a href="#code"><span class="num">9</span> Python Reference</a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ==================== 1. INTRO ==================== -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <h2>Introduction</h2>
+  </div>
+  <p class="lead">Why ROC-AUC lies on imbalanced data — and how PR-AUC tells the truth.</p>
+
+  <p>Imagine a fraud detection model that flags 2,000 transactions out of 10,000. It catches 74 real frauds — a 74% recall. On the surface, that sounds decent. But <strong>1,926 of the flagged transactions were innocent</strong>. Only 3.7% of its alerts were real.</p>
+
+  <p>Despite this catastrophic real-world performance, the <strong>ROC-AUC of this model is 0.870</strong> — which most data scientists would call "good." Meanwhile, its <strong>PR-AUC is 0.186</strong> — which honest evaluation would call "barely better than random."</p>
+
+  <div class="callout danger">
+    <strong>The core problem:</strong> ROC-AUC measures how well the model separates positives from negatives <em>across the entire dataset</em> — including the 9,900 normal transactions it correctly ignored. PR-AUC measures how well the model performs <em>on the positive class only</em> — which is what the business actually cares about.
+  </div>
+
+  <p>This guide builds both perspectives from scratch using one concrete fraud-detection example. By the end, you'll understand exactly why these two metrics diverge so dramatically on imbalanced data — and which one to trust.</p>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="value" style="background:linear-gradient(135deg,var(--warning),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">0.870</div>
+      <div class="label">ROC-AUC<br>(deceptively optimistic)</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="background:linear-gradient(135deg,var(--danger),#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">0.186</div>
+      <div class="label">PR-AUC<br>(realistic)</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="background:linear-gradient(135deg,var(--primary),#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">1%</div>
+      <div class="label">Baseline<br>(random)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 2. SCENARIO ==================== -->
+<section id="scenario">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <h2>The Fraud Scenario</h2>
+  </div>
+  <p class="lead">One dataset. One model. One threshold. Two very different stories.</p>
+
+  <h3>The Dataset</h3>
+  <p>A payment processor has <strong>10,000 transactions</strong> in its evaluation set:</p>
+
+  <table>
+    <thead>
+      <tr><th>Class</th><th>Count</th><th>Percentage</th><th>Real-world label</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Fraud (positive)</td><td>100</td><td>1.0%</td><td>The thing we're trying to catch</td></tr>
+      <tr><td>Normal (negative)</td><td>9,900</td><td>99.0%</td><td>The background noise</td></tr>
+      <tr style="background:var(--surface-2);"><td><strong>Total</strong></td><td><strong>10,000</strong></td><td><strong>100%</strong></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <p>This is a <strong>1:99 class imbalance</strong> — extremely typical for fraud, spam, disease screening, and anomaly detection problems. It's exactly the regime where ROC-AUC and PR-AUC start to tell completely different stories.</p>
+
+  <h3>The Model's Behavior at Threshold 0.5</h3>
+  <p>The model is deliberately tuned to be <em>aggressive</em> — it would rather flag too many than miss any fraud. At its default threshold:</p>
+
+  <div class="cm-grid-lab" style="max-width:520px;">
+    <div class="cm-cell cm-head"></div>
+    <div class="cm-cell cm-head">Predicted Fraud</div>
+    <div class="cm-cell cm-head">Predicted Normal</div>
+
+    <div class="cm-cell cm-head">Actual Fraud (100)</div>
+    <div class="cm-cell cm-tp">
+      <span class="cm-num">74</span>
+      <span class="cm-sub">True Positives</span>
+    </div>
+    <div class="cm-cell cm-fn">
+      <span class="cm-num">26</span>
+      <span class="cm-sub">False Negatives</span>
+    </div>
+
+    <div class="cm-cell cm-head">Actual Normal (9,900)</div>
+    <div class="cm-cell cm-fp">
+      <span class="cm-num">1,926</span>
+      <span class="cm-sub">False Positives</span>
+    </div>
+    <div class="cm-cell cm-tn">
+      <span class="cm-num">7,974</span>
+      <span class="cm-sub">True Negatives</span>
+    </div>
+  </div>
+
+  <p>The model flags <strong>2,000 transactions total</strong> (74 TP + 1,926 FP). It catches 74 of the 100 frauds — but at the cost of <strong>1,926 false alarms</strong>.</p>
+
+  <div class="callout warn">
+    <strong>Hold this image in your mind:</strong> 2,000 alerts. 74 real frauds. 1,926 innocent accounts frozen. Now let's see what ROC-AUC and PR-AUC each have to say about this.
+  </div>
+
+  <h3>All the Metrics at This One Threshold</h3>
+
+  <table>
+    <thead>
+      <tr><th>Metric</th><th>Formula</th><th>Value</th><th>Story it tells</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Accuracy</td>
+        <td>(74 + 7,974) / 10,000</td>
+        <td><strong>80.5%</strong></td>
+        <td style="color:var(--warning);">Looks OK — but "always predict normal" gets 99%.</td>
+      </tr>
+      <tr>
+        <td>Recall (TPR)</td>
+        <td>74 / (74 + 26)</td>
+        <td><strong>74.0%</strong></td>
+        <td style="color:var(--success);">Catches most frauds.</td>
+      </tr>
+      <tr>
+        <td>FPR</td>
+        <td>1,926 / (1,926 + 7,974)</td>
+        <td><strong>19.4%</strong></td>
+        <td style="color:var(--success);">Sounds "low" — the deceptive denominator.</td>
+      </tr>
+      <tr>
+        <td>Specificity</td>
+        <td>7,974 / 9,900</td>
+        <td><strong>80.6%</strong></td>
+        <td style="color:var(--warning);">80% of normals correctly ignored.</td>
+      </tr>
+      <tr style="background:var(--danger-soft);">
+        <td><strong>Precision</strong></td>
+        <td>74 / (74 + 1,926)</td>
+        <td><strong>3.7%</strong></td>
+        <td style="color:var(--danger);font-weight:700;">96.3% of alerts are false alarms.</td>
+      </tr>
+      <tr>
+        <td>F1 Score</td>
+        <td>2·(0.037·0.74)/(0.037+0.74)</td>
+        <td><strong>0.071</strong></td>
+        <td style="color:var(--danger);">Terrible — dominated by low precision.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout danger">
+    <strong>Look at the split:</strong> Recall = 74% (looks great), FPR = 19.4% (looks acceptable), Precision = 3.7% (catastrophic). This is the exact shape of a model that's <em>deceptively good on ROC</em> and <em>catastrophically bad in production</em>.
+  </div>
+</section>
+
+<!-- ==================== 3. ROC ==================== -->
+<section id="roc">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <h2>The ROC Perspective (Deceptive)</h2>
+  </div>
+  <p class="lead">Why 19.4% FPR sounds reasonable — and why 0.870 ROC-AUC is misleading.</p>
+
+  <h3>1. The Denominator Effect</h3>
+  <p>The False Positive Rate is defined as:</p>
+
+  <div class="math">
+    FPR = <span class="hl">False Positives</span> / (False Positives + True Negatives)<br>
+    FPR = <span class="hl">FP</span> / <span class="hl2">Actual Negatives</span><br>
+    FPR = 1,926 / 9,900 ≈ <span class="hl">0.194</span> (19.4%)
+  </div>
+
+  <p>Look at what's happening here:</p>
+  <ul>
+    <li><strong>The numerator</strong> is enormous in absolute terms — <strong>1,926</strong> innocent transactions wrongly flagged. In a balanced dataset, that would be catastrophic.</li>
+    <li><strong>The denominator</strong> is even more enormous — <strong>9,900</strong> actual negatives. This is the "background" pool that the FPR is measured against.</li>
+  </ul>
+
+  <p>Mathematically, <strong>19.4% sounds completely reasonable.</strong> It says the model correctly ignored 80.6% of the normal transactions. That's a passable gatekeeper.</p>
+
+  <div class="callout danger">
+    <strong>The deception:</strong> Because the denominator (9,900) is so massive, it <em>absorbs</em> the impact of the 1,926 errors. Change the numerator to 5,000 false positives and the FPR only rises to 50%. Change it to 500 and FPR drops to 5%. The denominator never really "reacts" to the numerator when the majority class is this huge.
+  </div>
+
+  <h3>2. The ROC Point: (0.194, 0.74)</h3>
+  <p>The ROC curve plots <strong>TPR on the Y-axis</strong> against <strong>FPR on the X-axis</strong>. Our model's operating point is:</p>
+
+  <div class="math">
+    X-axis (FPR): <span class="hl">0.194</span>  ← "only" 19.4% of normals flagged<br>
+    Y-axis (TPR): <span class="hl2">0.740</span>  ← 74% of frauds caught
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:var(--warning);"></span> The ROC Point Sits High in the Top-Left</div>
+    <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="40" x2="60" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="40" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+      <!-- Grid -->
+      <line x1="60" y1="265" x2="460" y2="265" class="grid-line"/>
+      <line x1="60" y1="190" x2="460" y2="190" class="grid-line"/>
+      <line x1="60" y1="115" x2="460" y2="115" class="grid-line"/>
+      <line x1="160" y1="40" x2="160" y2="340" class="grid-line"/>
+      <line x1="260" y1="40" x2="260" y2="340" class="grid-line"/>
+      <line x1="360" y1="40" x2="360" y2="340" class="grid-line"/>
+
+      <!-- Shaded AUC -->
+      <path d="M 60 340 L 60 200 Q 90 100 140 80 Q 250 60 460 40 L 460 340 Z"
+            fill="rgba(245,158,11,0.12)"/>
+
+      <!-- ROC curve (deceptively high shape) -->
+      <path d="M 60 340 L 60 200 Q 90 100 140 80 Q 250 60 460 40"
+            fill="none" stroke="#f59e0b" stroke-width="3"/>
+
+      <!-- The (0.194, 0.74) point -->
+      <circle cx="138" cy="118" r="9" fill="#ef4444" stroke="white" stroke-width="3"/>
+      <line x1="138" y1="118" x2="138" y2="340" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3"/>
+      <line x1="60" y1="118" x2="138" y2="118" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3"/>
+
+      <!-- Annotation -->
+      <rect x="160" y="90" width="200" height="60" fill="var(--surface)" stroke="var(--border)" rx="8"/>
+      <text x="170" y="110" class="axis-label" font-weight="800" fill="#ef4444" font-size="12">Threshold 0.5 point</text>
+      <text x="170" y="128" class="axis-label" fill="var(--text)" font-size="10">FPR = 0.194, TPR = 0.740</text>
+      <text x="170" y="144" class="axis-label" fill="var(--warning)" font-weight="700" font-size="11">AUC = 0.870 → "good model!"</text>
+
+      <!-- Axis labels -->
+      <text x="260" y="375" class="axis-title" text-anchor="middle">False Positive Rate (FPR)</text>
+      <text x="25" y="190" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 190)">True Positive Rate (TPR)</text>
+
+      <text x="60" y="358" class="axis-label" text-anchor="middle">0.0</text>
+      <text x="160" y="358" class="axis-label" text-anchor="middle">0.25</text>
+      <text x="260" y="358" class="axis-label" text-anchor="middle">0.50</text>
+      <text x="360" y="358" class="axis-label" text-anchor="middle">0.75</text>
+      <text x="460" y="358" class="axis-label" text-anchor="middle">1.0</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      Because FPR is only 0.194, the point sits <em>high up in the top-left quadrant</em>. The ROC-AUC integrates the area under this curve and returns an optimistic <strong>0.870</strong>.
+    </p>
+  </div>
+
+  <h3>3. What the ROC Curve Is Actually Celebrating</h3>
+  <p>The area under this curve (0.870) is dominated by the model's ability to handle the <strong>majority class</strong> — the 9,900 normal transactions. Specifically:</p>
+  <ul>
+    <li>The model correctly ignored <strong>7,974 of 9,900</strong> normal transactions (80.6% specificity).</li>
+    <li>The ROC curve rewards this heavily because TN dominates the FPR calculation.</li>
+    <li>The model's ability to <em>rank</em> positives above negatives — averaged over the entire population — looks genuinely strong.</li>
+  </ul>
+
+  <div class="callout warn">
+    <strong>But here's the fundamental problem:</strong> The ROC curve asks "how well does the model separate positive from negative across the whole population?" — but the business doesn't care about the 9,900 normal transactions. The business cares about the 2,000 alerts it has to review.
+  </div>
+
+  <h3>4. The Real-World Disconnect</h3>
+  <p>While the ROC perspective celebrates that the model "successfully ignored 80.6% of normal transactions," it completely ignores the operational reality of the fraud team.</p>
+
+  <div class="card card-accent">
+    <h4 style="margin-top:0;">What the fraud analyst actually experiences:</h4>
+    <ul>
+      <li>They wake up to a queue of <strong>2,000 alerts</strong>.</li>
+      <li>They manually review each one — calling customers, checking transaction histories, freezing accounts.</li>
+      <li>After reviewing all 2,000, only <strong>74 turn out to be real fraud</strong>.</li>
+      <li><strong>1,926 reviews — 96.3% of their day — were wasted.</strong></li>
+    </ul>
+  </div>
+
+  <p>The ROC curve doesn't see this queue. It never sees the queue. The ROC curve sees the whole dataset as a symmetric problem where both classes matter equally. On a 1:99 imbalanced dataset, that assumption is catastrophically wrong.</p>
+
+  <div class="callout danger">
+    <strong>This is exactly why ROC-AUC creates a dangerous illusion of high performance on imbalanced data:</strong> it measures how well the model handles the background noise (the majority class), rather than how much you can trust its positive flags (the minority class).
+  </div>
+</section>
+
+<!-- ==================== 4. PR ==================== -->
+<section id="pr">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <h2>The PR Perspective (Realistic)</h2>
+  </div>
+  <p class="lead">Why 3.7% precision collapses the curve — and why 0.186 PR-AUC is honest.</p>
+
+  <h3>1. The Isolation of the Positive Class</h3>
+  <p>The Precision-Recall (PR) curve abandons the negative class entirely. Its Y-axis is Precision:</p>
+
+  <div class="math">
+    Precision = <span class="hl">True Positives</span> / (True Positives + False Positives)<br>
+    Precision = <span class="hl">TP</span> / <span class="hl2">All Predicted Positives</span>
+  </div>
+
+  <p><strong>Notice what is missing:</strong> True Negatives (TN). The 7,974 normal transactions the model correctly ignored don't appear in this formula at all.</p>
+
+  <p>While the ROC curve includes all 9,900 normal transactions in its math, Precision focuses like a laser on the model's actual <em>actions</em>. It asks: <em>"Of everything this model flagged, how much can I trust?"</em></p>
+
+  <h3>2. Computing Precision at Our Threshold</h3>
+
+  <div class="math">
+    Precision = <span class="hl">74</span> / (<span class="hl">74</span> + <span class="hl">1,926</span>)<br>
+    Precision = 74 / <span class="hl2">2,000</span><br>
+    Precision = <span class="hl">0.037</span> (3.7%)
+  </div>
+
+  <p>Because Precision isolates the model's flags, it immediately exposes the truth:</p>
+
+  <div class="callout danger">
+    <strong>96.3% of the model's fraud alerts are false alarms.</strong> Out of 2,000 flagged transactions, only 74 are real frauds. The fraud team spends 96.3% of its time investigating innocent customers.
+  </div>
+
+  <h3>3. The PR Baseline — Why It's Not 0.5</h3>
+  <p>On the ROC curve, a random classifier traces the diagonal from (0,0) to (1,1), giving AUC = 0.5. But on the PR curve, <strong>the baseline is not 0.5</strong>. It's the <em>prevalence</em> of the positive class:</p>
+
+  <div class="math">
+    PR Baseline = Total Positives / Total Population<br>
+    PR Baseline = 100 / 10,000<br>
+    PR Baseline = <span class="hl">0.01</span> (1%)
+  </div>
+
+  <p>This means: <strong>a completely random classifier on this dataset would achieve a PR-AUC of about 0.01</strong> — not 0.5. This is a critical difference. It means the PR baseline <em>shifts downward as the dataset becomes more imbalanced</em>.</p>
+
+  <div class="callout warn">
+    <strong>Interpretation:</strong> Our model's PR-AUC of 0.186 is roughly <strong>18.6× better than random</strong> on the PR metric. But in absolute terms, it's still terrible — because the model only achieves 3.7% precision at its operating point.
+  </div>
+
+  <h3>4. Why the PR Curve "Collapses"</h3>
+  <p>A PR curve plots <strong>Precision on the Y-axis</strong> against <strong>Recall on the X-axis</strong>. Watch what happens as we lower the threshold to catch more frauds:</p>
+
+  <ol>
+    <li><strong>Start conservative:</strong> At a very high threshold, we only flag the most suspicious transactions. Precision is high (we rarely flag innocent people), but recall is low (we miss most frauds).</li>
+    <li><strong>Start lowering the threshold:</strong> We catch more frauds — recall rises. But because the dataset is flooded with 9,900 normal transactions, we also start flagging a massive wave of innocent ones.</li>
+    <li><strong>Precision plummets:</strong> Each new fraud caught brings along hundreds of false positives, because normal transactions vastly outnumber frauds in the score overlap zone.</li>
+    <li><strong>Approach the baseline:</strong> As recall approaches 100%, precision collapses toward the 1% prevalence. The model is essentially flagging everything and being right 1% of the time.</li>
+  </ol>
+
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:var(--danger);"></span> The PR Curve Collapses Toward the 1% Baseline</div>
+    <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="40" x2="60" y2="340" class="axis-line"/>
+      <line x1="60" y1="340" x2="460" y2="340" class="axis-line"/>
+
+      <!-- gridlines -->
+      <line x1="60" y1="265" x2="460" y2="265" class="grid-line"/>
+      <line x1="60" y1="190" x2="460" y2="190" class="grid-line"/>
+      <line x1="60" y1="115" x2="460" y2="115" class="grid-line"/>
+      <line x1="160" y1="40" x2="160" y2="340" class="grid-line"/>
+      <line x1="260" y1="40" x2="260" y2="340" class="grid-line"/>
+      <line x1="360" y1="40" x2="360" y2="340" class="grid-line"/>
+
+      <!-- Baseline (1%) -->
+      <line x1="60" y1="337" x2="460" y2="337" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="465" y="340" class="axis-label" fill="#64748b" font-size="9">baseline = 1%</text>
+
+      <!-- PR curve (collapses fast) -->
+      <path d="M 60 60 Q 80 100 120 220 Q 170 300 250 325 Q 350 335 460 338"
+            fill="none" stroke="#ef4444" stroke-width="3"/>
+
+      <!-- The (0.74, 0.037) point -->
+      <circle cx="356" cy="318" r="9" fill="#ef4444" stroke="white" stroke-width="3"/>
+      <line x1="356" y1="318" x2="356" y2="340" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3"/>
+      <line x1="60" y1="318" x2="356" y2="318" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3"/>
+
+      <!-- Annotation -->
+      <rect x="230" y="100" width="215" height="80" fill="var(--surface)" stroke="var(--border)" rx="8"/>
+      <text x="240" y="120" class="axis-label" font-weight="800" fill="#ef4444" font-size="12">Threshold 0.5 point</text>
+      <text x="240" y="138" class="axis-label" fill="var(--text)" font-size="10">Recall = 0.74, Precision = 0.037</text>
+      <text x="240" y="154" class="axis-label" fill="var(--danger)" font-weight="700" font-size="11">PR-AUC = 0.186</text>
+      <text x="240" y="170" class="axis-label" fill="var(--danger)" font-size="10">"barely better than random"</text>
+
+      <!-- Axis labels -->
+      <text x="260" y="375" class="axis-title" text-anchor="middle">Recall (TPR)</text>
+      <text x="25" y="190" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 190)">Precision</text>
+
+      <text x="60" y="358" class="axis-label" text-anchor="middle">0.0</text>
+      <text x="160" y="358" class="axis-label" text-anchor="middle">0.25</text>
+      <text x="260" y="358" class="axis-label" text-anchor="middle">0.50</text>
+      <text x="360" y="358" class="axis-label" text-anchor="middle">0.75</text>
+      <text x="460" y="358" class="axis-label" text-anchor="middle">1.0</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      Instead of tracking high like the ROC curve, the PR curve gets pulled down sharply into the bottom quadrant. The area underneath is only <strong>0.186</strong>.
+    </p>
+  </div>
+
+  <h3>5. What PR-AUC Is Really Telling You</h3>
+  <p>PR-AUC = 0.186 means: if you integrate the area under the PR curve, you get a value that's only <strong>18.6× the random baseline of 0.01</strong>. In practical terms:</p>
+
+  <ul>
+    <li>At almost any recall level, the model's precision is <em>far</em> below what a good model would produce.</li>
+    <li>The model's positive predictions are weak — flagging a transaction gives you only ~3.7% confidence it's fraud.</li>
+    <li>Any real deployment would drown the fraud team in false alarms.</li>
+  </ul>
+
+  <div class="callout success">
+    <strong>The PR curve is honest because it evaluates the model as a detective, not a gatekeeper.</strong> A gatekeeper is judged on how well it keeps out the bad stuff (ROC). A detective is judged on how many of its arrests are correct (PR).
+  </div>
+</section>
+
+<!-- ==================== 5. DIVERGENCE ==================== -->
+<section id="divergence">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <h2>The Divergence Explained</h2>
+  </div>
+  <p class="lead">Same model. Same threshold. Two completely different verdicts.</p>
+
+  <div class="side-by-side">
+    <div class="side-panel deceptive">
+      <h4>
+        <span class="verdict" style="background:rgba(245,158,11,0.15);color:var(--warning);">Deceptive</span>
+        ROC Perspective
+      </h4>
+      <div class="math" style="border-left-color:var(--warning);">
+        FPR = 1,926 / 9,900 = 19.4%<br>
+        TPR = 74 / 100 = 74.0%<br>
+        ROC-AUC = <strong style="color:var(--warning);">0.870</strong>
+      </div>
+      <p style="font-size:0.88rem;">
+        The FPR's massive denominator absorbs the 1,926 errors. A "19.4% false positive rate" sounds tolerable. The model looks like a good gatekeeper.
+      </p>
+      <p style="font-size:0.82rem;color:var(--text-muted);">
+        <strong>What ROC sees:</strong> 9,900 background transactions, of which the model correctly ignored 7,974.
+      </p>
+    </div>
+
+    <div class="side-panel realistic">
+      <h4>
+        <span class="verdict" style="background:rgba(239,68,68,0.15);color:var(--danger);">Realistic</span>
+        PR Perspective
+      </h4>
+      <div class="math" style="border-left-color:var(--danger);">
+        Precision = 74 / 2,000 = 3.7%<br>
+        Recall = 74 / 100 = 74.0%<br>
+        PR-AUC = <strong style="color:var(--danger);">0.186</strong>
+      </div>
+      <p style="font-size:0.88rem;">
+        Precision exposes the truth: 96.3% of alerts are false alarms. Only 74 out of 2,000 flagged transactions are real frauds.
+      </p>
+      <p style="font-size:0.82rem;color:var(--text-muted);">
+        <strong>What PR sees:</strong> 2,000 alerts the fraud team must review. Only 74 are real.
+      </p>
+    </div>
+  </div>
+
+  <h3>The Core Mathematical Reason for the Divergence</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Numerator</th>
+        <th>Denominator</th>
+        <th>Denominator Size</th>
+        <th>Effect of 1,926 FP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>FPR</strong></td>
+        <td>1,926</td>
+        <td>9,900</td>
+        <td>Huge (all negatives)</td>
+        <td style="color:var(--success);">Diluted — FPR "only" 19.4%</td>
+      </tr>
+      <tr style="background:var(--danger-soft);">
+        <td><strong>Precision</strong></td>
+        <td>74 (TP)</td>
+        <td>2,000</td>
+        <td>Small (flagged only)</td>
+        <td style="color:var(--danger);">Dominates — Precision collapses to 3.7%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout danger">
+    <strong>The asymmetry:</strong> On the ROC side, the 1,926 false positives are divided by 9,900 → they look small. On the PR side, they are added to just 74 true positives → they dominate the denominator → precision collapses. <em>The exact same errors are "small" in one framing and "catastrophic" in another.</em>
+  </div>
+
+  <h3>The Real-World Costs of Ignoring PR</h3>
+
+  <div class="card card-accent" style="border-left-color:var(--danger);">
+    <h4 style="margin-top:0;">💸 Human Resource Waste</h4>
+    <p style="margin:8px 0;">If a fraud team receives 2,000 alerts daily but 1,926 are false alarms, analysts waste <strong>96% of their time</strong> reviewing innocent accounts. At a fully-loaded analyst cost of $50/hour, that's roughly <strong>$2,400 of wasted labor per day</strong> — or nearly <strong>$600,000 per year</strong> — for every model deployed.</p>
+  </div>
+
+  <div class="card card-accent" style="border-left-color:var(--danger);">
+    <h4 style="margin-top:0;">😡 Customer Friction</h4>
+    <p style="margin:8px 0;">1,926 innocent customers just had their credit cards locked or transactions delayed unnecessarily. Some will call support (adding more cost). Some will be embarrassed at checkout. Some will churn. <strong>The false positives are real people experiencing real friction</strong> — and the ROC curve cannot see any of them.</p>
+  </div>
+
+  <div class="card card-accent" style="border-left-color:var(--danger);">
+    <h4 style="margin-top:0;">🚨 Real Fraud Missed</h4>
+    <p style="margin:8px 0;">While the team drowns in false alarms, 26 real frauds slipped through (FN = 26). These lead to chargebacks, refunds, and reputation damage. The model's 74% recall isn't impressive when the operation is paralyzed by false alarms.</p>
+  </div>
+
+  <div class="callout success">
+    <strong>The bottom line:</strong> ROC-AUC hides this damage because it evaluates the model as a "good gatekeeper" for the 9,900 normal users. PR-AUC exposes the damage because it evaluates the model as an "incompetent detective" that accuses thousands of innocent people just to catch a few criminals.
+  </div>
+</section>
+
+<!-- ==================== 6. LAB ==================== -->
+<section id="lab">
+  <div class="section-header">
+    <div class="section-number">6</div>
+    <h2>Interactive Lab</h2>
+  </div>
+  <p class="lead">Sweep the threshold. Watch precision collapse while ROC stays high.</p>
+
+  <div class="lab">
+    <div class="lab-header">
+      <span class="lab-badge">Live Demo</span>
+      <h3 class="lab-title" style="margin:0;">ROC vs PR Side by Side</h3>
+    </div>
+
+    <p style="font-size:0.9rem;">
+      Synthetic data with the same structure as our fraud example: <strong>100 positives, 9,900 negatives</strong>. The threshold slider sweeps across all possible decision cutoffs. Watch how precision collapses far faster than FPR rises.
+    </p>
+
+    <div class="slider-wrap">
+      <div class="slider-label">
+        <span>Classification Threshold</span>
+        <span class="slider-value" id="thresholdValue">0.50</span>
+      </div>
+      <input type="range" id="thresholdSlider" min="0" max="1" step="0.01" value="0.5">
+      <div class="quick-btns">
+        <button data-t="0.9">Conservative 0.90</button>
+        <button data-t="0.7">Moderate 0.70</button>
+        <button data-t="0.5" class="active">Default 0.50</button>
+        <button data-t="0.3">Aggressive 0.30</button>
+        <button data-t="0.1">Very aggressive 0.10</button>
+      </div>
+    </div>
+
+    <!-- Confusion matrix -->
+    <div class="cm-grid-lab" style="max-width:560px;margin:20px auto;">
+      <div class="cm-cell cm-head"></div>
+      <div class="cm-cell cm-head">Pred Fraud</div>
+      <div class="cm-cell cm-head">Pred Normal</div>
+
+      <div class="cm-cell cm-head">Actual Fraud (100)</div>
+      <div class="cm-cell cm-tp">
+        <span class="cm-num" id="cmTP">74</span>
+        <span class="cm-sub">TP</span>
+      </div>
+      <div class="cm-cell cm-fn">
+        <span class="cm-num" id="cmFN">26</span>
+        <span class="cm-sub">FN</span>
+      </div>
+
+      <div class="cm-cell cm-head">Actual Normal (9,900)</div>
+      <div class="cm-cell cm-fp">
+        <span class="cm-num" id="cmFP">1,926</span>
+        <span class="cm-sub">FP</span>
+      </div>
+      <div class="cm-cell cm-tn">
+        <span class="cm-num" id="cmTN">7,974</span>
+        <span class="cm-sub">TN</span>
+      </div>
+    </div>
+
+    <!-- Live metrics -->
+    <div class="live-metrics">
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--success);" id="lmRecall">74%</div>
+        <div class="lm-lbl">Recall (TPR)</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--warning);" id="lmFPR">19.4%</div>
+        <div class="lm-lbl">FPR</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--danger);" id="lmPrec">3.7%</div>
+        <div class="lm-lbl">Precision</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--text);" id="lmFlagged">2,000</div>
+        <div class="lm-lbl">Total Flagged</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--text);" id="lmFalseAlarm">96.3%</div>
+        <div class="lm-lbl">False Alarm Rate</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--text);" id="lmWaste">1,926</div>
+        <div class="lm-lbl">Wasted Reviews</div>
+      </div>
+    </div>
+
+    <!-- Side-by-side charts -->
+    <div class="lab-charts">
+      <div class="lab-chart-card">
+        <div class="title">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--warning);display:inline-block;"></span>
+          ROC Curve &nbsp;
+          <span class="auc-pill auc-roc" id="rocAucPill">AUC = 0.870</span>
+        </div>
+        <svg id="rocSVG" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <line x1="30" y1="190" x2="300" y2="190" class="axis-line"/>
+          <line x1="30" y1="190" x2="30" y2="20" class="axis-line"/>
+          <line x1="30" y1="190" x2="300" y2="20" stroke="#64748b" stroke-width="1" stroke-dasharray="4 4"/>
+          <path id="rocPath" d="" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+          <circle id="rocDot" cx="0" cy="0" r="6" fill="#ef4444" stroke="white" stroke-width="2"/>
+          <text x="165" y="213" class="axis-label" text-anchor="middle">FPR →</text>
+          <text x="12" y="105" class="axis-label" text-anchor="middle" transform="rotate(-90,12,105)">TPR →</text>
+        </svg>
+      </div>
+
+      <div class="lab-chart-card">
+        <div class="title">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--danger);display:inline-block;"></span>
+          PR Curve &nbsp;
+          <span class="auc-pill auc-pr" id="prAucPill">PR-AUC = 0.186</span>
+        </div>
+        <svg id="prSVG" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <line x1="30" y1="190" x2="300" y2="190" class="axis-line"/>
+          <line x1="30" y1="190" x2="30" y2="20" class="axis-line"/>
+          <!-- Baseline -->
+          <line id="prBaseline" x1="30" y1="188" x2="300" y2="188" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="305" y="192" class="axis-label" fill="#64748b" font-size="8">1%</text>
+          <path id="prPath" d="" fill="none" stroke="#ef4444" stroke-width="2.5"/>
+          <circle id="prDot" cx="0" cy="0" r="6" fill="#ef4444" stroke="white" stroke-width="2"/>
+          <text x="165" y="213" class="axis-label" text-anchor="middle">Recall →</text>
+          <text x="12" y="105" class="axis-label" text-anchor="middle" transform="rotate(-90,12,105)">Precision →</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="callout danger" style="margin-top:20px;">
+      <strong>Watch closely:</strong> As you lower the threshold, recall climbs and FPR climbs slowly — but precision <em>plummets</em> toward the 1% baseline. The ROC curve looks healthy the entire time. The PR curve collapses. Same model, two completely different stories.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7. WHEN TO USE ==================== -->
+<section id="when">
+  <div class="section-header">
+    <div class="section-number">7</div>
+    <h2>When to Use PR-AUC vs ROC-AUC</h2>
+  </div>
+  <p class="lead">The choice isn't stylistic — it's determined by the problem.</p>
+
+  <h3>Decision Rules</h3>
+
+  <table>
+    <thead>
+      <tr><th>Situation</th><th>Use</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Balanced classes (roughly 50/50)</td>
+        <td><span class="badge badge-good">ROC-AUC</span></td>
+        <td>Both metrics agree. ROC is more established and interpretable.</td>
+      </tr>
+      <tr>
+        <td>Mild imbalance (90/10)</td>
+        <td><span class="badge badge-warn">Either — check both</span></td>
+        <td>ROC still informative, but PR starts to diverge. Compare them.</td>
+      </tr>
+      <tr style="background:var(--danger-soft);">
+        <td><strong>Severe imbalance (&lt; 5% positives)</strong></td>
+        <td><span class="badge badge-bad">PR-AUC</span></td>
+        <td>ROC becomes deceptively optimistic. PR tells the truth about the positive class.</td>
+      </tr>
+      <tr>
+        <td>You care about the minority class specifically</td>
+        <td><span class="badge badge-bad">PR-AUC</span></td>
+        <td>Fraud, disease, spam, anomaly detection — the positive class is the point.</td>
+      </tr>
+      <tr>
+        <td>You care about the whole ranking</td>
+        <td><span class="badge badge-good">ROC-AUC</span></td>
+        <td>When both classes matter equally, ROC measures overall separation.</td>
+      </tr>
+      <tr>
+        <td>Operational cost of FP is high</td>
+        <td><span class="badge badge-bad">PR-AUC</span></td>
+        <td>PR directly reflects how much of your alert queue is useful.</td>
+      </tr>
+      <tr>
+        <td>You need a "headline" number for a paper</td>
+        <td><span class="badge badge-warn">Report both</span></td>
+        <td>Honest evaluations always report both, plus the confusion matrix.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The Practical Rule of Thumb</h3>
+
+  <div class="callout success">
+    <strong>If your positive class is under 5% of the data, always report PR-AUC alongside ROC-AUC.</strong> If ROC-AUC is high but PR-AUC is low, the model is exploiting the majority class. Trust PR-AUC.
+  </div>
+
+  <h3>What Good PR-AUC Looks Like</h3>
+
+  <table>
+    <thead>
+      <tr><th>PR-AUC</th><th>Relative to baseline (1%)</th><th>Interpretation</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>≈ 0.01</td>
+        <td>1×</td>
+        <td>No better than random. Useless.</td>
+      </tr>
+      <tr>
+        <td>0.05</td>
+        <td>5×</td>
+        <td>Weak signal. Perhaps usable with a very strict threshold.</td>
+      </tr>
+      <tr style="background:var(--danger-soft);">
+        <td><strong>0.186</strong></td>
+        <td><strong>18.6×</strong></td>
+        <td style="color:var(--danger);"><strong>Our example.</strong> Better than random but operationally unusable.</td>
+      </tr>
+      <tr>
+        <td>0.50</td>
+        <td>50×</td>
+        <td>Good. Worth deploying with careful threshold tuning.</td>
+      </tr>
+      <tr>
+        <td>0.80</td>
+        <td>80×</td>
+        <td>Excellent. Production-grade.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>Subtlety:</strong> PR-AUC values are <em>not</em> comparable across datasets with different prevalences. A PR-AUC of 0.5 on a 1% dataset is far more impressive than 0.5 on a 10% dataset. Always report the baseline prevalence alongside PR-AUC.
+  </div>
+
+  <h3>What to Do If Your PR-AUC Is Low</h3>
+  <p>If you find yourself in the position of our fraud model — high ROC-AUC, low PR-AUC — here are the standard remedies:</p>
+
+  <ol>
+    <li><strong>Class weights:</strong> Tell the model to weight the positive class more heavily during training.</li>
+    <li><strong>Resampling:</strong> Use SMOTE, ADASYN, or random undersampling to rebalance the training set.</li>
+    <li><strong>Threshold tuning:</strong> The model's ranking might still be usable if you pick a very high threshold (accepting low recall).</li>
+    <li><strong>Different loss:</strong> Use focal loss or weighted cross-entropy to focus the model on hard positives.</li>
+    <li><strong>More features:</strong> Often, low PR-AUC is a signal that the model lacks the features needed to distinguish positives from negatives in the overlap zone.</li>
+    <li><strong>Change the framing:</strong> Consider whether the positive class can be split into sub-classes with different detectability, or whether the problem is genuinely hard.</li>
+  </ol>
+</section>
+
+<!-- ==================== 8. QUIZ ==================== -->
+<section id="quiz">
+  <div class="section-header">
+    <div class="section-number">8</div>
+    <h2>Quiz Yourself</h2>
+  </div>
+  <p class="lead">Seven questions to test your understanding of PR-AUC and the ROC/PR divergence.</p>
+
+  <div id="quizContainer"></div>
+
+  <div class="card" style="text-align:center;margin-top:24px;">
+    <div style="font-size:1rem;font-weight:600;">Score: <span id="quizScore" style="color:var(--primary);font-size:1.4rem;">0 / 7</span></div>
+    <button id="resetQuiz" style="margin-top:10px;padding:8px 20px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;">Reset Quiz</button>
+  </div>
+</section>
+
+<!-- ==================== 9. PYTHON ==================== -->
+<section id="code">
+  <div class="section-header">
+    <div class="section-number">9</div>
+    <h2>Python Reference</h2>
+  </div>
+  <p class="lead">Ready-to-run code for computing and plotting ROC-AUC and PR-AUC side by side.</p>
+
+  <h3>Compute Both Metrics on Imbalanced Data</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — roc_vs_pr.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (
+    roc_curve, roc_auc_score,
+    precision_recall_curve, average_precision_score,
+)
+
+# 1. Fraud-like dataset: 1% positives
+X, y = make_classification(
+    n_samples=10_000,
+    n_features=20,
+    n_informative=8,
+    weights=[0.99, 0.01],   # 1% fraud
+    random_state=42,
+)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42,
+)
+
+# 2. Train
+clf = LogisticRegression(max_iter=2000, class_weight='balanced')
+clf.fit(X_tr, y_tr)
+probs = clf.predict_proba(X_te)[:, 1]
+
+# 3. Compute both metrics
+roc_auc = roc_auc_score(y_te, probs)
+pr_auc  = average_precision_score(y_te, probs)
+baseline = y_te.mean()  # prevalence
+
+print(f"ROC-AUC:  {roc_auc:.3f}")
+print(f"PR-AUC:   {pr_auc:.3f}")
+print(f"Baseline: {baseline:.3f}")
+print(f"PR lift:  {pr_auc / baseline:.1f}× random")
+
+# 4. Plot side by side
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# ROC
+fpr, tpr, _ = roc_curve(y_te, probs)
+axes[0].plot(fpr, tpr, color='darkorange', lw=2.5,
+             label=f'ROC-AUC = {roc_auc:.3f}')
+axes[0].plot([0, 1], [0, 1], 'k--', lw=1.5, label='Random (0.500)')
+axes[0].set_xlabel('False Positive Rate', fontsize=12)
+axes[0].set_ylabel('True Positive Rate', fontsize=12)
+axes[0].set_title('ROC — Looks Good', fontsize=13, fontweight='bold')
+axes[0].legend(loc='lower right')
+axes[0].grid(alpha=0.3)
+
+# PR
+prec, rec, _ = precision_recall_curve(y_te, probs)
+axes[1].plot(rec, prec, color='red', lw=2.5,
+             label=f'PR-AUC = {pr_auc:.3f}')
+axes[1].axhline(y=baseline, color='k', ls='--', lw=1.5,
+                label=f'Baseline = {baseline:.3f} (prevalence)')
+axes[1].set_xlabel('Recall', fontsize=12)
+axes[1].set_ylabel('Precision', fontsize=12)
+axes[1].set_title('PR — Tells the Truth', fontsize=13, fontweight='bold')
+axes[1].legend(loc='upper right')
+axes[1].grid(alpha=0.3)
+
+plt.suptitle('ROC-AUC vs PR-AUC on Imbalanced Data',
+             fontsize=14, fontweight='bold', y=1.02)
+plt.tight_layout()
+plt.show()
+</code></pre>
+  </div>
+
+  <h3>Reproduce the Exact Example</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — exact_example.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import numpy as np
+from sklearn.metrics import (
+    confusion_matrix, roc_auc_score, average_precision_score,
+    precision_score, recall_score, f1_score, roc_curve,
+    precision_recall_curve,
+)
+
+# Construct the exact scenario from the guide:
+# 100 frauds (positives), 9,900 normals (negatives)
+# At threshold 0.5: TP = 74, FP = 1,926
+
+np.random.seed(42)
+
+# Fraud scores (100): 74 above 0.5, 26 below
+fraud_scores = np.concatenate([
+    np.linspace(0.52, 0.98, 74),   # 74 caught
+    np.linspace(0.05, 0.45, 26),   # 26 missed
+])
+
+# Normal scores (9,900): 1,926 above 0.5, 7,974 below
+normal_scores = np.concatenate([
+    np.linspace(0.51, 0.95, 1926),  # 1,926 false alarms
+    np.linspace(0.02, 0.49, 7974),  # 7,974 correctly ignored
+])
+
+# Build arrays
+y_true = np.array([1]*100 + [0]*9900)
+y_scores = np.concatenate([fraud_scores, normal_scores])
+
+# Metrics at threshold 0.5
+y_pred = (y_scores >= 0.5).astype(int)
+tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+
+print("=== At threshold 0.5 ===")
+print(f"TP = {tp}, FP = {fp}, FN = {fn}, TN = {tn}")
+print(f"Recall (TPR):    {tp/(tp+fn):.3f}")
+print(f"FPR:             {fp/(fp+tn):.3f}")
+print(f"Precision:       {tp/(tp+fp):.3f}")
+print(f"False alarm %:   {1 - tp/(tp+fp):.3f}")
+
+# Full-curve metrics
+roc_auc = roc_auc_score(y_true, y_scores)
+pr_auc = average_precision_score(y_true, y_scores)
+
+print(f"\n=== Full-curve metrics ===")
+print(f"ROC-AUC:  {roc_auc:.3f}   ← deceptively optimistic")
+print(f"PR-AUC:   {pr_auc:.3f}   ← realistic")
+print(f"Baseline: {y_true.mean():.3f}   ← random classifier PR-AUC")
+</code></pre>
+  </div>
+
+  <h3>Threshold Sweep — Watch Precision Collapse</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — threshold_sweep.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>print(f"{'Threshold':>10} | {'Flagged':>8} | {'TP':>5} | {'FP':>6} | "
+      f"{'Recall':>7} | {'Precision':>9} | {'FPR':>7}")
+print("-" * 75)
+
+for t in [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]:
+    y_pred = (y_scores >= t).astype(int)
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    recall = tp / (tp + fn) if (tp + fn) else 0
+    precision = tp / (tp + fp) if (tp + fp) else 0
+    fpr = fp / (fp + tn) if (fp + tn) else 0
+    flagged = tp + fp
+    print(f"{t:>10.2f} | {flagged:>8} | {tp:>5} | {fp:>6} | "
+          f"{recall:>7.3f} | {precision:>9.3f} | {fpr:>7.3f}")
+
+print()
+print("Notice how precision collapses toward 0.01 (the baseline)")
+print("while FPR stays relatively low. This is why PR-AUC")
+print("is much lower than ROC-AUC on imbalanced data.")
+</code></pre>
+  </div>
+
+  <h3>How to Fix a Low PR-AUC</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — fix_low_pr.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import GradientBoostingClassifier
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline
+
+# --- Strategy 1: class_weight ---
+clf_weighted = LogisticRegression(
+    max_iter=2000,
+    class_weight='balanced',   # automatically weights by inverse frequency
+)
+clf_weighted.fit(X_tr, y_tr)
+probs_w = clf_weighted.predict_proba(X_te)[:, 1]
+print(f"class_weight   PR-AUC: {average_precision_score(y_te, probs_w):.3f}")
+
+# --- Strategy 2: SMOTE oversampling ---
+smote_pipe = Pipeline([
+    ('smote', SMOTE(random_state=42)),
+    ('clf', GradientBoostingClassifier(random_state=42)),
+])
+smote_pipe.fit(X_tr, y_tr)
+probs_s = smote_pipe.predict_proba(X_te)[:, 1]
+print(f"SMOTE          PR-AUC: {average_precision_score(y_te, probs_s):.3f}")
+
+# --- Strategy 3: Gradient boosting (often strongest on tabular) ---
+clf_gb = GradientBoostingClassifier(random_state=42)
+clf_gb.fit(X_tr, y_tr)
+probs_g = clf_gb.predict_proba(X_te)[:, 1]
+print(f"GradientBoost  PR-AUC: {average_precision_score(y_te, probs_g):.3f}")
+
+# --- Strategy 4: Just tune the threshold higher ---
+# If PR-AUC is low, sometimes the model's ranking is still useful
+# at a much stricter threshold. Find the threshold that maximizes F1.
+from sklearn.metrics import f1_score
+thresholds = np.linspace(0.05, 0.95, 50)
+f1s = [f1_score(y_te, (probs_g >= t).astype(int), zero_division=0)
+       for t in thresholds]
+best_t = thresholds[np.argmax(f1s)]
+print(f"Best threshold for F1: {best_t:.3f}, F1 = {max(f1s):.3f}")
+</code></pre>
+  </div>
+
+  <h3>When to Use Which — Final Cheat Sheet</h3>
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Report</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Balanced binary classification</td><td>ROC-AUC (+ confusion matrix at chosen threshold)</td></tr>
+      <tr><td>Imbalanced (&lt; 5% positives)</td><td>PR-AUC <strong>and</strong> ROC-AUC side by side</td></tr>
+      <tr><td>Extreme imbalance (&lt; 0.1% positives)</td><td>PR-AUC as the headline metric</td></tr>
+      <tr><td>Reporting to stakeholders</td><td>Precision, Recall, F1 at the operational threshold</td></tr>
+      <tr><td>Cost-sensitive decisions</td><td>Expected cost curve + PR curve</td></tr>
+      <tr><td>Model selection on tabular data</td><td>PR-AUC + F1 at optimal threshold</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout success" style="margin-top:24px;">
+    <strong>Bottom line:</strong> On imbalanced data, ROC-AUC hides the operational cost of false positives behind a massive denominator. PR-AUC exposes it by evaluating the model strictly on the quality of its positive predictions. If you deploy models that produce alerts — fraud, medical, security, content moderation — always look at PR-AUC. It's the number your operations team actually feels.
+  </div>
+</section>
+
+</main>
+
+<script>
+// ============================================================
+// THEME
+// ============================================================
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('pr-theme') || 'light';
+document.body.dataset.theme = savedTheme;
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('pr-theme', next);
+});
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('#navList a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth < 900) sidebar.classList.remove('open');
+  });
+});
+
+// ============================================================
+// PROGRESS + ACTIVE NAV
+// ============================================================
+const progressBar = document.getElementById('progressBar');
+const sections = [...document.querySelectorAll('section')];
+const navLinks = [...document.querySelectorAll('#navList a')];
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+  let current = sections[0].id;
+  for (const sec of sections) {
+    if (sec.getBoundingClientRect().top <= 120) current = sec.id;
+  }
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// ============================================================
+// CODE HIGHLIGHTING + COPY
+// ============================================================
+function highlightPython(code) {
+  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const placeholders = [];
+  const store = (m) => {
+    const id = `\x00${placeholders.length}\x00`;
+    placeholders.push(m);
+    return id;
+  };
+  code = code.replace(/#[^\n]*/g, store);
+  code = code.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"[^"\n]*"|'[^'\n]*')/g, store);
+  code = code.replace(/\b(import|from|as|def|return|if|elif|else|for|while|in|not|and|or|is|None|True|False|class|try|except|finally|with|lambda|yield|pass|break|continue|global|nonlocal|assert|del|raise|async|await)\b/g,
+    '<span class="kw">$1</span>');
+  code = code.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
+  code = code.replace(/\b(print|len|range|sum|min|max|abs|round|sorted|list|dict|set|tuple|str|int|float|bool|type|enumerate|zip|map|filter|open|input|fit|predict|predict_proba|train_test_split|roc_curve|roc_auc_score|precision_recall_curve|average_precision_score|confusion_matrix|precision_score|recall_score|f1_score|make_classification|LogisticRegression|GradientBoostingClassifier|SMOTE|Pipeline)\b/g,
+    '<span class="bi">$1</span>');
+  code = code.replace(/\x00(\d+)\x00/g, (_, i) => {
+    const s = placeholders[+i];
+    if (s.startsWith('#')) return `<span class="cm">${s}</span>`;
+    return `<span class="str">${s}</span>`;
+  });
+  return code;
+}
+
+document.querySelectorAll('pre code').forEach(block => {
+  block.innerHTML = highlightPython(block.textContent);
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-wrap').querySelector('pre code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1600);
+    });
+  });
+});
+
+// ============================================================
+// SYNTHETIC DATA FOR THE LAB
+// ============================================================
+// 100 positives, 9,900 negatives
+// At threshold 0.5: TP=74, FP=1926, FN=26, TN=7974
+const TOTAL_POS = 100;
+const TOTAL_NEG = 9900;
+
+function buildScores() {
+  const pos = [];
+  const neg = [];
+  // Positives: 74 above 0.5, 26 below
+  for (let i = 0; i < 74; i++) pos.push(0.52 + (i / 73) * 0.46);   // 0.52 → 0.98
+  for (let i = 0; i < 26; i++) pos.push(0.05 + (i / 25) * 0.40);   // 0.05 → 0.45
+  // Negatives: 1926 above 0.5, 7974 below
+  for (let i = 0; i < 1926; i++) neg.push(0.51 + (i / 1925) * 0.44); // 0.51 → 0.95
+  for (let i = 0; i < 7974; i++) neg.push(0.02 + (i / 7973) * 0.47); // 0.02 → 0.49
+  return { pos, neg };
+}
+
+const { pos, neg } = buildScores();
+
+// Combine and sort descending
+const combined = [
+  ...pos.map(s => ({ score: s, label: 1 })),
+  ...neg.map(s => ({ score: s, label: 0 })),
+].sort((a, b) => b.score - a.score);
+
+// Build curve points (threshold sweep at each unique score)
+function buildCurve() {
+  const pts = [];
+  let tp = 0, fp = 0;
+  let lastScore = Infinity;
+  // Include starting point at threshold 1.0
+  pts.push({ threshold: 1.0, tp: 0, fp: 0, fn: TOTAL_POS, tn: TOTAL_NEG,
+             tpr: 0, fpr: 0, precision: 1, recall: 0 });
+  for (let i = 0; i < combined.length; i++) {
+    const { score, label } = combined[i];
+    if (label === 1) tp++; else fp++;
+    // Record a point for each unique score
+    if (score !== lastScore) {
+      const fn = TOTAL_POS - tp;
+      const tn = TOTAL_NEG - fp;
+      const tpr = tp / TOTAL_POS;
+      const fpr = fp / TOTAL_NEG;
+      const precision = (tp + fp) > 0 ? tp / (tp + fp) : 1;
+      pts.push({ threshold: score, tp, fp, fn, tn,
+                 tpr, fpr, precision, recall: tpr });
+      lastScore = score;
+    }
+  }
+  return pts;
+}
+
+const curve = buildCurve();
+
+// Compute ROC-AUC (trapezoid) and PR-AUC (average precision)
+function rocAUC(pts) {
+  let auc = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dFPR = pts[i].fpr - pts[i-1].fpr;
+    auc += dFPR * (pts[i].tpr + pts[i-1].tpr) / 2;
+  }
+  return auc;
+}
+
+function prAUC(pts) {
+  // Average precision: sum (dRecall) * precision
+  let ap = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dR = pts[i].recall - pts[i-1].recall;
+    if (dR > 0) ap += dR * pts[i].precision;
+  }
+  return ap;
+}
+
+const ROC_AUC = rocAUC(curve);
+const PR_AUC = prAUC(curve);
+const BASELINE = TOTAL_POS / (TOTAL_POS + TOTAL_NEG);
+
+// Update AUC pills
+document.getElementById('rocAucPill').textContent = 'AUC = ' + ROC_AUC.toFixed(3);
+document.getElementById('prAucPill').textContent = 'PR-AUC = ' + PR_AUC.toFixed(3);
+
+// Draw ROC curve
+function drawROC() {
+  const x0 = 30, y0 = 190, w = 270, h = 170;
+  let d = '';
+  for (let i = 0; i < curve.length; i++) {
+    const x = x0 + curve[i].fpr * w;
+    const y = y0 - curve[i].tpr * h;
+    d += (i === 0 ? 'M' : 'L') + ' ' + x + ' ' + y + ' ';
+  }
+  document.getElementById('rocPath').setAttribute('d', d.trim());
+}
+
+// Draw PR curve
+function drawPR() {
+  const x0 = 30, y0 = 190, w = 270, h = 170;
+  let d = '';
+  // PR curve: plot (recall, precision) with precision scaled to [0, 1]
+  for (let i = 0; i < curve.length; i++) {
+    const x = x0 + curve[i].recall * w;
+    const y = y0 - curve[i].precision * h;
+    d += (i === 0 ? 'M' : 'L') + ' ' + x + ' ' + y + ' ';
+  }
+  document.getElementById('prPath').setAttribute('d', d.trim());
+  // Position baseline line
+  const baseY = y0 - BASELINE * h;
+  document.getElementById('prBaseline').setAttribute('y1', baseY);
+  document.getElementById('prBaseline').setAttribute('y2', baseY);
+}
+
+drawROC();
+drawPR();
+
+// ============================================================
+// LAB INTERACTION
+// ============================================================
+const slider = document.getElementById('thresholdSlider');
+const thresholdValue = document.getElementById('thresholdValue');
+const quickBtns = document.querySelectorAll('.quick-btns button');
+const rocDot = document.getElementById('rocDot');
+const prDot = document.getElementById('prDot');
+
+function findPoint(t) {
+  // Find the curve point corresponding to threshold >= t > next threshold
+  // i.e., we flag everything with score >= t
+  let best = curve[0];
+  for (let i = 0; i < curve.length; i++) {
+    if (curve[i].threshold >= t) best = curve[i];
+    else break;
+  }
+  return best;
+}
+
+function formatInt(n) {
+  return n.toLocaleString('en-US');
+}
+
+function updateAll(threshold) {
+  thresholdValue.textContent = threshold.toFixed(2);
+  const p = findPoint(threshold);
+
+  // Confusion matrix
+  document.getElementById('cmTP').textContent = formatInt(p.tp);
+  document.getElementById('cmFP').textContent = formatInt(p.fp);
+  document.getElementById('cmFN').textContent = formatInt(p.fn);
+  document.getElementById('cmTN').textContent = formatInt(p.tn);
+
+  // Metrics
+  const recall = p.tpr;
+  const fpr = p.fpr;
+  const precision = (p.tp + p.fp) > 0 ? p.tp / (p.tp + p.fp) : 0;
+  const flagged = p.tp + p.fp;
+  const falseAlarmRate = flagged > 0 ? 1 - precision : 0;
+  const waste = p.fp;
+
+  document.getElementById('lmRecall').textContent = (recall * 100).toFixed(1) + '%';
+  document.getElementById('lmFPR').textContent = (fpr * 100).toFixed(1) + '%';
+  document.getElementById('lmPrec').textContent = (precision * 100).toFixed(1) + '%';
+  document.getElementById('lmFlagged').textContent = formatInt(flagged);
+  document.getElementById('lmFalseAlarm').textContent = (falseAlarmRate * 100).toFixed(1) + '%';
+  document.getElementById('lmWaste').textContent = formatInt(waste);
+
+  // ROC dot
+  const rocX = 30 + fpr * 270;
+  const rocY = 190 - recall * 170;
+  rocDot.setAttribute('cx', rocX);
+  rocDot.setAttribute('cy', rocY);
+
+  // PR dot
+  const prX = 30 + recall * 270;
+  const prY = 190 - precision * 170;
+  prDot.setAttribute('cx', prX);
+  prDot.setAttribute('cy', prY);
+
+  // Quick button active
+  quickBtns.forEach(b => {
+    b.classList.toggle('active', Math.abs(parseFloat(b.dataset.t) - threshold) < 0.005);
+  });
+}
+
+slider.addEventListener('input', e => updateAll(parseFloat(e.target.value)));
+
+quickBtns.forEach(b => {
+  b.addEventListener('click', () => {
+    const t = parseFloat(b.dataset.t);
+    slider.value = t;
+    updateAll(t);
+  });
+});
+
+// Initial render at 0.5
+updateAll(0.5);
+
+// ============================================================
+// QUIZ
+// ============================================================
+const quizData = [
+  {
+    q: "Why does the ROC-AUC stay high (0.870) even though the model produces 1,926 false positives?",
+    options: [
+      "Because the model is actually good.",
+      "Because FPR = FP / (FP + TN), and the massive TN count (9,900) dilutes the impact of the FP errors.",
+      "Because ROC-AUC ignores false positives entirely.",
+      "Because the ROC curve is threshold-independent."
+    ],
+    correct: 1,
+    explain: "The FPR denominator is the full negative pool (9,900). Dividing 1,926 by 9,900 gives only 19.4%, which the ROC curve treats as a small rightward shift. The massive denominator absorbs the error."
+  },
+  {
+    q: "What is the baseline PR-AUC for a random classifier on this dataset?",
+    options: ['0.5', '0.01 (1%)', '0.99', '0.186'],
+    correct: 1,
+    explain: "The PR baseline is the prevalence of the positive class: 100 / 10,000 = 0.01. Unlike ROC, whose random baseline is 0.5, PR's baseline shifts with the imbalance ratio."
+  },
+  {
+    q: "Precision at the model's operating point is 3.7%. What does this mean operationally?",
+    options: [
+      "The model catches 3.7% of frauds.",
+      "Only 3.7% of the model's alerts are real frauds — 96.3% of alerts are false alarms.",
+      "The model's accuracy is 3.7%.",
+      "The model misses 96.3% of frauds."
+    ],
+    correct: 1,
+    explain: "Precision = TP / (TP + FP) = 74 / 2,000 = 3.7%. Of every 100 alerts, only ~4 are real. The other ~96 waste an analyst's time."
+  },
+  {
+    q: "Why does the PR curve collapse toward the baseline as recall increases?",
+    options: [
+      "Because the model gets less accurate.",
+      "Because lowering the threshold lets in a massive wave of false positives from the 9,900 normal transactions.",
+      "Because recall and precision are always negatively correlated.",
+      "Because the baseline moves up."
+    ],
+    correct: 1,
+    explain: "Normal transactions vastly outnumber frauds. Any threshold that catches more frauds also floods the alert queue with normals. Precision is TP / (TP + FP), and FP grows far faster than TP."
+  },
+  {
+    q: "On a dataset with 0.1% positives, which metric is the most trustworthy for the positive class?",
+    options: [
+      "ROC-AUC, because it's the standard.",
+      "Accuracy, because it's easy to interpret.",
+      "PR-AUC, because ROC-AUC becomes increasingly deceptively optimistic as imbalance grows.",
+      "Neither — you can't evaluate such a model."
+    ],
+    correct: 2,
+    explain: "The more imbalanced the data, the more the TN count dominates FPR and inflates ROC-AUC. PR-AUC focuses only on the positive predictions and reflects operational reality."
+  },
+  {
+    q: "If a model has ROC-AUC = 0.90 and PR-AUC = 0.05 on a 1% positive dataset, what's the most likely explanation?",
+    options: [
+      "The model is excellent.",
+      "The model exploits the majority class — it ranks normals well but its positive predictions are almost all wrong.",
+      "There's a bug in the PR-AUC computation.",
+      "The dataset must be balanced."
+    ],
+    correct: 1,
+    explain: "High ROC-AUC + low PR-AUC on imbalanced data is the classic signature of a model that looks good on the majority class but produces mostly false positives in its alert queue. Trust PR-AUC here."
+  },
+  {
+    q: "Which combination of metrics should you report for a production fraud model?",
+    options: [
+      "Accuracy only.",
+      "ROC-AUC only.",
+      "PR-AUC, ROC-AUC, and the confusion matrix at the chosen operational threshold.",
+      "The number of frauds caught."
+    ],
+    correct: 2,
+    explain: "PR-AUC shows ranking quality on the positive class; ROC-AUC gives overall separation; the confusion matrix at the operational threshold shows what the business will actually experience. Reporting only one number hides critical information."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+const quizScoreEl = document.getElementById('quizScore');
+let score = 0;
+const answered = new Set();
+
+function renderQuiz() {
+  quizContainer.innerHTML = '';
+  score = 0;
+  answered.clear();
+  quizScoreEl.textContent = '0 / ' + quizData.length;
+
+  quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `
+      <div class="q-text">Q${i + 1}. ${item.q}</div>
+      <div class="q-opts"></div>
+      <div class="quiz-feedback"></div>
+    `;
+    const optsWrap = div.querySelector('.q-opts');
+    const feedback = div.querySelector('.quiz-feedback');
+
+    item.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        if (answered.has(i)) return;
+        answered.add(i);
+        const isCorrect = j === item.correct;
+        optsWrap.querySelectorAll('.quiz-opt').forEach((b, k) => {
+          b.disabled = true;
+          if (k === item.correct) b.classList.add('correct');
+          if (k === j && !isCorrect) b.classList.add('wrong');
+        });
+        feedback.textContent = (isCorrect ? '✓ Correct! ' : '✗ Not quite. ') + item.explain;
+        feedback.classList.add('show', isCorrect ? 'ok' : 'no');
+        if (isCorrect) score++;
+        quizScoreEl.textContent = score + ' / ' + quizData.length;
+      });
+      optsWrap.appendChild(btn);
+    });
+
+    quizContainer.appendChild(div);
+  });
+}
+
+document.getElementById('resetQuiz').addEventListener('click', renderQuiz);
+renderQuiz();
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

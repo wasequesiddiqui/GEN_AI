@@ -1,0 +1,2907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XGBoost Model — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#c2410c;
+    --accent2:#7c3aed;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --orange:#ea580c;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#7c2d12 0%,#c2410c 30%,#1e40af 70%,#4c1d95 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(194,65,12,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:840px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#c2410c,#2563eb);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(194,65,12,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#fff7ed,#eff6ff);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#f0f9ff;
+    border-left:3px solid var(--blue);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--blue);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.reg{border-left-color:var(--amber);}
+  .metric.xgb{border-left-color:var(--accent);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.reg h4{color:#b45309;}
+  .metric.xgb h4{color:var(--accent);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.reg .badge{background:#fffbeb;color:#b45309;}
+  .metric.xgb .badge{background:#fff7ed;color:#c2410c;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin:20px 0;
+  }
+  .calc-grid label{
+    display:block;
+    font-size:.82rem;
+    font-weight:800;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:5px;
+  }
+  .calc-grid input{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border-strong);
+    border-radius:8px;
+    font-size:1rem;
+    font-family:'Segoe UI',sans-serif;
+    font-weight:600;
+    color:#1e293b;
+    background:#ffffff;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .calc-grid input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(194,65,12,.13);
+  }
+  @media(max-width:700px){.calc-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin:18px 0;
+  }
+  .result-card{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    border-top:3px solid var(--blue);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .result-card .name{
+    font-size:.76rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:800;
+    margin-bottom:4px;
+  }
+  .result-card .value{
+    font-size:1.45rem;
+    font-weight:800;
+    color:var(--text);
+    line-height:1.2;
+  }
+  .result-card .formula-small{
+    font-size:.74rem;
+    color:var(--muted);
+    font-family:'Consolas',monospace;
+    margin-top:6px;
+    line-height:1.4;
+  }
+
+  /* Split gain calculator */
+  .split-calc{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .split-calc-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin:16px 0;
+  }
+  @media(max-width:700px){.split-calc-grid{grid-template-columns:1fr;}}
+  .split-calc-grid label{
+    display:block;font-size:.76rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;
+  }
+  .split-calc-grid input{
+    width:100%;padding:9px 11px;border:1px solid var(--border-strong);
+    border-radius:8px;font-size:.95rem;font-weight:600;color:#1e293b;
+    background:#ffffff;font-family:'Segoe UI',sans-serif;
+  }
+  .split-calc-grid input:focus{
+    outline:none;border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(194,65,12,.13);
+  }
+  .split-result{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;
+  }
+  @media(max-width:600px){.split-result{grid-template-columns:1fr;}}
+  .split-result .item{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;
+  }
+  .split-result .item .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .split-result .item .val{
+    font-size:1.3rem;font-weight:800;color:var(--text);line-height:1.3;
+  }
+
+  /* Tree growth SVG */
+  .tree-growth-svg{width:100%;height:auto;display:block;}
+  .tree-node{
+    fill:#ffffff;stroke:#c2410c;stroke-width:2;
+  }
+  .tree-node-leaf{fill:#dcfce7;stroke:#059669;}
+  .tree-node-internal{fill:#dbeafe;stroke:#2563eb;}
+  .tree-node-pruned{fill:#fee2e2;stroke:#dc2626;stroke-dasharray:4,3;}
+  .tree-edge{stroke:#94a3b8;stroke-width:1.5;fill:none;}
+  .tree-label{font-size:10px;font-family:'Segoe UI',sans-serif;fill:#1e293b;font-weight:700;text-anchor:middle;}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#b45309;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#fff7ed;
+    color:#c2410c;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  .btn{
+    background:linear-gradient(135deg,#c2410c,#2563eb);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(194,65,12,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(194,65,12,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+
+  .boost-demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .boost-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .boost-controls .info{flex:1;min-width:180px;}
+  .boost-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .boost-controls .info .val{
+    font-size:1.2rem;font-weight:800;color:var(--text);
+  }
+  .residual-info{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+    margin-top:16px;
+  }
+  @media(max-width:640px){.residual-info{grid-template-columns:repeat(2,1fr);}}
+  .residual-info .item{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;
+  }
+  .residual-info .item .lbl{
+    font-size:.7rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .residual-info .item .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);line-height:1.3;
+  }
+
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ XGBoost Model — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine a committee of experts solving a problem one at a time. The first expert makes a rough prediction. The second expert looks at exactly where the first went wrong and corrects it. The third corrects what's still wrong, and so on. Each expert is only slightly better than guessing, but by the end, the committee's combined answer is remarkably accurate. XGBoost is that committee — but with mathematical rigour, regularisation, and engineering optimisations that make it both powerful and fast.
+  </div>
+
+  <h3>What is XGBoost?</h3>
+  <p><span class="highlight">XGBoost</span> (e<strong>X</strong>treme <strong>G</strong>radient <strong>Boost</strong>ing) is an optimised, regularised implementation of the gradient boosting algorithm. It builds an ensemble of decision trees sequentially, where each new tree corrects the errors of all previous trees combined.</p>
+
+  <p>XGBoost is not just "gradient boosting with extra features" — it is a <strong>complete system</strong> that adds:</p>
+  <ul class="clean">
+    <li><strong>Regularised objective function</strong> — explicit penalties on tree complexity (number of leaves + L1/L2 norms of leaf weights) that prevent overfitting.</li>
+    <li><strong>Second-order Taylor approximation</strong> — uses both first (gradient) and second (Hessian) derivatives, giving more accurate optimisation than classic gradient boosting.</li>
+    <li><strong>Sparsity-aware split finding</strong> — learns the best direction to route missing values at each split, rather than imputing them.</li>
+    <li><strong>Weighted quantile sketch</strong> — an approximate algorithm that finds split points efficiently on large datasets.</li>
+    <li><strong>Column block structure</strong> — features are pre-sorted into blocks, enabling parallel and cache-aware split finding.</li>
+    <li><strong>Out-of-core computation</strong> — can train on datasets larger than RAM by streaming data from disk.</li>
+    <li><strong>Shrinkage and column subsampling</strong> — two additional regularisation techniques inspired by Random Forest.</li>
+  </ul>
+
+  <h3>The Core Idea in Three Steps</h3>
+  <div class="box" style="background:linear-gradient(90deg,#fff7ed,#eff6ff);">
+    <p style="font-size:1.02rem;"><strong>1.</strong> Start with a constant baseline prediction (e.g. mean for regression, log-odds for classification).</p>
+    <p style="font-size:1.02rem;"><strong>2.</strong> At each iteration, compute the first and second derivatives of the loss for every sample. Use these to grow a new shallow tree that reduces the regularised objective.</p>
+    <p style="font-size:1.02rem;"><strong>3.</strong> Add the new tree to the ensemble, scaled by the learning rate. Repeat for many iterations, using early stopping to decide when to stop.</p>
+  </div>
+
+  <h3>How XGBoost Builds the Model (Step by Step)</h3>
+  <div class="box">
+    <h4>Step 1 — Initialise with a baseline</h4>
+    <p>Start with a constant prediction that minimises the loss. For squared error: <code>F₀(x) = ȳ</code> (the mean). For binary log-loss: <code>F₀(x) = log(p/(1−p))</code>, where p is the base rate of the positive class.</p>
+
+    <h4>Step 2 — Compute gradients and Hessians</h4>
+    <p>For each sample i, compute the first and second derivatives of the loss with respect to the current prediction:</p>
+    <div class="formula">
+      g<sub>i</sub> = ∂L(y<sub>i</sub>, ŷ<sub>i</sub>) / ∂ŷ<sub>i</sub> &nbsp;&nbsp;(gradient)<br>
+      h<sub>i</sub> = ∂²L(y<sub>i</sub>, ŷ<sub>i</sub>) / ∂ŷ<sub>i</sub>² &nbsp;&nbsp;(Hessian)
+    </div>
+    <p>For squared error: <code>gᵢ = ŷᵢ − yᵢ</code> and <code>hᵢ = 1</code>. For log-loss: <code>gᵢ = pᵢ − yᵢ</code> and <code>hᵢ = pᵢ·(1−pᵢ)</code>.</p>
+
+    <h4>Step 3 — Grow a new tree using the regularised objective</h4>
+    <p>XGBoost uses a second-order Taylor approximation of the loss to evaluate candidate splits:</p>
+    <div class="formula">
+      Obj<sup>(t)</sup> ≈ Σ<sub>i=1</sub><sup>N</sup> [ g<sub>i</sub>·f<sub>t</sub>(x<sub>i</sub>) + ½·h<sub>i</sub>·f<sub>t</sub>(x<sub>i</sub>)² ] + Ω(f<sub>t</sub>)
+    </div>
+    <p>where <code>Ω(f) = γ·T + ½·λ·Σw² + α·Σ|w|</code> penalises the number of leaves T and the leaf weights w.</p>
+
+    <h4>Step 4 — Compute optimal leaf weights</h4>
+    <p>For a leaf containing samples in set I<sub>j</sub>, the optimal weight that minimises the objective is:</p>
+    <div class="formula">
+      w<sub>j</sub>* = − ( Σ<sub>i ∈ I<sub>j</sub></sub> g<sub>i</sub> ) / ( Σ<sub>i ∈ I<sub>j</sub></sub> h<sub>i</sub> + λ )
+    </div>
+
+    <h4>Step 5 — Decide whether to split</h4>
+    <p>For a candidate split that divides a node into left (L) and right (R), compute the gain:</p>
+    <div class="formula">
+      Gain = ½ · [ G<sub>L</sub>²/(H<sub>L</sub>+λ) + G<sub>R</sub>²/(H<sub>R</sub>+λ) − (G<sub>L</sub>+G<sub>R</sub>)²/(H<sub>L</sub>+H<sub>R</sub>+λ) ] − γ
+    </div>
+    <p>Only split if Gain &gt; 0. The parameter γ acts as a minimum-split-loss threshold.</p>
+
+    <h4>Step 6 — Update the model with shrinkage</h4>
+    <p>Add the new tree's predictions to the current model, scaled by the learning rate η (shrinkage):</p>
+    <div class="formula">
+      ŷ<sub>i</sub><sup>(t)</sup> = ŷ<sub>i</sub><sup>(t−1)</sup> + η · f<sub>t</sub>(x<sub>i</sub>)
+    </div>
+    <p>A smaller η means each tree contributes less, requiring more trees but usually yielding better generalisation.</p>
+
+    <h4>Step 7 — Repeat with early stopping</h4>
+    <p>Repeat Steps 2–6 for a specified number of rounds. Monitor validation loss and stop when it hasn't improved for <code>early_stopping_rounds</code> iterations. The model is rolled back to the best iteration.</p>
+  </div>
+
+  <h3>XGBoost vs Classic Gradient Boosting vs Random Forest</h3>
+  <table>
+    <tr><th>Aspect</th><th>Random Forest</th><th>Classic GBM</th><th>XGBoost</th></tr>
+    <tr><td>Training</td><td>Parallel</td><td>Sequential</td><td>Sequential (with parallel split finding)</td></tr>
+    <tr><td>Derivative order</td><td>N/A (impurity-based)</td><td>First-order</td><td><strong>Second-order</strong> (gradient + Hessian)</td></tr>
+    <tr><td>Regularisation</td><td>None explicit</td><td>Learning rate only</td><td><strong>L1, L2, γ, subsampling</strong></td></tr>
+    <tr><td>Missing values</td><td>Default direction</td><td>Imputation needed</td><td><strong>Learns direction automatically</strong></td></tr>
+    <tr><td>Tree growth</td><td>Depth-wise, deep</td><td>Depth-wise, shallow</td><td>Depth-wise with pruning</td></tr>
+    <tr><td>Speed</td><td>Fast (parallel)</td><td>Moderate</td><td><strong>Very fast</strong> (optimised C++)</td></tr>
+    <tr><td>Accuracy</td><td>High</td><td>High</td><td><strong>Often the highest</strong></td></tr>
+    <tr><td>Hyperparameters</td><td>Few</td><td>Moderate</td><td>Many (but well-documented)</td></tr>
+  </table>
+
+  <h3>🔬 Interactive: Watch XGBoost Learn Step by Step</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Click <strong>"Add Next Tree"</strong> to see XGBoost progressively fit a 1-D regression. Each new tree targets the gradient of the loss — for squared error, that's the residual. Watch the ensemble curve bend toward the true function and the MSE drop.</p>
+
+  <div class="boost-demo">
+    <div class="boost-controls">
+      <div class="info">
+        <div class="lbl">Boosting Round</div>
+        <div class="val"><span id="xgbIter">0</span> / 40</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Training MSE</div>
+        <div class="val" id="xgbMSE">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Learning Rate η</div>
+        <div class="val">0.25</div>
+      </div>
+      <button class="btn" id="xgbAddBtn">🌲 Add Next Tree</button>
+      <button class="btn secondary" id="xgbResetBtn">↺ Reset</button>
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">XGBoost Ensemble Progressively Fits the True Function</div>
+      <div id="xgbChart" style="height:420px;"></div>
+      <div class="chart-note">Grey dots = training data. Red dashed = current XGBoost prediction. Blue = true function. Each round fits the residuals and nudges the red curve closer to blue.</div>
+    </div>
+
+    <div class="residual-info">
+      <div class="item">
+        <div class="lbl">Mean |Residual|</div>
+        <div class="val" id="xgbMAE">—</div>
+      </div>
+      <div class="item">
+        <div class="lbl">Max |Residual|</div>
+        <div class="val" id="xgbMax">—</div>
+      </div>
+      <div class="item">
+        <div class="lbl">MSE improvement</div>
+        <div class="val" id="xgbImp">—</div>
+      </div>
+      <div class="item">
+        <div class="lbl">Trees in ensemble</div>
+        <div class="val" id="xgbTrees">1</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>🌲 Interactive: Level-Wise vs Leaf-Wise Tree Growth</h3>
+  <p style="color:var(--muted);font-size:.93rem;">XGBoost grows trees <strong>level-wise</strong> (balanced, all nodes at depth d are split before going deeper), then prunes back branches that don't improve the objective. LightGBM, by contrast, grows <strong>leaf-wise</strong> (always splits the leaf with the highest gain) — faster but more prone to overfitting. Hover over the nodes to see which get pruned.</p>
+
+  <div class="chart">
+    <div class="chart-title">Level-Wise Growth (XGBoost) vs Leaf-Wise Growth (LightGBM)</div>
+    <svg class="tree-growth-svg" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" id="treeGrowthSvg">
+      <!-- LEFT: Level-wise -->
+      <text x="225" y="20" class="tree-label" style="font-size:14px;font-weight:800;fill:#c2410c;">Level-Wise (XGBoost)</text>
+      <!-- Edges -->
+      <line class="tree-edge" x1="225" y1="70" x2="150" y2="130"/>
+      <line class="tree-edge" x1="225" y1="70" x2="300" y2="130"/>
+      <line class="tree-edge" x1="150" y1="150" x2="90" y2="210"/>
+      <line class="tree-edge" x1="150" y1="150" x2="210" y2="210"/>
+      <line class="tree-edge" x1="300" y1="150" x2="240" y2="210"/>
+      <line class="tree-edge" x1="300" y1="150" x2="360" y2="210"/>
+      <!-- Nodes -->
+      <circle class="tree-node tree-node-internal" cx="225" cy="58" r="18"/>
+      <text x="225" y="62" class="tree-label">n₀</text>
+      <circle class="tree-node tree-node-internal" cx="150" cy="138" r="16"/>
+      <text x="150" y="142" class="tree-label">n₁</text>
+      <circle class="tree-node tree-node-internal" cx="300" cy="138" r="16"/>
+      <text x="300" y="142" class="tree-label">n₂</text>
+      <circle class="tree-node tree-node-leaf" cx="90" cy="218" r="14"/>
+      <text x="90" y="222" class="tree-label" style="fill:#065f46;">L₁</text>
+      <circle class="tree-node tree-node-leaf" cx="210" cy="218" r="14"/>
+      <text x="210" y="222" class="tree-label" style="fill:#065f46;">L₂</text>
+      <circle class="tree-node tree-node-leaf" cx="240" cy="218" r="14"/>
+      <text x="240" y="222" class="tree-label" style="fill:#065f46;">L₃</text>
+      <circle class="tree-node tree-node-leaf" cx="360" cy="218" r="14"/>
+      <text x="360" y="222" class="tree-label" style="fill:#065f46;">L₄</text>
+      <!-- Label -->
+      <text x="225" y="270" class="tree-label" style="font-size:11px;fill:#64748b;">All depth-1 nodes split before depth-2 → balanced</text>
+      <text x="225" y="290" class="tree-label" style="font-size:11px;fill:#64748b;">Simpler; easier to prune; more regularised</text>
+
+      <!-- RIGHT: Leaf-wise -->
+      <text x="675" y="20" class="tree-label" style="font-size:14px;font-weight:800;fill:#2563eb;">Leaf-Wise (LightGBM)</text>
+      <line class="tree-edge" x1="675" y1="70" x2="600" y2="130"/>
+      <line class="tree-edge" x1="675" y1="70" x2="750" y2="130"/>
+      <line class="tree-edge" x1="600" y1="150" x2="540" y2="210"/>
+      <line class="tree-edge" x1="600" y1="150" x2="660" y2="210"/>
+      <line class="tree-edge" x1="540" y1="230" x2="500" y2="280"/>
+      <line class="tree-edge" x1="540" y1="230" x2="580" y2="280"/>
+      <circle class="tree-node tree-node-internal" cx="675" cy="58" r="18"/>
+      <text x="675" y="62" class="tree-label">n₀</text>
+      <circle class="tree-node tree-node-internal" cx="600" cy="138" r="16"/>
+      <text x="600" y="142" class="tree-label">n₁</text>
+      <circle class="tree-node tree-node-leaf" cx="750" cy="138" r="14"/>
+      <text x="750" y="142" class="tree-label" style="fill:#065f46;">L₂</text>
+      <circle class="tree-node tree-node-internal" cx="540" cy="218" r="14"/>
+      <text x="540" y="222" class="tree-label">n₃</text>
+      <circle class="tree-node tree-node-leaf" cx="660" cy="218" r="14"/>
+      <text x="660" y="222" class="tree-label" style="fill:#065f46;">L₄</text>
+      <circle class="tree-node tree-node-leaf" cx="500" cy="288" r="12"/>
+      <text x="500" y="292" class="tree-label" style="fill:#065f46;">L₅</text>
+      <circle class="tree-node tree-node-leaf" cx="580" cy="288" r="12"/>
+      <text x="580" y="292" class="tree-label" style="fill:#065f46;">L₆</text>
+      <text x="675" y="320" class="tree-label" style="font-size:11px;fill:#64748b;">Always splits the highest-gain leaf → unbalanced</text>
+    </svg>
+    <div class="chart-note">XGBoost's level-wise growth keeps trees balanced, making them easier to regularise. The <code>max_depth</code> parameter directly controls the tree size. After growing, XGBoost applies a post-pruning pass where any leaf whose split gain is below γ is removed.</div>
+  </div>
+
+  <h3>📊 Interactive: Learning Rate vs Number of Trees</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Smaller η means each tree contributes less, so more trees are needed. But smaller η almost always leads to better final accuracy — at the cost of training time.</p>
+  <div class="chart">
+    <div class="chart-title">Learning Rate × Number of Trees — Accuracy Trade-off</div>
+    <div id="lrChart" style="height:400px;"></div>
+    <div class="chart-note">Each curve represents a different learning rate. The XGBoost default is η = 0.3, but 0.01–0.1 often yields better results. Rule of thumb: halving η roughly doubles the optimal number of trees.</div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>XGBoost is one of the most widely deployed ML algorithms in industry. It has won countless Kaggle competitions and powers production systems at Google, Microsoft, Meta, Amazon, and countless startups.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🏆 Competitions &amp; Kaggle</h4>
+      <ul class="clean">
+        <li><strong>Kaggle competitions</strong> — XGBoost dominates tabular data leaderboards.</li>
+        <li><strong>KDD Cup, KDD, NeurIPS challenges</strong> — structured data tasks.</li>
+        <li><strong>Click-through-rate prediction</strong> — advertising and recommendation challenges.</li>
+        <li><strong>Ranking competitions</strong> — Learning-to-Rank with XGBoost's <code>rank:pairwise</code>.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏦 Banking &amp; Finance</h4>
+      <ul class="clean">
+        <li><strong>Credit scoring</strong> — XGBoost-based risk models are industry standard.</li>
+        <li><strong>Fraud detection</strong> — real-time transaction scoring with SHAP explanations.</li>
+        <li><strong>Algorithmic trading</strong> — short-term return prediction.</li>
+        <li><strong>Insurance pricing</strong> — risk-based premium setting.</li>
+        <li><strong>Anti-money-laundering</strong> — flagging suspicious activity.</li>
+        <li><strong>Loan default prediction</strong> — Basel III-compliant models.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🛒 Retail &amp; E-commerce</h4>
+      <ul class="clean">
+        <li><strong>Search ranking</strong> — Learning-to-Rank with XGBoost Ranker.</li>
+        <li><strong>Product recommendation</strong> — CTR prediction at scale.</li>
+        <li><strong>Demand forecasting</strong> — inventory planning.</li>
+        <li><strong>Customer lifetime value</strong> — regression XGBoost.</li>
+        <li><strong>Churn prediction</strong> — classification with class weights.</li>
+        <li><strong>Dynamic pricing</strong> — demand elasticity modelling.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏥 Healthcare &amp; Bioinformatics</h4>
+      <ul class="clean">
+        <li><strong>Disease risk prediction</strong> — from clinical features.</li>
+        <li><strong>Drug response</strong> — predict patient outcomes.</li>
+        <li><strong>Genomics</strong> — variant effect prediction, GWAS.</li>
+        <li><strong>Readmission risk</strong> — hospital analytics.</li>
+        <li><strong>Medical imaging</strong> — radiomics + XGBoost.</li>
+        <li><strong>Sepsis prediction</strong> — real-time ICU alerts.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Manufacturing &amp; Energy</h4>
+      <ul class="clean">
+        <li><strong>Predictive maintenance</strong> — equipment failure prediction.</li>
+        <li><strong>Energy load forecasting</strong> — grid demand prediction.</li>
+        <li><strong>Quality control</strong> — defect classification.</li>
+        <li><strong>Fault detection</strong> — sensor anomaly detection.</li>
+        <li><strong>Yield prediction</strong> — semiconductor manufacturing.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🌐 Technology &amp; Web</h4>
+      <ul class="clean">
+        <li><strong>Click-through rate prediction</strong> — Meta, Google ad systems.</li>
+        <li><strong>Search ranking</strong> — Bing, Baidu, Yandex.</li>
+        <li><strong>Spam &amp; malware detection</strong> — classification on features.</li>
+        <li><strong>Network intrusion detection</strong> — anomaly classification.</li>
+        <li><strong>Recommendation systems</strong> — candidate ranking.</li>
+        <li><strong>Churn prediction</strong> — SaaS and subscription businesses.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why is XGBoost so dominant in industry?</strong> Because on tabular data, it consistently beats neural networks, handles missing values natively, provides feature importances, trains fast on huge datasets via distributed computing, and delivers state-of-the-art accuracy with reasonable tuning effort. It is the "default choice" for structured ML problems.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Highest accuracy on tabular data</strong> — consistently wins competitions and delivers state-of-the-art results on structured datasets.</li>
+    <li><strong>Regularisation built in</strong> — L1, L2, and γ penalties directly in the objective function. This dramatically reduces overfitting compared to vanilla gradient boosting.</li>
+    <li><strong>Second-order optimisation</strong> — uses both gradient and Hessian, giving more accurate split selection and faster convergence than first-order methods.</li>
+    <li><strong>Native handling of missing values</strong> — automatically learns the best direction to route missing values at each split, no imputation needed.</li>
+    <li><strong>Sparsity-aware</strong> — handles sparse matrices efficiently, making it ideal for one-hot encoded data.</li>
+    <li><strong>Works with any differentiable loss</strong> — squared error, absolute, Huber, log-loss, Poisson, ranking losses, and custom losses via the <code>objective</code> parameter.</li>
+    <li><strong>No feature scaling required</strong> — tree-based splits are scale-invariant.</li>
+    <li><strong>Extremely fast</strong> — optimised C++ implementation with parallel and cache-aware split finding, GPU acceleration, and out-of-core computing.</li>
+    <li><strong>Distributed training</strong> — supports multi-machine, multi-GPU training for datasets too large for a single machine.</li>
+    <li><strong>Built-in cross-validation</strong> — <code>xgb.cv()</code> performs efficient K-fold CV with early stopping.</li>
+    <li><strong>Early stopping</strong> — stops training when validation loss stops improving, preventing overfitting.</li>
+    <li><strong>Feature importance scores</strong> — three types: gain, cover, and weight/frequency — for insight and feature selection.</li>
+    <li><strong>Supports monotonic constraints</strong> — enforce domain knowledge like "higher income should never decrease credit score".</li>
+    <li><strong>Supports custom objectives and metrics</strong> — write your own loss and evaluation functions in Python.</li>
+    <li><strong>Rich ecosystem</strong> — scikit-learn API, native API, Spark integration, Dask, GPU support, and XGBoost4J for JVM.</li>
+    <li><strong>Probabilistic outputs</strong> — predict probabilities, useful for ranking and threshold tuning.</li>
+    <li><strong>Well-documented and widely used</strong> — thousands of tutorials, papers, and StackOverflow answers.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🎯</div>
+      <h4 style="color:var(--accent);">Most Accurate</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">State-of-the-art on tabular data.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🛡️</div>
+      <h4 style="color:var(--accent);">Regularised</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">L1, L2, γ penalties built in.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent);">Fast</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Parallel, cache-aware, distributed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Many hyperparameters</strong> — learning_rate, max_depth, min_child_weight, gamma, lambda, alpha, subsample, colsample_bytree, colsample_bylevel, colsample_bynode, scale_pos_weight, n_estimators, and more. Tuning is time-consuming.</li>
+    <li><strong>Sequential training</strong> — trees must be built one after another, so it's slower than Random Forest for the same number of trees.</li>
+    <li><strong>Prone to overfitting with poor tuning</strong> — unlike Random Forest, too many trees or too deep trees will degrade performance. Careful early stopping and regularisation are essential.</li>
+    <li><strong>Less interpretable than a single tree</strong> — a 500-tree model cannot be read directly. SHAP, LIME, and feature importances are required for explanation.</li>
+    <li><strong>Sensitive to outliers</strong> — squared error loss is heavily influenced by extreme values. Use Huber or quantile loss for robustness.</li>
+    <li><strong>Cannot extrapolate</strong> — like all tree-based models, predictions are bounded by the training data range.</li>
+    <li><strong>Struggles with very high-dimensional sparse data</strong> — text (bag-of-words) and image data are usually better served by linear models or neural networks.</li>
+    <li><strong>Larger model files</strong> — a 1000-tree XGBoost model can be tens of MB, complicating edge and mobile deployment.</li>
+    <li><strong>No native support for categorical features</strong> — unlike CatBoost, XGBoost requires one-hot, ordinal, or target encoding. (XGBoost 1.6+ added experimental categorical support via <code>enable_categorical</code>.)</li>
+    <li><strong>Class imbalance requires explicit handling</strong> — use <code>scale_pos_weight</code> or custom loss functions.</li>
+    <li><strong>Harder to debug when it fails</strong> — hundreds of trees each correcting subtle residuals make root-cause analysis challenging.</li>
+    <li><strong>Training-time memory usage can be high</strong> — gradient and Hessian arrays plus the histogram buffers can exceed memory on very large datasets.</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#fff7ed);">
+    <strong>The overfitting trap:</strong> XGBoost is a precision instrument. Tuned well, it delivers world-class accuracy. Tuned poorly, it will memorise every noisy point in your training set. Always use <em>early stopping</em> with a validation set, keep <code>max_depth</code> between 3 and 8, and don't skip the regularisation parameters.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>These are measured <strong>before</strong> the model goes live, using a held-out test set or cross-validation. They answer: <em>"Is this model good enough to ship?"</em></p>
+
+  <h3>5.1 Confusion Matrix — The Foundation</h3>
+  <p>Almost every classification metric is derived from four numbers. Before formulas make sense, you must understand these four cells.</p>
+
+  <table>
+    <tr><th style="width:18%;">Cell</th><th style="width:22%;">Name</th><th>Meaning in plain English</th></tr>
+    <tr><td><strong style="color:var(--green);">TP</strong></td><td>True Positive</td><td>The model said <em>positive</em>, and the truth <em>was positive</em>. ✅ A correct hit.</td></tr>
+    <tr><td><strong style="color:var(--green);">TN</strong></td><td>True Negative</td><td>The model said <em>negative</em>, and the truth <em>was negative</em>. ✅ A correct rejection.</td></tr>
+    <tr><td><strong style="color:var(--red);">FP</strong></td><td>False Positive</td><td>The model said <em>positive</em>, but the truth was <em>negative</em>. ❌ A "false alarm" (Type I error).</td></tr>
+    <tr><td><strong style="color:var(--red);">FN</strong></td><td>False Negative</td><td>The model said <em>negative</em>, but the truth was <em>positive</em>. ❌ A "miss" (Type II error).</td></tr>
+  </table>
+
+  <div class="interp">
+    <strong>Convention:</strong> In medical testing, "positive" means "disease present". In fraud detection, "positive" means "this transaction is fraudulent". Always ask: <em>"What does 'positive' mean in this problem?"</em>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">Confusion Matrix — Visual Layout</div>
+    <div id="cmDiagram" style="height:400px;"></div>
+    <div class="chart-note">Rows = actual truth. Columns = what the model predicted. The diagonal (TP, TN) is where the model is correct.</div>
+  </div>
+
+  <h3>5.2 Classification KPIs — Detailed</h3>
+
+  <div class="metric">
+    <h4>Accuracy <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The overall fraction of predictions that were correct — both positives and negatives.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Accuracy = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, TN = 850, FP = 50, FN = 120<br>
+      Accuracy = (480 + 850) / (480 + 850 + 50 + 120) = 1330 / 1500 = <code>0.887 → 88.7%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 88.7% of all predictions were correct. Range: 0 to 1 (higher is better).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are balanced and every correct prediction has equal business value.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Classes are imbalanced. A model that always says "legitimate" scores 99% accuracy but catches zero fraud.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Precision (Positive Predictive Value) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of everything the model flagged as positive, how many actually were positive?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Precision = TP / (TP + FP)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, FP = 50<br>
+      Precision = 480 / (480 + 50) = 480 / 530 = <code>0.906 → 90.6%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> When the model says "positive", it's right 90.6% of the time. High precision = few false alarms.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> False positives are expensive — spam filters, product recommendations, targeted ads.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Missing a real positive is far worse than a false alarm (e.g. cancer screening).</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Recall / Sensitivity / True Positive Rate <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of all the actual positives, how many did the model correctly catch?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Recall = TP / (TP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, FN = 120<br>
+      Recall = 480 / (480 + 120) = 480 / 600 = <code>0.800 → 80.0%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The model catches 80% of all real positives. It misses 20%. High recall = few missed cases.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Missing a positive is costly — fraud detection, disease screening, safety systems.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> False alarms cause serious harm (e.g. flagging innocent customers).</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Specificity / True Negative Rate <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of all the actual negatives, how many did the model correctly identify?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Specificity = TN / (TN + FP)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TN = 850, FP = 50<br>
+      Specificity = 850 / (850 + 50) = 850 / 900 = <code>0.944 → 94.4%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The model correctly clears 94.4% of the actual negatives. It wrongly flags 5.6% as positive.</div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px;"><strong>Relationship:</strong> Specificity + False Positive Rate (FPR) = 1. So FPR = 1 − Specificity = FP / (FP + TN).</p>
+  </div>
+
+  <div class="metric">
+    <h4>F1-Score <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> A single number that balances Precision and Recall. It's the <em>harmonic mean</em> — so it punishes extreme imbalance between them.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      F1 = 2 × (Precision × Recall) / (Precision + Recall)
+      <br><br>
+      <span class="lbl">Equivalent form</span>
+      F1 = 2·TP / (2·TP + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Precision = 0.906, Recall = 0.800<br>
+      F1 = 2 × (0.906 × 0.800) / (0.906 + 0.800) = 1.4496 / 1.706 = <code>0.850</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. A high F1 means the model is good at both finding positives <em>and</em> not crying wolf.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are imbalanced and you care about both precision and recall roughly equally.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Precision and recall have very different business costs — use a weighted F-beta score.</div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px;"><strong>F-beta generalisation:</strong> F<sub>β</sub> = (1+β²)·(P·R) / (β²·P + R). β &gt; 1 weights recall higher; β &lt; 1 weights precision higher.</p>
+  </div>
+
+  <div class="metric">
+    <h4>ROC-AUC (Area Under the ROC Curve) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The probability that the model ranks a random positive example higher than a random negative example. It evaluates the model across <em>all possible thresholds</em>.</p>
+    <div class="formula">
+      <span class="lbl">ROC Curve</span>
+      x-axis: FPR = FP / (FP + TN) = 1 − Specificity
+      <br>
+      y-axis: TPR = TP / (TP + FN) = Recall
+      <br><br>
+      <span class="lbl">AUC (via trapezoidal rule)</span>
+      AUC = Σ<sub>i</sub> ½ · (x<sub>i+1</sub> − x<sub>i</sub>) · (y<sub>i+1</sub> + y<sub>i</sub>)
+      <br><br>
+      <span class="lbl">Probabilistic interpretation (Mann–Whitney U)</span>
+      AUC = P( score(positive) &gt; score(negative) )
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • 0.50 → no better than random guessing<br>
+      • 0.70–0.80 → acceptable<br>
+      • 0.80–0.90 → excellent<br>
+      • 0.90–1.00 → outstanding (be suspicious of data leakage)<br>
+      • Below 0.50 → the model is systematically wrong (flip its predictions!)
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want a threshold-independent measure and classes are reasonably balanced.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> The positive class is extremely rare — use PR-AUC instead.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>PR-AUC (Precision–Recall Area Under the Curve) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Area under the Precision–Recall curve. It focuses only on the positive class, making it far more informative when positives are rare.</p>
+    <div class="formula">
+      <span class="lbl">PR Curve</span>
+      x-axis: Recall = TP / (TP + FN)
+      <br>
+      y-axis: Precision = TP / (TP + FP)
+      <br><br>
+      <span class="lbl">PR-AUC</span>
+      PR-AUC = ∫ Precision d(Recall) &nbsp;(approximated by trapezoids)
+      <br><br>
+      <span class="lbl">Baseline</span>
+      Baseline PR-AUC = prevalence = (TP + FN) / (TP + TN + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Example:</strong> In a fraud dataset with 1% fraud, a random classifier gets PR-AUC ≈ 0.01 (not 0.5). So a PR-AUC of 0.45 is actually very strong!
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> The positive class is rare — fraud, disease, defects, intrusions.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Both classes matter equally; ROC-AUC is more general.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Log Loss (Binary Cross-Entropy) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> How well the model's <em>predicted probabilities</em> match reality. It punishes confident wrong predictions very heavily.</p>
+    <div class="formula">
+      <span class="lbl">Formula (binary)</span>
+      LogLoss = −(1/N) · Σ<sub>i=1</sub><sup>N</sup> [ y<sub>i</sub>·log(p<sub>i</sub>) + (1−y<sub>i</sub>)·log(1−p<sub>i</sub>) ]
+      <br><br>
+      y<sub>i</sub> ∈ {0,1} = actual label &nbsp;|&nbsp; p<sub>i</sub> = predicted probability of class 1
+      <br><br>
+      <span class="lbl">Multi-class extension</span>
+      LogLoss = −(1/N) · Σ<sub>i</sub> Σ<sub>k</sub> y<sub>i,k</sub> · log(p<sub>i,k</sub>)
+    </div>
+    <div class="worked">
+      <strong>Worked example (N=2):</strong><br>
+      • Sample 1: actual = 1, predicted prob = 0.9 → loss = −log(0.9) = 0.105<br>
+      • Sample 2: actual = 0, predicted prob = 0.8 → loss = −log(0.2) = 1.609<br>
+      LogLoss = (0.105 + 1.609) / 2 = <code>0.857</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to ∞ (lower is better). Perfect predictions → 0. A model that always predicts 0.5 gets LogLoss ≈ 0.693 (binary).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You need well-calibrated probabilities — risk scoring, insurance pricing, medical estimates.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> You only care about the hard class label, not the probability.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Matthews Correlation Coefficient (MCC) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> A balanced metric that uses all four confusion-matrix cells. It behaves like a correlation coefficient between predictions and truth.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MCC = (TP·TN − FP·FN) / √[ (TP+FP)(TP+FN)(TN+FP)(TN+FN) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP=480, TN=850, FP=50, FN=120<br>
+      Numerator = (480×850) − (50×120) = 408,000 − 6,000 = 402,000<br>
+      Denominator = √(530 × 600 × 900 × 1000) ≈ 535,000<br>
+      MCC = 402,000 / 535,000 = <code>0.751</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range −1 to +1. +1 = perfect, 0 = random, −1 = total disagreement.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are very imbalanced and you want a single trustworthy number.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Explaining to a non-technical audience — harder to interpret.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Cohen's Kappa (κ) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Agreement between predictions and truth, <em>corrected for agreement that would happen by chance</em>.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)
+      <br><br>
+      p<sub>o</sub> = observed accuracy = (TP + TN) / N
+      <br>
+      p<sub>e</sub> = expected chance accuracy = [ (TP+FP)(TP+FN) + (TN+FP)(TN+FN) ] / N²
+    </div>
+    <div class="interp">
+      <strong>Landis &amp; Koch scale:</strong><br>
+      • &lt; 0.00 → poor · 0.00–0.20 → slight · 0.21–0.40 → fair<br>
+      • 0.41–0.60 → moderate · 0.61–0.80 → substantial · 0.81–1.00 → almost perfect
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Balanced Accuracy <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The average of Recall (on positives) and Specificity (on negatives) — each class contributes equally regardless of size.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Balanced Accuracy = (Recall + Specificity) / 2
+      <br><br>
+      = ½ · [ TP/(TP+FN) + TN/(TN+FP) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Recall = 0.800, Specificity = 0.944<br>
+      Balanced Accuracy = (0.800 + 0.944) / 2 = <code>0.872</code>
+    </div>
+  </div>
+
+  <h3>5.3 Regression KPIs — Detailed</h3>
+  <p>For XGBoost Regressors (predicting a continuous number), classification metrics don't apply. These are the equivalents.</p>
+
+  <div class="metric reg">
+    <h4>MAE (Mean Absolute Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The average size of the prediction error, in the same units as the target.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> | y<sub>i</sub> − ŷ<sub>i</sub> |
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Actual = [100, 200, 300], Predicted = [110, 190, 320]<br>
+      Errors = |−10|, |10|, |−20| = 10, 10, 20<br>
+      MAE = (10 + 10 + 20) / 3 = <code>13.33</code>
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want an easy-to-explain metric and all errors have equal importance.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Large errors are dramatically worse than small ones (use RMSE).</div>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>MSE (Mean Squared Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MSE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )²
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Errors = [−10, 10, −20]<br>
+      MSE = (100 + 100 + 400) / 3 = <code>200</code>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>RMSE (Root Mean Squared Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      RMSE = √[ (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )² ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> MSE = 200<br>
+      RMSE = √200 = <code>14.14</code>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>R² (Coefficient of Determination) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      R² = 1 − ( SS<sub>res</sub> / SS<sub>tot</sub> )
+      <br><br>
+      SS<sub>res</sub> = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² &nbsp;&nbsp;(residual sum of squares)
+      <br>
+      SS<sub>tot</sub> = Σ ( y<sub>i</sub> − ȳ )² &nbsp;&nbsp;(total sum of squares)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> y = [100, 200, 300], ŷ = [110, 190, 320], ȳ = 200<br>
+      SS<sub>res</sub> = 600, SS<sub>tot</sub> = 20,000<br>
+      R² = 1 − (600 / 20,000) = <code>0.97</code>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>MAPE (Mean Absolute Percentage Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAPE = (100% / N) · Σ<sub>i=1</sub><sup>N</sup> | ( y<sub>i</sub> − ŷ<sub>i</sub> ) / y<sub>i</sub> |
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> y = [100, 200, 300], ŷ = [110, 190, 320]<br>
+      MAPE = (0.10 + 0.05 + 0.0667) / 3 × 100 = <code>7.22%</code>
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>SMAPE (Symmetric Mean Absolute Percentage Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      SMAPE = (100% / N) · Σ<sub>i=1</sub><sup>N</sup> | y<sub>i</sub> − ŷ<sub>i</sub> | / [ (|y<sub>i</sub>| + |ŷ<sub>i</sub>|) / 2 ]
+    </div>
+  </div>
+
+  <div class="metric reg">
+    <h4>MSLE (Mean Squared Logarithmic Error) <span class="badge">Regression</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MSLE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( log(1 + y<sub>i</sub>) − log(1 + ŷ<sub>i</sub>) )²
+    </div>
+  </div>
+
+  <h3>5.4 XGBoost-Specific KPIs</h3>
+
+  <div class="metric xgb">
+    <h4>Learning Rate η (eta / shrinkage) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> How much each tree contributes to the ensemble. Smaller η = each tree contributes less = more trees needed but usually better generalisation.</p>
+    <div class="formula">
+      <span class="lbl">Update rule</span>
+      ŷ<sub>i</sub><sup>(t)</sup> = ŷ<sub>i</sub><sup>(t−1)</sup> + η · f<sub>t</sub>(x<sub>i</sub>)
+      <br><br>
+      <span class="lbl">Typical values</span>
+      η = 0.01 – 0.3 (XGBoost default: 0.3)
+      <br>
+      Rule of thumb: halving η roughly doubles the optimal number of trees.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> There's no single "correct" η. Smaller η almost always improves accuracy at the cost of training time. Use early stopping to find the right number of trees.</div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Number of Boosting Rounds (n_estimators / num_boost_round) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> The number of trees in the ensemble. More trees = more capacity, higher overfitting risk.</p>
+    <div class="formula">
+      <span class="lbl">Final model</span>
+      ŷ<sub>i</sub> = ŷ<sub>i</sub><sup>(0)</sup> + η · Σ<sub>t=1</sub><sup>T</sup> f<sub>t</sub>(x<sub>i</sub>)
+      <br><br>
+      <span class="lbl">Early stopping rule</span>
+      Stop when validation loss hasn't improved for `early_stopping_rounds` iterations.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Unlike Random Forest, too many trees <em>will</em> cause overfitting. Always use a validation set to decide T.</div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Tree Depth (max_depth) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> The maximum depth of each tree. XGBoost default is 6.</p>
+    <div class="formula">
+      <span class="lbl">Rule of thumb</span>
+      max_depth = 3–10 for most problems. Start with 6.
+      <br>
+      Higher depth → stronger individual trees → more interactions → higher overfitting risk.
+      <br>
+      Lower depth → weaker trees → more boosting rounds needed.
+    </div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Minimum Child Weight (min_child_weight) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> The minimum sum of Hessians required in a child node. Prevents splits that create tiny, overfitted leaves.</p>
+    <div class="formula">
+      <span class="lbl">Rule</span>
+      A split is only allowed if Σ<sub>i ∈ L</sub> h<sub>i</sub> ≥ min_child_weight AND Σ<sub>i ∈ R</sub> h<sub>i</sub> ≥ min_child_weight
+      <br><br>
+      <span class="lbl">Typical values</span>
+      1 (default) for regression. For classification, since h<sub>i</sub> = p<sub>i</sub>(1−p<sub>i</sub>) ≤ 0.25, use values like 1–10.
+    </div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Gamma (γ, min_split_loss) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> The minimum loss reduction required to make a split. Higher γ = fewer splits = simpler trees.</p>
+    <div class="formula">
+      <span class="lbl">Split condition</span>
+      Gain = ½ · [ G<sub>L</sub>²/(H<sub>L</sub>+λ) + G<sub>R</sub>²/(H<sub>R</sub>+λ) − (G<sub>L</sub>+G<sub>R</sub>)²/(H<sub>L</sub>+H<sub>R</sub>+λ) ] − γ
+      <br><br>
+      Split only if Gain &gt; 0, i.e. only if loss reduction &gt; γ.
+      <br><br>
+      <span class="lbl">Typical values</span>
+      γ = 0 – 5. Default 0. Higher values act as post-pruning.
+    </div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Lambda (λ, reg_lambda) &amp; Alpha (α, reg_alpha) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> L2 (λ) and L1 (α) regularisation on leaf weights. Higher values shrink leaf weights, reducing overfitting.</p>
+    <div class="formula">
+      <span class="lbl">Regularised objective</span>
+      Obj = Σ<sub>i</sub> L(y<sub>i</sub>, ŷ<sub>i</sub>) + Σ<sub>t</sub> [ γ·T<sub>t</sub> + ½·λ·Σ<sub>j</sub> w<sub>tj</sub>² + α·Σ<sub>j</sub> |w<sub>tj</sub>| ]
+      <br><br>
+      <span class="lbl">Optimal leaf weight with L2</span>
+      w<sub>j</sub>* = − ( Σ<sub>i ∈ I<sub>j</sub></sub> g<sub>i</sub> ) / ( Σ<sub>i ∈ I<sub>j</sub></sub> h<sub>i</sub> + λ )
+      <br><br>
+      <span class="lbl">Typical values</span>
+      λ = 1 (default), α = 0 (default). Increase both to control overfitting.
+    </div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Subsample &amp; Colsample (Stochastic XGBoost) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> The fraction of rows (subsample) and features (colsample_bytree, colsample_bylevel, colsample_bynode) used per tree. Adds randomness to reduce overfitting.</p>
+    <div class="formula">
+      <span class="lbl">Typical values</span>
+      subsample = 0.5 – 0.9 (default 1.0)
+      <br>
+      colsample_bytree = 0.5 – 0.9 (default 1.0)
+      <br>
+      colsample_bylevel = 0.5 – 1.0 (default 1.0)
+      <br><br>
+      <span class="lbl">Effect</span>
+      Lower values → more randomness → less overfitting → potentially slower convergence.
+    </div>
+  </div>
+
+  <div class="metric xgb">
+    <h4>Feature Importance (Gain / Cover / Weight) <span class="badge">XGB-Specific</span></h4>
+    <p><strong>What it measures:</strong> Which features contribute most to reducing loss. XGBoost provides three variants.</p>
+    <div class="formula">
+      <span class="lbl">Gain (most informative)</span>
+      Average loss reduction each time the feature is used in a split.
+      <br><br>
+      <span class="lbl">Cover</span>
+      Average number of samples affected by splits on this feature.
+      <br><br>
+      <span class="lbl">Weight (frequency)</span>
+      Number of times the feature is used in a split (biased toward high-cardinality).
+      <br><br>
+      <span class="lbl">Gain formula</span>
+      Gain(f) = (1/|splits on f|) · Σ<sub>splits on f</sub> [ loss reduction of that split ]
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Gain is usually the most meaningful. Use permutation importance or SHAP for the most reliable ranking.</div>
+  </div>
+
+  <h3>5.5 Model Quality &amp; Robustness KPIs</h3>
+
+  <div class="metric">
+    <h4>Cross-Validation Score <span class="badge">Robustness</span></h4>
+    <div class="formula">
+      <span class="lbl">K-Fold CV Score</span>
+      CV = (1/K) · Σ<sub>k=1</sub><sup>K</sup> Metric<sub>k</sub>
+      <br><br>
+      <span class="lbl">Standard deviation (stability)</span>
+      σ<sub>CV</sub> = √[ (1/K) · Σ<sub>k</sub> ( Metric<sub>k</sub> − CV )² ]
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Train–Test Gap (Overfitting Indicator) <span class="badge">Robustness</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Gap = Metric<sub>train</sub> − Metric<sub>test</sub>
+      <br><br>
+      For error metrics: Gap = Metric<sub>test</sub> − Metric<sub>train</sub>
+    </div>
+    <div class="interp">
+      <strong>Rule of thumb:</strong><br>
+      • Gap &lt; 5% → healthy<br>
+      • Gap 5–10% → mild overfitting, reduce n_estimators or increase regularisation<br>
+      • Gap &gt; 10% → serious overfitting, tune hyperparameters
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Early Stopping Round (best_iteration) <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> The iteration at which validation loss stopped improving. This is the optimal number of trees.</p>
+    <div class="formula">
+      <span class="lbl">Rule</span>
+      Stop training when validation loss has not improved for `early_stopping_rounds` consecutive iterations.
+      <br><br>
+      The model is rolled back to the best iteration.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> If best_iteration is much less than n_estimators, you're overfitting. If it equals n_estimators, you could try more trees.</div>
+  </div>
+
+  <h3>5.6 📊 Interactive: Feature Importance</h3>
+  <div class="chart">
+    <div class="chart-title">Feature Importance — Gain vs Cover vs Weight</div>
+    <div id="featImpChart" style="height:440px;"></div>
+    <div class="chart-note">Gain (blue) reflects real usefulness. Weight / frequency (orange) is biased toward high-cardinality features. Cover (green) is a middle ground. Use Gain for ranking.</div>
+  </div>
+
+  <h3>5.7 📊 Interactive: Overfitting — Number of Trees vs Accuracy</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Drag the slider to change <code>n_estimators</code>. Unlike Random Forest, XGBoost <em>will</em> overfit if you add too many trees. Watch test accuracy peak and then decline.</p>
+  <div class="chart">
+    <div class="chart-title">Number of Trees vs. Training / Test Accuracy</div>
+    <div id="nTreesChart2" style="height:400px;"></div>
+    <div class="chart-note">Training loss keeps decreasing forever. Test loss reaches a minimum and then rises — this is the overfitting zone. Early stopping picks the minimum.</div>
+  </div>
+
+  <h3>5.8 📊 Interactive: ROC Curve</h3>
+  <div class="chart">
+    <div class="chart-title">ROC Curve — Pre-Deployment Model Evaluation</div>
+    <div id="rocChart" style="height:420px;"></div>
+    <div class="chart-note">The closer the curve hugs the top-left corner, the better. AUC = area under this curve.</div>
+  </div>
+
+  <h3>5.9 📊 Interactive: Confusion Matrix</h3>
+  <div class="chart">
+    <div class="chart-title">Confusion Matrix — Where Does the Model Go Wrong?</div>
+    <div id="cmChart" style="height:400px;"></div>
+    <div class="chart-note">Hover over each cell for its meaning. Everything off the main diagonal is an error.</div>
+  </div>
+
+  <h3>5.10 🧮 Interactive KPI Calculator</h3>
+  <p>Change the four confusion-matrix values below and watch every classification metric recompute instantly.</p>
+
+  <div class="calc-grid">
+    <div>
+      <label>TP — True Positive</label>
+      <input type="number" id="inTP" value="480" min="0">
+    </div>
+    <div>
+      <label>TN — True Negative</label>
+      <input type="number" id="inTN" value="850" min="0">
+    </div>
+    <div>
+      <label>FP — False Positive</label>
+      <input type="number" id="inFP" value="50" min="0">
+    </div>
+    <div>
+      <label>FN — False Negative</label>
+      <input type="number" id="inFN" value="120" min="0">
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid"></div>
+
+  <div class="chart">
+    <div class="chart-title">Live Confusion Matrix</div>
+    <div id="liveCM" style="height:360px;"></div>
+    <div class="chart-note">Recalculated as you type. The diagonal (darker cells) shows correct predictions.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">ROC Curve (Synthetic — based on current class balance)</div>
+    <div id="liveROC" style="height:380px;"></div>
+    <div class="chart-note">Illustrative ROC curve shaped by the current precision/recall balance. AUC value shown in the legend.</div>
+  </div>
+
+  <h3>5.11 🧮 Interactive: XGBoost Split Gain Calculator</h3>
+  <p>XGBoost decides whether to split a node by computing the regularised gain. Enter the gradient (G) and Hessian (H) sums for left and right children, plus λ and γ, to see the gain and whether XGBoost would split.</p>
+
+  <div class="split-calc">
+    <div class="split-calc-grid">
+      <div>
+        <label>G<sub>L</sub> (Left gradient sum)</label>
+        <input type="number" id="inGL" value="-3.5" step="0.1">
+      </div>
+      <div>
+        <label>H<sub>L</sub> (Left Hessian sum)</label>
+        <input type="number" id="inHL" value="4.0" step="0.1" min="0.01">
+      </div>
+      <div>
+        <label>G<sub>R</sub> (Right gradient sum)</label>
+        <input type="number" id="inGR" value="2.8" step="0.1">
+      </div>
+      <div>
+        <label>H<sub>R</sub> (Right Hessian sum)</label>
+        <input type="number" id="inHR" value="3.5" step="0.1" min="0.01">
+      </div>
+      <div>
+        <label>λ (L2 penalty)</label>
+        <input type="number" id="inLambda" value="1.0" step="0.1" min="0">
+      </div>
+      <div>
+        <label>γ (min split loss)</label>
+        <input type="number" id="inGamma" value="0.0" step="0.1" min="0">
+      </div>
+    </div>
+
+    <div class="split-result">
+      <div class="item">
+        <div class="lbl">Left leaf weight w<sub>L</sub>*</div>
+        <div class="val" id="outWL">—</div>
+      </div>
+      <div class="item">
+        <div class="lbl">Right leaf weight w<sub>R</sub>*</div>
+        <div class="val" id="outWR">—</div>
+      </div>
+      <div class="item">
+        <div class="lbl">Split Gain</div>
+        <div class="val" id="outGain">—</div>
+      </div>
+    </div>
+
+    <div id="splitVerdict" style="margin-top:16px;padding:14px 18px;border-radius:10px;font-weight:700;font-size:.95rem;background:#f1f5f9;color:#475569;">
+      Adjust the values above to see the split decision.
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">Visualisation of the Split Decision</div>
+    <div id="splitChart" style="height:340px;"></div>
+    <div class="chart-note">Blue bar = gain contribution from left and right children. Red bar = cost (γ + regularisation). Green means XGBoost will split; red means it will not.</div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once the model is live, you're no longer asking <em>"is it accurate?"</em> — you're asking <em>"is it still accurate today, and is anything silently breaking?"</em></p>
+
+  <h3>6.1 Data &amp; Model Health KPIs</h3>
+
+  <div class="metric post">
+    <h4>PSI (Population Stability Index) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI = Σ<sub>i=1</sub><sup>B</sup> ( Actual%<sub>i</sub> − Expected%<sub>i</sub> ) · ln( Actual%<sub>i</sub> / Expected%<sub>i</sub> )
+      <br><br>
+      B = number of bins (usually 10 deciles)
+      <br>
+      Expected%<sub>i</sub> = % of training samples in bin i
+      <br>
+      Actual%<sub>i</sub> = % of production samples in bin i
+    </div>
+    <div class="interp">
+      <strong>Interpretation thresholds:</strong><br>
+      • PSI &lt; 0.10 → no significant change, model is stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → moderate shift, monitor closely ⚠️<br>
+      • PSI ≥ 0.25 → major shift, retrain the model 🚨
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>KS Statistic (Kolmogorov–Smirnov) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      KS = max<sub>x</sub> | F<sub>train</sub>(x) − F<sub>prod</sub>(x) |
+      <br><br>
+      F(x) = empirical cumulative distribution function
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. Higher = more drift. A p-value &lt; 0.05 from the KS test indicates statistically significant drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>KL Divergence (Kullback–Leibler) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      D<sub>KL</sub>(P ‖ Q) = Σ<sub>i</sub> P(i) · log( P(i) / Q(i) )
+      <br><br>
+      P = production distribution &nbsp;|&nbsp; Q = training distribution
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 0 = identical distributions. Higher = more drift. Not symmetric.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Concept Drift (Performance Decay) <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Drift Magnitude = Metric<sub>validation</sub> − Metric<sub>live</sub>
+      <br><br>
+      <span class="lbl">Relative decay</span>
+      Decay % = ( Metric<sub>validation</sub> − Metric<sub>live</sub> ) / Metric<sub>validation</sub> × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Decay &gt; 10% typically triggers a retraining investigation.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Prediction Distribution Shift <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI<sub>pred</sub> = Σ ( ProdPred%<sub>i</sub> − TrainPred%<sub>i</sub> ) · ln( ProdPred%<sub>i</sub> / TrainPred%<sub>i</sub> )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A sudden jump in predicted distribution signals a pipeline problem or concept drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Feature Importance Stability <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Stability Index</span>
+      Stability = 1 − ( Σ | Imp<sub>train</sub>(f) − Imp<sub>prod</sub>(f) | / 2 )
+      <br><br>
+      Imp(f) = normalised feature importance of feature f
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Stability close to 1 = stable. A sudden reshuffle hints at pipeline problems or drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Missing Value Rate <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Missing % = ( Missing values / Total values ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> XGBoost handles missing values natively, but a spike in missing values still indicates an upstream pipeline problem.</div>
+  </div>
+
+  <h3>6.2 Live Performance KPIs</h3>
+
+  <div class="metric post">
+    <h4>Live Accuracy / Precision / Recall <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Same formulas as pre-deployment</span>
+      Live Accuracy = (TP<sub>live</sub> + TN<sub>live</sub>) / N<sub>live</sub>
+      <br>
+      Live Precision = TP<sub>live</sub> / (TP<sub>live</sub> + FP<sub>live</sub>)
+      <br>
+      Live Recall = TP<sub>live</sub> / (TP<sub>live</sub> + FN<sub>live</sub>)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ground truth often arrives with a delay. Set up automated pipelines to compute these as soon as labels arrive.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Actual vs. Predicted Monitoring <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Delta<sub>t</sub> = Metric<sub>predicted,t</sub> − Metric<sub>actual,t</sub>
+      <br><br>
+      <span class="lbl">CUSUM (cumulative sum control chart)</span>
+      CUSUM<sub>t</sub> = max(0, CUSUM<sub>t−1</sub> + Delta<sub>t</sub> − k)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A steadily rising CUSUM indicates systematic drift. Alert when CUSUM crosses a threshold h.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Model Age / Time Since Retrain <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Model Age = Current Date − Last Retrain Date
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Many teams set a hard limit (e.g. 90 days) as a retraining trigger, regardless of measured drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Latency Percentiles (p50, p95, p99) <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Definition</span>
+      p95 = the latency value below which 95% of requests fall
+      <br><br>
+      <span class="lbl">Why not the average?</span>
+      Average latency hides tail problems. A few slow requests (p99) can ruin user experience even if the average looks fine.
+    </div>
+    <div class="interp"><strong>Target example:</strong> p50 &lt; 50 ms, p95 &lt; 200 ms, p99 &lt; 500 ms for a large XGBoost API. Deep ensembles are slower than single trees.</div>
+  </div>
+
+  <h3>6.3 Operational &amp; Business KPIs</h3>
+
+  <div class="metric post">
+    <h4>Throughput <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Throughput = Total predictions served / Time window
+      <br><br>
+      <span class="lbl">Utilisation</span>
+      Utilisation % = (Actual throughput / Peak capacity) × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Error Rate / Failure Rate <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Error Rate % = ( Failed requests / Total requests ) × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Uptime / Availability <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Uptime % = ( Total time − Downtime ) / Total time × 100%
+      <br><br>
+      <span class="lbl">Common targets</span>
+      99% &nbsp;→ 3.65 days downtime/year<br>
+      99.9% &nbsp;→ 8.77 hours downtime/year<br>
+      99.99% → 52.6 minutes downtime/year
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Business Impact KPI <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Example formulas</span>
+      Revenue Uplift = Revenue<sub>with model</sub> − Revenue<sub>without model</sub>
+      <br>
+      Cost Saved = ( Errors<sub>without</sub> − Errors<sub>with</sub> ) × Cost per error
+      <br>
+      Churn Reduction % = ( Churn<sub>baseline</sub> − Churn<sub>model</sub> ) / Churn<sub>baseline</sub> × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>ROI (Return on Investment) <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ROI % = ( Net Gain / Total Cost ) × 100%
+      <br><br>
+      Net Gain = Business Value Generated − Total Cost
+      <br>
+      Total Cost = Development + Infrastructure + Maintenance + Monitoring
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Fraud prevented = ₹5,00,000. Total cost = ₹1,00,000.<br>
+      Net Gain = ₹4,00,000. ROI = (4,00,000 / 1,00,000) × 100 = <code>400%</code>
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Human Override Rate <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Override Rate % = ( Overrides / Total decisions ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A high override rate (e.g. &gt; 30%) means users don't trust the model.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Alert / Incident Count <span class="badge">Governance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Alert Rate = Alerts triggered / Time period
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#f0fdfa);">
+    <strong>Golden rule:</strong> An XGBoost model is not "done" when it's deployed. It's done when it's retired. Post-deployment monitoring is what keeps it from silently degrading.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How XGBoost Actually Works</h2>
+  <p>The core idea: <strong>iteratively add trees that minimise a regularised, second-order approximation of the loss.</strong> These formulas explain the algorithm.</p>
+
+  <h3>7.1 The Regularised Objective</h3>
+  <p>XGBoost minimises an objective that combines the loss and a complexity penalty.</p>
+  <div class="formula">
+    <span class="lbl">Full objective</span>
+    Obj = Σ<sub>i=1</sub><sup>N</sup> L(y<sub>i</sub>, ŷ<sub>i</sub>) + Σ<sub>t=1</sub><sup>T</sup> Ω(f<sub>t</sub>)
+    <br><br>
+    <span class="lbl">Regularisation term</span>
+    Ω(f) = γ · T + ½ · λ · Σ<sub>j=1</sub><sup>T</sup> w<sub>j</sub>² + α · Σ<sub>j=1</sub><sup>T</sup> |w<sub>j</sub>|
+    <br><br>
+    N = number of training samples
+    <br>
+    T = number of trees
+    <br>
+    γ = minimum loss reduction to make a split
+    <br>
+    λ = L2 penalty on leaf weights
+    <br>
+    α = L1 penalty on leaf weights
+    <br>
+    w<sub>j</sub> = weight (output) of leaf j
+  </div>
+
+  <h3>7.2 The Additive Model</h3>
+  <p>XGBoost builds the model additively, one tree at a time.</p>
+  <div class="formula">
+    <span class="lbl">Additive model at iteration t</span>
+    ŷ<sub>i</sub><sup>(t)</sup> = ŷ<sub>i</sub><sup>(t−1)</sup> + η · f<sub>t</sub>(x<sub>i</sub>)
+    <br><br>
+    ŷ<sub>i</sub><sup>(0)</sup> = initial prediction (e.g. mean for regression, log-odds for classification)
+    <br>
+    η = learning rate (shrinkage)
+    <br>
+    f<sub>t</sub> = tree at iteration t
+  </div>
+
+  <h3>7.3 Second-Order Taylor Approximation</h3>
+  <p>This is the key innovation of XGBoost. Instead of using only the first derivative (as classic GBM does), XGBoost uses a second-order approximation.</p>
+  <div class="formula">
+    <span class="lbl">Approximated objective at iteration t</span>
+    Obj<sup>(t)</sup> ≈ Σ<sub>i=1</sub><sup>N</sup> [ g<sub>i</sub>·f<sub>t</sub>(x<sub>i</sub>) + ½·h<sub>i</sub>·f<sub>t</sub>(x<sub>i</sub>)² ] + γ·T + ½·λ·Σ<sub>j</sub>w<sub>j</sub>² + α·Σ<sub>j</sub>|w<sub>j</sub>|
+    <br><br>
+    <span class="lbl">Gradient (first derivative)</span>
+    g<sub>i</sub> = ∂L(y<sub>i</sub>, ŷ<sub>i</sub><sup>(t−1)</sup>) / ∂ŷ<sub>i</sub><sup>(t−1)</sup>
+    <br><br>
+    <span class="lbl">Hessian (second derivative)</span>
+    h<sub>i</sub> = ∂²L(y<sub>i</sub>, ŷ<sub>i</sub><sup>(t−1)</sup>) / ∂(ŷ<sub>i</sub><sup>(t−1)</sup>)²
+  </div>
+
+  <h3>7.4 Optimal Leaf Weight</h3>
+  <p>Given the tree structure, the optimal weight of leaf j is derived by setting the derivative of the objective to zero.</p>
+  <div class="formula">
+    <span class="lbl">Optimal leaf weight (with L2 penalty λ)</span>
+    w<sub>j</sub>* = − ( Σ<sub>i ∈ I<sub>j</sub></sub> g<sub>i</sub> ) / ( Σ<sub>i ∈ I<sub>j</sub></sub> h<sub>i</sub> + λ )
+    <br><br>
+    I<sub>j</sub> = set of samples assigned to leaf j
+    <br><br>
+    <span class="lbl">Compact notation</span>
+    w<sub>j</sub>* = − G<sub>j</sub> / (H<sub>j</sub> + λ)
+    <br>
+    where G<sub>j</sub> = Σ<sub>i ∈ I<sub>j</sub></sub> g<sub>i</sub> &nbsp;and&nbsp; H<sub>j</sub> = Σ<sub>i ∈ I<sub>j</sub></sub> h<sub>i</sub>
+  </div>
+
+  <h3>7.5 Optimal Objective Value</h3>
+  <p>Substituting the optimal weights back gives the minimum objective for a given tree structure.</p>
+  <div class="formula">
+    <span class="lbl">Minimum objective</span>
+    Obj*(tree) = − ½ · Σ<sub>j=1</sub><sup>T</sup> G<sub>j</sub>² / (H<sub>j</sub> + λ) + γ · T
+    <br><br>
+    <span class="lbl">Interpretation</span>
+    The first term measures how well the tree fits the data.
+    <br>
+    The second term (γ·T) penalises the number of leaves.
+    <br>
+    Smaller Obj* is better.
+  </div>
+
+  <h3>7.6 Split Gain</h3>
+  <p>XGBoost evaluates a candidate split by computing the reduction in objective it produces.</p>
+  <div class="formula">
+    <span class="lbl">Split Gain</span>
+    Gain = ½ · [ G<sub>L</sub>²/(H<sub>L</sub>+λ) + G<sub>R</sub>²/(H<sub>R</sub>+λ) − (G<sub>L</sub>+G<sub>R</sub>)²/(H<sub>L</sub>+H<sub>R</sub>+λ) ] − γ
+    <br><br>
+    G<sub>L</sub> = Σ<sub>i ∈ left</sub> g<sub>i</sub> &nbsp;|&nbsp; H<sub>L</sub> = Σ<sub>i ∈ left</sub> h<sub>i</sub>
+    <br>
+    G<sub>R</sub> = Σ<sub>i ∈ right</sub> g<sub>i</sub> &nbsp;|&nbsp; H<sub>R</sub> = Σ<sub>i ∈ right</sub> h<sub>i</sub>
+    <br><br>
+    <span class="lbl">Split condition</span>
+    Split only if Gain &gt; 0
+  </div>
+
+  <div class="worked">
+    <strong>Worked example:</strong> G<sub>L</sub> = −3.5, H<sub>L</sub> = 4.0, G<sub>R</sub> = 2.8, H<sub>R</sub> = 3.5, λ = 1, γ = 0<br>
+    Left term: G<sub>L</sub>²/(H<sub>L</sub>+λ) = 12.25 / 5.0 = 2.45<br>
+    Right term: G<sub>R</sub>²/(H<sub>R</sub>+λ) = 7.84 / 4.5 = 1.74<br>
+    Parent term: (G<sub>L</sub>+G<sub>R</sub>)²/(H<sub>L</sub>+H<sub>R</sub>+λ) = (−0.7)² / 8.5 = 0.058<br>
+    Gain = ½ · (2.45 + 1.74 − 0.058) − 0 = <code>2.07</code> → Split is beneficial.
+  </div>
+
+  <h3>7.7 Common Loss Functions and Their Derivatives</h3>
+  <table>
+    <tr><th>Loss</th><th>L(y, ŷ)</th><th>g = ∂L/∂ŷ</th><th>h = ∂²L/∂ŷ²</th></tr>
+    <tr>
+      <td><strong>Squared Error</strong></td>
+      <td>½(y − ŷ)²</td>
+      <td>ŷ − y</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td><strong>Absolute Error</strong></td>
+      <td>|y − ŷ|</td>
+      <td>sign(ŷ − y)</td>
+      <td>0 (undefined at 0)</td>
+    </tr>
+    <tr>
+      <td><strong>Huber (δ)</strong></td>
+      <td>½(y−ŷ)² if |y−ŷ|≤δ else δ|y−ŷ|−½δ²</td>
+      <td>ŷ−y if |y−ŷ|≤δ else δ·sign(ŷ−y)</td>
+      <td>1 if |y−ŷ|≤δ else 0</td>
+    </tr>
+    <tr>
+      <td><strong>Log-Loss (binary)</strong></td>
+      <td>−[y·log p + (1−y)·log(1−p)]</td>
+      <td>p − y</td>
+      <td>p·(1−p)</td>
+    </tr>
+    <tr>
+      <td><strong>Multi-class Log-Loss</strong></td>
+      <td>−Σ<sub>k</sub> y<sub>k</sub>·log p<sub>k</sub></td>
+      <td>p<sub>k</sub> − y<sub>k</sub></td>
+      <td>p<sub>k</sub>·(1−p<sub>k</sub>)</td>
+    </tr>
+    <tr>
+      <td><strong>Poisson</strong></td>
+      <td>exp(ŷ) − y·ŷ</td>
+      <td>exp(ŷ) − y</td>
+      <td>exp(ŷ)</td>
+    </tr>
+    <tr>
+      <td><strong>Ranking (pairwise)</strong></td>
+      <td>log(1 + exp(−(ŷ<sub>i</sub>−ŷ<sub>j</sub>)))</td>
+      <td>−σ(−(ŷ<sub>i</sub>−ŷ<sub>j</sub>))</td>
+      <td>σ·(1−σ)</td>
+    </tr>
+  </table>
+  <p style="font-size:.9rem;color:var(--muted);">In the log-loss row, p = sigmoid(ŷ) = 1/(1+e<sup>−ŷ</sup>). In the ranking row, σ = sigmoid(ŷ<sub>i</sub> − ŷ<sub>j</sub>).</p>
+
+  <h3>7.8 XGBoost's Handling of Missing Values</h3>
+  <p>XGBoost doesn't impute missing values. Instead, at each split, it learns the best default direction for missing values.</p>
+  <div class="formula">
+    <span class="lbl">Sparsity-aware split algorithm</span>
+    1. For each candidate split, compute the gain assuming missing values go LEFT.
+    <br>
+    2. Compute the gain assuming missing values go RIGHT.
+    <br>
+    3. Choose the direction with higher gain.
+    <br>
+    4. Missing values are routed to that default direction at prediction time.
+    <br><br>
+    <span class="lbl">Why this works</span>
+    Missingness itself can be informative. XGBoost learns to exploit that signal rather than impute it away.
+  </div>
+
+  <h3>7.9 Approximate Split Finding (Weighted Quantile Sketch)</h3>
+  <p>For large datasets, examining every possible split point is too expensive. XGBoost uses a weighted quantile sketch to propose candidate split points.</p>
+  <div class="formula">
+    <span class="lbl">Weighted quantile sketch</span>
+    Given sorted feature values with weights h<sub>i</sub>, find a set of candidate split points such that each bucket contains roughly equal total weight.
+    <br><br>
+    <span class="lbl">Rank function</span>
+    r<sub>k</sub>(z) = ( Σ<sub>{i : x<sub>ik</sub> &lt; z}</sub> h<sub>i</sub> ) / ( Σ<sub>i</sub> h<sub>i</sub> )
+    <br><br>
+    <span class="lbl">Candidate points</span>
+    Choose z<sub>1</sub>, z<sub>2</sub>, …, z<sub>ℓ</sub> such that |r<sub>k</sub>(z<sub>j+1</sub>) − r<sub>k</sub>(z<sub>j</sub>)| &lt; ε
+    <br><br>
+    ε = approximation error (typically 0.01–0.1)
+  </div>
+
+  <h3>7.10 Monotonic Constraints</h3>
+  <p>XGBoost supports monotonic constraints — the prediction must be monotonic in a specified feature.</p>
+  <div class="formula">
+    <span class="lbl">Constraint</span>
+    For feature j with monotone_constraints[j] = 1:
+    <br>
+    x<sub>j</sub><sup>(a)</sup> ≤ x<sub>j</sub><sup>(b)</sup> &nbsp;⟹&nbsp; ŷ<sup>(a)</sup> ≤ ŷ<sup>(b)</sup>
+    <br><br>
+    For monotone_constraints[j] = −1, the inequality flips.
+    <br><br>
+    <span class="lbl">Enforcement</span>
+    During tree building, only splits that preserve the constraint are considered.
+  </div>
+
+  <h3>7.11 Bias–Variance in XGBoost</h3>
+  <div class="formula">
+    <span class="lbl">Expected test error</span>
+    Error = Bias² + Variance + Irreducible Noise
+    <br><br>
+    <span class="lbl">Effect of adding trees</span>
+    Bias ↓ (each tree corrects residual error)
+    <br>
+    Variance ↑ (more trees = more complex model)
+    <br><br>
+    <span class="lbl">Effect of regularisation</span>
+    γ, λ, α ↑ → simpler trees → lower variance → higher bias
+    <br>
+    subsample, colsample ↓ → more randomness → lower variance
+    <br><br>
+    <span class="lbl">Effect of learning rate η</span>
+    Smaller η → gradual bias reduction → lower final variance
+  </div>
+
+  <h3>📊 Interactive: Loss Functions Comparison</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Different loss functions penalise errors differently. Squared error grows quadratically (sensitive to outliers). Absolute error grows linearly (robust). Huber is a hybrid. XGBoost supports all of these via the <code>objective</code> parameter.</p>
+  <div class="chart">
+    <div class="chart-title">Loss Functions — How Different Losses Penalise Error</div>
+    <div id="lossChart" style="height:400px;"></div>
+    <div class="chart-note">X-axis = prediction error (y − ŷ). Y-axis = loss. Squared error (blue) explodes for large errors. Absolute (green) and Huber (orange) are robust.</div>
+  </div>
+
+  <h3>📊 Interactive: Bias–Variance in XGBoost</h3>
+  <p style="color:var(--muted);font-size:.93rem;">As boosting rounds increase, bias² drops steadily while variance rises. Total error reaches a minimum — that's where early stopping should stop.</p>
+  <div class="chart">
+    <div class="chart-title">Bias², Variance, and Total Error vs. Boosting Rounds</div>
+    <div id="biasVarChart" style="height:400px;"></div>
+    <div class="chart-note">The total error curve (dashed red) is what early stopping minimises. XGBoost's <code>early_stopping_rounds</code> parameter finds this minimum automatically.</div>
+  </div>
+
+  <h3>📊 Interactive: Regularisation Effect on Leaf Weights</h3>
+  <p style="color:var(--muted);font-size:.93rem;">L2 regularisation (λ) shrinks leaf weights toward zero. This prevents any single leaf from dominating the prediction. Drag λ to see the effect on the optimal leaf weight.</p>
+  <div class="chart">
+    <div class="chart-title">Leaf Weight vs. λ (L2 Regularisation)</div>
+    <div id="lambdaChart" style="height:380px;"></div>
+    <div class="chart-note">The optimal leaf weight is w* = −G/(H + λ). As λ grows, w* shrinks, pulling predictions toward the baseline. This is how XGBoost controls overfitting.</div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithms &amp; Model Types</h3>
+  <div class="gloss">
+    <div>ML</div><div><strong>Machine Learning</strong> — a field of AI where systems learn patterns from data instead of being explicitly programmed.</div>
+    <div>XGBoost</div><div><strong>eXtreme Gradient Boosting</strong> — an optimised, regularised implementation of gradient boosting with second-order approximation.</div>
+    <div>GBM</div><div><strong>Gradient Boosting Machine</strong> — the general family of algorithms that XGBoost belongs to.</div>
+    <div>GBDT</div><div><strong>Gradient Boosted Decision Trees</strong> — synonym for Gradient Boosting.</div>
+    <div>LightGBM</div><div><strong>Light Gradient Boosting Machine</strong> — Microsoft's fast implementation using histogram binning and leaf-wise growth.</div>
+    <div>CatBoost</div><div><strong>Categorical Boosting</strong> — Yandex's implementation with native categorical handling and ordered boosting.</div>
+    <div>RF</div><div><strong>Random Forest</strong> — a competing ensemble that builds trees in parallel and averages them.</div>
+    <div>DT</div><div><strong>Decision Tree</strong> — the base weak learner used in XGBoost.</div>
+    <div>CART</div><div><strong>Classification And Regression Trees</strong> — the tree algorithm used inside XGBoost.</div>
+    <div>DART</div><div><strong>Dropouts meet Multiple Additive Regression Trees</strong> — an XGBoost variant that randomly drops trees during training, similar to dropout in neural networks.</div>
+    <div>Ranker</div><div>XGBoost's learning-to-rank mode for search and recommendation.</div>
+  </div>
+
+  <h3>XGBoost-Specific Concepts</h3>
+  <div class="gloss">
+    <div>Shrinkage</div><div>Another name for the learning rate η. Scales each tree's contribution to prevent any single tree from dominating.</div>
+    <div>Learning Rate (η)</div><div>The factor by which each new tree's contribution is scaled. XGBoost default is 0.3. Smaller = more trees needed but better generalisation.</div>
+    <div>Boosting Round</div><div>One iteration of adding a new tree to the ensemble.</div>
+    <div>Gradient (g)</div><div>The first derivative of the loss with respect to the current prediction. Also called the Jacobian.</div>
+    <div>Hessian (h)</div><div>The second derivative of the loss with respect to the current prediction.</div>
+    <div>Pseudo-residual</div><div>Another name for the negative gradient. What each new tree is trained to predict.</div>
+    <div>Second-Order Approximation</div><div>Using both first and second derivatives of the loss. More accurate than first-order alone. XGBoost's key innovation.</div>
+    <div>Regularisation</div><div>Penalties on model complexity to prevent overfitting. Includes L1 (α), L2 (λ), and tree-complexity (γ) penalties.</div>
+    <div>Sparsity-Aware Split</div><div>XGBoost's technique for routing missing values to the best direction at each split, without imputation.</div>
+    <div>Weighted Quantile Sketch</div><div>An approximate algorithm that finds candidate split points on large datasets efficiently.</div>
+    <div>Column Block</div><div>A pre-sorted data structure that enables parallel and cache-aware split finding.</div>
+    <div>Out-of-Core</div><div>Training on datasets larger than RAM by streaming from disk.</div>
+    <div>Monotonic Constraint</div><div>A constraint that a feature's effect on the prediction must be monotonic.</div>
+    <div>Early Stopping</div><div>Stopping training when validation loss stops improving. Prevents overfitting.</div>
+    <div>Stochastic XGBoost</div><div>XGBoost with row and/or column subsampling, adding randomness to reduce overfitting.</div>
+    <div>Tree Pruning</div><div>Post-growth removal of branches whose split gain is below γ.</div>
+    <div>DART</div><div>Dropouts meet Multiple Additive Regression Trees — a variant that randomly drops trees during training.</div>
+  </div>
+
+  <h3>Hyperparameters</h3>
+  <div class="gloss">
+    <div>n_estimators / num_boost_round</div><div>The number of boosting rounds (trees). More = more capacity, higher overfitting risk.</div>
+    <div>learning_rate / eta</div><div>The shrinkage factor η. Smaller = slower learning but usually better accuracy.</div>
+    <div>max_depth</div><div>The maximum depth of each tree. Default 6. Typical: 3–10.</div>
+    <div>min_child_weight</div><div>Minimum sum of instance Hessians in a child. Higher = more conservative.</div>
+    <div>gamma / min_split_loss</div><div>Minimum loss reduction required to make a split. Higher = fewer splits.</div>
+    <div>lambda / reg_lambda</div><div>L2 regularisation on leaf weights. Default 1.</div>
+    <div>alpha / reg_alpha</div><div>L1 regularisation on leaf weights. Default 0.</div>
+    <div>subsample</div><div>Fraction of rows used to train each tree. Typically 0.5–0.9.</div>
+    <div>colsample_bytree</div><div>Fraction of features considered when building each tree. Typically 0.5–0.9.</div>
+    <div>colsample_bylevel</div><div>Fraction of features considered at each depth level.</div>
+    <div>colsample_bynode</div><div>Fraction of features considered at each node.</div>
+    <div>scale_pos_weight</div><div>Weight applied to the positive class. Useful for class imbalance.</div>
+    <div>early_stopping_rounds</div><div>Number of rounds without improvement before stopping.</div>
+    <div>max_delta_step</div><div>Maximum allowed delta step for leaf weights. Useful for logistic regression on imbalanced data.</div>
+    <div>tree_method</div><div>The tree construction algorithm: "auto", "exact", "approx", "hist", "gpu_hist".</div>
+    <div>objective</div><div>The loss function to minimise. E.g. "reg:squarederror", "binary:logistic", "multi:softmax".</div>
+    <div>eval_metric</div><div>The metric to monitor during training. E.g. "rmse", "logloss", "auc", "ndcg".</div>
+  </div>
+
+  <h3>Evaluation Metrics — Classification</h3>
+  <div class="gloss">
+    <div>TP</div><div><strong>True Positive</strong> — model predicted positive, actual was positive. ✅</div>
+    <div>TN</div><div><strong>True Negative</strong> — model predicted negative, actual was negative. ✅</div>
+    <div>FP</div><div><strong>False Positive</strong> — model predicted positive, actual was negative. Type I error.</div>
+    <div>FN</div><div><strong>False Negative</strong> — model predicted negative, actual was positive. Type II error.</div>
+    <div>Accuracy</div><div>(TP + TN) / (TP + TN + FP + FN) — overall correctness.</div>
+    <div>Precision</div><div>TP / (TP + FP) — of the positives predicted, how many were right.</div>
+    <div>Recall</div><div>TP / (TP + FN) — of the actual positives, how many were found. Also called Sensitivity.</div>
+    <div>Specificity</div><div>TN / (TN + FP) — of the actual negatives, how many were correctly identified.</div>
+    <div>F1</div><div><strong>F1-Score</strong> — harmonic mean of Precision and Recall: 2·(P·R)/(P+R).</div>
+    <div>ROC</div><div><strong>Receiver Operating Characteristic</strong> — a curve plotting TPR vs. FPR across thresholds.</div>
+    <div>AUC</div><div><strong>Area Under the Curve</strong> — the area under the ROC curve. 0.5 = random, 1.0 = perfect.</div>
+    <div>FPR</div><div><strong>False Positive Rate</strong> — FP / (FP + TN). The x-axis of the ROC curve.</div>
+    <div>TPR</div><div><strong>True Positive Rate</strong> — same as Recall. The y-axis of the ROC curve.</div>
+    <div>PR-AUC</div><div><strong>Precision–Recall Area Under the Curve</strong> — better for heavily imbalanced datasets.</div>
+    <div>Log Loss</div><div><strong>Logarithmic Loss / Cross-Entropy</strong> — penalises confident wrong probability predictions.</div>
+    <div>MCC</div><div><strong>Matthews Correlation Coefficient</strong> — balanced metric from −1 to +1.</div>
+    <div>Cohen's Kappa</div><div>A metric measuring agreement, corrected for chance.</div>
+    <div>NDCG</div><div><strong>Normalised Discounted Cumulative Gain</strong> — a ranking metric used with XGBoost Ranker.</div>
+    <div>MAP</div><div><strong>Mean Average Precision</strong> — a ranking metric.</div>
+  </div>
+
+  <h3>Evaluation Metrics — Regression</h3>
+  <div class="gloss">
+    <div>MAE</div><div><strong>Mean Absolute Error</strong> — average of |actual − predicted|. Same units as the target.</div>
+    <div>MSE</div><div><strong>Mean Squared Error</strong> — average of (actual − predicted)². Punishes large errors heavily.</div>
+    <div>RMSE</div><div><strong>Root Mean Squared Error</strong> — the square root of MSE. Same units as the target.</div>
+    <div>MAPE</div><div><strong>Mean Absolute Percentage Error</strong> — average error as a percentage.</div>
+    <div>SMAPE</div><div><strong>Symmetric Mean Absolute Percentage Error</strong> — bounded version of MAPE.</div>
+    <div>MSLE</div><div><strong>Mean Squared Logarithmic Error</strong> — squared error on the log scale.</div>
+    <div>R²</div><div><strong>Coefficient of Determination</strong> — proportion of target variance explained.</div>
+    <div>Huber Loss</div><div>A loss function that is quadratic for small errors and linear for large errors. Robust to outliers.</div>
+    <div>Quantile Loss</div><div>A loss function that estimates a specific quantile of the target distribution.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model or business performance.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift between training and production.</div>
+    <div>KS Test</div><div><strong>Kolmogorov–Smirnov Test</strong> — a statistical test for whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback–Leibler Divergence</strong> — measures how one probability distribution diverges from another.</div>
+    <div>CSI</div><div><strong>Characteristic Stability Index</strong> — the per-feature version of PSI.</div>
+    <div>Data Drift</div><div>A change in the distribution of input features over time.</div>
+    <div>Concept Drift</div><div>A change in the relationship between features and the target over time.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — sequential analysis for change detection.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — deploying, monitoring and maintaining ML models in production.</div>
+    <div>CI/CD</div><div><strong>Continuous Integration / Continuous Deployment</strong> — automated pipelines for testing and shipping.</div>
+    <div>p50/p95/p99</div><div><strong>Percentile latency</strong> — p95 = 95% of requests are faster than this value.</div>
+    <div>Uptime</div><div>The percentage of time a service is available and responding.</div>
+    <div>ROI</div><div><strong>Return On Investment</strong> — (gain from investment − cost) ÷ cost.</div>
+    <div>Shadow Deployment</div><div>Running a new model alongside the old one without acting on its output.</div>
+    <div>A/B Test</div><div>Splitting live traffic between two model versions to measure which performs better.</div>
+    <div>Champion/Challenger</div><div>The current production model (champion) vs. a candidate model (challenger).</div>
+  </div>
+
+  <h3>Data &amp; Training Concepts</h3>
+  <div class="gloss">
+    <div>Feature</div><div>An input variable used by the model.</div>
+    <div>Target</div><div>The output variable the model is trying to predict.</div>
+    <div>Label</div><div>The ground-truth value for a training example.</div>
+    <div>Overfitting</div><div>When a model learns the training data too well and performs poorly on new data.</div>
+    <div>Underfitting</div><div>When a model is too simple to capture the underlying pattern.</div>
+    <div>Bias</div><div>Error from overly simplistic assumptions. High bias = underfitting.</div>
+    <div>Variance</div><div>Error from sensitivity to small fluctuations in training data. High variance = overfitting.</div>
+    <div>Bias–Variance Tradeoff</div><div>The balance between a model that is too simple and one that is too complex.</div>
+    <div>Bagging</div><div><strong>Bootstrap Aggregating</strong> — training many models in parallel on bootstrap samples.</div>
+    <div>Boosting</div><div>Training models sequentially, each correcting the previous one's errors.</div>
+    <div>Cross-Validation</div><div>Splitting data into K folds and training K times.</div>
+    <div>K-Fold</div><div>The specific cross-validation scheme using K folds.</div>
+    <div>Hyperparameter</div><div>A setting you choose before training.</div>
+    <div>Grid Search</div><div>Exhaustively trying every combination of hyperparameters.</div>
+    <div>Random Search</div><div>Randomly sampling hyperparameter combinations.</div>
+    <div>Bayesian Optimisation</div><div>Using a probabilistic model to guide hyperparameter search.</div>
+    <div>Train/Test Split</div><div>Dividing data into a portion for training and a portion for evaluation.</div>
+    <div>Hold-out Set</div><div>A portion of data never used during training.</div>
+    <div>Class Imbalance</div><div>When one class has far fewer samples than another.</div>
+    <div>Resampling</div><div>Adjusting class balance via oversampling, undersampling, or SMOTE.</div>
+    <div>SMOTE</div><div><strong>Synthetic Minority Over-sampling Technique</strong> — generates synthetic minority examples.</div>
+    <div>Feature Engineering</div><div>Creating new, more informative features.</div>
+    <div>One-Hot Encoding</div><div>Converting a categorical variable into multiple binary columns.</div>
+    <div>Target Encoding</div><div>Replacing a categorical value with the mean target for that category.</div>
+    <div>Normalisation</div><div>Rescaling features to a 0–1 range. (Not needed for XGBoost!)</div>
+    <div>Standardisation</div><div>Rescaling features to mean 0 and standard deviation 1. (Not needed for XGBoost!)</div>
+  </div>
+
+  <h3>Explainability</h3>
+  <div class="gloss">
+    <div>XAI</div><div><strong>Explainable AI</strong> — methods that make model decisions understandable to humans.</div>
+    <div>SHAP</div><div><strong>SHapley Additive exPlanations</strong> — game-theory-based feature attribution. Works particularly well with XGBoost via <code>shap.TreeExplainer</code>.</div>
+    <div>LIME</div><div><strong>Local Interpretable Model-agnostic Explanations</strong> — explains individual predictions.</div>
+    <div>Feature Importance</div><div>A score showing how much each feature contributed to decisions.</div>
+    <div>Gain Importance</div><div>Average loss reduction from splits on a feature. XGBoost's most informative importance.</div>
+    <div>Cover Importance</div><div>Average number of samples affected by splits on a feature.</div>
+    <div>Weight Importance</div><div>Number of times a feature is used in splits. Biased toward high-cardinality features.</div>
+    <div>Permutation Importance</div><div>How much performance drops when a feature is shuffled.</div>
+    <div>PDP</div><div><strong>Partial Dependence Plot</strong> — shows the marginal effect of one feature.</div>
+    <div>ICE Plot</div><div><strong>Individual Conditional Expectation Plot</strong> — like a PDP but one line per sample.</div>
+    <div>White-box</div><div>A model whose internals are directly interpretable.</div>
+    <div>Black-box</div><div>A model whose internals are opaque.</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:22%;">KPI / Formula</th>
+      <th style="width:12%;">Type</th>
+      <th style="width:36%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>Accuracy</td><td>Class.</td><td>(TP + TN) / (TP + TN + FP + FN)</td><td>↑ Higher</td></tr>
+    <tr><td>Precision</td><td>Class.</td><td>TP / (TP + FP)</td><td>↑ Higher</td></tr>
+    <tr><td>Recall</td><td>Class.</td><td>TP / (TP + FN)</td><td>↑ Higher</td></tr>
+    <tr><td>Specificity</td><td>Class.</td><td>TN / (TN + FP)</td><td>↑ Higher</td></tr>
+    <tr><td>F1-Score</td><td>Class.</td><td>2·P·R / (P + R)</td><td>↑ Higher</td></tr>
+    <tr><td>Balanced Accuracy</td><td>Class.</td><td>(Recall + Specificity) / 2</td><td>↑ Higher</td></tr>
+    <tr><td>ROC-AUC</td><td>Class.</td><td>∫ TPR d(FPR)</td><td>↑ → 1.0</td></tr>
+    <tr><td>PR-AUC</td><td>Class.</td><td>∫ Precision d(Recall)</td><td>↑ → 1.0</td></tr>
+    <tr><td>Log Loss</td><td>Class.</td><td>−1/N · Σ [y·log p + (1−y)·log(1−p)]</td><td>↓ Lower</td></tr>
+    <tr><td>MCC</td><td>Class.</td><td>(TP·TN − FP·FN) / √[(TP+FP)(TP+FN)(TN+FP)(TN+FN)]</td><td>↑ → 1.0</td></tr>
+    <tr><td>Cohen's κ</td><td>Class.</td><td>(p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)</td><td>↑ → 1.0</td></tr>
+    <tr><td>Learning Rate η</td><td>XGB</td><td>ŷ<sup>(t)</sup> = ŷ<sup>(t−1)</sup> + η·f<sub>t</sub>(x)</td><td>0.01–0.3</td></tr>
+    <tr><td>Gradient g<sub>i</sub></td><td>XGB</td><td>∂L/∂ŷ</td><td>Used for split gain</td></tr>
+    <tr><td>Hessian h<sub>i</sub></td><td>XGB</td><td>∂²L/∂ŷ²</td><td>Used for split gain</td></tr>
+    <tr><td>Optimal leaf weight</td><td>XGB</td><td>w* = −Σg / (Σh + λ)</td><td>Shrinks with λ</td></tr>
+    <tr><td>Split Gain</td><td>XGB</td><td>½[G<sub>L</sub>²/(H<sub>L</sub>+λ) + G<sub>R</sub>²/(H<sub>R</sub>+λ) − G²/(H+λ)] − γ</td><td>↑ Positive</td></tr>
+    <tr><td>Regularised Objective</td><td>XGB</td><td>Obj = ΣL + Σ[γT + ½λΣw² + αΣ|w|]</td><td>↓ Minimum</td></tr>
+    <tr><td>MAE</td><td>Reg.</td><td>1/N · Σ |y − ŷ|</td><td>↓ Lower</td></tr>
+    <tr><td>MSE</td><td>Reg.</td><td>1/N · Σ (y − ŷ)²</td><td>↓ Lower</td></tr>
+    <tr><td>RMSE</td><td>Reg.</td><td>√MSE</td><td>↓ Lower</td></tr>
+    <tr><td>R²</td><td>Reg.</td><td>1 − SS<sub>res</sub>/SS<sub>tot</sub></td><td>↑ → 1.0</td></tr>
+    <tr><td>MAPE</td><td>Reg.</td><td>100/N · Σ |(y−ŷ)/y|</td><td>↓ Lower</td></tr>
+    <tr><td>SMAPE</td><td>Reg.</td><td>100/N · Σ |y−ŷ| / [(|y|+|ŷ|)/2]</td><td>↓ Lower</td></tr>
+    <tr><td>MSLE</td><td>Reg.</td><td>1/N · Σ (log(1+y) − log(1+ŷ))²</td><td>↓ Lower</td></tr>
+    <tr><td>Cross-Val Score</td><td>Robust.</td><td>1/K · Σ Metric<sub>k</sub></td><td>↑ Higher</td></tr>
+    <tr><td>Train-Test Gap</td><td>Robust.</td><td>Metric<sub>train</sub> − Metric<sub>test</sub></td><td>↓ Smaller</td></tr>
+    <tr><td>Best Iteration</td><td>Robust.</td><td>argmin<sub>t</sub> ValidationLoss(t)</td><td>Optimal T</td></tr>
+    <tr><td>PSI</td><td>Post</td><td>Σ (A% − E%)·ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>KS Statistic</td><td>Post</td><td>max |F<sub>train</sub>(x) − F<sub>prod</sub>(x)|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>KL Divergence</td><td>Post</td><td>Σ P(i)·log(P(i)/Q(i))</td><td>↓ → 0</td></tr>
+    <tr><td>Uptime</td><td>Post</td><td>(Total − Downtime)/Total × 100%</td><td>↑ → 100%</td></tr>
+    <tr><td>Error Rate</td><td>Post</td><td>Failed / Total × 100%</td><td>↓ → 0%</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+    <tr><td>Override Rate</td><td>Post</td><td>Overrides / Total decisions × 100%</td><td>↓ Lower</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> Never optimise a single KPI in isolation. A model with 99% accuracy but 5% recall on fraud is useless. A model with perfect F1 but 2-second latency is unusable. Always check a <em>portfolio</em> of metrics — one from each category (performance, robustness, operational, business).
+  </div>
+</section>
+
+</div>
+
+<footer>
+  XGBoost Model — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   1. XGBOOST BOOSTING DEMO
+   ============================================================ */
+(function(){
+  const trueFn = x => Math.sin(2 * Math.PI * x) * 0.6 + x * 0.8 - 0.5;
+
+  const N = 50;
+  const xData = [];
+  const yData = [];
+  for (let i = 0; i < N; i++){
+    const x = i / (N - 1);
+    xData.push(x);
+    yData.push(trueFn(x) + (Math.random() - 0.5) * 0.5);
+  }
+
+  const N_GRID = 200;
+  const xGrid = [];
+  const yTrue = [];
+  for (let i = 0; i < N_GRID; i++){
+    const x = i / (N_GRID - 1);
+    xGrid.push(x);
+    yTrue.push(trueFn(x));
+  }
+
+  const LEARNING_RATE = 0.25;
+  const MAX_ITER = 40;
+
+  let iteration = 0;
+  let currentPred = new Array(N).fill(0);
+  let treeOutputs = [];
+  let prevMSE = null;
+
+  const iterEl = document.getElementById('xgbIter');
+  const mseEl = document.getElementById('xgbMSE');
+  const maeEl = document.getElementById('xgbMAE');
+  const maxEl = document.getElementById('xgbMax');
+  const impEl = document.getElementById('xgbImp');
+  const treesEl = document.getElementById('xgbTrees');
+  const addBtn = document.getElementById('xgbAddBtn');
+  const resetBtn = document.getElementById('xgbResetBtn');
+
+  const baseline = yData.reduce((a,b)=>a+b, 0) / N;
+
+  function resetBoost(){
+    iteration = 0;
+    currentPred = new Array(N).fill(baseline);
+    treeOutputs = [];
+    prevMSE = null;
+    iterEl.textContent = 0;
+    mseEl.textContent = '—';
+    maeEl.textContent = '—';
+    maxEl.textContent = '—';
+    impEl.textContent = '—';
+    treesEl.textContent = 1;
+    updateChart();
+    updateMetrics();
+    addBtn.disabled = false;
+  }
+
+  function fitTreeToResiduals(xs, residuals, numSplits){
+    const splits = [];
+    for (let i = 0; i < numSplits; i++) splits.push(Math.random());
+    splits.sort((a,b)=>a-b);
+    const boundaries = [0, ...splits, 1];
+    const regions = [];
+    for (let r = 0; r < boundaries.length - 1; r++){
+      const lo = boundaries[r];
+      const hi = boundaries[r+1];
+      let sum = 0, count = 0;
+      for (let i = 0; i < xs.length; i++){
+        if (xs[i] >= lo && xs[i] <= hi){ sum += residuals[i]; count++; }
+      }
+      regions.push({ lo, hi, value: count > 0 ? sum / count : 0 });
+    }
+    return x => {
+      for (const r of regions){
+        if (x >= r.lo && x <= r.hi) return r.value;
+      }
+      return regions[regions.length - 1].value;
+    };
+  }
+
+  function addTree(){
+    if (iteration >= MAX_ITER){ addBtn.disabled = true; return; }
+    const residuals = yData.map((y, i) => y - currentPred[i]);
+    const treeFn = fitTreeToResiduals(xData, residuals, 3);
+    treeOutputs.push(treeFn);
+    currentPred = currentPred.map((p, i) => p + LEARNING_RATE * treeFn(xData[i]));
+    iteration++;
+    iterEl.textContent = iteration;
+    treesEl.textContent = iteration + 1;
+    if (iteration >= MAX_ITER) addBtn.disabled = true;
+    updateChart();
+    updateMetrics();
+  }
+
+  function computeEnsemblePredictions(xs){
+    return xs.map(x => {
+      let pred = baseline;
+      for (const tree of treeOutputs) pred += LEARNING_RATE * tree(x);
+      return pred;
+    });
+  }
+
+  function updateChart(){
+    const yPred = computeEnsemblePredictions(xGrid);
+    const yTrainPred = computeEnsemblePredictions(xData);
+
+    const traceData = {x: xData, y: yData, mode:'markers', name:'Training Data',
+      marker:{color:'#94a3b8', size:8, line:{color:'#ffffff', width:1}}};
+    const traceTrue = {x: xGrid, y: yTrue, mode:'lines', name:'True Function',
+      line:{color:'#2563eb', width:3}};
+    const tracePred = {x: xGrid, y: yPred, mode:'lines', name:'XGBoost Prediction',
+      line:{color:'#c2410c', width:3, dash:'dash'}};
+
+    const residualShapes = xData.map((x, i) => ({
+      type:'line', xref:'x', yref:'y',
+      x0: x, x1: x, y0: yData[i], y1: yTrainPred[i],
+      line:{color:'rgba(194,65,12,0.3)', width:1, dash:'dot'}, layer:'below'
+    }));
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'Feature x', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Target y', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, orientation:'h', font:{size:10}},
+      margin:{l:60, r:20, t:20, b:50},
+      height: 420, shapes: residualShapes, hovermode:'closest'
+    };
+    Plotly.react('xgbChart', [traceData, traceTrue, tracePred], layout, {responsive:true, displayModeBar:false});
+  }
+
+  function updateMetrics(){
+    const yPred = computeEnsemblePredictions(xData);
+    const residuals = yData.map((y, i) => y - yPred[i]);
+    const mse = residuals.reduce((a, r) => a + r*r, 0) / N;
+    const mae = residuals.reduce((a, r) => a + Math.abs(r), 0) / N;
+    const maxR = Math.max(...residuals.map(Math.abs));
+    mseEl.textContent = mse.toFixed(4);
+    maeEl.textContent = mae.toFixed(3);
+    maxEl.textContent = maxR.toFixed(3);
+    if (prevMSE !== null){
+      const imp = ((prevMSE - mse) / prevMSE) * 100;
+      impEl.textContent = (imp >= 0 ? '−' : '+') + Math.abs(imp).toFixed(1) + '%';
+      impEl.style.color = imp > 0 ? '#059669' : '#dc2626';
+    }
+    prevMSE = mse;
+  }
+
+  addBtn.addEventListener('click', addTree);
+  resetBtn.addEventListener('click', resetBoost);
+  resetBoost();
+})();
+
+/* ============================================================
+   2. LEARNING RATE vs NUMBER OF TREES
+   ============================================================ */
+(function(){
+  const nTrees = [1,2,3,5,8,12,20,30,50,80,120,200,300,500,800,1200];
+  function curve(lr, asymptote, rate){
+    return nTrees.map(n => asymptote * (1 - Math.exp(-rate * n * lr)));
+  }
+  const traces = [
+    {x:nTrees, y:curve(0.01, 0.960, 0.05), mode:'lines+markers', name:'η = 0.01 (slow, best final)', line:{color:'#2563eb', width:2.5}, marker:{size:5}},
+    {x:nTrees, y:curve(0.05, 0.950, 0.05), mode:'lines+markers', name:'η = 0.05', line:{color:'#0891b2', width:2.5}, marker:{size:5}},
+    {x:nTrees, y:curve(0.10, 0.940, 0.05), mode:'lines+markers', name:'η = 0.10', line:{color:'#d97706', width:2.5}, marker:{size:5}},
+    {x:nTrees, y:curve(0.30, 0.918, 0.05), mode:'lines+markers', name:'η = 0.30 (XGBoost default)', line:{color:'#c2410c', width:2.5}, marker:{size:5}}
+  ];
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Number of Trees (n_estimators)', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type:'log', tickvals:[1,3,10,30,100,300,1000]},
+    yaxis:{title:{text:'Test Accuracy', font:{size:13}}, gridcolor:'#e2e8f0', range:[0.5,1.0], tickformat:'.0%', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.35, y:0.05, font:{size:11}},
+    margin:{l:75, r:30, t:30, b:65}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('lrChart', traces, layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   3. CONFUSION MATRIX DIAGRAM
+   ============================================================ */
+(function(){
+  const text = [
+    ['TN = 850<br>Correct rejection ✅', 'FP = 50<br>False alarm ❌'],
+    ['FN = 120<br>Missed case ❌', 'TP = 480<br>Correct hit ✅']
+  ];
+  const trace = {
+    z: [[850, 50], [120, 480]],
+    x: ['Predicted: Negative', 'Predicted: Positive'],
+    y: ['Actual: Negative', 'Actual: Positive'],
+    type: 'heatmap',
+    colorscale: [[0,'#f8fafc'],[0.35,'#fed7aa'],[0.7,'#fb923c'],[1,'#c2410c']],
+    text: text, texttemplate: '%{text}',
+    textfont: {size: 14, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+    hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 8, ygap: 8
+  };
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    margin:{l:140, r:40, t:40, b:70}, height: 400
+  };
+  Plotly.newPlot('cmDiagram', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   4. FEATURE IMPORTANCE
+   ============================================================ */
+(function(){
+  const features = ['Age', 'Income', 'Credit Score', 'Debt Ratio', 'Tenure', 'Num Accounts', 'Missed Payments', 'Region Code'];
+  const gainImp = [0.21, 0.16, 0.25, 0.11, 0.08, 0.05, 0.12, 0.02];
+  const coverImp = [0.15, 0.13, 0.17, 0.12, 0.10, 0.09, 0.13, 0.11];
+  const weightImp = [0.13, 0.11, 0.14, 0.12, 0.11, 0.12, 0.13, 0.14];
+
+  const order = gainImp.map((v,i)=>[v,i]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  const sortedFeatures = order.map(i => features[i]);
+  const sortedGain = order.map(i => gainImp[i]);
+  const sortedCover = order.map(i => coverImp[i]);
+  const sortedWeight = order.map(i => weightImp[i]);
+
+  const traceGain = {y:sortedFeatures, x:sortedGain, type:'bar', orientation:'h', name:'Gain', marker:{color:'#c2410c'}, hovertemplate:'%{y}<br>Gain: %{x:.3f}<extra></extra>'};
+  const traceCover = {y:sortedFeatures, x:sortedCover, type:'bar', orientation:'h', name:'Cover', marker:{color:'#059669'}, hovertemplate:'%{y}<br>Cover: %{x:.3f}<extra></extra>'};
+  const traceWeight = {y:sortedFeatures, x:sortedWeight, type:'bar', orientation:'h', name:'Weight (Frequency)', marker:{color:'#2563eb'}, hovertemplate:'%{y}<br>Weight: %{x:.3f}<extra></extra>'};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Importance', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.05, font:{size:11}},
+    margin:{l:130, r:40, t:30, b:60}, barmode:'group', height: 440,
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('featImpChart', [traceGain, traceCover, traceWeight], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   5. NUMBER OF TREES vs ACCURACY (slider)
+   ============================================================ */
+(function(){
+  const depths = [1,2,3,5,8,12,20,30,50,80,120,200,300,500,800,1200];
+  const trainAcc = [0.62,0.70,0.78,0.85,0.905,0.945,0.972,0.986,0.994,0.997,0.999,0.9995,1.000,1.000,1.000,1.000];
+  const testAcc  = [0.60,0.68,0.755,0.825,0.878,0.912,0.935,0.942,0.943,0.940,0.934,0.922,0.908,0.885,0.855,0.820];
+
+  const traceTrain = {x:depths, y:trainAcc, mode:'lines+markers', name:'Training Accuracy',
+    line:{color:'#2563eb', width:3}, marker:{size:7, color:'#2563eb', line:{color:'#ffffff', width:1.5}}};
+  const traceTest = {x:depths, y:testAcc, mode:'lines+markers', name:'Test Accuracy',
+    line:{color:'#059669', width:3}, marker:{size:7, color:'#059669', line:{color:'#ffffff', width:1.5}}};
+  const vline = {x:[80,80], y:[0.5,1.02], mode:'lines', name:'Early stop',
+    line:{color:'#c2410c', width:2, dash:'dash'}, showlegend:false, hoverinfo:'skip'};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'n_estimators (boosting rounds)', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type:'log', tickvals:[1,3,10,30,100,300,1000]},
+    yaxis:{title:{text:'Accuracy', font:{size:13}}, gridcolor:'#e2e8f0', range:[0.5,1.02], tickformat:'.0%', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.02, orientation:'h', font:{size:11}},
+    margin:{l:75, r:30, t:30, b:65}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'rect', xref:'x', yref:'paper', x0:120, x1:1300, y0:0, y1:1,
+      fillcolor:'rgba(194,65,12,0.07)', line:{width:0}, layer:'below'}],
+    annotations:[{x:400, yref:'paper', y:0.96, text:'⚠ Overfitting zone', showarrow:false,
+      font:{color:'#b91c1c', size:12, weight:'bold'}}]
+  };
+  Plotly.newPlot('nTreesChart2', [traceTrain, traceTest, vline], layout, {responsive:true, displayModeBar:false});
+
+  const chartDiv = document.getElementById('nTreesChart2');
+  const sliderWrap = document.createElement('div');
+  sliderWrap.style.cssText = 'padding:12px 22px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#ffffff;border-top:1px solid #e2e8f0;border-radius:0 0 12px 12px;';
+  sliderWrap.innerHTML = `
+    <label style="color:#475569;font-size:.9rem;font-weight:700;">n_estimators:</label>
+    <input type="range" id="nTreesSlider" min="0" max="15" value="9" step="1"
+      style="flex:1;min-width:200px;accent-color:#c2410c;cursor:pointer;">
+    <span id="nTreesLabel" style="color:#c2410c;font-weight:700;min-width:300px;font-size:.88rem;background:#fff7ed;padding:6px 12px;border-radius:8px;">trees = 80 | train = 99.7% | test = 94.0%</span>
+  `;
+  chartDiv.parentNode.insertBefore(sliderWrap, chartDiv.nextSibling);
+
+  document.getElementById('nTreesSlider').addEventListener('input', function(){
+    const idx = parseInt(this.value);
+    const d = depths[idx];
+    const newVline = {x:[d,d], y:[0.5,1.02], mode:'lines',
+      line:{color:'#c2410c', width:2, dash:'dash'}, showlegend:false, hoverinfo:'skip'};
+    Plotly.addTraces('nTreesChart2', newVline);
+    Plotly.deleteTraces('nTreesChart2', [2]);
+    document.getElementById('nTreesLabel').textContent =
+      `trees = ${d} | train = ${(trainAcc[idx]*100).toFixed(1)}% | test = ${(testAcc[idx]*100).toFixed(1)}%`;
+  });
+})();
+
+/* ============================================================
+   6. ROC CURVE (static example)
+   ============================================================ */
+(function(){
+  const fpr = [0,0.01,0.03,0.06,0.10,0.15,0.22,0.32,0.45,0.60,0.78,1.0];
+  const tpr = [0,0.50,0.68,0.78,0.85,0.90,0.94,0.965,0.978,0.988,0.995,1.0];
+
+  const rocTrace = {x:fpr, y:tpr, mode:'lines+markers', name:'XGBoost (AUC = 0.96)',
+    line:{color:'#c2410c', width:3}, marker:{size:7, color:'#c2410c', line:{color:'#ffffff', width:1.5}},
+    fill:'tozeroy', fillcolor:'rgba(194,65,12,0.08)'};
+  const randomLine = {x:[0,1], y:[0,1], mode:'lines', name:'Random Guessing (AUC = 0.50)',
+    line:{color:'#dc2626', width:2, dash:'dash'}};
+  const perfectPoint = {x:[0], y:[1], mode:'markers', name:'Perfect Classifier',
+    marker:{color:'#059669', size:15, symbol:'star', line:{color:'#ffffff', width:1.5}}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'False Positive Rate (1 − Specificity)', font:{size:13}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'True Positive Rate (Recall)', font:{size:13}}, gridcolor:'#e2e8f0', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.08, font:{size:11}},
+    margin:{l:75, r:30, t:30, b:65}, hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'rect', xref:'x', yref:'y', x0:0, x1:0.25, y0:0.75, y1:1.0,
+      fillcolor:'rgba(5,150,105,0.07)', line:{color:'rgba(5,150,105,0.4)', width:1.5, dash:'dot'}, layer:'below'}],
+    annotations:[{x:0.125, y:0.88, text:'Ideal zone', showarrow:false,
+      font:{color:'#047857', size:12, weight:'bold'}}]
+  };
+  Plotly.newPlot('rocChart', [rocTrace, randomLine, perfectPoint], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   7. CONFUSION MATRIX (static example)
+   ============================================================ */
+(function(){
+  const z = [[850, 50], [120, 480]];
+  const text = [
+    ['TN = 850<br>Correctly predicted "No Churn"', 'FP = 50<br>Wrongly flagged as "Churn"<br>(False Alarm)'],
+    ['FN = 120<br>Missed a real "Churn"<br>(The costly one)', 'TP = 480<br>Correctly predicted "Churn"']
+  ];
+  const trace = {
+    z: z,
+    x: ['Predicted: Negative', 'Predicted: Positive'],
+    y: ['Actual: Negative', 'Actual: Positive'],
+    type: 'heatmap',
+    colorscale: [[0,'#f8fafc'],[0.35,'#fed7aa'],[0.7,'#fb923c'],[1,'#c2410c']],
+    text: text, texttemplate: '%{text}',
+    textfont: {size: 13, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+    hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 6, ygap: 6
+  };
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{side:'bottom', gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    margin:{l:140, r:40, t:40, b:70}, height: 400
+  };
+  Plotly.newPlot('cmChart', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   8. INTERACTIVE KPI CALCULATOR
+   ============================================================ */
+(function(){
+  const inTP = document.getElementById('inTP');
+  const inTN = document.getElementById('inTN');
+  const inFP = document.getElementById('inFP');
+  const inFN = document.getElementById('inFN');
+  const resultsGrid = document.getElementById('resultsGrid');
+
+  function safeDiv(a, b){ return b === 0 ? 0 : a / b; }
+  function fmtPct(v){ return (v * 100).toFixed(2) + '%'; }
+  function fmt3(v){ return isFinite(v) ? v.toFixed(3) : '—'; }
+
+  function update(){
+    const TP = +inTP.value || 0;
+    const TN = +inTN.value || 0;
+    const FP = +inFP.value || 0;
+    const FN = +inFN.value || 0;
+    const N = TP + TN + FP + FN;
+    if (N === 0){
+      resultsGrid.innerHTML = '<div class="result-card"><div class="name">Enter values</div><div class="value">—</div></div>';
+      return;
+    }
+    const accuracy = safeDiv(TP + TN, N);
+    const precision = safeDiv(TP, TP + FP);
+    const recall = safeDiv(TP, TP + FN);
+    const specificity = safeDiv(TN, TN + FP);
+    const fpr = safeDiv(FP, FP + TN);
+    const f1 = (precision + recall) === 0 ? 0 : 2 * precision * recall / (precision + recall);
+    const balAcc = (recall + specificity) / 2;
+    const mccNum = (TP * TN) - (FP * FN);
+    const mccDen = Math.sqrt((TP+FP) * (TP+FN) * (TN+FP) * (TN+FN));
+    const mcc = mccDen === 0 ? 0 : mccNum / mccDen;
+    const p = accuracy === 0 || accuracy === 1 ? accuracy : Math.min(Math.max(accuracy, 0.001), 0.999);
+    const logLoss = -((TP + FN) * Math.log(p) + (TN + FP) * Math.log(1 - p)) / N;
+    const po = accuracy;
+    const pe = safeDiv((TP + FP) * (TP + FN) + (TN + FP) * (TN + FN), N * N);
+    const kappa = pe === 1 ? 0 : (po - pe) / (1 - pe);
+    const prevalence = safeDiv(TP + FN, N);
+    const prAucProxy = (precision + recall) / 2;
+    const rocAucProxy = (recall + specificity) / 2;
+
+    const cards = [
+      { name:'Accuracy', value: fmtPct(accuracy), formula:'(TP+TN)/N' },
+      { name:'Precision', value: fmtPct(precision), formula:'TP/(TP+FP)' },
+      { name:'Recall', value: fmtPct(recall), formula:'TP/(TP+FN)' },
+      { name:'Specificity', value: fmtPct(specificity), formula:'TN/(TN+FP)' },
+      { name:'False Positive Rate', value: fmtPct(fpr), formula:'FP/(FP+TN)' },
+      { name:'F1-Score', value: fmt3(f1), formula:'2PR/(P+R)' },
+      { name:'Balanced Accuracy', value: fmtPct(balAcc), formula:'(Recall+Spec)/2' },
+      { name:'MCC', value: fmt3(mcc), formula:'(TP·TN−FP·FN)/√…' },
+      { name:"Cohen's Kappa", value: fmt3(kappa), formula:'(po−pe)/(1−pe)' },
+      { name:'ROC-AUC (proxy)', value: fmt3(rocAucProxy), formula:'(TPR+TNR)/2' },
+      { name:'PR-AUC (proxy)', value: fmt3(prAucProxy), formula:'(P+R)/2' },
+      { name:'Log Loss (proxy)', value: fmt3(logLoss), formula:'−Σ[y·logp+…]' },
+      { name:'Total samples', value: N.toLocaleString(), formula:'TP+TN+FP+FN' },
+      { name:'Positive rate', value: fmtPct(prevalence), formula:'(TP+FN)/N' }
+    ];
+    resultsGrid.innerHTML = cards.map(c => `
+      <div class="result-card">
+        <div class="name">${c.name}</div>
+        <div class="value">${c.value}</div>
+        <div class="formula-small">${c.formula}</div>
+      </div>
+    `).join('');
+    updateCM(TP, TN, FP, FN);
+    updateROC(recall, specificity, rocAucProxy);
+  }
+
+  let cmInit = false;
+  function updateCM(TP, TN, FP, FN){
+    const text = [['TN = ' + TN, 'FP = ' + FP], ['FN = ' + FN, 'TP = ' + TP]];
+    const z = [[TN, FP], [FN, TP]];
+    const trace = {
+      z: z,
+      x: ['Predicted: Negative', 'Predicted: Positive'],
+      y: ['Actual: Negative', 'Actual: Positive'],
+      type: 'heatmap',
+      colorscale: [[0,'#f8fafc'],[0.35,'#fed7aa'],[0.7,'#fb923c'],[1,'#c2410c']],
+      text: text, texttemplate: '%{text}',
+      textfont: {size: 15, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+      hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 8, ygap: 8
+    };
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+      yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+      margin:{l:140, r:40, t:30, b:70}, height: 360
+    };
+    if (!cmInit){ Plotly.newPlot('liveCM', [trace], layout, {responsive:true, displayModeBar:false}); cmInit = true; }
+    else { Plotly.react('liveCM', [trace], layout, {responsive:true, displayModeBar:false}); }
+  }
+
+  let rocInit = false;
+  function updateROC(recall, specificity, auc){
+    const pts = [];
+    const N = 30;
+    for (let i = 0; i <= N; i++){
+      const f = i / N;
+      const k = Math.max(0.05, Math.log(1 - recall) / Math.log(1 - (1 - specificity) + 1e-9));
+      const t = Math.pow(f, 1 / Math.max(k, 0.2));
+      pts.push({x: f, y: Math.min(1, t)});
+    }
+    pts[pts.length - 1].y = 1;
+    const rocTrace = {x: pts.map(p => p.x), y: pts.map(p => p.y), mode: 'lines',
+      name: `Synthetic ROC (AUC ≈ ${auc.toFixed(3)})`,
+      line: {color:'#c2410c', width:3}, fill: 'tozeroy', fillcolor: 'rgba(194,65,12,0.08)'};
+    const randomLine = {x:[0,1], y:[0,1], mode:'lines', name:'Random (AUC 0.5)',
+      line:{color:'#dc2626', width:2, dash:'dash'}};
+    const currentPoint = {x:[1 - specificity], y:[recall], mode:'markers',
+      name:'Current operating point',
+      marker:{color:'#d97706', size:13, symbol:'circle', line:{color:'#ffffff', width:2}}};
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'False Positive Rate', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'True Positive Rate', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.45, y:0.05, font:{size:11}},
+      margin:{l:65, r:30, t:20, b:60}, height: 380
+    };
+    if (!rocInit){ Plotly.newPlot('liveROC', [rocTrace, randomLine, currentPoint], layout, {responsive:true, displayModeBar:false}); rocInit = true; }
+    else { Plotly.react('liveROC', [rocTrace, randomLine, currentPoint], layout, {responsive:true, displayModeBar:false}); }
+  }
+
+  [inTP, inTN, inFP, inFN].forEach(inp => inp.addEventListener('input', update));
+  update();
+})();
+
+/* ============================================================
+   9. SPLIT GAIN CALCULATOR
+   ============================================================ */
+(function(){
+  const inGL = document.getElementById('inGL');
+  const inHL = document.getElementById('inHL');
+  const inGR = document.getElementById('inGR');
+  const inHR = document.getElementById('inHR');
+  const inLambda = document.getElementById('inLambda');
+  const inGamma = document.getElementById('inGamma');
+  const outWL = document.getElementById('outWL');
+  const outWR = document.getElementById('outWR');
+  const outGain = document.getElementById('outGain');
+  const verdict = document.getElementById('splitVerdict');
+
+  function update(){
+    const GL = +inGL.value || 0;
+    const HL = +inHL.value || 0.01;
+    const GR = +inGR.value || 0;
+    const HR = +inHR.value || 0.01;
+    const lambda = +inLambda.value || 0;
+    const gamma = +inGamma.value || 0;
+
+    const wL = -GL / (HL + lambda);
+    const wR = -GR / (HR + lambda);
+
+    const leftTerm = (GL * GL) / (HL + lambda);
+    const rightTerm = (GR * GR) / (HR + lambda);
+    const parentTerm = Math.pow(GL + GR, 2) / (HL + HR + lambda);
+    const gain = 0.5 * (leftTerm + rightTerm - parentTerm) - gamma;
+
+    outWL.textContent = wL.toFixed(3);
+    outWR.textContent = wR.toFixed(3);
+    outGain.textContent = gain.toFixed(4);
+
+    if (gain > 0){
+      verdict.style.background = '#ecfdf5';
+      verdict.style.color = '#065f46';
+      verdict.innerHTML = `✅ Split! Gain = <strong>${gain.toFixed(4)}</strong> &gt; 0. XGBoost would split this node.`;
+    } else {
+      verdict.style.background = '#fef2f2';
+      verdict.style.color = '#991b1b';
+      verdict.innerHTML = `❌ No split. Gain = <strong>${gain.toFixed(4)}</strong> ≤ 0. XGBoost would keep this node as a leaf.`;
+    }
+
+    updateChart(leftTerm, rightTerm, parentTerm, gamma, gain);
+  }
+
+  let chartInit = false;
+  function updateChart(leftTerm, rightTerm, parentTerm, gamma, gain){
+    const labels = ['Left child', 'Right child', 'Parent', 'γ penalty', 'Gain'];
+    const values = [leftTerm * 0.5, rightTerm * 0.5, -parentTerm * 0.5, -gamma, gain];
+    const colors = [
+      '#2563eb', '#2563eb', '#94a3b8',
+      '#dc2626',
+      gain > 0 ? '#059669' : '#dc2626'
+    ];
+    const trace = {
+      x: labels, y: values, type:'bar',
+      marker:{color:colors, line:{color:'#ffffff', width:1.5}},
+      text: values.map(v => v.toFixed(3)),
+      textposition:'outside',
+      textfont:{size:11, color:'#1e293b', family:'Segoe UI, sans-serif', weight:'bold'},
+      hovertemplate:'%{x}<br>Value: %{y:.4f}<extra></extra>'
+    };
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Contribution to Gain', font:{size:12}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:2, showline:true, linecolor:'#cbd5e1', mirror:true},
+      margin:{l:70, r:20, t:30, b:60}, height: 340, showlegend:false,
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    if (!chartInit){ Plotly.newPlot('splitChart', [trace], layout, {responsive:true, displayModeBar:false}); chartInit = true; }
+    else { Plotly.react('splitChart', [trace], layout, {responsive:true, displayModeBar:false}); }
+  }
+
+  [inGL, inHL, inGR, inHR, inLambda, inGamma].forEach(inp => inp.addEventListener('input', update));
+  update();
+})();
+
+/* ============================================================
+   10. LOSS FUNCTIONS COMPARISON
+   ============================================================ */
+(function(){
+  const errors = [];
+  for (let i = -30; i <= 30; i++) errors.push(i/10);
+  const squared = errors.map(e => 0.5 * e * e);
+  const absolute = errors.map(e => Math.abs(e));
+  const huber = errors.map(e => {
+    const delta = 1.0;
+    return Math.abs(e) <= delta ? 0.5 * e * e : delta * (Math.abs(e) - 0.5 * delta);
+  });
+  const traceSq = {x:errors, y:squared, mode:'lines', name:'Squared Error ½(y−ŷ)²', line:{color:'#2563eb', width:3}};
+  const traceAbs = {x:errors, y:absolute, mode:'lines', name:'Absolute Error |y−ŷ|', line:{color:'#059669', width:3}};
+  const traceHub = {x:errors, y:huber, mode:'lines', name:'Huber Loss (δ=1)', line:{color:'#c2410c', width:3, dash:'dot'}};
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Prediction Error  (y − ŷ)', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:2, showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Loss', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:2, showline:true, linecolor:'#cbd5e1', mirror:true, range:[0,5]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.35, y:0.95, font:{size:11}},
+    margin:{l:65, r:30, t:30, b:60}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('lossChart', [traceSq, traceAbs, traceHub], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   11. BIAS-VARIANCE IN XGBOOST
+   ============================================================ */
+(function(){
+  const iters = [];
+  for (let i = 0; i <= 400; i += 5) iters.push(i);
+  const bias2 = iters.map(t => 0.9 * Math.exp(-0.015 * t) + 0.02);
+  const variance = iters.map(t => 0.01 + 0.0000012 * t * t);
+  const total = iters.map((t, i) => bias2[i] + variance[i] + 0.05);
+
+  const traceBias = {x: iters, y: bias2, mode:'lines', name:'Bias²', line:{color:'#2563eb', width:3}};
+  const traceVar = {x: iters, y: variance, mode:'lines', name:'Variance', line:{color:'#c2410c', width:3}};
+  const traceTotal = {x: iters, y: total, mode:'lines', name:'Total Error', line:{color:'#dc2626', width:3.5, dash:'dash'}};
+
+  let minIdx = 0;
+  total.forEach((v, i) => { if (v < total[minIdx]) minIdx = i; });
+  const bestIter = iters[minIdx];
+  const bestTotal = total[minIdx];
+  const marker = {x:[bestIter], y:[bestTotal], mode:'markers', name:'Optimal early stop',
+    marker:{color:'#d97706', size:15, symbol:'star', line:{color:'#ffffff', width:2}}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Boosting Rounds (n_estimators)', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Error Component', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range:[0,1.0]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.65, y:0.95, font:{size:11}},
+    margin:{l:65, r:30, t:30, b:60}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'line', xref:'x', yref:'paper', x0:bestIter, x1:bestIter, y0:0, y1:1,
+      line:{color:'#d97706', width:2, dash:'dot'}}],
+    annotations:[{x:bestIter, yref:'paper', y:0.9,
+      text:`Early stop at ${bestIter} rounds`,
+      showarrow:false, font:{color:'#b45309', size:11, weight:'bold'}}]
+  };
+  Plotly.newPlot('biasVarChart', [traceBias, traceVar, traceTotal, marker], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   12. LAMBDA EFFECT ON LEAF WEIGHTS
+   ============================================================ */
+(function(){
+  const lambdas = [];
+  for (let i = 0; i <= 200; i++) lambdas.push(i * 0.1);
+  const G = -5.0;
+  const H = 8.0;
+  const weights = lambdas.map(l => -G / (H + l));
+
+  const trace = {
+    x: lambdas, y: weights, mode:'lines',
+    name:'Optimal leaf weight w* = −G/(H+λ)',
+    line:{color:'#c2410c', width:3},
+    fill:'tozeroy', fillcolor:'rgba(194,65,12,0.08)'
+  };
+
+  // highlight lambda = 1
+  const marker = {
+    x:[1], y:[-G/(H+1)], mode:'markers', name:'λ = 1 (default)',
+    marker:{color:'#d97706', size:14, symbol:'circle', line:{color:'#ffffff', width:2}}
+  };
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'λ (L2 regularisation strength)', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Optimal leaf weight w*', font:{size:13}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range:[0, 0.7]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.95, font:{size:11}},
+    margin:{l:70, r:30, t:30, b:60}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    annotations:[{x:1, y:-G/(H+1)+0.05, text:'Default λ = 1',
+      showarrow:true, arrowhead:2, arrowcolor:'#d97706',
+      font:{color:'#b45309', size:11, weight:'bold'},
+      ax:40, ay:-20}]
+  };
+  Plotly.newPlot('lambdaChart', [trace, marker], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   13. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

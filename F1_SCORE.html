@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 Score — Interactive Study Guide</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #6366f1;
+    --primary-soft: #eef2ff;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --success-soft: #ecfdf5;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --warning: #f59e0b;
+    --purple: #8b5cf6;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --sidebar-w: 260px;
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-2: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --primary: #818cf8;
+    --primary-soft: #312e81;
+    --success-soft: #064e3b;
+    --danger-soft: #7f1d1d;
+    --code-bg: #0b1120;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 30px; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 1000; transition: width 0.1s;
+  }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    padding: 28px 20px; overflow-y: auto; z-index: 100;
+    transition: transform 0.3s;
+  }
+  .sidebar h1 {
+    font-size: 1.15rem; margin: 0 0 4px 0; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sidebar .subtitle {
+    font-size: 0.75rem; color: var(--text-muted); margin: 0 0 24px 0;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.875rem; font-weight: 500;
+    transition: all 0.15s;
+  }
+  .sidebar nav a:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar nav a.active {
+    background: var(--primary-soft); color: var(--primary); font-weight: 600;
+  }
+  .sidebar nav a .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 6px;
+    background: var(--surface-2); font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sidebar nav a.active .num { background: var(--primary); color: white; }
+
+  main {
+    margin-left: var(--sidebar-w);
+    padding: 40px 48px 120px;
+    max-width: 1100px;
+  }
+
+  section { margin-bottom: 64px; scroll-margin-top: 20px; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px;
+  }
+  .section-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white; font-weight: 800; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  h2 {
+    font-size: 1.75rem; font-weight: 800; margin: 0;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h4 { font-size: 1rem; font-weight: 700; margin: 20px 0 8px; }
+  .lead {
+    font-size: 1.05rem; color: var(--text-muted); margin: 0 0 28px 0;
+    padding-left: 50px;
+  }
+
+  p { margin: 12px 0; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    margin: 16px 0; box-shadow: var(--shadow);
+  }
+  .card-accent { border-left: 4px solid var(--primary); }
+
+  .callout {
+    padding: 16px 20px; border-radius: 10px; margin: 16px 0;
+    border-left: 4px solid var(--primary);
+    background: var(--primary-soft);
+    font-size: 0.95rem;
+  }
+  .callout strong { color: var(--primary); }
+  .callout.danger { border-color: var(--danger); background: var(--danger-soft); }
+  .callout.danger strong { color: var(--danger); }
+  .callout.success { border-color: var(--success); background: var(--success-soft); }
+  .callout.success strong { color: var(--success); }
+  .callout.warn { border-color: var(--warning); background: rgba(245,158,11,0.1); }
+  .callout.warn strong { color: var(--warning); }
+
+  details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin: 12px 0;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  details summary {
+    padding: 16px 22px; cursor: pointer; font-weight: 600;
+    font-size: 1rem; list-style: none;
+    display: flex; align-items: center; gap: 12px;
+    transition: background 0.15s; user-select: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary:hover { background: var(--surface-2); }
+  details summary::before {
+    content: '▸'; color: var(--primary); font-size: 1.1rem;
+    transition: transform 0.2s; display: inline-block;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  details .body { padding: 20px 22px; }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 0.9rem; background: var(--surface);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  th, td {
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--surface-2); font-weight: 700;
+    font-size: 0.82rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  .code-wrap {
+    position: relative; margin: 16px 0;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .code-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px; background: #0f172a;
+    border-bottom: 1px solid #334155;
+    font-size: 0.75rem; color: #94a3b8;
+    font-family: 'SF Mono', Monaco, monospace;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .copy-btn {
+    background: #334155; color: #cbd5e1; border: none;
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    font-size: 0.7rem; font-weight: 600; font-family: inherit;
+    letter-spacing: 0.05em; transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--primary); color: white; }
+  .copy-btn.copied { background: var(--success); color: white; }
+  pre {
+    margin: 0; padding: 18px 20px; background: var(--code-bg);
+    color: var(--code-text); font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 0.82rem; line-height: 1.65; overflow-x: auto;
+  }
+  pre code { font-family: inherit; }
+  .kw { color: #c084fc; font-weight: 600; }
+  .str { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .num { color: #fbbf24; }
+  .bi { color: #60a5fa; }
+
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin: 20px 0;
+  }
+  .metric {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; text-align: center;
+    transition: transform 0.15s;
+  }
+  .metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .metric .value {
+    font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric .label {
+    font-size: 0.72rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; margin-top: 4px;
+  }
+
+  .chart-container {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    margin: 20px 0; box-shadow: var(--shadow);
+  }
+  .chart-title {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+  }
+  svg { display: block; max-width: 100%; height: auto; }
+  .axis-line { stroke: var(--border); stroke-width: 1.5; }
+  .grid-line { stroke: var(--border); stroke-width: 0.5; stroke-dasharray: 2 4; opacity: 0.5; }
+  .axis-label { fill: var(--text-muted); font-size: 10px; font-family: inherit; }
+  .axis-title { fill: var(--text); font-size: 11px; font-weight: 600; font-family: inherit; }
+
+  .lab {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 2px solid var(--primary); border-radius: 16px;
+    padding: 28px; margin: 24px 0; box-shadow: var(--shadow-lg);
+  }
+  .lab-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .lab-badge {
+    background: var(--primary); color: white;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .lab-title { font-size: 1.15rem; font-weight: 700; margin: 0; }
+
+  .ctrl-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin: 20px 0;
+  }
+  .ctrl {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px 16px; border: 1px solid var(--border);
+  }
+  .ctrl-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; font-size: 0.85rem; font-weight: 700;
+  }
+  .ctrl-value {
+    font-family: 'SF Mono', monospace; font-size: 1rem;
+    font-weight: 800; color: var(--primary);
+  }
+  input[type="range"] {
+    width: 100%; height: 6px; border-radius: 3px;
+    outline: none; -webkit-appearance: none;
+    cursor: pointer; background: var(--surface-2);
+  }
+  input[type="range"].range-p { background: linear-gradient(90deg, var(--accent), rgba(245,158,11,0.3)); }
+  input[type="range"].range-r { background: linear-gradient(90deg, var(--primary), rgba(99,102,241,0.3)); }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    background: white; border: 3px solid var(--primary);
+    border-radius: 50%; cursor: grab;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px; background: white;
+    border: 3px solid var(--primary); border-radius: 50%;
+    cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .quick-btns {
+    display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap;
+  }
+  .quick-btns button {
+    flex: 1; min-width: 130px; padding: 8px 12px;
+    border: 1px solid var(--border); background: var(--surface);
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+    font-weight: 600; color: var(--text-muted);
+    transition: all 0.15s; font-family: inherit;
+  }
+  .quick-btns button:hover {
+    border-color: var(--primary); color: var(--primary);
+    background: var(--primary-soft);
+  }
+  .quick-btns button.active {
+    background: var(--primary); color: white; border-color: var(--primary);
+  }
+
+  .f1-display {
+    background: var(--surface); border-radius: 14px;
+    padding: 24px; margin: 20px 0;
+    text-align: center;
+    border: 2px solid var(--border);
+    transition: all 0.3s;
+  }
+  .f1-display .f1-num {
+    font-size: 3.5rem; font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s;
+  }
+  .f1-display .f1-lbl {
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.1em; font-weight: 700;
+    color: var(--text-muted); margin-top: 6px;
+  }
+  .f1-display .f1-formula {
+    font-family: 'SF Mono', monospace;
+    font-size: 0.8rem; color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  .compare-bars {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px; margin-top: 18px;
+  }
+  .cbar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px;
+  }
+  .cbar .cbar-lbl {
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.05em; font-weight: 700;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .cbar .cbar-val {
+    font-size: 1.4rem; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+  }
+  .cbar .cbar-track {
+    height: 8px; background: var(--surface-2);
+    border-radius: 4px; overflow: hidden;
+  }
+  .cbar .cbar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .live-metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-top: 16px;
+  }
+  .live-metric {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .live-metric .lm-val {
+    font-size: 1.4rem; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .live-metric .lm-lbl {
+    font-size: 0.66rem; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted);
+    font-weight: 700; margin-top: 2px;
+  }
+
+  .quiz-q {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin: 14px 0;
+    box-shadow: var(--shadow);
+  }
+  .quiz-q .q-text { font-weight: 600; margin-bottom: 12px; }
+  .quiz-opt {
+    display: block; width: 100%; text-align: left;
+    padding: 10px 14px; margin: 6px 0;
+    background: var(--surface-2); border: 2px solid transparent;
+    border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem; font-family: inherit;
+    color: var(--text); transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--primary); }
+  .quiz-opt.correct {
+    background: var(--success-soft); border-color: var(--success);
+    color: var(--success); font-weight: 600;
+  }
+  .quiz-opt.wrong {
+    background: var(--danger-soft); border-color: var(--danger);
+    color: var(--danger); font-weight: 600;
+  }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 10px; font-size: 0.85rem;
+    padding: 10px 14px; border-radius: 8px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: var(--success-soft); color: var(--success); }
+  .quiz-feedback.no { background: var(--danger-soft); color: var(--danger); }
+
+  .menu-toggle, .theme-toggle {
+    position: fixed; z-index: 200; top: 16px;
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.15s;
+  }
+  .menu-toggle { left: 16px; display: none; }
+  .theme-toggle { right: 16px; }
+  .menu-toggle:hover, .theme-toggle:hover { transform: scale(1.05); }
+
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+    .menu-toggle { display: flex; }
+    main { margin-left: 0; padding: 80px 20px 100px; }
+    .lead { padding-left: 0; }
+    h2 { font-size: 1.4rem; }
+    .ctrl-grid { grid-template-columns: 1fr; }
+    .compare-bars { grid-template-columns: 1fr; }
+    .live-metrics { grid-template-columns: 1fr 1fr; }
+  }
+
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-good { background: rgba(16,185,129,0.15); color: var(--success); }
+  .badge-bad { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-warn { background: rgba(245,158,11,0.15); color: var(--warning); }
+
+  code {
+    background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
+    font-family: 'SF Mono', monospace; font-size: 0.85em;
+    color: var(--primary); font-weight: 600;
+  }
+  pre code { background: none; padding: 0; color: inherit; font-weight: normal; }
+
+  ul li, ol li { margin: 6px 0; }
+  strong { color: var(--text); font-weight: 700; }
+
+  .math {
+    font-family: 'SF Mono', monospace;
+    background: var(--surface-2);
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin: 14px 0;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    line-height: 1.7;
+    border-left: 3px solid var(--primary);
+  }
+  .math .hl { color: var(--danger); font-weight: 800; }
+  .math .hl2 { color: var(--success); font-weight: 800; }
+  .math .hl3 { color: var(--accent); font-weight: 800; }
+</style>
+</head>
+<body data-theme="light">
+
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+
+<aside class="sidebar" id="sidebar">
+  <h1>F1 Score</h1>
+  <p class="subtitle">Interactive Study Guide</p>
+  <nav id="navList">
+    <a href="#intro"><span class="num">1</span> Introduction</a>
+    <a href="#formula"><span class="num">2</span> The Formula</a>
+    <a href="#harmonic"><span class="num">3</span> Why Harmonic Mean</a>
+    <a href="#fbeta"><span class="num">4</span> F-Beta Family</a>
+    <a href="#example"><span class="num">5</span> The Fraud Example</a>
+    <a href="#visual"><span class="num">6</span> Visual Guide</a>
+    <a href="#lab"><span class="num">7</span> Interactive Lab</a>
+    <a href="#when"><span class="num">8</span> When to Use F1</a>
+    <a href="#multiclass"><span class="num">9</span> Multi-Class F1</a>
+    <a href="#quiz"><span class="num">10</span> Quiz</a>
+    <a href="#code"><span class="num">11</span> Python Reference</a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ==================== 1. INTRO ==================== -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <h2>Introduction</h2>
+  </div>
+  <p class="lead">The single number that refuses to be fooled by imbalanced classes.</p>
+
+  <p>The F1 score is the <strong>harmonic mean of precision and recall</strong>. It's a single number that combines both metrics into one — and unlike the arithmetic mean, it <em>punishes</em> models that do well on one metric while ignoring the other.</p>
+
+  <p>This is exactly why F1 has become the default metric in so many applied ML problems — fraud detection, medical screening, information retrieval, named-entity recognition, and search ranking. When both false positives and false negatives matter, and you need one number to rank models, F1 is often the right answer.</p>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="value">0.0</div>
+      <div class="label">Perfect anti-correlation<br>Model always wrong</div>
+    </div>
+    <div class="metric">
+      <div class="value">0.5</div>
+      <div class="label">Middle<br>Both metrics ~0.5</div>
+    </div>
+    <div class="metric">
+      <div class="value">1.0</div>
+      <div class="label">Perfect<br>P = R = 1.0</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Key insight:</strong> F1 = 0.85 does <em>not</em> mean the model has 85% accuracy. It means precision and recall are balanced near 0.85 — both are approximately 85%. A model with precision = 1.0 and recall = 0.5 has arithmetic mean 0.75 but F1 = 0.67.
+  </div>
+
+  <p>The next sections build F1 from the ground up: the formula, the reason harmonic mean is the right choice, and why the difference between F1 and the arithmetic mean matters so much on imbalanced data.</p>
+</section>
+
+<!-- ==================== 2. FORMULA ==================== -->
+<section id="formula">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <h2>The Formula</h2>
+  </div>
+  <p class="lead">Three equivalent forms — same number, different intuitions.</p>
+
+  <h3>Form 1 — In Terms of Precision and Recall</h3>
+  <div class="math">
+    F1 = 2 · <span class="hl3">Precision</span> · <span class="hl2">Recall</span> / (<span class="hl3">Precision</span> + <span class="hl2">Recall</span>)
+  </div>
+  <p>This is the harmonic mean. It's the most intuitive form: when precision equals recall, F1 equals that value. When one is much smaller, F1 gets pulled toward the smaller one.</p>
+
+  <h3>Form 2 — In Terms of TP, FP, FN</h3>
+  <div class="math">
+    F1 = 2 · <span class="hl2">TP</span> / (2 · <span class="hl2">TP</span> + <span class="hl">FP</span> + <span class="hl">FN</span>)
+  </div>
+  <p>Expands precision and recall into their raw confusion-matrix components. Notice: <strong>TN does not appear at all.</strong> F1 is completely blind to true negatives — which is why it works well on imbalanced data where TN would otherwise dominate.</p>
+
+  <h3>Form 3 — In Terms of P, R, and FP+FN</h3>
+  <div class="math">
+    F1 = 2 · <span class="hl2">TP</span> / (2 · <span class="hl2">TP</span> + <span class="hl3">FP</span> + <span class="hl">FN</span>)
+  </div>
+  <p>Same as form 2, but highlighting that F1 penalizes the <em>sum</em> of false positives and false negatives relative to true positives. Symmetric treatment of both error types.</p>
+
+  <div class="callout success">
+    <strong>Symmetry:</strong> F1 treats precision and recall equally. If you swap their values, F1 is unchanged. This is why F1 is the "default" balanced metric — but it's also why you may want F-beta when the two error types have very different costs.
+  </div>
+
+  <h3>Range and Edge Cases</h3>
+  <table>
+    <thead>
+      <tr><th>Case</th><th>Precision</th><th>Recall</th><th>F1</th><th>Interpretation</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Perfect</td>
+        <td>1.0</td><td>1.0</td><td><strong>1.0</strong></td>
+        <td>No FP, no FN.</td>
+      </tr>
+      <tr>
+        <td>Balanced mediocre</td>
+        <td>0.5</td><td>0.5</td><td><strong>0.5</strong></td>
+        <td>F1 = P = R. The harmonic mean "agrees" with both.</td>
+      </tr>
+      <tr>
+        <td>High precision, low recall</td>
+        <td>0.9</td><td>0.1</td><td><strong>0.18</strong></td>
+        <td>F1 collapses toward the smaller value.</td>
+      </tr>
+      <tr>
+        <td>Low precision, high recall</td>
+        <td>0.1</td><td>0.9</td><td><strong>0.18</strong></td>
+        <td>Same by symmetry.</td>
+      </tr>
+      <tr style="background:var(--danger-soft);">
+        <td>Extreme imbalance (our fraud)</td>
+        <td>0.037</td><td>0.74</td><td><strong>0.071</strong></td>
+        <td>F1 punishes the low precision hard.</td>
+      </tr>
+      <tr>
+        <td>Both zero</td>
+        <td>0</td><td>0</td><td><strong>0</strong></td>
+        <td>No positives predicted, no positives caught.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ==================== 3. HARMONIC ==================== -->
+<section id="harmonic">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <h2>Why Harmonic Mean?</h2>
+  </div>
+  <p class="lead">The arithmetic mean over-rewards extremes. The harmonic mean refuses to.</p>
+
+  <h3>The Arithmetic Mean's Problem</h3>
+  <p>Suppose a model has precision = 1.0 and recall = 0.0. That means every positive prediction is correct, but the model catches zero positives. It's an anti-useful model — it predicts positive exactly once per dataset, and by luck it's right.</p>
+
+  <div class="math">
+    Arithmetic mean: (1.0 + 0.0) / 2 = <span class="hl3">0.50</span>  ← looks "moderate"<br>
+    Harmonic mean:   2 · (1.0 · 0.0) / (1.0 + 0.0) = <span class="hl">0.00</span>  ← correctly collapses
+  </div>
+
+  <p>The arithmetic mean says 0.5 — "half-way decent." The harmonic mean says 0 — "useless." The harmonic mean is <em>right</em>. A model that only works in one direction is useless.</p>
+
+  <h3>The General Shape</h3>
+  <p>The harmonic mean of two numbers is always ≤ their arithmetic mean, with equality only when the two numbers are equal. The gap grows as the two numbers diverge.</p>
+
+  <table>
+    <thead>
+      <tr><th>Precision</th><th>Recall</th><th>Arithmetic Mean</th><th>Harmonic Mean (F1)</th><th>F1 vs AM</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>Equal</td></tr>
+      <tr><td>0.90</td><td>0.90</td><td>0.90</td><td>0.90</td><td>Equal</td></tr>
+      <tr><td>0.80</td><td>0.40</td><td>0.60</td><td><strong>0.53</strong></td><td>F1 lower</td></tr>
+      <tr><td>0.90</td><td>0.10</td><td>0.50</td><td><strong>0.18</strong></td><td>F1 much lower</td></tr>
+      <tr style="background:var(--danger-soft);"><td>0.74</td><td>0.037</td><td>0.389</td><td><strong>0.071</strong></td><td>F1 collapses</td></tr>
+      <tr><td>1.00</td><td>0.00</td><td>0.50</td><td><strong>0.00</strong></td><td>F1 = 0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>Look at the fraud row:</strong> Precision 0.037, Recall 0.74. Arithmetic mean = 0.389 — sounds "moderate." Harmonic mean (F1) = 0.071 — sounds "terrible." The F1 is telling the truth: this model is not deployable.
+  </div>
+
+  <h3>Why This is the Right Behavior</h3>
+  <p>Precision and recall are coupled. Raising one almost always lowers the other. A model that's high on one and low on the other isn't "balanced" — it's <em>unbalanced toward one failure mode</em>. F1 penalizes exactly this.</p>
+
+  <div class="callout success">
+    <strong>Intuition:</strong> F1 answers the question, "What is the largest value X such that I can be sure both precision and recall are at least roughly X?" It's a conservative summary that refuses to average away an extreme weakness.
+  </div>
+</section>
+
+<!-- ==================== 4. FBETA ==================== -->
+<section id="fbeta">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <h2>The F-Beta Family</h2>
+  </div>
+  <p class="lead">When precision and recall don't matter equally, use F-beta instead of F1.</p>
+
+  <h3>The General Formula</h3>
+  <div class="math">
+    F<sub>β</sub> = (1 + β²) · <span class="hl3">Precision</span> · <span class="hl2">Recall</span> / (β² · <span class="hl3">Precision</span> + <span class="hl2">Recall</span>)
+  </div>
+
+  <p>The β parameter controls the tradeoff:</p>
+  <ul>
+    <li><strong>β = 1</strong> → F1: precision and recall weighted equally.</li>
+    <li><strong>β &gt; 1</strong> → recall weighted more. Use when false negatives are more costly.</li>
+    <li><strong>β &lt; 1</strong> → precision weighted more. Use when false positives are more costly.</li>
+  </ul>
+
+  <h3>The Two Most Common Variants</h3>
+
+  <div class="card card-accent">
+    <h4 style="margin-top:0;">F2 — Recall-weighted (β = 2)</h4>
+    <div class="math" style="margin:10px 0;border-left-color:var(--primary);">
+      F2 = 5 · <span class="hl3">P</span> · <span class="hl2">R</span> / (4 · <span class="hl3">P</span> + <span class="hl2">R</span>)
+    </div>
+    <p style="margin:8px 0;">Recall is weighted 2× as much as precision. Use when <strong>missing positives is worse than false alarms.</strong></p>
+    <p style="margin:8px 0;font-size:0.85rem;color:var(--text-muted);">
+      <strong>Typical use cases:</strong> cancer screening, sepsis alerts, safety-critical systems, fraud detection (usually).
+    </p>
+  </div>
+
+  <div class="card card-accent" style="border-left-color:var(--accent);">
+    <h4 style="margin-top:0;">F0.5 — Precision-weighted (β = 0.5)</h4>
+    <div class="math" style="margin:10px 0;border-left-color:var(--accent);">
+      F0.5 = 1.25 · <span class="hl3">P</span> · <span class="hl2">R</span> / (0.25 · <span class="hl3">P</span> + <span class="hl2">R</span>)
+    </div>
+    <p style="margin:8px 0;">Precision is weighted 2× as much as recall. Use when <strong>false alarms are worse than missed positives.</strong></p>
+    <p style="margin:8px 0;font-size:0.85rem;color:var(--text-muted);">
+      <strong>Typical use cases:</strong> spam filters, content moderation, legal decisions, any system where a positive prediction triggers a costly action.
+    </p>
+  </div>
+
+  <h3>Side-by-Side Comparison</h3>
+  <table>
+    <thead>
+      <tr><th>P</th><th>R</th><th>F0.5</th><th>F1</th><th>F2</th><th>Which one wins?</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0.9</td><td>0.1</td>
+        <td><strong>0.41</strong></td><td>0.18</td><td>0.13</td>
+        <td>F0.5 rewards the high-precision model.</td>
+      </tr>
+      <tr>
+        <td>0.1</td><td>0.9</td>
+        <td>0.13</td><td>0.18</td><td><strong>0.41</strong></td>
+        <td>F2 rewards the high-recall model.</td>
+      </tr>
+      <tr>
+        <td>0.5</td><td>0.5</td>
+        <td>0.50</td><td>0.50</td><td>0.50</td>
+        <td>All agree when P = R.</td>
+      </tr>
+      <tr>
+        <td>0.8</td><td>0.4</td>
+        <td><strong>0.62</strong></td><td>0.53</td><td>0.46</td>
+        <td>F0.5 is most forgiving of the low recall.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>How to choose β:</strong> Ask yourself — <em>"how many false positives am I willing to accept to avoid one false negative?"</em> If the answer is "many," use F2. If it's "few," use F0.5. If it's "roughly one," use F1.
+  </div>
+</section>
+
+<!-- ==================== 5. EXAMPLE ==================== -->
+<section id="example">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <h2>The Fraud Example</h2>
+  </div>
+  <p class="lead">Same dataset as the PR-AUC guide: 100 frauds, 9,900 normals, aggressive model.</p>
+
+  <h3>Recall the Confusion Matrix</h3>
+
+  <div style="max-width:520px;margin:20px auto;display:grid;grid-template-columns:110px 1fr 1fr;gap:6px;">
+    <div style="background:var(--surface-2);color:var(--text-muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:8px;"></div>
+    <div style="background:var(--surface-2);color:var(--text-muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:8px;">Pred Fraud</div>
+    <div style="background:var(--surface-2);color:var(--text-muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:8px;">Pred Normal</div>
+
+    <div style="background:var(--surface-2);color:var(--text-muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:8px;">Actual Fraud (100)</div>
+    <div style="background:rgba(16,185,129,0.2);color:var(--success);text-align:center;padding:12px;border-radius:8px;font-weight:700;">
+      <div style="font-size:1.2rem;">74</div>
+      <div style="font-size:0.62rem;opacity:0.75;">True Positive</div>
+    </div>
+    <div style="background:rgba(239,68,68,0.3);color:var(--danger);text-align:center;padding:12px;border-radius:8px;font-weight:700;">
+      <div style="font-size:1.2rem;">26</div>
+      <div style="font-size:0.62rem;opacity:0.75;">False Negative</div>
+    </div>
+
+    <div style="background:var(--surface-2);color:var(--text-muted);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:8px;">Actual Normal (9,900)</div>
+    <div style="background:rgba(239,68,68,0.2);color:var(--danger);text-align:center;padding:12px;border-radius:8px;font-weight:700;">
+      <div style="font-size:1.2rem;">1,926</div>
+      <div style="font-size:0.62rem;opacity:0.75;">False Positive</div>
+    </div>
+    <div style="background:rgba(16,185,129,0.08);color:var(--success);text-align:center;padding:12px;border-radius:8px;font-weight:700;">
+      <div style="font-size:1.2rem;">7,974</div>
+      <div style="font-size:0.62rem;opacity:0.75;">True Negative</div>
+    </div>
+  </div>
+
+  <h3>Compute Precision and Recall</h3>
+
+  <div class="math">
+    Precision = TP / (TP + FP) = 74 / (74 + 1,926) = 74 / 2,000 = <span class="hl">0.037</span> (3.7%)<br>
+    Recall&nbsp;&nbsp;&nbsp;&nbsp;= TP / (TP + FN) = 74 / (74 + 26) = 74 / 100 = <span class="hl2">0.740</span> (74.0%)
+  </div>
+
+  <p>Already we can see the problem: the model catches most frauds (recall = 74%) but 96.3% of its alerts are false alarms (precision = 3.7%).</p>
+
+  <h3>Compute F1</h3>
+
+  <div class="math">
+    F1 = 2 · <span class="hl">0.037</span> · <span class="hl2">0.740</span> / (<span class="hl">0.037</span> + <span class="hl2">0.740</span>)<br>
+    F1 = 0.05476 / 0.777<br>
+    F1 = <span class="hl">0.0705</span> (≈ 7.1%)
+  </div>
+
+  <p>Or equivalently, from raw counts:</p>
+
+  <div class="math">
+    F1 = 2 · TP / (2 · TP + FP + FN)<br>
+    F1 = 2 · 74 / (2 · 74 + 1,926 + 26)<br>
+    F1 = 148 / (148 + 1,952)<br>
+    F1 = 148 / 2,100 = <span class="hl">0.0705</span>
+  </div>
+
+  <h3>What F1 Is Telling You</h3>
+
+  <div class="callout danger">
+    <strong>F1 = 0.071 means this model is not deployable.</strong> Both precision and recall would need to be around 0.071 for this to be a "balanced" model — but they're not. The model has wild imbalance between the two metrics, and F1 correctly flags it.
+  </div>
+
+  <p>Compare this to the arithmetic mean of precision and recall:</p>
+
+  <div class="math">
+    Arithmetic mean = (0.037 + 0.740) / 2 = <span class="hl3">0.389</span> (38.9%)<br>
+    Harmonic mean (F1) = <span class="hl">0.071</span> (7.1%)
+  </div>
+
+  <p>The arithmetic mean would say "the model is 39% good." That's dangerously misleading. F1 says 7.1% — and that matches what the fraud team actually experiences: 96.3% of their alerts are useless.</p>
+
+  <h3>Try the Same Example with F2 and F0.5</h3>
+
+  <table>
+    <thead>
+      <tr><th>Metric</th><th>Value</th><th>What it's saying</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>F0.5 (precision-weighted)</td>
+        <td><strong>0.048</strong></td>
+        <td>Even harsher — the low precision is the dominant problem.</td>
+      </tr>
+      <tr style="background:var(--danger-soft);">
+        <td><strong>F1 (balanced)</strong></td>
+        <td><strong>0.071</strong></td>
+        <td>The standard metric. Model is unusable.</td>
+      </tr>
+      <tr>
+        <td>F2 (recall-weighted)</td>
+        <td><strong>0.122</strong></td>
+        <td>More forgiving because it values catching frauds.</td>
+      </tr>
+      <tr>
+        <td>Arithmetic mean of P and R</td>
+        <td><strong>0.389</strong></td>
+        <td>Dangerously optimistic. Do not use.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <strong>The takeaway:</strong> On imbalanced data, F1 is a <em>conservative</em> summary that refuses to let a model hide behind its stronger metric. A model with P=0.037 and R=0.74 is not "39% good" — it's a model that produces 26 false alarms per fraud caught, and F1 reflects that reality.
+  </div>
+</section>
+
+<!-- ==================== 6. VISUAL ==================== -->
+<section id="visual">
+  <div class="section-header">
+    <div class="section-number">6</div>
+    <h2>Visual Guide</h2>
+  </div>
+  <p class="lead">Three charts that build intuition for what F1 measures.</p>
+
+  <h3>① F1 as a Heatmap over (Precision, Recall)</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:var(--purple);"></span> F1 Value Across the Precision-Recall Plane</div>
+    <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" id="heatmapSVG">
+      <!-- Grid will be inserted by JS -->
+      <!-- axes -->
+      <line x1="60" y1="380" x2="470" y2="380" class="axis-line"/>
+      <line x1="60" y1="40" x2="60" y2="380" class="axis-line"/>
+      <text x="265" y="425" class="axis-title" text-anchor="middle">Precision →</text>
+      <text x="25" y="210" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 210)">Recall →</text>
+      <!-- tick labels -->
+      <text x="60" y="398" class="axis-label" text-anchor="middle">0.0</text>
+      <text x="265" y="398" class="axis-label" text-anchor="middle">0.5</text>
+      <text x="470" y="398" class="axis-label" text-anchor="middle">1.0</text>
+      <text x="45" y="383" class="axis-label" text-anchor="end">0.0</text>
+      <text x="45" y="213" class="axis-label" text-anchor="end">0.5</text>
+      <text x="45" y="43" class="axis-label" text-anchor="end">1.0</text>
+      <!-- Highlight the fraud example -->
+      <circle id="fraudPoint" cx="0" cy="0" r="9" fill="none" stroke="#ef4444" stroke-width="3"/>
+      <line id="fraudLineX" x1="0" y1="380" x2="0" y2="0" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <line id="fraudLineY" x1="60" y1="0" x2="0" y2="0" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <text id="fraudLabel" x="0" y="0" class="axis-label" font-weight="700" fill="#ef4444" font-size="11">Fraud: F1=0.07</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      Purple = high F1, red = low F1. The fraud example (P=0.037, R=0.74) sits in the deep red region — even though recall is high — because F1 collapses toward the low precision.
+    </p>
+  </div>
+
+  <h3>② Harmonic vs Arithmetic Mean</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:var(--accent);"></span> For Fixed Precision = 0.9, Vary Recall</div>
+    <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- axes -->
+      <line x1="60" y1="40" x2="60" y2="290" class="axis-line"/>
+      <line x1="60" y1="290" x2="490" y2="290" class="axis-line"/>
+      <!-- grid -->
+      <line x1="60" y1="240" x2="490" y2="240" class="grid-line"/>
+      <line x1="60" y1="190" x2="490" y2="190" class="grid-line"/>
+      <line x1="60" y1="140" x2="490" y2="140" class="grid-line"/>
+      <line x1="60" y1="90" x2="490" y2="90" class="grid-line"/>
+      <line x1="167" y1="40" x2="167" y2="290" class="grid-line"/>
+      <line x1="275" y1="40" x2="275" y2="290" class="grid-line"/>
+      <line x1="382" y1="40" x2="382" y2="290" class="grid-line"/>
+
+      <!-- Arithmetic mean = (0.9 + R)/2 = 0.45 + R/2 -->
+      <!-- At R=0: 0.45, R=1: 0.95 -->
+      <path id="amPath" d="" fill="none" stroke="#f59e0b" stroke-width="3"/>
+      <!-- Harmonic = 2*0.9*R/(0.9+R) -->
+      <path id="hmPath" d="" fill="none" stroke="#ef4444" stroke-width="3"/>
+
+      <!-- Legend -->
+      <g transform="translate(300, 55)">
+        <rect x="0" y="0" width="180" height="56" fill="var(--surface)" stroke="var(--border)" rx="6"/>
+        <line x1="10" y1="20" x2="34" y2="20" stroke="#f59e0b" stroke-width="3"/>
+        <text x="42" y="24" class="axis-label" fill="var(--text)" font-size="11">Arithmetic Mean</text>
+        <line x1="10" y1="42" x2="34" y2="42" stroke="#ef4444" stroke-width="3"/>
+        <text x="42" y="46" class="axis-label" fill="var(--text)" font-size="11">Harmonic (F1)</text>
+      </g>
+
+      <!-- Axis labels -->
+      <text x="275" y="325" class="axis-title" text-anchor="middle">Recall (with Precision fixed at 0.9)</text>
+      <text x="25" y="165" class="axis-title" text-anchor="middle" transform="rotate(-90, 25, 165)">Score</text>
+
+      <text x="60" y="308" class="axis-label" text-anchor="middle">0.0</text>
+      <text x="167" y="308" class="axis-label" text-anchor="middle">0.25</text>
+      <text x="275" y="308" class="axis-label" text-anchor="middle">0.5</text>
+      <text x="382" y="308" class="axis-label" text-anchor="middle">0.75</text>
+      <text x="490" y="308" class="axis-label" text-anchor="middle">1.0</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      When precision is fixed at 0.9, the arithmetic mean (yellow) drops linearly with recall. The harmonic mean (red) collapses much faster — because it's dominated by the smaller value. This is why F1 punishes imbalance.
+    </p>
+  </div>
+
+  <h3>③ F1, F0.5, and F2 Side by Side</h3>
+  <div class="chart-container">
+    <div class="chart-title"><span class="dot" style="background:var(--primary);"></span> Same P and R, Different Beta</div>
+    <svg viewBox="0 0 520 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- Bars -->
+      <!-- Reference: Precision=0.8, Recall=0.4 -->
+      <!-- F0.5 = 1.25*0.8*0.4/(0.25*0.8+0.4) = 0.4/(0.2+0.4) = 0.667 -->
+      <!-- F1   = 2*0.8*0.4/(0.8+0.4) = 0.64/1.2 = 0.533 -->
+      <!-- F2   = 5*0.8*0.4/(4*0.8+0.4) = 1.6/(3.2+0.4) = 0.444 -->
+
+      <!-- Y axis -->
+      <line x1="60" y1="40" x2="60" y2="260" class="axis-line"/>
+      <line x1="60" y1="260" x2="490" y2="260" class="axis-line"/>
+      <line x1="60" y1="215" x2="490" y2="215" class="grid-line"/>
+      <line x1="60" y1="170" x2="490" y2="170" class="grid-line"/>
+      <line x1="60" y1="125" x2="490" y2="125" class="grid-line"/>
+      <line x1="60" y1="80" x2="490" y2="80" class="grid-line"/>
+      <line x1="60" y1="40" x2="490" y2="40" class="grid-line"/>
+
+      <!-- Bars: height = value * 220 (so 1.0 -> 220) -->
+      <!-- F0.5 = 0.667 -> 147 -->
+      <rect x="110" y="113" width="80" height="147" fill="rgba(245,158,11,0.6)" rx="6"/>
+      <text x="150" y="100" text-anchor="middle" font-weight="800" font-size="16" fill="#f59e0b">0.667</text>
+      <text x="150" y="285" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text-muted)">F0.5</text>
+      <text x="150" y="300" text-anchor="middle" font-size="9" fill="var(--text-muted)">precision-weighted</text>
+
+      <!-- F1 = 0.533 -> 117 -->
+      <rect x="220" y="143" width="80" height="117" fill="rgba(99,102,241,0.6)" rx="6"/>
+      <text x="260" y="130" text-anchor="middle" font-weight="800" font-size="16" fill="#6366f1">0.533</text>
+      <text x="260" y="285" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text-muted)">F1</text>
+      <text x="260" y="300" text-anchor="middle" font-size="9" fill="var(--text-muted)">balanced</text>
+
+      <!-- F2 = 0.444 -> 98 -->
+      <rect x="330" y="162" width="80" height="98" fill="rgba(139,92,246,0.6)" rx="6"/>
+      <text x="370" y="149" text-anchor="middle" font-weight="800" font-size="16" fill="#8b5cf6">0.444</text>
+      <text x="370" y="285" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text-muted)">F2</text>
+      <text x="370" y="300" text-anchor="middle" font-size="9" fill="var(--text-muted)">recall-weighted</text>
+
+      <!-- Annotation -->
+      <text x="275" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Precision = 0.8, Recall = 0.4 (P &gt; R)</text>
+      <text x="275" y="46" text-anchor="middle" font-size="10" fill="var(--text-muted)">When P &gt; R, F0.5 ranks highest</text>
+    </svg>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:12px 0 0;text-align:center;">
+      When precision exceeds recall (P &gt; R), F0.5 gives the highest score because it rewards the stronger metric. F2 gives the lowest. Only when P = R do all three agree.
+    </p>
+  </div>
+</section>
+
+<!-- ==================== 7. LAB ==================== -->
+<section id="lab">
+  <div class="section-header">
+    <div class="section-number">7</div>
+    <h2>Interactive Lab</h2>
+  </div>
+  <p class="lead">Drag precision and recall independently and watch F1 react.</p>
+
+  <div class="lab">
+    <div class="lab-header">
+      <span class="lab-badge">Live Demo</span>
+      <h3 class="lab-title" style="margin:0;">Build Your Own F1</h3>
+    </div>
+
+    <p style="font-size:0.9rem;">Adjust precision and recall with the sliders. Watch F1 — unlike the arithmetic mean — punish imbalance.</p>
+
+    <div class="quick-btns">
+      <button class="quick-btn" data-p="0.037" data-r="0.74">💳 Fraud example (P=0.037, R=0.74)</button>
+      <button class="quick-btn" data-p="0.9" data-r="0.9">✅ Balanced model (0.90, 0.90)</button>
+      <button class="quick-btn active" data-p="0.5" data-r="0.5">⚖️ Neutral (0.50, 0.50)</button>
+      <button class="quick-btn" data-p="0.9" data-r="0.1">🔍 High precision, low recall</button>
+      <button class="quick-btn" data-p="0.1" data-r="0.9">📢 High recall, low precision</button>
+      <button class="quick-btn" data-p="0.99" data-r="0.01">⚠️ Extreme imbalance</button>
+    </div>
+
+    <div class="ctrl-grid">
+      <div class="ctrl">
+        <div class="ctrl-label">
+          <span style="color:var(--accent);">Precision</span>
+          <span class="ctrl-value" id="pValue">0.50</span>
+        </div>
+        <input type="range" class="range-p" id="pSlider" min="0" max="1" step="0.01" value="0.5">
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-label">
+          <span style="color:var(--primary);">Recall</span>
+          <span class="ctrl-value" id="rValue">0.50</span>
+        </div>
+        <input type="range" class="range-r" id="rSlider" min="0" max="1" step="0.01" value="0.5">
+      </div>
+    </div>
+
+    <!-- F1 Display -->
+    <div class="f1-display" id="f1Display">
+      <div class="f1-num" id="f1Num">0.500</div>
+      <div class="f1-lbl">F1 Score</div>
+      <div class="f1-formula" id="f1Formula">2 · 0.500 · 0.500 / (0.500 + 0.500)</div>
+    </div>
+
+    <!-- Comparison bars -->
+    <div class="compare-bars">
+      <div class="cbar">
+        <div class="cbar-lbl">Arithmetic Mean</div>
+        <div class="cbar-val" id="amVal" style="color:var(--accent);">0.500</div>
+        <div class="cbar-track"><div class="cbar-fill" id="amBar" style="background:var(--accent);width:50%;"></div></div>
+      </div>
+      <div class="cbar">
+        <div class="cbar-lbl">Harmonic Mean (F1)</div>
+        <div class="cbar-val" id="hmVal" style="color:var(--primary);">0.500</div>
+        <div class="cbar-track"><div class="cbar-fill" id="hmBar" style="background:var(--primary);width:50%;"></div></div>
+      </div>
+      <div class="cbar">
+        <div class="cbar-lbl">Gap (AM − F1)</div>
+        <div class="cbar-val" id="gapVal" style="color:var(--danger);">0.000</div>
+        <div class="cbar-track"><div class="cbar-fill" id="gapBar" style="background:var(--danger);width:0%;"></div></div>
+      </div>
+    </div>
+
+    <!-- F-beta live -->
+    <div class="live-metrics" style="margin-top:20px;">
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--accent);" id="f05Val">0.500</div>
+        <div class="lm-lbl">F0.5 (precision-weighted)</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--primary);" id="f1Val">0.500</div>
+        <div class="lm-lbl">F1 (balanced)</div>
+      </div>
+      <div class="live-metric">
+        <div class="lm-val" style="color:var(--purple);" id="f2Val">0.500</div>
+        <div class="lm-lbl">F2 (recall-weighted)</div>
+      </div>
+    </div>
+
+    <!-- Position on F1 heatmap -->
+    <div style="margin-top:20px;background:var(--surface);border-radius:12px;padding:14px;border:1px solid var(--border);">
+      <div style="font-size:0.82rem;font-weight:700;margin-bottom:8px;">Position on the F1 heatmap</div>
+      <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" id="miniHeatmapSVG">
+        <!-- Grid inserted by JS -->
+        <line x1="40" y1="230" x2="380" y2="230" class="axis-line"/>
+        <line x1="40" y1="20" x2="40" y2="230" class="axis-line"/>
+        <circle id="miniDot" cx="210" cy="125" r="7" fill="#ef4444" stroke="white" stroke-width="2"/>
+        <text x="210" y="253" class="axis-label" text-anchor="middle">Precision →</text>
+        <text x="12" y="125" class="axis-label" text-anchor="middle" transform="rotate(-90,12,125)">Recall →</text>
+      </svg>
+    </div>
+
+    <div class="callout warn" style="margin-top:20px;">
+      <strong>Try this:</strong> Set precision to 0.037 and recall to 0.74 (the fraud example). Arithmetic mean = 0.389. F1 = 0.071. The gap is enormous — that's the harmonic mean doing its job.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8. WHEN ==================== -->
+<section id="when">
+  <div class="section-header">
+    <div class="section-number">8</div>
+    <h2>When to Use F1 (and When Not To)</h2>
+  </div>
+  <p class="lead">F1 is powerful but not universal. Here's how to pick.</p>
+
+  <h3>Use F1 When…</h3>
+  <ul>
+    <li><strong>Both FP and FN matter</strong>, and neither dominates the other in cost.</li>
+    <li><strong>Classes are imbalanced</strong> and accuracy is misleading.</li>
+    <li><strong>You need a single number</strong> to rank models or drive hyperparameter search.</li>
+    <li><strong>You don't have explicit costs</strong> for FP and FN but need a balanced summary.</li>
+    <li><strong>You're comparing models on a fixed dataset</strong> where prevalence is the same across models.</li>
+  </ul>
+
+  <h3>Don't Use F1 When…</h3>
+  <ul>
+    <li><strong>FP and FN have very different costs</strong> — use F2 (FN more costly) or F0.5 (FP more costly), or better, an explicit expected-cost model.</li>
+    <li><strong>You need calibrated probabilities</strong> — F1 is threshold-based; calibration needs Brier score or log-loss.</li>
+    <li><strong>You care about the whole ranking</strong> — use ROC-AUC or PR-AUC.</li>
+    <li><strong>Classes are extremely imbalanced and TN matters</strong> — MCC also considers TN, F1 does not.</li>
+    <li><strong>You want to report a metric with a simple interpretation</strong> — F1 doesn't tell you "how often the model is right."</li>
+  </ul>
+
+  <h3>Decision Table</h3>
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Recommended metric</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Balanced data, equal costs</td>
+        <td>Accuracy</td>
+        <td>F1 is fine but accuracy is simpler.</td>
+      </tr>
+      <tr>
+        <td>Imbalanced, equal costs of FP and FN</td>
+        <td><strong>F1</strong> or MCC</td>
+        <td>Balances both errors; MCC also considers TN.</td>
+      </tr>
+      <tr>
+        <td>FN much more costly (medical, fraud)</td>
+        <td>F2 or Recall</td>
+        <td>Weight the costly error more.</td>
+      </tr>
+      <tr>
+        <td>FP much more costly (spam, legal)</td>
+        <td>F0.5 or Precision</td>
+        <td>Weight the costly error more.</td>
+      </tr>
+      <tr>
+        <td>You want to see the whole tradeoff</td>
+        <td>PR-AUC or ROC-AUC</td>
+        <td>F1 is a single point; curves show all thresholds.</td>
+      </tr>
+      <tr>
+        <td>Multi-class with many classes</td>
+        <td>Macro-F1 or Weighted-F1</td>
+        <td>Aggregates per-class F1 fairly.</td>
+      </tr>
+      <tr>
+        <td>Probability calibration matters</td>
+        <td>Brier score, log-loss</td>
+        <td>F1 doesn't measure calibration.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <strong>Rule of thumb:</strong> F1 is the default balanced summary for binary classification with imbalanced classes. Switch to F2/F0.5 when you know one error matters more. Switch to PR-AUC when you need the whole tradeoff, not just one threshold.
+  </div>
+</section>
+
+<!-- ==================== 9. MULTICLASS ==================== -->
+<section id="multiclass">
+  <div class="section-header">
+    <div class="section-number">9</div>
+    <h2>Multi-Class F1</h2>
+  </div>
+  <p class="lead">F1 generalizes to K classes — but you must choose an aggregation scheme.</p>
+
+  <h3>Per-Class F1</h3>
+  <p>For each class, treat it as "positive" and all others as "negative" (one-vs-rest), then compute F1. This gives you a K-dimensional vector.</p>
+
+  <h3>Three Ways to Aggregate</h3>
+
+  <table>
+    <thead>
+      <tr><th>Scheme</th><th>How it works</th><th>When to use</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Macro-F1</strong></td>
+        <td>Simple average of per-class F1.</td>
+        <td>Every class matters equally. Punishes poor performance on rare classes.</td>
+      </tr>
+      <tr>
+        <td><strong>Micro-F1</strong></td>
+        <td>Pool all TP, FP, FN across classes, then compute F1.</td>
+        <td>Every <em>instance</em> matters equally. Dominated by frequent classes.</td>
+      </tr>
+      <tr>
+        <td><strong>Weighted-F1</strong></td>
+        <td>Average of per-class F1 weighted by class support.</td>
+        <td>Middle ground: frequent classes count more, but rare classes aren't ignored.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Example — 3-Class Classifier</h3>
+
+  <table>
+    <thead>
+      <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cat</td><td>0.885</td><td>0.850</td><td><strong>0.867</strong></td><td>100</td>
+      </tr>
+      <tr>
+        <td>Dog</td><td>0.880</td><td>0.880</td><td><strong>0.880</strong></td><td>100</td>
+      </tr>
+      <tr>
+        <td>Bird</td><td>0.913</td><td>0.950</td><td><strong>0.932</strong></td><td>100</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="math">
+    Macro-F1    = (0.867 + 0.880 + 0.932) / 3 = <span class="hl2">0.893</span><br>
+    Weighted-F1 = (0.867·100 + 0.880·100 + 0.932·100) / 300 = <span class="hl2">0.893</span><br>
+    Micro-F1    = (pool all TP/FP/FN, then compute) = <span class="hl2">0.893</span>
+  </div>
+
+  <p>When all classes have equal support (as here), the three schemes agree. They diverge when support is unequal.</p>
+
+  <div class="callout warn">
+    <strong>Common pitfall:</strong> On imbalanced multi-class problems, Macro-F1 is usually the honest choice — but it can be dominated by tiny classes with unstable F1 estimates. Always inspect per-class F1 alongside the aggregate.
+  </div>
+
+  <h3>Handling the Rare-Class Problem</h3>
+  <p>If a class has only 5 examples and the model gets 3 right, its per-class F1 might swing wildly. Solutions:</p>
+  <ul>
+    <li>Report <strong>per-class F1</strong> alongside Macro-F1 — never just the aggregate.</li>
+    <li>Use <strong>Weighted-F1</strong> if rare classes are genuinely unimportant.</li>
+    <li>Consider <strong>micro-F1</strong> for ranking tasks where every instance counts.</li>
+    <li>Use <strong>Cohen's Kappa</strong> or <strong>MCC</strong> (generalized) if chance agreement matters.</li>
+  </ul>
+</section>
+
+<!-- ==================== 10. QUIZ ==================== -->
+<section id="quiz">
+  <div class="section-header">
+    <div class="section-number">10</div>
+    <h2>Quiz Yourself</h2>
+  </div>
+  <p class="lead">Eight questions covering formula, intuition, and application.</p>
+
+  <div id="quizContainer"></div>
+
+  <div class="card" style="text-align:center;margin-top:24px;">
+    <div style="font-size:1rem;font-weight:600;">Score: <span id="quizScore" style="color:var(--primary);font-size:1.4rem;">0 / 8</span></div>
+    <button id="resetQuiz" style="margin-top:10px;padding:8px 20px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600;">Reset Quiz</button>
+  </div>
+</section>
+
+<!-- ==================== 11. CODE ==================== -->
+<section id="code">
+  <div class="section-header">
+    <div class="section-number">11</div>
+    <h2>Python Reference</h2>
+  </div>
+  <p class="lead">Ready-to-run code for F1, F-beta, and multi-class F1.</p>
+
+  <h3>Basic F1 — Binary Classification</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — basic_f1.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    f1_score, precision_score, recall_score, confusion_matrix,
+    classification_report,
+)
+
+# 1. Imbalanced dataset (1% positives)
+X, y = make_classification(
+    n_samples=10_000, n_features=20, n_informative=8,
+    weights=[0.99, 0.01], random_state=42,
+)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42,
+)
+
+# 2. Train
+clf = LogisticRegression(max_iter=2000).fit(X_tr, y_tr)
+y_pred = clf.predict(X_te)
+
+# 3. Compute F1 and its components
+precision = precision_score(y_te, y_pred, zero_division=0)
+recall    = recall_score(y_te, y_pred, zero_division=0)
+f1        = f1_score(y_te, y_pred, zero_division=0)
+
+print(f"Precision: {precision:.4f}")
+print(f"Recall:    {recall:.4f}")
+print(f"F1:        {f1:.4f}")
+
+# 4. Verify the formula
+manual_f1 = 2 * precision * recall / (precision + recall)
+print(f"Manual:    {manual_f1:.4f}")   # matches sklearn
+
+# 5. From raw counts
+tn, fp, fn, tp = confusion_matrix(y_te, y_pred).ravel()
+manual_f1_v2 = 2 * tp / (2 * tp + fp + fn)
+print(f"From counts: {manual_f1_v2:.4f}")
+
+# 6. Full report
+print(classification_report(y_te, y_pred, target_names=['Normal', 'Fraud']))
+</code></pre>
+  </div>
+
+  <h3>F-Beta — Weighting Precision vs Recall</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — fbeta.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.metrics import fbeta_score
+
+# Precision-weighted: penalizes false positives more
+f05 = fbeta_score(y_te, y_pred, beta=0.5, zero_division=0)
+
+# Balanced (this is F1)
+f1 = fbeta_score(y_te, y_pred, beta=1.0, zero_division=0)
+
+# Recall-weighted: penalizes false negatives more
+f2 = fbeta_score(y_te, y_pred, beta=2.0, zero_division=0)
+
+print(f"F0.5: {f05:.4f}   (precision-weighted)")
+print(f"F1:   {f1:.4f}   (balanced)")
+print(f"F2:   {f2:.4f}   (recall-weighted)")
+
+# Interpret the divergence:
+# If F2 > F1 > F0.5, then recall > precision.
+# If F0.5 > F1 > F2, then precision > recall.
+</code></pre>
+  </div>
+
+  <h3>Precision-Recall-F1 Tradeoff Across Thresholds</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — threshold_sweep.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+# Get predicted probabilities
+probs = clf.predict_proba(X_te)[:, 1]
+
+thresholds = np.linspace(0.01, 0.99, 100)
+precisions, recalls, f1s = [], [], []
+
+for t in thresholds:
+    preds = (probs >= t).astype(int)
+    precisions.append(precision_score(y_te, preds, zero_division=0))
+    recalls.append(recall_score(y_te, preds, zero_division=0))
+    f1s.append(f1_score(y_te, preds, zero_division=0))
+
+# Find threshold that maximizes F1
+best_idx = np.argmax(f1s)
+best_t = thresholds[best_idx]
+
+print(f"Best threshold for F1: {best_t:.3f}")
+print(f"  Precision: {precisions[best_idx]:.3f}")
+print(f"  Recall:    {recalls[best_idx]:.3f}")
+print(f"  F1:        {f1s[best_idx]:.3f}")
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(thresholds, precisions, lw=2, label='Precision', color='orange')
+plt.plot(thresholds, recalls, lw=2, label='Recall', color='blue')
+plt.plot(thresholds, f1s, lw=2.5, label='F1 Score', color='red')
+
+# Mark optimal F1 threshold
+plt.axvline(best_t, color='gray', ls='--', lw=1.5,
+            label=f'Max F1 at t={best_t:.2f}')
+
+plt.xlabel('Threshold')
+plt.ylabel('Score')
+plt.title('Precision, Recall, and F1 vs Threshold')
+plt.legend(loc='best')
+plt.grid(alpha=0.3)
+plt.show()
+</code></pre>
+  </div>
+
+  <h3>Optimize F1 During Hyperparameter Search</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — tune_for_f1.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import GradientBoostingClassifier
+
+param_grid = {
+    'n_estimators': [100, 200],
+    'max_depth': [3, 5, 8],
+    'learning_rate': [0.05, 0.1],
+}
+
+grid = GridSearchCV(
+    GradientBoostingClassifier(random_state=42),
+    param_grid,
+    scoring='f1',      # directly optimize F1
+    cv=5,
+    n_jobs=-1,
+)
+grid.fit(X_tr, y_tr)
+
+print(f"Best params: {grid.best_params_}")
+print(f"Best CV F1:  {grid.best_score_:.4f}")
+
+# Evaluate on test set
+best_model = grid.best_estimator_
+y_pred_best = best_model.predict(X_te)
+print(f"Test F1: {f1_score(y_te, y_pred_best, zero_division=0):.4f}")
+</code></pre>
+  </div>
+
+  <h3>Multi-Class F1 — Macro, Micro, Weighted</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — multiclass_f1.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, classification_report
+
+# 3-class problem
+X, y = load_iris(return_X_y=True)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42,
+)
+
+clf = RandomForestClassifier(random_state=42).fit(X_tr, y_tr)
+y_pred = clf.predict(X_te)
+
+# Three aggregation schemes
+macro_f1    = f1_score(y_te, y_pred, average='macro')
+micro_f1    = f1_score(y_te, y_pred, average='micro')
+weighted_f1 = f1_score(y_te, y_pred, average='weighted')
+
+print(f"Macro-F1:    {macro_f1:.4f}   (equal weight per class)")
+print(f"Micro-F1:    {micro_f1:.4f}   (equal weight per instance)")
+print(f"Weighted-F1: {weighted_f1:.4f}   (weighted by support)")
+
+# Per-class breakdown
+print("\nPer-class report:")
+print(classification_report(
+    y_te, y_pred,
+    target_names=['setosa', 'versicolor', 'virginica'],
+))
+</code></pre>
+  </div>
+
+  <h3>F1 vs Arithmetic Mean — Why It Matters</h3>
+  <div class="code-wrap">
+    <div class="code-header"><span>python — f1_vs_am.py</span><button class="copy-btn">Copy</button></div>
+<pre><code>import numpy as np
+
+def f1(p, r):
+    return 2 * p * r / (p + r) if (p + r) > 0 else 0
+
+# The fraud example: P = 0.037, R = 0.74
+p_fraud, r_fraud = 0.037, 0.74
+am = (p_fraud + r_fraud) / 2
+hm = f1(p_fraud, r_fraud)
+
+print(f"Fraud example: P={p_fraud}, R={r_fraud}")
+print(f"  Arithmetic mean: {am:.3f}   ← dangerously optimistic")
+print(f"  Harmonic mean:   {hm:.3f}   ← the truth")
+print(f"  Gap:             {am - hm:.3f}")
+print()
+
+# Sweep across pairs
+print(f"{'P':>6} | {'R':>6} | {'AM':>7} | {'F1':>7} | {'Gap':>7}")
+print("-" * 46)
+for p, r in [(1.0, 0.0), (0.9, 0.1), (0.8, 0.2), (0.7, 0.3),
+             (0.6, 0.4), (0.5, 0.5), (0.4, 0.6), (0.3, 0.7),
+             (0.2, 0.8), (0.1, 0.9), (0.0, 1.0)]:
+    am = (p + r) / 2
+    hm = f1(p, r)
+    print(f"{p:>6.2f} | {r:>6.2f} | {am:>7.3f} | {hm:>7.3f} | {am-hm:>7.3f}")
+
+print()
+print("Note: F1 = AM only when P = R. Otherwise F1 < AM,")
+print("with the gap growing as P and R diverge.")
+</code></pre>
+  </div>
+
+  <div class="callout success" style="margin-top:24px;">
+    <strong>Bottom line:</strong> F1 is the go-to metric for imbalanced binary classification when you need one number that respects both precision and recall. Use F2 or F0.5 when the two error types have different costs. Use macro/weighted F1 for multi-class. And always look at the confusion matrix alongside F1 — the number alone never tells the full story.
+  </div>
+</section>
+
+</main>
+
+<script>
+// ============================================================
+// THEME
+// ============================================================
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('f1-theme') || 'light';
+document.body.dataset.theme = savedTheme;
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+themeToggle.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('f1-theme', next);
+});
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('#navList a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth < 900) sidebar.classList.remove('open');
+  });
+});
+
+// ============================================================
+// PROGRESS + ACTIVE NAV
+// ============================================================
+const progressBar = document.getElementById('progressBar');
+const sections = [...document.querySelectorAll('section')];
+const navLinks = [...document.querySelectorAll('#navList a')];
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+  let current = sections[0].id;
+  for (const sec of sections) {
+    if (sec.getBoundingClientRect().top <= 120) current = sec.id;
+  }
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// ============================================================
+// CODE HIGHLIGHTING + COPY
+// ============================================================
+function highlightPython(code) {
+  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const placeholders = [];
+  const store = (m) => {
+    const id = `\x00${placeholders.length}\x00`;
+    placeholders.push(m);
+    return id;
+  };
+  code = code.replace(/#[^\n]*/g, store);
+  code = code.replace(/("""[\s\S]*?"""|'''[\s\S]*?'''|"[^"\n]*"|'[^'\n]*')/g, store);
+  code = code.replace(/\b(import|from|as|def|return|if|elif|else|for|while|in|not|and|or|is|None|True|False|class|try|except|finally|with|lambda|yield|pass|break|continue|global|nonlocal|assert|del|raise|async|await)\b/g,
+    '<span class="kw">$1</span>');
+  code = code.replace(/\b(\d+\.?\d*)\b/g, '<span class="num">$1</span>');
+  code = code.replace(/\b(print|len|range|sum|min|max|abs|round|sorted|list|dict|set|tuple|str|int|float|bool|type|enumerate|zip|map|filter|open|input|fit|predict|predict_proba|train_test_split|f1_score|fbeta_score|precision_score|recall_score|classification_report|confusion_matrix|make_classification|LogisticRegression|GradientBoostingClassifier|RandomForestClassifier|GridSearchCV|load_iris)\b/g,
+    '<span class="bi">$1</span>');
+  code = code.replace(/\x00(\d+)\x00/g, (_, i) => {
+    const s = placeholders[+i];
+    if (s.startsWith('#')) return `<span class="cm">${s}</span>`;
+    return `<span class="str">${s}</span>`;
+  });
+  return code;
+}
+
+document.querySelectorAll('pre code').forEach(block => {
+  block.innerHTML = highlightPython(block.textContent);
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-wrap').querySelector('pre code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1600);
+    });
+  });
+});
+
+// ============================================================
+// F1 HEATMAP (main chart in Visual section)
+// ============================================================
+function f1(p, r) {
+  return (p + r) > 0 ? 2 * p * r / (p + r) : 0;
+}
+
+function fBeta(p, r, beta) {
+  const b2 = beta * beta;
+  return (b2 * p + r) > 0 ? (1 + b2) * p * r / (b2 * p + r) : 0;
+}
+
+// Color scale from F1 value (0 → dark red, 0.5 → orange, 1 → purple)
+function f1Color(v) {
+  // Simple gradient: red -> orange -> green -> purple
+  // Use HSL: hue from 0 (red) to 280 (purple)
+  const hue = v * 280;
+  const sat = 70;
+  const light = 55;
+  return `hsl(${hue}, ${sat}%, ${light}%)`;
+}
+
+function buildHeatmap(svgId, opts) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const { x0, y0, w, h, rows, cols, showLabels, showPoint } = opts;
+  const cellW = w / cols;
+  const cellH = h / rows;
+
+  // Remove old heatmap cells (if any)
+  const old = svg.querySelectorAll('.heat-cell');
+  old.forEach(el => el.remove());
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      // i: 0 = bottom (recall 0), rows-1 = top (recall 1)
+      const r = (i + 0.5) / rows;
+      const p = (j + 0.5) / cols;
+      const value = f1(p, r);
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      // Note: SVG y increases downward; we want recall=1 at top
+      const x = x0 + j * cellW;
+      const y = y0 + (rows - 1 - i) * cellH;
+      rect.setAttribute('x', x);
+      rect.setAttribute('y', y);
+      rect.setAttribute('width', cellW + 0.5);
+      rect.setAttribute('height', cellH + 0.5);
+      rect.setAttribute('fill', f1Color(value));
+      rect.setAttribute('opacity', '0.75');
+      rect.setAttribute('class', 'heat-cell');
+      svg.insertBefore(rect, svg.firstChild);
+    }
+  }
+}
+
+// Main heatmap: x0=60, y0=40, w=410, h=340
+buildHeatmap('heatmapSVG', { x0: 60, y0: 40, w: 410, h: 340, rows: 25, cols: 25 });
+
+// Position the fraud example point on the heatmap
+(function () {
+  const p_fraud = 0.037, r_fraud = 0.74;
+  const x0 = 60, y0 = 40, w = 410, h = 340;
+  const x = x0 + p_fraud * w;
+  const y = y0 + (1 - r_fraud) * h;
+  const pt = document.getElementById('fraudPoint');
+  if (pt) {
+    pt.setAttribute('cx', x);
+    pt.setAttribute('cy', y);
+  }
+  const lx = document.getElementById('fraudLineX');
+  if (lx) {
+    lx.setAttribute('x1', x);
+    lx.setAttribute('x2', x);
+    lx.setAttribute('y2', y);
+  }
+  const ly = document.getElementById('fraudLineY');
+  if (ly) {
+    ly.setAttribute('x1', x0);
+    ly.setAttribute('y1', y);
+    ly.setAttribute('x2', x);
+    ly.setAttribute('y2', y);
+  }
+  const lbl = document.getElementById('fraudLabel');
+  if (lbl) {
+    lbl.setAttribute('x', x + 10);
+    lbl.setAttribute('y', y + 4);
+  }
+})();
+
+// Mini heatmap in the lab
+buildHeatmap('miniHeatmapSVG', { x0: 40, y0: 20, w: 340, h: 210, rows: 18, cols: 18 });
+
+// ============================================================
+// HARMONIC vs ARITHMETIC MEAN CHART
+// ============================================================
+(function () {
+  const x0 = 60, y0 = 290, w = 430, h = 250; // w maps recall 0..1, h maps score 0..1
+  const P_fixed = 0.9;
+
+  // AM path: (0.9 + R)/2
+  let amD = '';
+  for (let i = 0; i <= 100; i++) {
+    const R = i / 100;
+    const score = (P_fixed + R) / 2;
+    const x = x0 + R * w;
+    const y = y0 - score * h;
+    amD += (i === 0 ? 'M' : 'L') + ' ' + x + ' ' + y + ' ';
+  }
+  document.getElementById('amPath').setAttribute('d', amD.trim());
+
+  // HM path: 2*0.9*R/(0.9+R)
+  let hmD = '';
+  for (let i = 0; i <= 100; i++) {
+    const R = i / 100;
+    const score = (P_fixed + R) > 0 ? 2 * P_fixed * R / (P_fixed + R) : 0;
+    const x = x0 + R * w;
+    const y = y0 - score * h;
+    hmD += (i === 0 ? 'M' : 'L') + ' ' + x + ' ' + y + ' ';
+  }
+  document.getElementById('hmPath').setAttribute('d', hmD.trim());
+})();
+
+// ============================================================
+// INTERACTIVE LAB
+// ============================================================
+const pSlider = document.getElementById('pSlider');
+const rSlider = document.getElementById('rSlider');
+const pValue = document.getElementById('pValue');
+const rValue = document.getElementById('rValue');
+const f1Num = document.getElementById('f1Num');
+const f1Formula = document.getElementById('f1Formula');
+const f1Display = document.getElementById('f1Display');
+const amVal = document.getElementById('amVal');
+const hmVal = document.getElementById('hmVal');
+const gapVal = document.getElementById('gapVal');
+const amBar = document.getElementById('amBar');
+const hmBar = document.getElementById('hmBar');
+const gapBar = document.getElementById('gapBar');
+const f05Val = document.getElementById('f05Val');
+const f1Val = document.getElementById('f1Val');
+const f2Val = document.getElementById('f2Val');
+const miniDot = document.getElementById('miniDot');
+const quickBtns = document.querySelectorAll('.quick-btn');
+
+function updateLab() {
+  const p = parseFloat(pSlider.value);
+  const r = parseFloat(rSlider.value);
+
+  pValue.textContent = p.toFixed(2);
+  rValue.textContent = r.toFixed(2);
+
+  const f1v = f1(p, r);
+  const am  = (p + r) / 2;
+  const gap = am - f1v;
+  const f05 = fBeta(p, r, 0.5);
+  const f2  = fBeta(p, r, 2.0);
+
+  // Big F1 display
+  f1Num.textContent = f1v.toFixed(3);
+  f1Formula.textContent = `2 · ${p.toFixed(3)} · ${r.toFixed(3)} / (${p.toFixed(3)} + ${r.toFixed(3)})`;
+
+  // Color the F1 display border based on value
+  let borderColor = 'var(--border)';
+  if (f1v >= 0.8) borderColor = 'var(--success)';
+  else if (f1v >= 0.5) borderColor = 'var(--accent)';
+  else if (f1v >= 0.2) borderColor = 'var(--warning)';
+  else borderColor = 'var(--danger)';
+  f1Display.style.borderColor = borderColor;
+
+  // Comparison bars
+  amVal.textContent = am.toFixed(3);
+  hmVal.textContent = f1v.toFixed(3);
+  gapVal.textContent = gap.toFixed(3);
+  amBar.style.width = (am * 100) + '%';
+  hmBar.style.width = (f1v * 100) + '%';
+  gapBar.style.width = Math.min(100, gap * 100) + '%';
+
+  // F-beta row
+  f05Val.textContent = f05.toFixed(3);
+  f1Val.textContent = f1v.toFixed(3);
+  f2Val.textContent = f2.toFixed(3);
+
+  // Mini heatmap dot
+  if (miniDot) {
+    const x0 = 40, y0 = 20, w = 340, h = 210;
+    const x = x0 + p * w;
+    const y = y0 + (1 - r) * h;
+    miniDot.setAttribute('cx', x);
+    miniDot.setAttribute('cy', y);
+  }
+
+  // Quick button active state
+  quickBtns.forEach(b => {
+    const bp = parseFloat(b.dataset.p);
+    const br = parseFloat(b.dataset.r);
+    b.classList.toggle('active',
+      Math.abs(bp - p) < 0.005 && Math.abs(br - r) < 0.005);
+  });
+}
+
+pSlider.addEventListener('input', updateLab);
+rSlider.addEventListener('input', updateLab);
+
+quickBtns.forEach(b => {
+  b.addEventListener('click', () => {
+    pSlider.value = b.dataset.p;
+    rSlider.value = b.dataset.r;
+    updateLab();
+  });
+});
+
+// Initialize
+updateLab();
+
+// ============================================================
+// QUIZ
+// ============================================================
+const quizData = [
+  {
+    q: "What is the F1 score of a model with precision = 0.5 and recall = 1.0?",
+    options: [
+      "0.75 (arithmetic mean)",
+      "0.667 (harmonic mean)",
+      "1.0 because recall is perfect",
+      "0.5 because precision is 0.5"
+    ],
+    correct: 1,
+    explain: "F1 = 2·0.5·1.0/(0.5+1.0) = 1.0/1.5 ≈ 0.667. The harmonic mean punishes the imbalance between the two metrics."
+  },
+  {
+    q: "Why does F1 use the harmonic mean instead of the arithmetic mean?",
+    options: [
+      "Because the harmonic mean is mathematically simpler.",
+      "Because the harmonic mean correctly collapses to 0 when one metric is 0, while the arithmetic mean would give 0.5.",
+      "Because the harmonic mean is faster to compute.",
+      "Because the arithmetic mean is not defined for probabilities."
+    ],
+    correct: 1,
+    explain: "A model with P=1.0 and R=0.0 has arithmetic mean 0.5 (looks moderate) but harmonic mean 0 (correctly reflects that it's useless). The harmonic mean refuses to average away an extreme weakness."
+  },
+  {
+    q: "In the fraud example (TP=74, FP=1,926, FN=26), what is F1?",
+    options: ['0.389', '0.740', '0.071', '0.037'],
+    correct: 2,
+    explain: "Precision = 74/2000 = 0.037, Recall = 74/100 = 0.740. F1 = 2·0.037·0.740/(0.037+0.740) ≈ 0.071. The arithmetic mean of P and R would be 0.389 — dangerously optimistic."
+  },
+  {
+    q: "When should you use F2 instead of F1?",
+    options: [
+      "When false positives are more costly than false negatives.",
+      "When false negatives are more costly than false positives.",
+      "When you want a balanced metric.",
+      "When the dataset is balanced."
+    ],
+    correct: 1,
+    explain: "F2 weights recall twice as much as precision. Use it when missing positives (FNs) is the primary concern — medical screening, safety systems, and often fraud detection."
+  },
+  {
+    q: "A model has F1 = 0.85. What can you NOT conclude from this single number?",
+    options: [
+      "That precision and recall are both relatively high.",
+      "That the model's probability estimates are well-calibrated.",
+      "That the model is better than one with F1 = 0.70.",
+      "That both precision and recall are roughly equal."
+    ],
+    correct: 1,
+    explain: "F1 is a threshold-based classification metric. It says nothing about calibration — whether a predicted 0.8 means 80% likely. Use Brier score or calibration curves for that."
+  },
+  {
+    q: "In multi-class classification, what's the difference between Macro-F1 and Micro-F1?",
+    options: [
+      "Macro-F1 only works for 2 classes.",
+      "Macro-F1 averages per-class F1 equally; Micro-F1 pools all TP/FP/FN across classes and computes F1 once.",
+      "Micro-F1 is always higher.",
+      "There's no difference."
+    ],
+    correct: 1,
+    explain: "Macro-F1 gives every class equal weight regardless of size, so it's sensitive to rare classes. Micro-F1 pools all instances, so it's dominated by frequent classes. Weighted-F1 is the middle ground."
+  },
+  {
+    q: "You're building a spam filter. Which F-beta is most appropriate?",
+    options: [
+      "F2 — recall-weighted",
+      "F0.5 — precision-weighted",
+      "F1 — balanced",
+      "None of the above"
+    ],
+    correct: 1,
+    explain: "In spam filtering, blocking a legitimate email (FP) is very costly. Precision matters more, so F0.5 — which weights precision twice as much — is the right choice."
+  },
+  {
+    q: "Two models have identical F1 = 0.80. What does this tell you about their precision and recall?",
+    options: [
+      "They have identical precision and recall.",
+      "They have the same harmonic mean of P and R, but P and R could differ (e.g., 0.9/0.72 vs 0.72/0.9).",
+      "Their confusion matrices must be identical.",
+      "Their AUC values must be equal."
+    ],
+    correct: 1,
+    explain: "F1 is symmetric in P and R. Multiple (P, R) pairs can produce the same F1. Always inspect the actual precision and recall values — F1 alone can hide which direction the model is skewed."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+const quizScoreEl = document.getElementById('quizScore');
+let score = 0;
+const answered = new Set();
+
+function renderQuiz() {
+  quizContainer.innerHTML = '';
+  score = 0;
+  answered.clear();
+  quizScoreEl.textContent = '0 / ' + quizData.length;
+
+  quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `
+      <div class="q-text">Q${i + 1}. ${item.q}</div>
+      <div class="q-opts"></div>
+      <div class="quiz-feedback"></div>
+    `;
+    const optsWrap = div.querySelector('.q-opts');
+    const feedback = div.querySelector('.quiz-feedback');
+
+    item.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        if (answered.has(i)) return;
+        answered.add(i);
+        const isCorrect = j === item.correct;
+        optsWrap.querySelectorAll('.quiz-opt').forEach((b, k) => {
+          b.disabled = true;
+          if (k === item.correct) b.classList.add('correct');
+          if (k === j && !isCorrect) b.classList.add('wrong');
+        });
+        feedback.textContent = (isCorrect ? '✓ Correct! ' : '✗ Not quite. ') + item.explain;
+        feedback.classList.add('show', isCorrect ? 'ok' : 'no');
+        if (isCorrect) score++;
+        quizScoreEl.textContent = score + ' / ' + quizData.length;
+      });
+      optsWrap.appendChild(btn);
+    });
+
+    quizContainer.appendChild(div);
+  });
+}
+
+document.getElementById('resetQuiz').addEventListener('click', renderQuiz);
+renderQuiz();
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

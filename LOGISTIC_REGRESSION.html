@@ -1,0 +1,2619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logistic Regression Model — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#0891b2;
+    --accent-dark:#0e7490;
+    --accent2:#e11d48;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#0e7490 0%,#0891b2 30%,#be123c 75%,#9f1239 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(8,145,178,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:860px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent-dark);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#0891b2,#be123c);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(8,145,178,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#ecfeff,#fff1f2);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent-dark);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#ecfeff;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent-dark);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.reg{border-left-color:var(--amber);}
+  .metric.log{border-left-color:var(--accent);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.reg h4{color:#b45309;}
+  .metric.log h4{color:var(--accent-dark);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.reg .badge{background:#fffbeb;color:#b45309;}
+  .metric.log .badge{background:#ecfeff;color:#0e7490;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin:20px 0;
+  }
+  .calc-grid label{
+    display:block;
+    font-size:.82rem;
+    font-weight:800;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:5px;
+  }
+  .calc-grid input{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border-strong);
+    border-radius:8px;
+    font-size:1rem;
+    font-family:'Segoe UI',sans-serif;
+    font-weight:600;
+    color:#1e293b;
+    background:#ffffff;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .calc-grid input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(8,145,178,.13);
+  }
+  @media(max-width:700px){.calc-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin:18px 0;
+  }
+  .result-card{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    border-top:3px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .result-card .name{
+    font-size:.76rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:800;
+    margin-bottom:4px;
+  }
+  .result-card .value{
+    font-size:1.45rem;
+    font-weight:800;
+    color:var(--text);
+    line-height:1.2;
+  }
+  .result-card .formula-small{
+    font-size:.74rem;
+    color:var(--muted);
+    font-family:'Consolas',monospace;
+    margin-top:6px;
+    line-height:1.4;
+  }
+
+  .fit-demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .fit-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .fit-controls .info{flex:1;min-width:130px;}
+  .fit-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .fit-controls .info .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);
+  }
+  .fit-sliders{padding:4px 0 12px;}
+  .fit-sliders label{
+    display:block;font-size:.82rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-top:10px;
+  }
+  .fit-sliders input[type=range]{
+    width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0;
+  }
+  .btn{
+    background:linear-gradient(135deg,#0891b2,#be123c);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(8,145,178,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(8,145,178,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#0e7490;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#ecfeff;
+    color:#0e7490;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .stat-display{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+    margin-top:16px;
+  }
+  @media(max-width:640px){.stat-display{grid-template-columns:repeat(2,1fr);}}
+  .stat-display .item{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;
+  }
+  .stat-display .item .lbl{
+    font-size:.7rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .stat-display .item .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);line-height:1.3;
+  }
+  .confusion-grid{
+    display:grid;grid-template-columns:130px 1fr 1fr;gap:6px;
+    max-width:520px;margin:16px auto;
+  }
+  .confusion-grid .hdr{
+    padding:10px 8px;font-size:.78rem;font-weight:800;text-align:center;
+    background:#f1f5f9;border-radius:8px;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;
+  }
+  .confusion-grid .cell{
+    padding:18px 8px;border-radius:10px;text-align:center;
+    font-weight:800;font-size:1rem;
+  }
+  .confusion-grid .cell .sub{
+    display:block;font-size:.72rem;font-weight:600;opacity:.85;margin-top:3px;
+  }
+  .confusion-grid .tn{background:#dcfce7;color:#14532d;}
+  .confusion-grid .fp{background:#fee2e2;color:#7f1d1d;}
+  .confusion-grid .fn{background:#fee2e2;color:#7f1d1d;}
+  .confusion-grid .tp{background:#dcfce7;color:#14532d;}
+  .assumptions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .assumptions .item{
+    background:linear-gradient(135deg,#ecfeff,#fff1f2);
+    border:1px solid #a5f3fc;border-radius:10px;padding:14px 16px;
+    text-align:center;
+  }
+  .assumptions .item .letter{
+    font-size:1.6rem;font-weight:900;color:#0e7490;line-height:1;
+  }
+  .assumptions .item .name{
+    font-size:.85rem;font-weight:800;color:#1e293b;margin-top:4px;
+  }
+  .assumptions .item .desc{
+    font-size:.76rem;color:#64748b;margin-top:2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 Logistic Regression Model — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine a doctor estimating the risk of a heart attack. She combines several risk factors — age, blood pressure, cholesterol, smoking — into a single <em>risk score</em>. But she doesn't want a raw score; she wants a <em>probability</em>: "This patient has a 73% chance of a heart attack in the next 10 years." Logistic Regression does exactly this — it takes a weighted sum of features and squashes it through an S-shaped curve (the sigmoid) so the output is always a valid probability between 0 and 1.
+  </div>
+
+  <h3>What is Logistic Regression?</h3>
+  <p><span class="highlight">Logistic Regression</span> is a <strong>supervised classification algorithm</strong> that predicts the probability of a binary outcome (yes/no, spam/not-spam, churn/not-churn). Despite the name, it is a <em>classification</em> model, not a regression model — the word "regression" is a historical artefact.</p>
+
+  <p>It works in three steps:</p>
+  <ul class="clean">
+    <li><strong>Step 1 — Linear score:</strong> Compute a weighted sum of the input features: <code>z = β₀ + β₁x₁ + β₂x₂ + … + βₚxₚ</code>.</li>
+    <li><strong>Step 2 — Squash with sigmoid:</strong> Pass <code>z</code> through the sigmoid function <code>σ(z) = 1/(1 + e⁻ᶻ)</code>, producing a value between 0 and 1 that we interpret as <code>P(y = 1 | x)</code>.</li>
+    <li><strong>Step 3 — Threshold:</strong> Convert the probability into a class label by comparing it to a threshold (default 0.5).</li>
+  </ul>
+
+  <h3>Why "Logistic"?</h3>
+  <p>The "logistic" comes from the <em>logistic function</em> (also called the sigmoid). It is the inverse of the logit function, which converts a probability into log-odds. The model is linear in <em>log-odds</em> space, which is why coefficients have a clean interpretation: <code>eᵝ</code> is the odds ratio.</p>
+
+  <h3>How the Algorithm Learns (Step by Step)</h3>
+  <div class="box">
+    <h4>Step 1 — State the model</h4>
+    <div class="formula">
+      P(y = 1 | x) = σ(β<sub>0</sub> + β<sub>1</sub>x<sub>1</sub> + … + β<sub>p</sub>x<sub>p</sub>) = 1 / (1 + e<sup>−(β<sub>0</sub> + Σβ<sub>j</sub>x<sub>j</sub>)</sup>)
+    </div>
+
+    <h4>Step 2 — Define the likelihood</h4>
+    <p>We want the coefficients that make the observed labels most likely. The likelihood is:</p>
+    <div class="formula">
+      L(β) = Π<sub>i=1</sub><sup>N</sup> p<sub>i</sub><sup>y<sub>i</sub></sup> · (1 − p<sub>i</sub>)<sup>1 − y<sub>i</sub></sup>
+    </div>
+
+    <h4>Step 3 — Maximise the log-likelihood</h4>
+    <p>Taking the log converts the product to a sum, which is easier to optimise:</p>
+    <div class="formula">
+      ℓ(β) = Σ<sub>i=1</sub><sup>N</sup> [ y<sub>i</sub> · log(p<sub>i</sub>) + (1 − y<sub>i</sub>) · log(1 − p<sub>i</sub>) ]
+    </div>
+    <p>Equivalently, we minimise the negative log-likelihood, which is the <strong>log-loss</strong> (binary cross-entropy).</p>
+
+    <h4>Step 4 — Solve with gradient descent or Newton's method</h4>
+    <p>Unlike linear regression, logistic regression has no closed-form solution. Coefficients are found iteratively. The gradient of the log-likelihood has a beautifully simple form:</p>
+    <div class="formula">
+      ∂ℓ/∂β<sub>j</sub> = Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − p<sub>i</sub> ) · x<sub>ij</sub>
+    </div>
+
+    <h4>Step 5 — Predict and threshold</h4>
+    <p>Compute <code>p̂ = σ(Xβ̂)</code> for new samples, then assign class 1 if <code>p̂ ≥ τ</code> where <code>τ</code> is the threshold (default 0.5).</p>
+
+    <h4>Step 6 — Evaluate and calibrate</h4>
+    <p>Check that predicted probabilities are well-calibrated (e.g. samples predicted at 0.7 should actually be positive ~70% of the time). Recalibrate (Platt scaling, isotonic regression) if needed.</p>
+  </div>
+
+  <h3>Flavours of Logistic Regression</h3>
+  <table>
+    <tr><th>Variant</th><th>Target</th><th>Activation</th><th>Example</th></tr>
+    <tr>
+      <td><strong>Binary</strong></td>
+      <td>2 classes (0/1)</td>
+      <td>Sigmoid</td>
+      <td>Spam vs. not spam</td>
+    </tr>
+    <tr>
+      <td><strong>Multinomial (Softmax)</strong></td>
+      <td>3+ classes (mutually exclusive)</td>
+      <td>Softmax</td>
+      <td>Digit recognition (0–9)</td>
+    </tr>
+    <tr>
+      <td><strong>Ordinal</strong></td>
+      <td>3+ ordered classes</td>
+      <td>Cumulative logits</td>
+      <td>Customer satisfaction (Low/Med/High)</td>
+    </tr>
+    <tr>
+      <td><strong>Regularised (L1/L2)</strong></td>
+      <td>Any</td>
+      <td>Sigmoid + penalty</td>
+      <td>High-dimensional genomics</td>
+    </tr>
+  </table>
+
+  <h3>🔬 Interactive: The Sigmoid Curve</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The sigmoid function transforms any real number into a value between 0 and 1. Adjust the slope <code>β₁</code> and intercept <code>β₀</code> sliders to see how the curve changes. A steeper curve means the model makes sharper decisions; a flatter curve means it hesitates near the middle.</p>
+
+  <div class="fit-demo">
+    <div class="fit-controls">
+      <div class="info">
+        <div class="lbl">Slope β₁</div>
+        <div class="val" id="sigSlopeVal">1.00</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Intercept β₀</div>
+        <div class="val" id="sigInterceptVal">0.00</div>
+      </div>
+      <div class="info">
+        <div class="lbl">P(y=1 | x=0)</div>
+        <div class="val" id="sigP0" style="color:#0e7490;">0.500</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Odds ratio e^β₁</div>
+        <div class="val" id="sigOdds" style="color:#be123c;">2.718</div>
+      </div>
+      <button class="btn secondary" id="sigResetBtn">↺ Reset</button>
+    </div>
+
+    <div class="fit-sliders">
+      <label>Slope β₁: <span id="sigSlopeLbl" style="color:var(--accent-dark);">1.00</span></label>
+      <input type="range" id="sigSlopeSlider" min="-3" max="3" value="1" step="0.05">
+      <label>Intercept β₀: <span id="sigInterceptLbl" style="color:var(--accent-dark);">0.00</span></label>
+      <input type="range" id="sigInterceptSlider" min="-4" max="4" value="0" step="0.05">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Sigmoid Curve σ(β₀ + β₁·x)</div>
+      <div id="sigmoidChart" style="height:400px;"></div>
+      <div class="chart-note">The blue curve is the sigmoid. The dashed grey line at p=0.5 is the default decision threshold. The vertical dashed red line marks where the sigmoid crosses 0.5 — that's the decision boundary.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Linear vs Logistic — Why a Sigmoid?</h3>
+  <p style="color:var(--muted);font-size:.93rem;">If we fit a straight line to binary data (0/1), the predictions can go below 0 or above 1 — which makes no sense as probabilities. The sigmoid fixes this by squashing everything into [0, 1].</p>
+
+  <div class="grid2">
+    <div class="chart">
+      <div class="chart-title">❌ Linear Fit on Binary Data</div>
+      <div id="linearBinaryChart" style="height:360px;"></div>
+      <div class="chart-note">Note how the line extends beyond 0 and 1 at the edges — impossible for probabilities.</div>
+    </div>
+    <div class="chart">
+      <div class="chart-title">✅ Logistic Fit on the Same Data</div>
+      <div id="logisticBinaryChart" style="height:360px;"></div>
+      <div class="chart-note">The S-curve is always bounded between 0 and 1 — valid probabilities at every x.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: From Log-Odds to Probability</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Logistic regression is linear in <em>log-odds</em> (logit) space. The chart below shows the same model viewed two ways: the linear log-odds on the left, and the resulting probability on the right. They carry identical information — one is just a transformation of the other.</p>
+
+  <div class="grid2">
+    <div class="chart">
+      <div class="chart-title">Log-Odds (Linear Space)</div>
+      <div id="logitChart" style="height:360px;"></div>
+      <div class="chart-note">Straight line: z = β₀ + β₁·x. This is what the model actually learns.</div>
+    </div>
+    <div class="chart">
+      <div class="chart-title">Probability (Sigmoid Space)</div>
+      <div id="probChart" style="height:360px;"></div>
+      <div class="chart-note">The same z values, squashed through the sigmoid. Predictions become probabilities.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Decision Boundary</h3>
+  <p style="color:var(--muted);font-size:.93rem;">With two features, logistic regression draws a <em>straight line</em> (the decision boundary) through the feature space. Points on one side are classified as class 1, points on the other as class 0. The dashed line is the boundary; the shaded regions show the predicted probability.</p>
+
+  <div class="chart">
+    <div class="chart-title">Decision Boundary in 2-D Feature Space</div>
+    <div id="boundaryChart" style="height:480px;"></div>
+    <div class="chart-note">Blue points = class 0, red points = class 1. The white line is the decision boundary (where p = 0.5). The background shading shows the predicted probability of class 1 — darker red means higher probability.</div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>Logistic Regression is one of the most widely used classifiers in the world. It's the default model for binary classification in medicine, finance, marketing, and any domain where <em>interpretability and calibrated probabilities</em> matter.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🏥 Healthcare &amp; Medicine</h4>
+      <ul class="clean">
+        <li><strong>Disease risk prediction</strong> — 10-year heart attack risk (Framingham Risk Score).</li>
+        <li><strong>Readmission prediction</strong> — will a patient return within 30 days?</li>
+        <li><strong>Clinical trial analysis</strong> — treatment effect with covariates.</li>
+        <li><strong>Diagnostic support</strong> — probability of disease given symptoms and labs.</li>
+        <li><strong>Epidemiology</strong> — odds ratios for risk factors.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏦 Banking &amp; Finance</h4>
+      <ul class="clean">
+        <li><strong>Credit scoring</strong> — probability of default on a loan.</li>
+        <li><strong>Fraud detection</strong> — probability that a transaction is fraudulent.</li>
+        <li><strong>Churn prediction</strong> — probability a customer will leave.</li>
+        <li><strong>Basel-compliant PD models</strong> — probability of default for regulatory capital.</li>
+        <li><strong>Insurance claims</strong> — probability of a claim.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📧 Technology &amp; Web</h4>
+      <ul class="clean">
+        <li><strong>Spam filtering</strong> — the classic logistic regression use case.</li>
+        <li><strong>Click-through-rate prediction</strong> — probability a user clicks an ad.</li>
+        <li><strong>Abandoned cart prediction</strong> — will the user complete checkout?</li>
+        <li><strong>Malware detection</strong> — probability a file is malicious.</li>
+        <li><strong>Subscription conversion</strong> — probability a free user upgrades.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🛒 Marketing &amp; Retail</h4>
+      <ul class="clean">
+        <li><strong>Lead scoring</strong> — probability a lead will convert.</li>
+        <li><strong>Campaign response</strong> — probability a customer responds to an offer.</li>
+        <li><strong>Customer segmentation</strong> — probability of belonging to a segment.</li>
+        <li><strong>Upsell / cross-sell</strong> — probability of buying a related product.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🎓 Social Sciences</h4>
+      <ul class="clean">
+        <li><strong>Voter turnout</strong> — probability a citizen votes.</li>
+        <li><strong>College admission</strong> — probability of acceptance.</li>
+        <li><strong>Criminal recidivism</strong> — probability of reoffending (COMPAS).</li>
+        <li><strong>Survey analysis</strong> — modelling binary survey responses.</li>
+        <li><strong>Loan approval</strong> — probability of approval.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Operations &amp; Manufacturing</h4>
+      <ul class="clean">
+        <li><strong>Predictive maintenance</strong> — probability a machine fails soon.</li>
+        <li><strong>Quality control</strong> — probability a unit is defective.</li>
+        <li><strong>Supply chain risk</strong> — probability a shipment is late.</li>
+        <li><strong>Employee attrition</strong> — probability an employee leaves.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why is it everywhere?</strong> Because it delivers <em>calibrated probabilities</em> and <em>interpretable coefficients</em> in one package. Regulated industries (banking, insurance, healthcare) demand both — you need to know not just <em>what</em> the model predicts, but <em>why</em>, and with what confidence. Logistic regression does both natively, which is why it's still the gold standard for credit scoring and clinical risk models in 2025.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Highly interpretable</strong> — each coefficient tells you how the log-odds change per unit change in that feature. <code>eᵝ</code> is the odds ratio — a concept physicians, regulators, and executives understand.</li>
+    <li><strong>Produces calibrated probabilities</strong> — not just class labels, but the actual probability of the positive class. Perfect for risk scoring, triage, and threshold tuning.</li>
+    <li><strong>Fast to train and predict</strong> — training is O(N·p) per gradient step; prediction is a single dot product plus a sigmoid.</li>
+    <li><strong>Low memory footprint</strong> — you store only the coefficients and intercept. A model with 100 features is ~400 bytes.</li>
+    <li><strong>Works with few samples</strong> — unlike deep learning, it doesn't need millions of rows. 100–200 samples per feature can be enough.</li>
+    <li><strong>No feature scaling required (for L-BFGS / Newton)</strong> — solvers like lbfgs are scale-invariant. (Gradient descent benefits from scaling.)</li>
+    <li><strong>Statistically well-founded</strong> — maximum likelihood estimation gives coefficients with standard errors, p-values, confidence intervals, and Wald tests.</li>
+    <li><strong>Handles multicollinearity with Ridge/Lasso</strong> — regularisation stabilises coefficients when features are correlated.</li>
+    <li><strong>Performs feature selection with L1</strong> — Lasso logistic regression zeroes out irrelevant features, yielding a sparse, explainable model.</li>
+    <li><strong>Extends naturally to multi-class</strong> — softmax regression handles any number of mutually exclusive classes.</li>
+    <li><strong>Robust to class imbalance with adjustments</strong> — class weights, oversampling, or a threshold tuned on a validation set.</li>
+    <li><strong>Foundation for more advanced models</strong> — the last layer of almost every neural network classifier is a softmax/logistic layer.</li>
+    <li><strong>Excellent baseline</strong> — before trying XGBoost or a neural net, logistic regression tells you if the problem is linearly separable and how much lift the complex model actually provides.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🔍</div>
+      <h4 style="color:var(--accent-dark);">Interpretable</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Odds ratios are meaningful to stakeholders.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">📊</div>
+      <h4 style="color:var(--accent-dark);">Calibrated</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Outputs are true probabilities.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent-dark);">Fast</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Trains in seconds, predicts in microseconds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Assumes a linear decision boundary</strong> — if the true boundary is curved, logistic regression will underfit. You must add polynomial or interaction features manually, or use a nonlinear model.</li>
+    <li><strong>Sensitive to outliers</strong> — extreme feature values can dominate the loss and skew coefficients.</li>
+    <li><strong>Struggles with multicollinearity</strong> — highly correlated features cause unstable, hard-to-interpret coefficients. Use Ridge/Lasso or remove correlated features.</li>
+    <li><strong>Requires sufficient events per variable (EPV)</strong> — a rule of thumb is 10–20 positive cases per predictor. Fewer leads to overfitting and unreliable estimates.</li>
+    <li><strong>Sensitive to class imbalance</strong> — with 1% positives, the model may predict everything as negative. Use class weights, resampling, or focal loss.</li>
+    <li><strong>Cannot capture complex interactions automatically</strong> — you must manually create interaction terms (X₁ × X₂) if you suspect they matter.</li>
+    <li><strong>Assumes independence of observations</strong> — repeated measures or clustered data violate this. Use mixed-effects or GEE models.</li>
+    <li><strong>Assumes log-odds linearity</strong> — the relationship between each feature and the log-odds must be linear. Check with splines or polynomial terms.</li>
+    <li><strong>Perfect separation breaks the model</strong> — if a feature perfectly separates the classes, coefficients diverge to infinity. Use regularisation or Firth's penalised likelihood.</li>
+    <li><strong>Predicts poorly on very high-dimensional sparse data</strong> — without regularisation, text (TF-IDF) and image data overwhelm it.</li>
+    <li><strong>No closed-form solution</strong> — must be solved iteratively (Newton, IRLS, L-BFGS), which is slower than OLS on large data.</li>
+    <li><strong>Cannot model nonlinear probability curves</strong> — the sigmoid is monotonic and symmetric; more flexible shapes require splines or GAMs.</li>
+    <li><strong>Miscalibration with regularisation</strong> — L1 and L2 shrink coefficients, which biases probabilities. Recalibrate on a validation set if probabilities matter.</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#ecfeff);">
+    <strong>The linearity trap:</strong> Imagine you want to classify points arranged in a ring (class 1 in the middle, class 0 around it). No straight line can separate them. Logistic regression will always fail here — you need a kernel method (SVM), a tree ensemble, or a neural network. Always plot your data first; if the boundary looks curved, logistic regression alone won't be enough.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>These are measured <strong>before</strong> the model goes live, using a held-out test set or cross-validation. They answer: <em>"Is this model good enough to ship?"</em></p>
+
+  <h3>5.1 Confusion Matrix — The Foundation</h3>
+  <p>Almost every classification metric is derived from four numbers. Before formulas make sense, you must understand these four cells.</p>
+
+  <div class="confusion-grid">
+    <div></div>
+    <div class="hdr">Predicted Negative</div>
+    <div class="hdr">Predicted Positive</div>
+    <div class="hdr" style="text-align:right;padding-right:12px;">Actual<br>Negative</div>
+    <div class="cell tn">TN<span class="sub">True Negative ✅</span></div>
+    <div class="cell fp">FP<span class="sub">False Positive ❌</span></div>
+    <div class="hdr" style="text-align:right;padding-right:12px;">Actual<br>Positive</div>
+    <div class="cell fn">FN<span class="sub">False Negative ❌</span></div>
+    <div class="cell tp">TP<span class="sub">True Positive ✅</span></div>
+  </div>
+
+  <div class="interp">
+    <strong>Convention:</strong> "Positive" usually means the event we're trying to detect (disease present, fraud, churn). Ask: <em>"What does 'positive' mean here, and which error is more costly?"</em>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">Confusion Matrix — Visual Layout</div>
+    <div id="cmDiagram" style="height:400px;"></div>
+    <div class="chart-note">Rows = actual truth. Columns = what the model predicted. The diagonal (TP, TN) is where the model is correct.</div>
+  </div>
+
+  <h3>5.2 Classification KPIs — Detailed</h3>
+
+  <div class="metric">
+    <h4>Accuracy <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The overall fraction of predictions that were correct — both positives and negatives.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Accuracy = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, TN = 850, FP = 50, FN = 120<br>
+      Accuracy = (480 + 850) / (480 + 850 + 50 + 120) = 1330 / 1500 = <code>0.887 → 88.7%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 88.7% of all predictions were correct. Range: 0 to 1 (higher is better).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are balanced and every correct prediction has equal business value.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Classes are imbalanced. A model that always says "legitimate" scores 99% accuracy but catches zero fraud.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Precision (Positive Predictive Value) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of everything the model flagged as positive, how many actually were positive?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Precision = TP / (TP + FP)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, FP = 50<br>
+      Precision = 480 / (480 + 50) = 480 / 530 = <code>0.906 → 90.6%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> When the model says "positive", it's right 90.6% of the time. High precision = few false alarms.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> False positives are expensive — spam filters, product recommendations, targeted ads.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Missing a real positive is far worse than a false alarm (e.g. cancer screening).</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Recall / Sensitivity / True Positive Rate <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of all the actual positives, how many did the model correctly catch?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Recall = TP / (TP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, FN = 120<br>
+      Recall = 480 / (480 + 120) = 480 / 600 = <code>0.800 → 80.0%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The model catches 80% of all real positives. It misses 20%. High recall = few missed cases.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Missing a positive is costly — fraud detection, disease screening, safety systems.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> False alarms cause serious harm (e.g. flagging innocent customers).</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Specificity / True Negative Rate <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of all the actual negatives, how many did the model correctly identify?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Specificity = TN / (TN + FP)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TN = 850, FP = 50<br>
+      Specificity = 850 / (850 + 50) = 850 / 900 = <code>0.944 → 94.4%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The model correctly clears 94.4% of the actual negatives. It wrongly flags 5.6% as positive.</div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px;"><strong>Relationship:</strong> Specificity + False Positive Rate (FPR) = 1. So FPR = 1 − Specificity = FP / (FP + TN).</p>
+  </div>
+
+  <div class="metric">
+    <h4>F1-Score <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> A single number that balances Precision and Recall. It's the <em>harmonic mean</em> — so it punishes extreme imbalance between them.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      F1 = 2 × (Precision × Recall) / (Precision + Recall)
+      <br><br>
+      <span class="lbl">Equivalent form</span>
+      F1 = 2·TP / (2·TP + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Precision = 0.906, Recall = 0.800<br>
+      F1 = 2 × (0.906 × 0.800) / (0.906 + 0.800) = 1.4496 / 1.706 = <code>0.850</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. A high F1 means the model is good at both finding positives <em>and</em> not crying wolf.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are imbalanced and you care about both precision and recall roughly equally.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Precision and recall have very different business costs — use a weighted F-beta score.</div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px;"><strong>F-beta generalisation:</strong> F<sub>β</sub> = (1+β²)·(P·R) / (β²·P + R). β &gt; 1 weights recall higher; β &lt; 1 weights precision higher.</p>
+  </div>
+
+  <div class="metric">
+    <h4>ROC-AUC (Area Under the ROC Curve) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The probability that the model ranks a random positive example higher than a random negative example. It evaluates the model across <em>all possible thresholds</em>.</p>
+    <div class="formula">
+      <span class="lbl">ROC Curve</span>
+      x-axis: FPR = FP / (FP + TN) = 1 − Specificity
+      <br>
+      y-axis: TPR = TP / (TP + FN) = Recall
+      <br><br>
+      <span class="lbl">AUC (via trapezoidal rule)</span>
+      AUC = Σ<sub>i</sub> ½ · (x<sub>i+1</sub> − x<sub>i</sub>) · (y<sub>i+1</sub> + y<sub>i</sub>)
+      <br><br>
+      <span class="lbl">Probabilistic interpretation (Mann–Whitney U)</span>
+      AUC = P( score(positive) &gt; score(negative) )
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • 0.50 → no better than random guessing<br>
+      • 0.70–0.80 → acceptable<br>
+      • 0.80–0.90 → excellent<br>
+      • 0.90–1.00 → outstanding (be suspicious of data leakage)<br>
+      • Below 0.50 → the model is systematically wrong (flip its predictions!)
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want a threshold-independent measure and classes are reasonably balanced.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> The positive class is extremely rare — use PR-AUC instead.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>PR-AUC (Precision–Recall Area Under the Curve) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Area under the Precision–Recall curve. It focuses only on the positive class, making it far more informative when positives are rare.</p>
+    <div class="formula">
+      <span class="lbl">PR Curve</span>
+      x-axis: Recall = TP / (TP + FN)
+      <br>
+      y-axis: Precision = TP / (TP + FP)
+      <br><br>
+      <span class="lbl">PR-AUC</span>
+      PR-AUC = ∫ Precision d(Recall) &nbsp;(approximated by trapezoids)
+      <br><br>
+      <span class="lbl">Baseline</span>
+      Baseline PR-AUC = prevalence = (TP + FN) / (TP + TN + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Example:</strong> In a fraud dataset with 1% fraud, a random classifier gets PR-AUC ≈ 0.01 (not 0.5). So a PR-AUC of 0.45 is actually very strong!
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> The positive class is rare — fraud, disease, defects, intrusions.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Both classes matter equally; ROC-AUC is more general.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Log Loss (Binary Cross-Entropy) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> How well the model's <em>predicted probabilities</em> match reality. It punishes confident wrong predictions very heavily. This is also the loss function logistic regression minimises during training.</p>
+    <div class="formula">
+      <span class="lbl">Formula (binary)</span>
+      LogLoss = −(1/N) · Σ<sub>i=1</sub><sup>N</sup> [ y<sub>i</sub>·log(p<sub>i</sub>) + (1−y<sub>i</sub>)·log(1−p<sub>i</sub>) ]
+      <br><br>
+      y<sub>i</sub> ∈ {0,1} = actual label &nbsp;|&nbsp; p<sub>i</sub> = predicted probability of class 1
+      <br><br>
+      <span class="lbl">Multi-class extension</span>
+      LogLoss = −(1/N) · Σ<sub>i</sub> Σ<sub>k</sub> y<sub>i,k</sub> · log(p<sub>i,k</sub>)
+    </div>
+    <div class="worked">
+      <strong>Worked example (N=2):</strong><br>
+      • Sample 1: actual = 1, predicted prob = 0.9 → loss = −log(0.9) = 0.105<br>
+      • Sample 2: actual = 0, predicted prob = 0.8 → loss = −log(0.2) = 1.609<br>
+      LogLoss = (0.105 + 1.609) / 2 = <code>0.857</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to ∞ (lower is better). Perfect predictions → 0. A model that always predicts 0.5 gets LogLoss ≈ 0.693 (binary).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You need well-calibrated probabilities — risk scoring, insurance pricing, medical estimates.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> You only care about the hard class label, not the probability.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Matthews Correlation Coefficient (MCC) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> A balanced metric that uses all four confusion-matrix cells. It behaves like a correlation coefficient between predictions and truth.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MCC = (TP·TN − FP·FN) / √[ (TP+FP)(TP+FN)(TN+FP)(TN+FN) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP=480, TN=850, FP=50, FN=120<br>
+      Numerator = (480×850) − (50×120) = 408,000 − 6,000 = 402,000<br>
+      Denominator = √(530 × 600 × 900 × 1000) ≈ 535,000<br>
+      MCC = 402,000 / 535,000 = <code>0.751</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range −1 to +1. +1 = perfect, 0 = random, −1 = total disagreement.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are very imbalanced and you want a single trustworthy number.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Explaining to a non-technical audience — harder to interpret.</div>
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Cohen's Kappa (κ) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Agreement between predictions and truth, <em>corrected for agreement that would happen by chance</em>.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)
+      <br><br>
+      p<sub>o</sub> = observed accuracy = (TP + TN) / N
+      <br>
+      p<sub>e</sub> = expected chance accuracy = [ (TP+FP)(TP+FN) + (TN+FP)(TN+FN) ] / N²
+    </div>
+    <div class="interp">
+      <strong>Landis &amp; Koch scale:</strong><br>
+      • &lt; 0.00 → poor · 0.00–0.20 → slight · 0.21–0.40 → fair<br>
+      • 0.41–0.60 → moderate · 0.61–0.80 → substantial · 0.81–1.00 → almost perfect
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Balanced Accuracy <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The average of Recall (on positives) and Specificity (on negatives) — each class contributes equally regardless of size.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Balanced Accuracy = (Recall + Specificity) / 2
+      <br><br>
+      = ½ · [ TP/(TP+FN) + TN/(TN+FP) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Recall = 0.800, Specificity = 0.944<br>
+      Balanced Accuracy = (0.800 + 0.944) / 2 = <code>0.872</code>
+    </div>
+  </div>
+
+  <div class="metric log">
+    <h4>Brier Score <span class="badge">Calibration</span></h4>
+    <p><strong>What it measures:</strong> The mean squared difference between predicted probabilities and actual outcomes. Lower is better; it measures calibration.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Brier = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( p<sub>i</sub> − y<sub>i</sub> )²
+      <br><br>
+      <span class="lbl">Decomposition</span>
+      Brier = Reliability − Resolution + Uncertainty
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 (perfect) to 1. A model that always predicts the base rate gets Brier = p(1−p).</div>
+  </div>
+
+  <div class="metric log">
+    <h4>Calibration Curve (Reliability Diagram) <span class="badge">Calibration</span></h4>
+    <p><strong>What it measures:</strong> Whether the predicted probabilities match the observed frequencies. A perfectly calibrated model lies on the diagonal.</p>
+    <div class="formula">
+      <span class="lbl">Expected Calibration Error (ECE)</span>
+      ECE = Σ<sub>b=1</sub><sup>B</sup> ( n<sub>b</sub> / N ) · | acc(b) − conf(b) |
+      <br><br>
+      B = number of probability bins
+      <br>
+      n<sub>b</sub> = samples in bin b
+      <br>
+      acc(b) = actual positive rate in bin b
+      <br>
+      conf(b) = average predicted probability in bin b
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> ECE &lt; 0.05 = well-calibrated. Larger ECE suggests recalibration (Platt scaling, isotonic regression).</div>
+  </div>
+
+  <h3>5.3 Model Quality &amp; Robustness KPIs</h3>
+
+  <div class="metric">
+    <h4>Cross-Validation Score <span class="badge">Robustness</span></h4>
+    <div class="formula">
+      <span class="lbl">K-Fold CV Score</span>
+      CV = (1/K) · Σ<sub>k=1</sub><sup>K</sup> Metric<sub>k</sub>
+      <br><br>
+      <span class="lbl">Standard deviation (stability)</span>
+      σ<sub>CV</sub> = √[ (1/K) · Σ<sub>k</sub> ( Metric<sub>k</sub> − CV )² ]
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Train–Test Gap (Overfitting Indicator) <span class="badge">Robustness</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Gap = Metric<sub>train</sub> − Metric<sub>test</sub>
+      <br><br>
+      For error metrics: Gap = Metric<sub>test</sub> − Metric<sub>train</sub>
+    </div>
+    <div class="interp">
+      <strong>Rule of thumb:</strong><br>
+      • Gap &lt; 5% → healthy<br>
+      • Gap 5–10% → mild overfitting, increase regularisation<br>
+      • Gap &gt; 10% → serious overfitting, reduce features or add L1/L2
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>AIC &amp; BIC (Model Comparison) <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> Penalised likelihood scores for comparing logistic regression models with different numbers of features.</p>
+    <div class="formula">
+      <span class="lbl">AIC</span>
+      AIC = 2k − 2·ℓ̂
+      <br><br>
+      <span class="lbl">BIC</span>
+      BIC = k·ln(N) − 2·ℓ̂
+      <br><br>
+      k = number of parameters
+      <br>
+      ℓ̂ = maximised log-likelihood
+      <br>
+      N = number of samples
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lower AIC/BIC is better. BIC penalises complexity more heavily than AIC.</div>
+  </div>
+
+  <div class="metric log">
+    <h4>Wald Test &amp; Likelihood Ratio Test <span class="badge">Statistical</span></h4>
+    <p><strong>What it measures:</strong> Statistical significance of individual coefficients (Wald) or the whole model (LRT).</p>
+    <div class="formula">
+      <span class="lbl">Wald statistic</span>
+      W<sub>j</sub> = (β̂<sub>j</sub> / SE(β̂<sub>j</sub>))² &nbsp; ~ χ²(1)
+      <br><br>
+      <span class="lbl">Likelihood Ratio Test</span>
+      LRT = 2 · ( ℓ(full) − ℓ(reduced) ) &nbsp; ~ χ²(Δk)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> p &lt; 0.05 → significant. Wald tests each coefficient; LRT compares nested models.</div>
+  </div>
+
+  <h3>5.4 📊 Interactive: Threshold Tuning</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Logistic regression outputs probabilities. The classification threshold τ decides where to cut. Dragging the slider shows how precision, recall, F1 and the confusion matrix change. The default τ = 0.5 is rarely optimal for imbalanced problems — tune it on a validation set.</p>
+
+  <div class="fit-demo">
+    <div class="fit-controls">
+      <div class="info">
+        <div class="lbl">Threshold τ</div>
+        <div class="val" id="thrVal" style="color:#0e7490;">0.50</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Precision</div>
+        <div class="val" id="thrPrec" style="color:#2563eb;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Recall</div>
+        <div class="val" id="thrRec" style="color:#059669;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">F1</div>
+        <div class="val" id="thrF1" style="color:#d97706;">—</div>
+      </div>
+      <button class="btn secondary" id="thrResetBtn">↺ 0.5</button>
+    </div>
+    <div class="fit-sliders">
+      <label>Classification threshold τ: <span id="thrLbl" style="color:var(--accent-dark);">0.50</span></label>
+      <input type="range" id="thrSlider" min="0.05" max="0.95" value="0.5" step="0.01">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Score Distribution + Threshold Line</div>
+      <div id="thresholdChart" style="height:400px;"></div>
+      <div class="chart-note">Positive class scores (red) vs. negative class scores (blue). The dashed vertical line is the threshold. Everything to the right is classified as positive.</div>
+    </div>
+
+    <div class="results-grid" id="thrResults" style="margin-top:18px;"></div>
+  </div>
+
+  <h3>5.5 📊 Interactive: ROC Curve</h3>
+  <div class="chart">
+    <div class="chart-title">ROC Curve — All Thresholds at a Glance</div>
+    <div id="rocChart" style="height:420px;"></div>
+    <div class="chart-note">Every point on the curve is a different threshold. The diagonal is random guessing. The closer to the top-left, the better. AUC = area under the curve.</div>
+  </div>
+
+  <h3>5.6 📊 Interactive: Precision–Recall Curve</h3>
+  <div class="chart">
+    <div class="chart-title">Precision–Recall Curve — Better for Imbalanced Data</div>
+    <div id="prChart" style="height:420px;"></div>
+    <div class="chart-note">For rare positive classes (fraud, disease), the PR curve is more informative than the ROC curve. The dashed baseline is the class prevalence.</div>
+  </div>
+
+  <h3>5.7 📊 Interactive: Confusion Matrix</h3>
+  <div class="chart">
+    <div class="chart-title">Confusion Matrix — Where Does the Model Go Wrong?</div>
+    <div id="cmChart" style="height:400px;"></div>
+    <div class="chart-note">Hover over each cell for its meaning. Everything off the main diagonal is an error.</div>
+  </div>
+
+  <h3>5.8 🧮 Interactive KPI Calculator</h3>
+  <p>Change the four confusion-matrix values below and watch every classification metric recompute instantly.</p>
+
+  <div class="calc-grid">
+    <div>
+      <label>TP — True Positive</label>
+      <input type="number" id="inTP" value="480" min="0">
+    </div>
+    <div>
+      <label>TN — True Negative</label>
+      <input type="number" id="inTN" value="850" min="0">
+    </div>
+    <div>
+      <label>FP — False Positive</label>
+      <input type="number" id="inFP" value="50" min="0">
+    </div>
+    <div>
+      <label>FN — False Negative</label>
+      <input type="number" id="inFN" value="120" min="0">
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid"></div>
+
+  <div class="chart">
+    <div class="chart-title">Live Confusion Matrix</div>
+    <div id="liveCM" style="height:360px;"></div>
+    <div class="chart-note">Recalculated as you type. The diagonal (darker cells) shows correct predictions.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">ROC Curve (Synthetic — based on current class balance)</div>
+    <div id="liveROC" style="height:380px;"></div>
+    <div class="chart-note">Illustrative ROC curve shaped by the current precision/recall balance. AUC value shown in the legend.</div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once the model is live, you're no longer asking <em>"is it accurate?"</em> — you're asking <em>"is it still accurate today, and is anything silently breaking?"</em></p>
+
+  <h3>6.1 Data &amp; Model Health KPIs</h3>
+
+  <div class="metric post">
+    <h4>PSI (Population Stability Index) <span class="badge">Data Drift</span></h4>
+    <p><strong>What it measures:</strong> How much the distribution of a single feature (or the model's scores) has shifted between training and production.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI = Σ<sub>i=1</sub><sup>B</sup> ( Actual%<sub>i</sub> − Expected%<sub>i</sub> ) · ln( Actual%<sub>i</sub> / Expected%<sub>i</sub> )
+      <br><br>
+      B = number of bins (usually 10 deciles)
+      <br>
+      Expected%<sub>i</sub> = % of training samples in bin i
+      <br>
+      Actual%<sub>i</sub> = % of production samples in bin i
+    </div>
+    <div class="interp">
+      <strong>Interpretation thresholds:</strong><br>
+      • PSI &lt; 0.10 → no significant change, model is stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → moderate shift, monitor closely ⚠️<br>
+      • PSI ≥ 0.25 → major shift, retrain the model 🚨
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>KS Statistic (Kolmogorov–Smirnov) <span class="badge">Data Drift</span></h4>
+    <p><strong>What it measures:</strong> The maximum vertical distance between two cumulative distribution functions (training vs. production).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      KS = max<sub>x</sub> | F<sub>train</sub>(x) − F<sub>prod</sub>(x) |
+      <br><br>
+      F(x) = empirical cumulative distribution function
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. Higher = more drift. A p-value &lt; 0.05 from the KS test indicates statistically significant drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>KL Divergence (Kullback–Leibler) <span class="badge">Data Drift</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      D<sub>KL</sub>(P ‖ Q) = Σ<sub>i</sub> P(i) · log( P(i) / Q(i) )
+      <br><br>
+      P = production distribution &nbsp;|&nbsp; Q = training distribution
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 0 = identical distributions. Higher = more drift. Not symmetric.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Concept Drift (Performance Decay) <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Drift Magnitude = Metric<sub>validation</sub> − Metric<sub>live</sub>
+      <br><br>
+      <span class="lbl">Relative decay</span>
+      Decay % = ( Metric<sub>validation</sub> − Metric<sub>live</sub> ) / Metric<sub>validation</sub> × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Decay &gt; 10% typically triggers a retraining investigation.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Prediction Distribution Shift <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI<sub>pred</sub> = Σ ( ProdPred%<sub>i</sub> − TrainPred%<sub>i</sub> ) · ln( ProdPred%<sub>i</sub> / TrainPred%<sub>i</sub> )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A sudden jump in predicted probabilities signals a pipeline problem or concept drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Coefficient Stability <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the learned coefficients are drifting over time. If they change rapidly, the underlying relationship is unstable.</p>
+    <div class="formula">
+      <span class="lbl">Stability Index</span>
+      Stability = 1 − ( || β<sub>train</sub> − β<sub>prod</sub> || / || β<sub>train</sub> || )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Stability close to 1 = stable. Values below 0.8 suggest the relationship has shifted.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Missing Value Rate <span class="badge">Model Health</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Missing % = ( Missing values / Total values ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Logistic regression cannot handle missing values natively, so a spike in missingness will directly degrade predictions.</div>
+  </div>
+
+  <h3>6.2 Live Performance KPIs</h3>
+
+  <div class="metric post">
+    <h4>Live Accuracy / Precision / Recall / AUC <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> The same classification metrics, recomputed on labelled production data as ground truth arrives.</p>
+    <div class="formula">
+      <span class="lbl">Same formulas as pre-deployment</span>
+      Live Precision = TP<sub>live</sub> / (TP<sub>live</sub> + FP<sub>live</sub>)
+      <br>
+      Live Recall = TP<sub>live</sub> / (TP<sub>live</sub> + FN<sub>live</sub>)
+      <br>
+      Live AUC = computed on labelled production data
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ground truth often arrives with a delay. Set up automated pipelines to compute these as soon as labels arrive.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Actual vs. Predicted Monitoring <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Delta<sub>t</sub> = Metric<sub>predicted,t</sub> − Metric<sub>actual,t</sub>
+      <br><br>
+      <span class="lbl">CUSUM (cumulative sum control chart)</span>
+      CUSUM<sub>t</sub> = max(0, CUSUM<sub>t−1</sub> + Delta<sub>t</sub> − k)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A steadily rising CUSUM indicates systematic drift. Alert when CUSUM crosses a threshold h.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Live Calibration (Reliability Drift) <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> Whether the model's probabilities remain well-calibrated over time.</p>
+    <div class="formula">
+      <span class="lbl">Live ECE</span>
+      ECE<sub>live</sub> = Σ<sub>b</sub> ( n<sub>b,live</sub> / N<sub>live</sub> ) · | acc<sub>live</sub>(b) − conf<sub>live</sub>(b) |
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> ECE rising above 0.05 in production suggests probabilities are drifting — recalibrate or retrain.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Model Age / Time Since Retrain <span class="badge">Performance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Model Age = Current Date − Last Retrain Date
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Many teams set a hard limit (e.g. 90 days) as a retraining trigger, regardless of measured drift.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Latency Percentiles (p50, p95, p99) <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Definition</span>
+      p95 = the latency value below which 95% of requests fall
+      <br><br>
+      <span class="lbl">Why not the average?</span>
+      Average latency hides tail problems. A few slow requests (p99) can ruin user experience even if the average looks fine.
+    </div>
+    <div class="interp"><strong>Target example:</strong> Logistic regression is extremely fast. p50 &lt; 1 ms, p95 &lt; 5 ms, p99 &lt; 20 ms is typical for a well-optimised service.</div>
+  </div>
+
+  <h3>6.3 Operational &amp; Business KPIs</h3>
+
+  <div class="metric post">
+    <h4>Throughput <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Throughput = Total predictions served / Time window
+      <br><br>
+      <span class="lbl">Utilisation</span>
+      Utilisation % = (Actual throughput / Peak capacity) × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Error Rate / Failure Rate <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Error Rate % = ( Failed requests / Total requests ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Should be near zero. A sudden spike usually means an upstream data pipeline broke or the model service is overloaded.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Uptime / Availability <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Uptime % = ( Total time − Downtime ) / Total time × 100%
+      <br><br>
+      <span class="lbl">Common targets</span>
+      99% &nbsp;→ 3.65 days downtime/year<br>
+      99.9% &nbsp;→ 8.77 hours downtime/year<br>
+      99.99% → 52.6 minutes downtime/year
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Business Impact KPI <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Example formulas</span>
+      Cost Saved = ( Errors<sub>without</sub> − Errors<sub>with</sub> ) × Cost per error
+      <br>
+      Revenue Uplift = Revenue<sub>with model</sub> − Revenue<sub>without model</sub>
+      <br>
+      Churn Reduction % = ( Churn<sub>baseline</sub> − Churn<sub>model</sub> ) / Churn<sub>baseline</sub> × 100
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>ROI (Return on Investment) <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ROI % = ( Net Gain / Total Cost ) × 100%
+      <br><br>
+      Net Gain = Business Value Generated − Total Cost
+      <br>
+      Total Cost = Development + Infrastructure + Maintenance + Monitoring
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Fraud prevented = ₹5,00,000. Total cost = ₹1,00,000.<br>
+      Net Gain = ₹4,00,000. ROI = (4,00,000 / 1,00,000) × 100 = <code>400%</code>
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Human Override Rate <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Override Rate % = ( Overrides / Total decisions ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A high override rate (e.g. &gt; 30%) means users don't trust the model.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Alert / Incident Count <span class="badge">Governance</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Alert Rate = Alerts triggered / Time period
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#ecfeff);">
+    <strong>Golden rule:</strong> A logistic regression model is not "done" when it's deployed. It's done when it's retired. Post-deployment monitoring is what keeps it from silently degrading.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How Logistic Regression Actually Works</h2>
+  <p>The core idea: <strong>model the log-odds as a linear function of features, then squashing through the sigmoid to get probabilities.</strong> Here are the formulas.</p>
+
+  <h3>7.1 The Sigmoid (Logistic) Function</h3>
+  <p>Maps any real number into (0, 1). This is the "squashing" that turns a linear score into a probability.</p>
+  <div class="formula">
+    <span class="lbl">Sigmoid function</span>
+    σ(z) = 1 / (1 + e<sup>−z</sup>)
+    <br><br>
+    <span class="lbl">Properties</span>
+    σ(0) = 0.5 &nbsp;|&nbsp; σ(+∞) → 1 &nbsp;|&nbsp; σ(−∞) → 0
+    <br>
+    σ(−z) = 1 − σ(z)
+    <br>
+    σ'(z) = σ(z) · (1 − σ(z)) &nbsp;(convenient for gradients!)
+  </div>
+
+  <h3>7.2 The Logit (Log-Odds) Function</h3>
+  <p>The inverse of the sigmoid. Converts a probability into a real-valued linear score.</p>
+  <div class="formula">
+    <span class="lbl">Logit function</span>
+    logit(p) = log( p / (1 − p) ) = log(odds)
+    <br><br>
+    <span class="lbl">Odds</span>
+    odds = p / (1 − p) &nbsp;&nbsp;(e.g. p=0.75 → odds = 3, i.e. 3:1)
+    <br><br>
+    <span class="lbl">Inverse relationship</span>
+    p = σ(logit(p)) = 1 / (1 + e<sup>−logit(p)</sup>)
+  </div>
+
+  <h3>7.3 The Model Equation</h3>
+  <div class="formula">
+    <span class="lbl">Log-odds form (what the model learns)</span>
+    log( p / (1 − p) ) = β<sub>0</sub> + β<sub>1</sub>x<sub>1</sub> + … + β<sub>p</sub>x<sub>p</sub>
+    <br><br>
+    <span class="lbl">Probability form</span>
+    p = σ(β<sub>0</sub> + Σ<sub>j</sub> β<sub>j</sub>x<sub>j</sub>) = 1 / (1 + e<sup>−(β<sub>0</sub> + Σβ<sub>j</sub>x<sub>j</sub>)</sup>)
+  </div>
+
+  <h3>7.4 Odds Ratio Interpretation</h3>
+  <p>Coefficients are easiest to interpret in odds-ratio form.</p>
+  <div class="formula">
+    <span class="lbl">Odds ratio for feature j</span>
+    OR<sub>j</sub> = e<sup>β<sub>j</sub></sup>
+    <br><br>
+    <span class="lbl">Interpretation</span>
+    A one-unit increase in x<sub>j</sub> multiplies the odds of y = 1 by e<sup>β<sub>j</sub></sup>.
+    <br><br>
+    <span class="lbl">Example</span>
+    If β<sub>age</sub> = 0.05, then OR<sub>age</sub> = e<sup>0.05</sup> ≈ 1.051.
+    <br>
+    Each additional year of age increases the odds of the event by ~5.1%.
+    <br><br>
+    <span class="lbl">Percentage change in odds</span>
+    % change = ( e<sup>β<sub>j</sub></sup> − 1 ) × 100
+  </div>
+
+  <h3>7.5 Maximum Likelihood Estimation (MLE)</h3>
+  <p>Coefficients are found by maximising the likelihood of the observed labels.</p>
+  <div class="formula">
+    <span class="lbl">Likelihood</span>
+    L(β) = Π<sub>i=1</sub><sup>N</sup> p<sub>i</sub><sup>y<sub>i</sub></sup> · (1 − p<sub>i</sub>)<sup>1 − y<sub>i</sub></sup>
+    <br><br>
+    <span class="lbl">Log-likelihood</span>
+    ℓ(β) = Σ<sub>i=1</sub><sup>N</sup> [ y<sub>i</sub> · log(p<sub>i</sub>) + (1 − y<sub>i</sub>) · log(1 − p<sub>i</sub>) ]
+    <br><br>
+    <span class="lbl">MLE</span>
+    β̂ = argmax<sub>β</sub> ℓ(β)
+  </div>
+
+  <h3>7.6 Log-Loss (Binary Cross-Entropy)</h3>
+  <p>The negative log-likelihood — the loss function logistic regression minimises.</p>
+  <div class="formula">
+    <span class="lbl">Log-loss</span>
+    J(β) = −(1/N) · Σ<sub>i=1</sub><sup>N</sup> [ y<sub>i</sub> · log(p<sub>i</sub>) + (1 − y<sub>i</sub>) · log(1 − p<sub>i</sub>) ]
+    <br><br>
+    <span class="lbl">Gradient</span>
+    ∂J/∂β<sub>j</sub> = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( p<sub>i</sub> − y<sub>i</sub> ) · x<sub>ij</sub>
+    <br><br>
+    <span class="lbl">Hessian (Newton's method)</span>
+    H<sub>jk</sub> = (1/N) · Σ<sub>i=1</sub><sup>N</sup> p<sub>i</sub>(1 − p<sub>i</sub>) · x<sub>ij</sub> · x<sub>ik</sub>
+  </div>
+
+  <h3>7.7 Gradient Descent Update</h3>
+  <div class="formula">
+    <span class="lbl">Update rule</span>
+    β<sub>j</sub> ← β<sub>j</sub> − α · ∂J/∂β<sub>j</sub>
+    <br><br>
+    α = learning rate (step size)
+    <br>
+    Repeat until convergence.
+    <br><br>
+    <span class="lbl">Newton's method (faster)</span>
+    β ← β − H<sup>−1</sup> · ∇J
+    <br>
+    Converges in ~5–10 iterations, but requires inverting the Hessian.
+  </div>
+
+  <h3>7.8 Regularised Logistic Regression</h3>
+  <p>L1 and L2 penalties prevent overfitting and enable feature selection.</p>
+  <div class="formula">
+    <span class="lbl">L2 (Ridge) — shrinks coefficients</span>
+    J<sub>L2</sub>(β) = J(β) + (λ/2) · Σ<sub>j=1</sub><sup>p</sup> β<sub>j</sub>²
+    <br><br>
+    <span class="lbl">L1 (Lasso) — performs feature selection</span>
+    J<sub>L1</sub>(β) = J(β) + λ · Σ<sub>j=1</sub><sup>p</sup> |β<sub>j</sub>|
+    <br><br>
+    <span class="lbl">Elastic Net — combines both</span>
+    J<sub>EN</sub>(β) = J(β) + λ₁ · Σ|β<sub>j</sub>| + (λ₂/2) · Σβ<sub>j</sub>²
+  </div>
+
+  <h3>7.9 Multinomial (Softmax) Logistic Regression</h3>
+  <p>For K &gt; 2 mutually exclusive classes, use the softmax function instead of the sigmoid.</p>
+  <div class="formula">
+    <span class="lbl">Softmax</span>
+    P(y = k | x) = e<sup>z<sub>k</sub></sup> / Σ<sub>j=1</sub><sup>K</sup> e<sup>z<sub>j</sub></sup>
+    <br><br>
+    where z<sub>k</sub> = β<sub>0,k</sub> + β<sub>1,k</sub>x<sub>1</sub> + … + β<sub>p,k</sub>x<sub>p</sub>
+    <br><br>
+    <span class="lbl">Loss (categorical cross-entropy)</span>
+    J = −(1/N) · Σ<sub>i</sub> Σ<sub>k</sub> y<sub>i,k</sub> · log(p<sub>i,k</sub>)
+  </div>
+
+  <h3>7.10 Standard Errors &amp; Wald Tests</h3>
+  <div class="formula">
+    <span class="lbl">Fisher Information Matrix</span>
+    I(β) = Xᵀ W X
+    <br><br>
+    W = diag( p<sub>i</sub>(1 − p<sub>i</sub>) )
+    <br><br>
+    <span class="lbl">Covariance of coefficients</span>
+    Var(β̂) = I(β̂)<sup>−1</sup>
+    <br><br>
+    <span class="lbl">Standard error of coefficient j</span>
+    SE(β̂<sub>j</sub>) = √[ Var(β̂)<sub>jj</sub> ]
+    <br><br>
+    <span class="lbl">Wald statistic (per coefficient)</span>
+    W<sub>j</sub> = (β̂<sub>j</sub> / SE(β̂<sub>j</sub>))² &nbsp; ~ χ²(1)
+    <br><br>
+    <span class="lbl">Wald 95% CI for odds ratio</span>
+    CI = exp( β̂<sub>j</sub> ± 1.96 · SE(β̂<sub>j</sub>) )
+  </div>
+
+  <h3>7.11 Assumptions of Logistic Regression</h3>
+  <p>Weaker than linear regression but still important for valid inference.</p>
+  <div class="assumptions">
+    <div class="item">
+      <div class="letter">B</div>
+      <div class="name">Binary outcome</div>
+      <div class="desc">Target is 0/1</div>
+    </div>
+    <div class="item">
+      <div class="letter">I</div>
+      <div class="name">Independence</div>
+      <div class="desc">Observations are independent</div>
+    </div>
+    <div class="item">
+      <div class="letter">L</div>
+      <div class="name">Linearity in logit</div>
+      <div class="desc">Log-odds linear in features</div>
+    </div>
+    <div class="item">
+      <div class="letter">N</div>
+      <div class="name">No multicollinearity</div>
+      <div class="desc">Features not too correlated</div>
+    </div>
+    <div class="item">
+      <div class="letter">E</div>
+      <div class="name">Enough events</div>
+      <div class="desc">10+ positives per predictor</div>
+    </div>
+  </div>
+
+  <h3>📊 Interactive: Log-Loss Penalty Curve</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The log-loss function heavily penalises confident wrong predictions. If the true label is 1 and the model predicts p = 0.01, the loss explodes. This is why logistic regression is robust to miscalibration and pushes probabilities away from extremes when uncertain.</p>
+  <div class="chart">
+    <div class="chart-title">Log-Loss as a Function of Predicted Probability</div>
+    <div id="logLossChart" style="height:400px;"></div>
+    <div class="chart-note">Blue: loss when true label is 1 (minimised at p=1). Red: loss when true label is 0 (minimised at p=0). Both curves blow up as predictions become confidently wrong.</div>
+  </div>
+
+  <h3>📊 Interactive: Odds Ratio Explorer</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Coefficients live in log-odds space, but we usually interpret them as odds ratios. This chart shows how a coefficient β translates into a percentage change in odds.</p>
+  <div class="chart">
+    <div class="chart-title">Odds Ratio vs. Coefficient β</div>
+    <div id="oddsRatioChart" style="height:400px;"></div>
+    <div class="chart-note">OR = eᵝ. When β = 0, OR = 1 (no effect). Positive β means the feature increases the odds; negative β means it decreases them.</div>
+  </div>
+
+  <h3>📊 Interactive: Effect of Class Imbalance on Threshold</h3>
+  <p style="color:var(--muted);font-size:.93rem;">With imbalanced classes, the default threshold of 0.5 is usually wrong. This chart shows how the optimal F1 threshold shifts as the class balance changes.</p>
+  <div class="chart">
+    <div class="chart-title">F1 vs. Threshold for Different Class Balances</div>
+    <div id="imbalanceChart" style="height:400px;"></div>
+    <div class="chart-note">As positives become rarer (lower prevalence), the F1-optimal threshold moves to lower probabilities, so the model catches more of the rare positive class.</div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithm &amp; Model Concepts</h3>
+  <div class="gloss">
+    <div>ML</div><div><strong>Machine Learning</strong> — a field of AI where systems learn patterns from data instead of being explicitly programmed.</div>
+    <div>LR</div><div><strong>Logistic Regression</strong> — a binary classification model that outputs probabilities via the sigmoid function.</div>
+    <div>Sigmoid</div><div>The S-shaped function σ(z) = 1/(1+e⁻ᶻ) that maps any real number to (0,1).</div>
+    <div>Logit</div><div>The inverse of the sigmoid: logit(p) = log(p/(1−p)).</div>
+    <div>Odds</div><div>p / (1 − p). The ratio of the probability of the event to the probability of no event.</div>
+    <div>Odds Ratio</div><div>eᵝ — the multiplicative change in odds per unit increase in a feature.</div>
+    <div>MLE</div><div><strong>Maximum Likelihood Estimation</strong> — the method for finding coefficients by maximising the likelihood of the observed data.</div>
+    <div>IRLS</div><div><strong>Iteratively Reweighted Least Squares</strong> — a Newton-like algorithm for fitting logistic regression.</div>
+    <div>L-BFGS</div><div><strong>Limited-memory Broyden–Fletcher–Goldfarb–Shanno</strong> — a quasi-Newton optimiser, the default in scikit-learn.</div>
+    <div>Softmax</div><div>Multi-class generalisation of the sigmoid. Produces a probability distribution over K classes.</div>
+    <div>Multinomial</div><div>Logistic regression with 3+ mutually exclusive classes.</div>
+    <div>Ordinal</div><div>Logistic regression with 3+ ordered classes (e.g. Low/Med/High).</div>
+    <div>One-vs-Rest</div><div>Fitting K binary logistic regressions for a K-class problem.</div>
+  </div>
+
+  <h3>Confusion Matrix &amp; Metrics</h3>
+  <div class="gloss">
+    <div>TP</div><div><strong>True Positive</strong> — model predicted positive, actual was positive. ✅</div>
+    <div>TN</div><div><strong>True Negative</strong> — model predicted negative, actual was negative. ✅</div>
+    <div>FP</div><div><strong>False Positive</strong> — model predicted positive, actual was negative. Type I error.</div>
+    <div>FN</div><div><strong>False Negative</strong> — model predicted negative, actual was positive. Type II error.</div>
+    <div>Accuracy</div><div>(TP + TN) / N — overall correctness.</div>
+    <div>Precision</div><div>TP / (TP + FP) — of the positives predicted, how many were right.</div>
+    <div>Recall</div><div>TP / (TP + FN) — of the actual positives, how many were found. Also called Sensitivity or TPR.</div>
+    <div>Specificity</div><div>TN / (TN + FP) — of the actual negatives, how many were correctly identified. Also called TNR.</div>
+    <div>F1</div><div>Harmonic mean of Precision and Recall: 2·(P·R)/(P+R).</div>
+    <div>F<sub>β</sub></div><div>Weighted F-score: (1+β²)·P·R / (β²·P + R).</div>
+    <div>ROC</div><div><strong>Receiver Operating Characteristic</strong> — a curve plotting TPR vs. FPR across thresholds.</div>
+    <div>AUC</div><div><strong>Area Under the Curve</strong> — area under the ROC curve. 0.5 = random, 1.0 = perfect.</div>
+    <div>PR-AUC</div><div><strong>Precision–Recall Area Under the Curve</strong> — better for imbalanced datasets.</div>
+    <div>FPR</div><div><strong>False Positive Rate</strong> — FP / (FP + TN). The x-axis of the ROC curve.</div>
+    <div>TPR</div><div><strong>True Positive Rate</strong> — same as Recall. The y-axis of the ROC curve.</div>
+    <div>Log Loss</div><div><strong>Logarithmic Loss / Cross-Entropy</strong> — the loss function that penalises confident wrong probability predictions.</div>
+    <div>MCC</div><div><strong>Matthews Correlation Coefficient</strong> — balanced metric from −1 to +1.</div>
+    <div>Brier Score</div><div>Mean squared difference between predicted probabilities and actual outcomes.</div>
+    <div>ECE</div><div><strong>Expected Calibration Error</strong> — measures how well predicted probabilities match observed frequencies.</div>
+    <div>Balanced Accuracy</div><div>(Recall + Specificity) / 2 — class-balanced accuracy.</div>
+    <div>Cohen's κ</div><div>Agreement between predictions and truth, corrected for chance.</div>
+  </div>
+
+  <h3>Statistical Concepts</h3>
+  <div class="gloss">
+    <div>SE</div><div><strong>Standard Error</strong> — the standard deviation of a coefficient's sampling distribution.</div>
+    <div>Wald Test</div><div>Tests whether a coefficient is significantly different from 0. W = (β̂/SE)².</div>
+    <div>LRT</div><div><strong>Likelihood Ratio Test</strong> — compares two nested models.</div>
+    <div>CI</div><div><strong>Confidence Interval</strong> — e.g. 95% CI = β̂ ± 1.96·SE.</div>
+    <div>OR</div><div><strong>Odds Ratio</strong> — eᵝ. The multiplicative change in odds.</div>
+    <div>MLE</div><div><strong>Maximum Likelihood Estimation</strong> — the estimation method.</div>
+    <div>AIC</div><div><strong>Akaike Information Criterion</strong> — model comparison metric. Lower is better.</div>
+    <div>BIC</div><div><strong>Bayesian Information Criterion</strong> — like AIC but penalises complexity more heavily.</div>
+    <div>VIF</div><div><strong>Variance Inflation Factor</strong> — measures multicollinearity.</div>
+    <div>EPV</div><div><strong>Events Per Variable</strong> — number of positive cases divided by number of predictors. Aim for ≥10.</div>
+    <div>Perfect Separation</div><div>When a feature perfectly separates the classes; coefficients diverge. Use regularisation.</div>
+    <div>Firth</div><div>Firth's penalised likelihood — a solution to perfect separation.</div>
+  </div>
+
+  <h3>Data &amp; Training Concepts</h3>
+  <div class="gloss">
+    <div>Feature</div><div>An input variable used by the model.</div>
+    <div>Target</div><div>The output variable the model is trying to predict.</div>
+    <div>Label</div><div>The ground-truth value for a training example.</div>
+    <div>Class Imbalance</div><div>When one class is much rarer than the other.</div>
+    <div>Prevalence</div><div>The proportion of positive cases in the population.</div>
+    <div>Threshold τ</div><div>The cutoff probability that separates class 0 from class 1.</div>
+    <div>Calibration</div><div>Whether predicted probabilities match observed frequencies.</div>
+    <div>Platt Scaling</div><div>A post-hoc method for calibrating probabilities using a logistic regression on the scores.</div>
+    <div>Isotonic Regression</div><div>A non-parametric calibration method.</div>
+    <div>Overfitting</div><div>When a model fits training data too well and performs poorly on new data.</div>
+    <div>Underfitting</div><div>When a model is too simple to capture the pattern.</div>
+    <div>Regularisation</div><div>L1/L2 penalties that prevent overfitting.</div>
+    <div>L1 / Lasso</div><div>Penalty on absolute coefficients; sets some to 0 (feature selection).</div>
+    <div>L2 / Ridge</div><div>Penalty on squared coefficients; shrinks them toward 0.</div>
+    <div>Elastic Net</div><div>Combines L1 and L2 penalties.</div>
+    <div>λ (Lambda)</div><div>Regularisation strength. Higher = more shrinkage.</div>
+    <div>Cross-Validation</div><div>Splitting data into K folds and training K times.</div>
+    <div>K-Fold</div><div>The specific CV scheme using K folds.</div>
+    <div>Hyperparameter</div><div>A setting you choose before training (e.g. λ, τ).</div>
+    <div>Standardisation</div><div>Rescaling features to mean 0 and SD 1. Recommended for gradient-based solvers.</div>
+    <div>SMOTE</div><div><strong>Synthetic Minority Over-sampling Technique</strong> — generates synthetic minority examples.</div>
+    <div>Class Weights</div><div>Weighting the loss to compensate for class imbalance.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model or business performance.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift between training and production.</div>
+    <div>KS Test</div><div><strong>Kolmogorov–Smirnov Test</strong> — a statistical test for whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback–Leibler Divergence</strong> — measures how one probability distribution diverges from another.</div>
+    <div>CSI</div><div><strong>Characteristic Stability Index</strong> — the per-feature version of PSI.</div>
+    <div>Data Drift</div><div>A change in the distribution of input features over time.</div>
+    <div>Concept Drift</div><div>A change in the relationship between features and the target over time.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — sequential analysis for change detection.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — deploying, monitoring and maintaining ML models in production.</div>
+    <div>CI/CD</div><div><strong>Continuous Integration / Continuous Deployment</strong> — automated pipelines for testing and shipping.</div>
+    <div>p50/p95/p99</div><div><strong>Percentile latency</strong> — p95 = 95% of requests are faster than this value.</div>
+    <div>Uptime</div><div>The percentage of time a service is available and responding.</div>
+    <div>ROI</div><div><strong>Return On Investment</strong> — (gain from investment − cost) ÷ cost.</div>
+    <div>Shadow Deployment</div><div>Running a new model alongside the old one without acting on its output.</div>
+    <div>A/B Test</div><div>Splitting live traffic between two model versions to measure which performs better.</div>
+    <div>Champion/Challenger</div><div>The current production model (champion) vs. a candidate model (challenger).</div>
+  </div>
+
+  <h3>Explainability</h3>
+  <div class="gloss">
+    <div>XAI</div><div><strong>Explainable AI</strong> — methods that make model decisions understandable to humans.</div>
+    <div>SHAP</div><div><strong>SHapley Additive exPlanations</strong> — game-theory-based feature attribution.</div>
+    <div>LIME</div><div><strong>Local Interpretable Model-agnostic Explanations</strong> — explains individual predictions.</div>
+    <div>Odds Ratio</div><div>The most interpretable output of logistic regression: eᵝ.</div>
+    <div>Partial Effect</div><div>The change in predicted probability from a one-unit change in a feature, holding others fixed.</div>
+    <div>White-box</div><div>A model whose internals are directly interpretable (logistic regression is a white-box model).</div>
+    <div>Black-box</div><div>A model whose internals are opaque (e.g. a deep neural network).</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs and core formulas in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:22%;">KPI / Formula</th>
+      <th style="width:14%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>Accuracy</td><td>Class.</td><td>(TP + TN) / (TP + TN + FP + FN)</td><td>↑ Higher</td></tr>
+    <tr><td>Precision</td><td>Class.</td><td>TP / (TP + FP)</td><td>↑ Higher</td></tr>
+    <tr><td>Recall</td><td>Class.</td><td>TP / (TP + FN)</td><td>↑ Higher</td></tr>
+    <tr><td>Specificity</td><td>Class.</td><td>TN / (TN + FP)</td><td>↑ Higher</td></tr>
+    <tr><td>F1-Score</td><td>Class.</td><td>2·P·R / (P + R)</td><td>↑ Higher</td></tr>
+    <tr><td>Balanced Accuracy</td><td>Class.</td><td>(Recall + Specificity) / 2</td><td>↑ Higher</td></tr>
+    <tr><td>ROC-AUC</td><td>Class.</td><td>∫ TPR d(FPR)</td><td>↑ → 1.0</td></tr>
+    <tr><td>PR-AUC</td><td>Class.</td><td>∫ Precision d(Recall)</td><td>↑ → 1.0</td></tr>
+    <tr><td>Log Loss</td><td>Class.</td><td>−1/N · Σ [y·log p + (1−y)·log(1−p)]</td><td>↓ Lower</td></tr>
+    <tr><td>MCC</td><td>Class.</td><td>(TP·TN − FP·FN) / √[(TP+FP)(TP+FN)(TN+FP)(TN+FN)]</td><td>↑ → 1.0</td></tr>
+    <tr><td>Cohen's κ</td><td>Class.</td><td>(p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)</td><td>↑ → 1.0</td></tr>
+    <tr><td>Brier Score</td><td>Calib.</td><td>1/N · Σ (p − y)²</td><td>↓ → 0</td></tr>
+    <tr><td>ECE</td><td>Calib.</td><td>Σ (n<sub>b</sub>/N)·|acc(b) − conf(b)|</td><td>↓ → 0</td></tr>
+    <tr><td>Sigmoid</td><td>Math</td><td>σ(z) = 1/(1 + e<sup>−z</sup>)</td><td>—</td></tr>
+    <tr><td>Logit</td><td>Math</td><td>log(p/(1−p))</td><td>—</td></tr>
+    <tr><td>Odds Ratio</td><td>Math</td><td>e<sup>β<sub>j</sub></sup></td><td>—</td></tr>
+    <tr><td>Log-Likelihood</td><td>Math</td><td>Σ [y·log p + (1−y)·log(1−p)]</td><td>↑ Maximum</td></tr>
+    <tr><td>Gradient</td><td>Math</td><td>∂J/∂β<sub>j</sub> = (1/N)·Σ(p<sub>i</sub> − y<sub>i</sub>)·x<sub>ij</sub></td><td>→ 0</td></tr>
+    <tr><td>Hessian</td><td>Math</td><td>H = Xᵀ W X, W = diag(p(1−p))</td><td>—</td></tr>
+    <tr><td>Softmax</td><td>Math</td><td>e<sup>z<sub>k</sub></sup>/Σe<sup>z<sub>j</sub></sup></td><td>Sum = 1</td></tr>
+    <tr><td>Wald Test</td><td>Stat.</td><td>(β̂/SE)² ~ χ²(1)</td><td>p &lt; 0.05</td></tr>
+    <tr><td>95% CI for OR</td><td>Stat.</td><td>exp(β̂ ± 1.96·SE)</td><td>Excludes 1</td></tr>
+    <tr><td>AIC</td><td>Stat.</td><td>2k − 2·ℓ̂</td><td>↓ Lower</td></tr>
+    <tr><td>BIC</td><td>Stat.</td><td>k·ln(N) − 2·ℓ̂</td><td>↓ Lower</td></tr>
+    <tr><td>Cross-Val Score</td><td>Robust.</td><td>1/K · Σ Metric<sub>k</sub></td><td>↑ Higher</td></tr>
+    <tr><td>Train-Test Gap</td><td>Robust.</td><td>Metric<sub>test</sub> − Metric<sub>train</sub></td><td>↓ Smaller</td></tr>
+    <tr><td>PSI</td><td>Post</td><td>Σ (A% − E%)·ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>KS Statistic</td><td>Post</td><td>max |F<sub>train</sub>(x) − F<sub>prod</sub>(x)|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>KL Divergence</td><td>Post</td><td>Σ P(i)·log(P(i)/Q(i))</td><td>↓ → 0</td></tr>
+    <tr><td>Uptime</td><td>Post</td><td>(Total − Downtime)/Total × 100%</td><td>↑ → 100%</td></tr>
+    <tr><td>Error Rate</td><td>Post</td><td>Failed / Total × 100%</td><td>↓ → 0%</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+    <tr><td>Override Rate</td><td>Post</td><td>Overrides / Total decisions × 100%</td><td>↓ Lower</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> Never optimise a single metric in isolation. A model with 99% accuracy but 5% recall on fraud is useless. A model with perfect F1 but poorly calibrated probabilities is dangerous for risk scoring. A model that was perfect last quarter but has PSI &gt; 0.3 today needs retraining. Always check a <em>portfolio</em> of metrics — performance (accuracy/AUC), calibration (Brier/ECE), robustness (CV/gap), operational (latency/uptime), and business (ROI/cost saved).
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Logistic Regression Model — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   1. SIGMOID CURVE EXPLORER
+   ============================================================ */
+(function(){
+  const sigSlopeSlider = document.getElementById('sigSlopeSlider');
+  const sigInterceptSlider = document.getElementById('sigInterceptSlider');
+  const sigSlopeVal = document.getElementById('sigSlopeVal');
+  const sigInterceptVal = document.getElementById('sigInterceptVal');
+  const sigSlopeLbl = document.getElementById('sigSlopeLbl');
+  const sigInterceptLbl = document.getElementById('sigInterceptLbl');
+  const sigP0 = document.getElementById('sigP0');
+  const sigOdds = document.getElementById('sigOdds');
+  const resetBtn = document.getElementById('sigResetBtn');
+
+  function sigmoid(z){ return 1 / (1 + Math.exp(-z)); }
+
+  function update(){
+    const b1 = parseFloat(sigSlopeSlider.value);
+    const b0 = parseFloat(sigInterceptSlider.value);
+    sigSlopeVal.textContent = b1.toFixed(2);
+    sigInterceptVal.textContent = b0.toFixed(2);
+    sigSlopeLbl.textContent = b1.toFixed(2);
+    sigInterceptLbl.textContent = b0.toFixed(2);
+
+    const p0 = sigmoid(b0);
+    sigP0.textContent = p0.toFixed(4);
+    sigOdds.textContent = Math.exp(b1).toFixed(4);
+
+    const xs = [];
+    const ys = [];
+    for (let i = -60; i <= 60; i++){
+      const x = i / 10;
+      xs.push(x);
+      ys.push(sigmoid(b0 + b1 * x));
+    }
+    const boundaryX = b1 !== 0 ? -b0 / b1 : null;
+
+    const traceSig = {x: xs, y: ys, mode:'lines', name:'σ(β₀ + β₁x)',
+      line:{color:'#0891b2', width:3}};
+    const traceThreshold = {x:[-6, 6], y:[0.5, 0.5], mode:'lines', name:'Threshold p = 0.5',
+      line:{color:'#94a3b8', width:1.5, dash:'dash'}};
+
+    const shapes = [];
+    if (boundaryX !== null && boundaryX >= -6 && boundaryX <= 6){
+      shapes.push({
+        type:'line', xref:'x', yref:'paper',
+        x0: boundaryX, x1: boundaryX, y0: 0, y1: 1,
+        line:{color:'#dc2626', width:2, dash:'dot'}
+      });
+    }
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'z = β₀ + β₁·x', font:{size:12}}, gridcolor:'#e2e8f0', range:[-6, 6], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'σ(z)', font:{size:12}}, gridcolor:'#e2e8f0', range:[-0.05, 1.05], showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, orientation:'h', font:{size:10}},
+      margin:{l:60, r:20, t:20, b:50}, height: 400,
+      shapes: shapes,
+      hovermode:'closest'
+    };
+    Plotly.react('sigmoidChart', [traceSig, traceThreshold], layout, {responsive:true, displayModeBar:false});
+  }
+
+  sigSlopeSlider.addEventListener('input', update);
+  sigInterceptSlider.addEventListener('input', update);
+  resetBtn.addEventListener('click', () => {
+    sigSlopeSlider.value = 1;
+    sigInterceptSlider.value = 0;
+    update();
+  });
+  update();
+})();
+
+/* ============================================================
+   2. LINEAR vs LOGISTIC ON BINARY DATA
+   ============================================================ */
+(function(){
+  // Generate binary data
+  const N = 40;
+  const xs = [];
+  const ys = [];
+  for (let i = 0; i < N; i++){
+    const x = -5 + Math.random() * 10;
+    const p = 1 / (1 + Math.exp(-1.5 * x));
+    ys.push(Math.random() < p ? 1 : 0);
+    xs.push(x);
+  }
+
+  // Linear fit (least squares on y)
+  const xMean = xs.reduce((a,b)=>a+b,0)/N;
+  const yMean = ys.reduce((a,b)=>a+b,0)/N;
+  let num=0, den=0;
+  for (let i = 0; i < N; i++){ num += (xs[i]-xMean)*(ys[i]-yMean); den += (xs[i]-xMean)*(xs[i]-xMean); }
+  const lSlope = num/den;
+  const lIntercept = yMean - lSlope*xMean;
+
+  // Logistic fit via simple gradient descent
+  let b0 = 0, b1 = 0;
+  const alpha = 0.15;
+  for (let it = 0; it < 3000; it++){
+    let g0 = 0, g1 = 0;
+    for (let i = 0; i < N; i++){
+      const p = 1 / (1 + Math.exp(-(b0 + b1 * xs[i])));
+      g0 += (p - ys[i]);
+      g1 += (p - ys[i]) * xs[i];
+    }
+    b0 -= alpha * g0 / N;
+    b1 -= alpha * g1 / N;
+  }
+
+  const grid = [];
+  for (let i = 0; i <= 100; i++) grid.push(-6 + i * 0.12);
+
+  const traceData = {x:xs, y:ys, mode:'markers', name:'Data',
+    marker:{color:'#0891b2', size:8, line:{color:'#ffffff', width:1}}};
+
+  // Linear chart
+  const traceLin = {x:grid, y:grid.map(x => lIntercept + lSlope*x), mode:'lines', name:'Linear fit',
+    line:{color:'#dc2626', width:3}};
+  const layoutLin = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'x', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'y', font:{size:11}}, gridcolor:'#e2e8f0', range:[-0.3, 1.3], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+    margin:{l:50, r:20, t:20, b:45}, height: 360, hovermode:'closest',
+    shapes:[
+      {type:'line', xref:'paper', yref:'y', x0:0, x1:1, y0:0, y1:0, line:{color:'#94a3b8', width:1, dash:'dash'}},
+      {type:'line', xref:'paper', yref:'y', x0:0, x1:1, y0:1, y1:1, line:{color:'#94a3b8', width:1, dash:'dash'}}
+    ]
+  };
+  Plotly.newPlot('linearBinaryChart', [traceData, traceLin], layoutLin, {responsive:true, displayModeBar:false});
+
+  // Logistic chart
+  const traceLog = {x:grid, y:grid.map(x => 1/(1+Math.exp(-(b0 + b1*x)))), mode:'lines', name:'Logistic fit',
+    line:{color:'#059669', width:3}};
+  const layoutLog = JSON.parse(JSON.stringify(layoutLin));
+  layoutLog.yaxis.range = [-0.05, 1.05];
+  layoutLog.shapes = [
+    {type:'line', xref:'paper', yref:'y', x0:0, x1:1, y0:0.5, y1:0.5, line:{color:'#94a3b8', width:1.5, dash:'dash'}}
+  ];
+  Plotly.newPlot('logisticBinaryChart', [traceData, traceLog], layoutLog, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   3. LOGIT vs PROBABILITY
+   ============================================================ */
+(function(){
+  const b0 = 0.5, b1 = 1.2;
+  const xs = [];
+  const zs = [];
+  const ps = [];
+  for (let i = -60; i <= 60; i++){
+    const x = i / 10;
+    const z = b0 + b1 * x;
+    xs.push(x);
+    zs.push(z);
+    ps.push(1 / (1 + Math.exp(-z)));
+  }
+
+  const traceZ = {x:xs, y:zs, mode:'lines', name:'z = β₀ + β₁·x',
+    line:{color:'#0891b2', width:3}};
+  const layoutZ = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'x', font:{size:11}}, gridcolor:'#e2e8f0', range:[-6, 6], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'log-odds z', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+    margin:{l:55, r:20, t:20, b:45}, height: 360,
+    shapes:[{type:'line', xref:'paper', yref:'y', x0:0, x1:1, y0:0, y1:0, line:{color:'#94a3b8', width:1.5, dash:'dash'}}]
+  };
+  Plotly.newPlot('logitChart', [traceZ], layoutZ, {responsive:true, displayModeBar:false});
+
+  const traceP = {x:xs, y:ps, mode:'lines', name:'p = σ(z)',
+    line:{color:'#be123c', width:3}};
+  const layoutP = JSON.parse(JSON.stringify(layoutZ));
+  layoutP.yaxis.title = 'probability p';
+  layoutP.yaxis.range = [-0.05, 1.05];
+  layoutP.shapes = [{type:'line', xref:'paper', yref:'y', x0:0, x1:1, y0:0.5, y1:0.5, line:{color:'#94a3b8', width:1.5, dash:'dash'}}];
+  Plotly.newPlot('probChart', [traceP], layoutP, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   4. DECISION BOUNDARY 2D
+   ============================================================ */
+(function(){
+  // Generate two classes with linear separation
+  const N = 80;
+  const x0 = [], y0 = [];
+  const x1 = [], y1 = [];
+  for (let i = 0; i < N; i++){
+    const a = -1.5 + Math.random() * 3 - 1.5;
+    const b = -1.5 + Math.random() * 3;
+    x0.push(a); y0.push(b);
+    const c = 1.5 + Math.random() * 3 - 1.5;
+    const d = 1.5 + Math.random() * 3 - 1.5;
+    x1.push(c); y1.push(d);
+  }
+
+  // True-ish coefficients
+  const b0 = -0.3, b1 = 1.2, b2 = 1.1;
+
+  // Create probability surface
+  const gridN = 60;
+  const gridX = [];
+  const gridY = [];
+  const gridZ = [];
+  for (let i = 0; i <= gridN; i++){
+    const rowX = [], rowY = [], rowZ = [];
+    for (let j = 0; j <= gridN; j++){
+      const x = -5 + j * 10 / gridN;
+      const y = -5 + i * 10 / gridN;
+      rowX.push(x); rowY.push(y);
+      rowZ.push(1/(1+Math.exp(-(b0 + b1*x + b2*y))));
+    }
+    gridX.push(rowX); gridY.push(rowY); gridZ.push(rowZ);
+  }
+
+  const traceContour = {
+    x: gridX[0], y: gridY.map(r => r[0]), z: gridZ,
+    type:'contour', colorscale:[[0,'#f0f9ff'],[0.5,'#bae6fd'],[1,'#be123c']],
+    contours:{showlabels:false, coloring:'heatmap'}, opacity:0.65, showscale:false,
+    hoverinfo:'skip'
+  };
+  const traceClass0 = {x:x0, y:y0, mode:'markers', name:'Class 0',
+    marker:{color:'#2563eb', size:8, line:{color:'#ffffff', width:1}}};
+  const traceClass1 = {x:x1, y:y1, mode:'markers', name:'Class 1',
+    marker:{color:'#be123c', size:8, line:{color:'#ffffff', width:1}}};
+
+  // Decision boundary line: b0 + b1*x + b2*y = 0 → y = -(b0 + b1*x)/b2
+  const lineX = [-5, 5];
+  const lineY = lineX.map(x => -(b0 + b1*x)/b2);
+  const traceBoundary = {x:lineX, y:lineY, mode:'lines', name:'Decision boundary (p=0.5)',
+    line:{color:'#ffffff', width:3, dash:'dash'}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Feature x₁', font:{size:12}}, gridcolor:'#e2e8f0', range:[-5,5], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Feature x₂', font:{size:12}}, gridcolor:'#e2e8f0', range:[-5,5], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, orientation:'h', font:{size:10}},
+    margin:{l:55, r:20, t:20, b:50}, height: 480
+  };
+  Plotly.newPlot('boundaryChart', [traceContour, traceClass0, traceClass1, traceBoundary], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   5. CONFUSION MATRIX DIAGRAM
+   ============================================================ */
+(function(){
+  const text = [
+    ['TN = 850<br>Correct rejection ✅', 'FP = 50<br>False alarm ❌'],
+    ['FN = 120<br>Missed case ❌', 'TP = 480<br>Correct hit ✅']
+  ];
+  const trace = {
+    z: [[850, 50], [120, 480]],
+    x: ['Predicted: Negative', 'Predicted: Positive'],
+    y: ['Actual: Negative', 'Actual: Positive'],
+    type: 'heatmap',
+    colorscale: [[0,'#f8fafc'],[0.35,'#a5f3fc'],[0.7,'#0891b2'],[1,'#0e7490']],
+    text: text, texttemplate: '%{text}',
+    textfont: {size: 14, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+    hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 8, ygap: 8
+  };
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    margin:{l:140, r:40, t:40, b:70}, height: 400
+  };
+  Plotly.newPlot('cmDiagram', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   6. THRESHOLD TUNING DEMO
+   ============================================================ */
+(function(){
+  // Generate scores for two classes
+  const N = 200;
+  const posScores = [];
+  const negScores = [];
+  for (let i = 0; i < N; i++){
+    // Positive scores concentrated high
+    let s = 0.5 + Math.random() * 0.5;
+    // Add noise
+    s += (Math.random() - 0.5) * 0.3;
+    s = Math.max(0, Math.min(1, s));
+    posScores.push(s);
+
+    // Negative scores concentrated low
+    let n = 0.5 - Math.random() * 0.5;
+    n += (Math.random() - 0.5) * 0.3;
+    n = Math.max(0, Math.min(1, n));
+    negScores.push(n);
+  }
+
+  const thrSlider = document.getElementById('thrSlider');
+  const thrVal = document.getElementById('thrVal');
+  const thrLbl = document.getElementById('thrLbl');
+  const thrPrec = document.getElementById('thrPrec');
+  const thrRec = document.getElementById('thrRec');
+  const thrF1 = document.getElementById('thrF1');
+  const thrResults = document.getElementById('thrResults');
+  const resetBtn = document.getElementById('thrResetBtn');
+
+  function update(){
+    const tau = parseFloat(thrSlider.value);
+    thrVal.textContent = tau.toFixed(2);
+    thrLbl.textContent = tau.toFixed(2);
+
+    let TP = 0, FN = 0, TN = 0, FP = 0;
+    posScores.forEach(s => { if (s >= tau) TP++; else FN++; });
+    negScores.forEach(s => { if (s >= tau) FP++; else TN++; });
+
+    const prec = (TP + FP) === 0 ? 0 : TP / (TP + FP);
+    const rec = (TP + FN) === 0 ? 0 : TP / (TP + FN);
+    const f1 = (prec + rec) === 0 ? 0 : 2 * prec * rec / (prec + rec);
+    const acc = (TP + TN) / (TP + TN + FP + FN);
+
+    thrPrec.textContent = prec.toFixed(3);
+    thrRec.textContent = rec.toFixed(3);
+    thrF1.textContent = f1.toFixed(3);
+
+    thrResults.innerHTML = `
+      <div class="result-card"><div class="name">TP</div><div class="value" style="color:#059669;">${TP}</div></div>
+      <div class="result-card"><div class="name">TN</div><div class="value" style="color:#059669;">${TN}</div></div>
+      <div class="result-card"><div class="name">FP</div><div class="value" style="color:#dc2626;">${FP}</div></div>
+      <div class="result-card"><div class="name">FN</div><div class="value" style="color:#dc2626;">${FN}</div></div>
+      <div class="result-card"><div class="name">Accuracy</div><div class="value">${(acc*100).toFixed(2)}%</div></div>
+      <div class="result-card"><div class="name">F1-Score</div><div class="value" style="color:#d97706;">${f1.toFixed(3)}</div></div>
+    `;
+
+    // Histogram of scores
+    const bins = 20;
+    const posHist = new Array(bins).fill(0);
+    const negHist = new Array(bins).fill(0);
+    posScores.forEach(s => posHist[Math.min(bins-1, Math.floor(s * bins))]++);
+    negScores.forEach(s => negHist[Math.min(bins-1, Math.floor(s * bins))]++);
+    const binCenters = [];
+    for (let i = 0; i < bins; i++) binCenters.push((i + 0.5) / bins);
+
+    const traceNeg = {x: binCenters, y: negHist, type:'bar', name:'Class 0 (negatives)',
+      marker:{color:'#2563eb', opacity:0.75}};
+    const tracePos = {x: binCenters, y: posHist, type:'bar', name:'Class 1 (positives)',
+      marker:{color:'#be123c', opacity:0.75}};
+
+    const shapes = [{
+      type:'line', xref:'x', yref:'paper',
+      x0: tau, x1: tau, y0: 0, y1: 1,
+      line:{color:'#0e7490', width:3, dash:'dash'}
+    }];
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'Predicted probability', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Count', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, orientation:'h', font:{size:10}},
+      margin:{l:60, r:20, t:20, b:50}, height: 400, barmode:'overlay',
+      shapes: shapes,
+      annotations:[{
+        x: tau, yref:'paper', y: 0.95,
+        text: `τ = ${tau.toFixed(2)}`, showarrow:false,
+        font:{color:'#0e7490', size:12, weight:'bold'}
+      }]
+    };
+    Plotly.react('thresholdChart', [traceNeg, tracePos], layout, {responsive:true, displayModeBar:false});
+  }
+
+  thrSlider.addEventListener('input', update);
+  resetBtn.addEventListener('click', () => { thrSlider.value = 0.5; update(); });
+  update();
+})();
+
+/* ============================================================
+   7. ROC CURVE (static example)
+   ============================================================ */
+(function(){
+  const fpr = [0,0.01,0.03,0.06,0.10,0.15,0.22,0.32,0.45,0.60,0.78,1.0];
+  const tpr = [0,0.42,0.60,0.71,0.79,0.86,0.91,0.945,0.968,0.982,0.992,1.0];
+
+  const rocTrace = {x:fpr, y:tpr, mode:'lines+markers', name:'Logistic Regression (AUC = 0.94)',
+    line:{color:'#0891b2', width:3}, marker:{size:7, color:'#0891b2', line:{color:'#ffffff', width:1.5}},
+    fill:'tozeroy', fillcolor:'rgba(8,145,178,0.08)'};
+  const randomLine = {x:[0,1], y:[0,1], mode:'lines', name:'Random Guessing (AUC = 0.50)',
+    line:{color:'#dc2626', width:2, dash:'dash'}};
+  const perfectPoint = {x:[0], y:[1], mode:'markers', name:'Perfect Classifier',
+    marker:{color:'#059669', size:15, symbol:'star', line:{color:'#ffffff', width:1.5}}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'False Positive Rate (1 − Specificity)', font:{size:13}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'True Positive Rate (Recall)', font:{size:13}}, gridcolor:'#e2e8f0', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.08, font:{size:11}},
+    margin:{l:75, r:30, t:30, b:65}, hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'rect', xref:'x', yref:'y', x0:0, x1:0.25, y0:0.75, y1:1.0,
+      fillcolor:'rgba(5,150,105,0.07)', line:{color:'rgba(5,150,105,0.4)', width:1.5, dash:'dot'}, layer:'below'}],
+    annotations:[{x:0.125, y:0.88, text:'Ideal zone', showarrow:false,
+      font:{color:'#047857', size:12, weight:'bold'}}]
+  };
+  Plotly.newPlot('rocChart', [rocTrace, randomLine, perfectPoint], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   8. PR CURVE
+   ============================================================ */
+(function(){
+  const recall = [0,0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.0];
+  const precision = [0.95,0.93,0.91,0.88,0.85,0.82,0.78,0.72,0.63,0.48,0.30];
+
+  const tracePR = {x:recall, y:precision, mode:'lines+markers', name:'Logistic Regression',
+    line:{color:'#be123c', width:3}, marker:{size:7, color:'#be123c', line:{color:'#ffffff', width:1.5}},
+    fill:'tozeroy', fillcolor:'rgba(190,18,60,0.08)'};
+  const baseline = {x:[0,1], y:[0.1,0.1], mode:'lines', name:'Baseline (prevalence = 0.10)',
+    line:{color:'#94a3b8', width:2, dash:'dash'}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Recall', font:{size:13}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Precision', font:{size:13}}, gridcolor:'#e2e8f0', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.35, y:0.15, font:{size:11}},
+    margin:{l:65, r:30, t:30, b:60}, hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('prChart', [tracePR, baseline], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   9. CONFUSION MATRIX STATIC CHART
+   ============================================================ */
+(function(){
+  const z = [[850, 50], [120, 480]];
+  const text = [
+    ['TN = 850<br>Correctly predicted "No"', 'FP = 50<br>Wrongly flagged as "Yes"<br>(False Alarm)'],
+    ['FN = 120<br>Missed a real "Yes"<br>(The costly one)', 'TP = 480<br>Correctly predicted "Yes"']
+  ];
+  const trace = {
+    z: z,
+    x: ['Predicted: Negative', 'Predicted: Positive'],
+    y: ['Actual: Negative', 'Actual: Positive'],
+    type: 'heatmap',
+    colorscale: [[0,'#f8fafc'],[0.35,'#a5f3fc'],[0.7,'#0891b2'],[1,'#0e7490']],
+    text: text, texttemplate: '%{text}',
+    textfont: {size: 13, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+    hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 6, ygap: 6
+  };
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{side:'bottom', gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    margin:{l:140, r:40, t:40, b:70}, height: 400
+  };
+  Plotly.newPlot('cmChart', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   10. INTERACTIVE KPI CALCULATOR
+   ============================================================ */
+(function(){
+  const inTP = document.getElementById('inTP');
+  const inTN = document.getElementById('inTN');
+  const inFP = document.getElementById('inFP');
+  const inFN = document.getElementById('inFN');
+  const resultsGrid = document.getElementById('resultsGrid');
+
+  function safeDiv(a, b){ return b === 0 ? 0 : a / b; }
+  function fmtPct(v){ return (v * 100).toFixed(2) + '%'; }
+  function fmt3(v){ return isFinite(v) ? v.toFixed(3) : '—'; }
+
+  function update(){
+    const TP = +inTP.value || 0;
+    const TN = +inTN.value || 0;
+    const FP = +inFP.value || 0;
+    const FN = +inFN.value || 0;
+    const N = TP + TN + FP + FN;
+    if (N === 0){
+      resultsGrid.innerHTML = '<div class="result-card"><div class="name">Enter values</div><div class="value">—</div></div>';
+      return;
+    }
+    const accuracy = safeDiv(TP + TN, N);
+    const precision = safeDiv(TP, TP + FP);
+    const recall = safeDiv(TP, TP + FN);
+    const specificity = safeDiv(TN, TN + FP);
+    const fpr = safeDiv(FP, FP + TN);
+    const f1 = (precision + recall) === 0 ? 0 : 2 * precision * recall / (precision + recall);
+    const balAcc = (recall + specificity) / 2;
+    const mccNum = (TP * TN) - (FP * FN);
+    const mccDen = Math.sqrt((TP+FP) * (TP+FN) * (TN+FP) * (TN+FN));
+    const mcc = mccDen === 0 ? 0 : mccNum / mccDen;
+    const p = accuracy === 0 || accuracy === 1 ? accuracy : Math.min(Math.max(accuracy, 0.001), 0.999);
+    const logLoss = -((TP + FN) * Math.log(p) + (TN + FP) * Math.log(1 - p)) / N;
+    const po = accuracy;
+    const pe = safeDiv((TP + FP) * (TP + FN) + (TN + FP) * (TN + FN), N * N);
+    const kappa = pe === 1 ? 0 : (po - pe) / (1 - pe);
+    const prevalence = safeDiv(TP + FN, N);
+    const prAucProxy = (precision + recall) / 2;
+    const rocAucProxy = (recall + specificity) / 2;
+
+    const cards = [
+      { name:'Accuracy', value: fmtPct(accuracy), formula:'(TP+TN)/N' },
+      { name:'Precision', value: fmtPct(precision), formula:'TP/(TP+FP)' },
+      { name:'Recall', value: fmtPct(recall), formula:'TP/(TP+FN)' },
+      { name:'Specificity', value: fmtPct(specificity), formula:'TN/(TN+FP)' },
+      { name:'False Positive Rate', value: fmtPct(fpr), formula:'FP/(FP+TN)' },
+      { name:'F1-Score', value: fmt3(f1), formula:'2PR/(P+R)' },
+      { name:'Balanced Accuracy', value: fmtPct(balAcc), formula:'(Recall+Spec)/2' },
+      { name:'MCC', value: fmt3(mcc), formula:'(TP·TN−FP·FN)/√…' },
+      { name:"Cohen's Kappa", value: fmt3(kappa), formula:'(po−pe)/(1−pe)' },
+      { name:'ROC-AUC (proxy)', value: fmt3(rocAucProxy), formula:'(TPR+TNR)/2' },
+      { name:'PR-AUC (proxy)', value: fmt3(prAucProxy), formula:'(P+R)/2' },
+      { name:'Log Loss (proxy)', value: fmt3(logLoss), formula:'−Σ[y·logp+…]' },
+      { name:'Total samples', value: N.toLocaleString(), formula:'TP+TN+FP+FN' },
+      { name:'Positive rate', value: fmtPct(prevalence), formula:'(TP+FN)/N' }
+    ];
+    resultsGrid.innerHTML = cards.map(c => `
+      <div class="result-card">
+        <div class="name">${c.name}</div>
+        <div class="value">${c.value}</div>
+        <div class="formula-small">${c.formula}</div>
+      </div>
+    `).join('');
+    updateCM(TP, TN, FP, FN);
+    updateROC(recall, specificity, rocAucProxy);
+  }
+
+  let cmInit = false;
+  function updateCM(TP, TN, FP, FN){
+    const text = [['TN = ' + TN, 'FP = ' + FP], ['FN = ' + FN, 'TP = ' + TP]];
+    const z = [[TN, FP], [FN, TP]];
+    const trace = {
+      z: z,
+      x: ['Predicted: Negative', 'Predicted: Positive'],
+      y: ['Actual: Negative', 'Actual: Positive'],
+      type: 'heatmap',
+      colorscale: [[0,'#f8fafc'],[0.35,'#a5f3fc'],[0.7,'#0891b2'],[1,'#0e7490']],
+      text: text, texttemplate: '%{text}',
+      textfont: {size: 15, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+      hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 8, ygap: 8
+    };
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+      yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+      margin:{l:140, r:40, t:30, b:70}, height: 360
+    };
+    if (!cmInit){ Plotly.newPlot('liveCM', [trace], layout, {responsive:true, displayModeBar:false}); cmInit = true; }
+    else { Plotly.react('liveCM', [trace], layout, {responsive:true, displayModeBar:false}); }
+  }
+
+  let rocInit = false;
+  function updateROC(recall, specificity, auc){
+    const pts = [];
+    const N = 30;
+    for (let i = 0; i <= N; i++){
+      const f = i / N;
+      const k = Math.max(0.05, Math.log(1 - recall) / Math.log(1 - (1 - specificity) + 1e-9));
+      const t = Math.pow(f, 1 / Math.max(k, 0.2));
+      pts.push({x: f, y: Math.min(1, t)});
+    }
+    pts[pts.length - 1].y = 1;
+    const rocTrace = {x: pts.map(p => p.x), y: pts.map(p => p.y), mode: 'lines',
+      name: `Synthetic ROC (AUC ≈ ${auc.toFixed(3)})`,
+      line: {color:'#0891b2', width:3}, fill: 'tozeroy', fillcolor: 'rgba(8,145,178,0.08)'};
+    const randomLine = {x:[0,1], y:[0,1], mode:'lines', name:'Random (AUC 0.5)',
+      line:{color:'#dc2626', width:2, dash:'dash'}};
+    const currentPoint = {x:[1 - specificity], y:[recall], mode:'markers',
+      name:'Current operating point',
+      marker:{color:'#d97706', size:13, symbol:'circle', line:{color:'#ffffff', width:2}}};
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'False Positive Rate', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'True Positive Rate', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.45, y:0.05, font:{size:11}},
+      margin:{l:65, r:30, t:20, b:60}, height: 380
+    };
+    if (!rocInit){ Plotly.newPlot('liveROC', [rocTrace, randomLine, currentPoint], layout, {responsive:true, displayModeBar:false}); rocInit = true; }
+    else { Plotly.react('liveROC', [rocTrace, randomLine, currentPoint], layout, {responsive:true, displayModeBar:false}); }
+  }
+
+  [inTP, inTN, inFP, inFN].forEach(inp => inp.addEventListener('input', update));
+  update();
+})();
+
+/* ============================================================
+   11. LOG-LOSS CURVE
+   ============================================================ */
+(function(){
+  const ps = [];
+  for (let i = 1; i < 100; i++) ps.push(i / 100);
+
+  const lossY1 = ps.map(p => -Math.log(p));       // true label = 1
+  const lossY0 = ps.map(p => -Math.log(1 - p));   // true label = 0
+
+  const traceY1 = {x:ps, y:lossY1, mode:'lines', name:'Loss when true label y = 1',
+    line:{color:'#2563eb', width:3}};
+  const traceY0 = {x:ps, y:lossY0, mode:'lines', name:'Loss when true label y = 0',
+    line:{color:'#be123c', width:3}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Predicted probability p', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Loss', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,5], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.35, y:0.95, font:{size:11}},
+    margin:{l:60, r:30, t:30, b:55}, height: 400, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'line', xref:'x', yref:'paper', x0:0.5, x1:0.5, y0:0, y1:1,
+      line:{color:'#94a3b8', width:1, dash:'dash'}}]
+  };
+  Plotly.newPlot('logLossChart', [traceY1, traceY0], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   12. ODDS RATIO EXPLORER
+   ============================================================ */
+(function(){
+  const betas = [];
+  for (let i = -30; i <= 30; i++) betas.push(i / 10);
+  const ors = betas.map(b => Math.exp(b));
+
+  const trace = {x:betas, y:ors, mode:'lines', name:'OR = e^β',
+    line:{color:'#be123c', width:3}};
+  const trace1 = {x:[-3, 3], y:[1, 1], mode:'lines', name:'OR = 1 (no effect)',
+    line:{color:'#94a3b8', width:1.5, dash:'dash'}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Coefficient β', font:{size:12}}, gridcolor:'#e2e8f0', range:[-3, 3], zerolinecolor:'#94a3b8', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Odds Ratio e^β', font:{size:12}}, gridcolor:'#e2e8f0', range:[0, 8], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.95, font:{size:11}},
+    margin:{l:60, r:30, t:30, b:55}, height: 400, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    annotations:[
+      {x:1.5, y:2, text:'β>0: feature<br>increases odds', showarrow:false,
+       font:{color:'#059669', size:11, weight:'bold'}},
+      {x:-1.5, y:2, text:'β<0: feature<br>decreases odds', showarrow:false,
+       font:{color:'#dc2626', size:11, weight:'bold'}}
+    ]
+  };
+  Plotly.newPlot('oddsRatioChart', [trace, trace1], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   13. CLASS IMBALANCE THRESHOLD CHART
+   ============================================================ */
+(function(){
+  const thresholds = [];
+  for (let i = 1; i < 100; i++) thresholds.push(i / 100);
+
+  // Simulate F1 curves for three prevalence levels
+  function f1Curve(prevalence, peakThr, width){
+    return thresholds.map(t => {
+      // Gaussian-ish F1 curve peaking at peakThr
+      const f1 = Math.exp(-Math.pow((t - peakThr) / width, 2)) * (0.6 + 0.4 * (1 - prevalence));
+      return Math.max(0, f1);
+    });
+  }
+
+  const traceBalanced = {x:thresholds, y:f1Curve(0.5, 0.50, 0.25), mode:'lines',
+    name:'Balanced (prevalence 50%)', line:{color:'#0891b2', width:3}};
+  const traceModerate = {x:thresholds, y:f1Curve(0.2, 0.40, 0.25), mode:'lines',
+    name:'Moderate imbalance (20%)', line:{color:'#d97706', width:3}};
+  const traceRare = {x:thresholds, y:f1Curve(0.05, 0.20, 0.22), mode:'lines',
+    name:'Rare event (5%)', line:{color:'#be123c', width:3}};
+  const traceVeryRare = {x:thresholds, y:f1Curve(0.01, 0.10, 0.18), mode:'lines',
+    name:'Very rare (1%)', line:{color:'#7c2d12', width:3}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Threshold τ', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'F1-Score', font:{size:12}}, gridcolor:'#e2e8f0', range:[0, 0.9], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.35, y:0.05, font:{size:11}},
+    margin:{l:60, r:30, t:30, b:55}, height: 400, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'line', xref:'x', yref:'paper', x0:0.5, x1:0.5, y0:0, y1:1,
+      line:{color:'#94a3b8', width:1.5, dash:'dash'}}],
+    annotations:[{x:0.5, yref:'paper', y:0.98, text:'Default τ = 0.5',
+      showarrow:false, font:{color:'#64748b', size:10, weight:'bold'}}]
+  };
+  Plotly.newPlot('imbalanceChart', [traceBalanced, traceModerate, traceRare, traceVeryRare], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   14. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

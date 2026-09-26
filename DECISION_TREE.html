@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Tree Model — Complete Study Material & KPI Reference</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#2563eb;
+    --accent2:#7c3aed;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#1e40af 0%,#4c1d95 55%,#831843 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(30,64,175,.18);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.9);
+    font-size:1.08rem;
+    max-width:820px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(37,99,235,.28);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#eff6ff,#f5f3ff);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{
+    background:#fef3c7;
+    border:none;
+    color:#92400e;
+    font-weight:700;
+    padding:1px 6px;
+  }
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#f0f9ff;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.reg{border-left-color:var(--amber);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--accent);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.reg h4{color:#b45309;}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.reg .badge{background:#fffbeb;color:#b45309;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin:20px 0;
+  }
+  .calc-grid label{
+    display:block;
+    font-size:.82rem;
+    font-weight:800;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:5px;
+  }
+  .calc-grid input{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border-strong);
+    border-radius:8px;
+    font-size:1rem;
+    font-family:'Segoe UI',sans-serif;
+    font-weight:600;
+    color:#1e293b;
+    background:#ffffff;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .calc-grid input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(37,99,235,.13);
+  }
+  @media(max-width:700px){.calc-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin:18px 0;
+  }
+  .result-card{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    border-top:3px solid var(--accent);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .result-card .name{
+    font-size:.76rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:800;
+    margin-bottom:4px;
+  }
+  .result-card .value{
+    font-size:1.45rem;
+    font-weight:800;
+    color:var(--text);
+    line-height:1.2;
+  }
+  .result-card .formula-small{
+    font-size:.74rem;
+    color:var(--muted);
+    font-family:'Consolas',monospace;
+    margin-top:6px;
+    line-height:1.4;
+  }
+
+  /* Interactive tree */
+  .tree-svg{width:100%;height:auto;display:block;}
+  .node rect{cursor:pointer;transition:all .18s ease;stroke-width:2;}
+  .node rect:hover{filter:brightness(1.06);stroke-width:3;}
+  .node text{
+    pointer-events:none;font-size:13px;font-weight:700;
+    text-anchor:middle;dominant-baseline:middle;
+    font-family:'Segoe UI',sans-serif;
+  }
+  .node.decision rect{fill:#dbeafe;stroke:#3b82f6;}
+  .node.decision text{fill:#1e40af;}
+  .node.leaf-yes rect{fill:#d1fae5;stroke:#10b981;}
+  .node.leaf-yes text{fill:#065f46;}
+  .node.leaf-no rect{fill:#fee2e2;stroke:#ef4444;}
+  .node.leaf-no text{fill:#991b1b;}
+  .node.active rect{stroke:#d97706;stroke-width:4;filter:drop-shadow(0 0 6px rgba(217,119,6,.35));}
+  .edge{stroke:#94a3b8;stroke-width:2;}
+  .edge-label{fill:#64748b;font-size:12px;font-family:'Segoe UI',sans-serif;font-weight:700;}
+
+  #nodeInfo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);
+    border-radius:10px;
+    padding:18px 22px;
+    margin-top:14px;
+    min-height:110px;
+  }
+  #nodeInfo h4{margin-top:0;color:var(--accent);font-size:1.05rem;}
+  #nodeInfo p{font-size:.95rem;}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#b45309;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:600px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#f5f3ff;
+    color:#6d28d9;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌳 Decision Tree Model — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine you're a doctor diagnosing a patient. You don't ask every possible question at once. You ask the <em>most informative question first</em> — "Do you have a fever?" If yes, you ask "Is it above 102°F?" If no, you move to a different branch. That chain of yes/no questions <em>is</em> a decision tree.
+  </div>
+
+  <h3>What is a Decision Tree?</h3>
+  <p>A <span class="highlight">Decision Tree</span> is a supervised machine-learning algorithm that predicts a target value by repeatedly splitting the data into smaller and smaller groups based on simple <strong>if/else questions</strong> about the input features.</p>
+
+  <p>It is drawn as an upside-down tree:</p>
+  <ul class="clean">
+    <li><strong>Root Node</strong> — the very first question asked (the best splitting feature).</li>
+    <li><strong>Internal / Decision Nodes</strong> — intermediate questions that split data further.</li>
+    <li><strong>Branches</strong> — the answers (outcomes) of a question, e.g. "Yes" / "No".</li>
+    <li><strong>Leaf / Terminal Node</strong> — the final prediction (a class label or a numeric value). No further splitting happens here.</li>
+    <li><strong>Depth</strong> — the number of questions along the longest path from root to leaf.</li>
+  </ul>
+
+  <h3>How the Algorithm Builds the Tree (Step by Step)</h3>
+  <div class="box">
+    <h4>Step 1 — Start with all the data at the root</h4>
+    <p>Every row of your training dataset sits at the root node. The tree is currently a single leaf.</p>
+    <h4>Step 2 — Evaluate every possible split</h4>
+    <p>For each feature and each possible threshold/value, the algorithm asks: <em>"If I split the data here, how much purer do the resulting groups become?"</em></p>
+    <h4>Step 3 — Pick the best split</h4>
+    <p>The split that produces the greatest <strong>reduction in impurity</strong> (highest Information Gain, or lowest Gini) wins and becomes a decision node.</p>
+    <h4>Step 4 — Recurse</h4>
+    <p>Repeat Steps 2–3 on each child node using only the data that reached it. Each subtree is built independently.</p>
+    <h4>Step 5 — Stop</h4>
+    <p>Recursion stops when one of these conditions is met:</p>
+    <ul class="clean">
+      <li>All samples in a node belong to the same class (node is <em>pure</em>).</li>
+      <li>No features are left to split on.</li>
+      <li>A stopping rule is triggered — max depth reached, min samples per leaf reached, or improvement is below a threshold.</li>
+    </ul>
+    <h4>Step 6 — Prune (optional but recommended)</h4>
+    <p>Grow the tree fully, then cut back branches that add complexity without real predictive value. This fights <strong>overfitting</strong>.</p>
+  </div>
+
+  <h3>Two Flavours of Decision Tree</h3>
+  <table>
+    <tr><th>Type</th><th>Predicts</th><th>Splitting Criterion</th><th>Leaf Value</th></tr>
+    <tr>
+      <td><strong>Classification Tree</strong></td>
+      <td>A category / class (Yes/No, Spam/Not-Spam, A/B/C)</td>
+      <td>Gini Impurity, Entropy (Information Gain)</td>
+      <td>Majority class in that leaf</td>
+    </tr>
+    <tr>
+      <td><strong>Regression Tree</strong></td>
+      <td>A continuous number (price, temperature, demand)</td>
+      <td>Variance Reduction / MSE</td>
+      <td>Mean (or median) target value in that leaf</td>
+    </tr>
+  </table>
+
+  <h3>Popular Decision Tree Algorithms</h3>
+  <table>
+    <tr><th>Algorithm</th><th>Split Metric</th><th>Key Trait</th></tr>
+    <tr><td><strong>ID3</strong></td><td>Information Gain (Entropy)</td><td>Only handles categorical features; no pruning.</td></tr>
+    <tr><td><strong>C4.5</strong></td><td>Gain Ratio</td><td>Handles numeric features &amp; missing values; prunes.</td></tr>
+    <tr><td><strong>CART</strong></td><td>Gini Impurity (classification), MSE (regression)</td><td>Only binary splits; produces the trees used in scikit-learn.</td></tr>
+    <tr><td><strong>CHAID</strong></td><td>Chi-square test</td><td>Can create multi-way splits; popular in marketing analytics.</td></tr>
+  </table>
+
+  <h3>🔬 Interactive: Explore a Decision Tree</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Click any node in the tree below to see what it means and why the algorithm chose it. This is the classic <em>"Play Tennis?"</em> dataset.</p>
+
+  <div class="chart" style="padding:16px;">
+    <svg class="tree-svg" viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg">
+      <line class="edge" x1="400" y1="53" x2="140" y2="127"/>
+      <line class="edge" x1="400" y1="53" x2="400" y2="127"/>
+      <line class="edge" x1="400" y1="53" x2="660" y2="127"/>
+      <line class="edge" x1="140" y1="163" x2="60" y2="237"/>
+      <line class="edge" x1="140" y1="163" x2="220" y2="237"/>
+      <line class="edge" x1="660" y1="163" x2="580" y2="237"/>
+      <line class="edge" x1="660" y1="163" x2="740" y2="237"/>
+
+      <text class="edge-label" x="255" y="88" text-anchor="middle">Sunny</text>
+      <text class="edge-label" x="418" y="88" text-anchor="start">Overcast</text>
+      <text class="edge-label" x="545" y="88" text-anchor="middle">Rain</text>
+      <text class="edge-label" x="88" y="198" text-anchor="middle">High</text>
+      <text class="edge-label" x="196" y="198" text-anchor="middle">Normal</text>
+      <text class="edge-label" x="608" y="198" text-anchor="middle">Strong</text>
+      <text class="edge-label" x="716" y="198" text-anchor="middle">Weak</text>
+
+      <g class="node decision" data-info="root">
+        <rect x="345" y="17" width="110" height="36" rx="9"/>
+        <text x="400" y="36">Outlook?</text>
+      </g>
+
+      <g class="node decision" data-info="humidity">
+        <rect x="85" y="127" width="110" height="36" rx="9"/>
+        <text x="140" y="146">Humidity?</text>
+      </g>
+      <g class="node leaf-yes" data-info="overcast">
+        <rect x="360" y="127" width="80" height="36" rx="9"/>
+        <text x="400" y="146">Play ✔</text>
+      </g>
+      <g class="node decision" data-info="wind">
+        <rect x="605" y="127" width="110" height="36" rx="9"/>
+        <text x="660" y="146">Wind?</text>
+      </g>
+
+      <g class="node leaf-no" data-info="high">
+        <rect x="20" y="237" width="80" height="36" rx="9"/>
+        <text x="60" y="256">No Play</text>
+      </g>
+      <g class="node leaf-yes" data-info="normal">
+        <rect x="180" y="237" width="80" height="36" rx="9"/>
+        <text x="220" y="256">Play ✔</text>
+      </g>
+      <g class="node leaf-no" data-info="strong">
+        <rect x="540" y="237" width="80" height="36" rx="9"/>
+        <text x="580" y="256">No Play</text>
+      </g>
+      <g class="node leaf-yes" data-info="weak">
+        <rect x="700" y="237" width="80" height="36" rx="9"/>
+        <text x="740" y="256">Play ✔</text>
+      </g>
+    </svg>
+  </div>
+
+  <div id="nodeInfo">
+    <h4>👆 Click a node above</h4>
+    <p style="color:var(--muted);margin:0;">Select any node in the tree to learn what it does, how the split was chosen, and what the prediction means.</p>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>Decision trees are everywhere because they are interpretable, fast, and work on messy tabular data. They also power the strongest ensemble models (Random Forest, XGBoost, LightGBM).</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🏦 Banking &amp; Finance</h4>
+      <ul class="clean">
+        <li><strong>Credit scoring</strong> — approve/decline a loan based on income, debt ratio, history.</li>
+        <li><strong>Loan default prediction</strong> — flag high-risk borrowers.</li>
+        <li><strong>Fraud detection</strong> — spot unusual transaction patterns in real time.</li>
+        <li><strong>Anti-money-laundering</strong> — classify suspicious activity.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏥 Healthcare</h4>
+      <ul class="clean">
+        <li><strong>Disease diagnosis</strong> — triage patients from symptoms &amp; lab results.</li>
+        <li><strong>Readmission risk</strong> — predict who may return within 30 days.</li>
+        <li><strong>Drug response</strong> — recommend treatment based on patient profile.</li>
+        <li><strong>Insurance claims</strong> — auto-approve low-risk claims.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🛒 Retail &amp; Marketing</h4>
+      <ul class="clean">
+        <li><strong>Customer churn</strong> — predict who is about to leave.</li>
+        <li><strong>Customer segmentation</strong> — group buyers by behaviour.</li>
+        <li><strong>Product recommendation</strong> — decide what to show next.</li>
+        <li><strong>Demand forecasting</strong> — regression trees for inventory planning.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Manufacturing &amp; Operations</h4>
+      <ul class="clean">
+        <li><strong>Predictive maintenance</strong> — predict machine failure before it happens.</li>
+        <li><strong>Quality control</strong> — classify defective vs. good units.</li>
+        <li><strong>Supply chain risk</strong> — flag delayed shipments.</li>
+        <li><strong>Energy load prediction</strong> — regression trees on sensor data.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🌐 Technology &amp; Telecom</h4>
+      <ul class="clean">
+        <li><strong>Spam filtering</strong> — classic email classification.</li>
+        <li><strong>Network intrusion detection</strong> — flag malicious traffic.</li>
+        <li><strong>Customer support routing</strong> — send tickets to the right team.</li>
+        <li><strong>App/website personalisation</strong> — decide which layout to serve.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🚗 Transport &amp; Others</h4>
+      <ul class="clean">
+        <li><strong>Accident severity prediction</strong> — road safety analytics.</li>
+        <li><strong>Flight delay prediction</strong> — airline operations.</li>
+        <li><strong>Agriculture</strong> — crop yield and disease classification.</li>
+        <li><strong>HR analytics</strong> — predict employee attrition.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why so popular in industry?</strong> Because a business analyst can literally read the tree and explain it to a regulator, a doctor, or a CEO. Very few ML models offer that.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Highly interpretable ("white-box")</strong> — you can trace exactly why a prediction was made by following the path from root to leaf.</li>
+    <li><strong>No feature scaling required</strong> — you don't need to standardise or normalise your data.</li>
+    <li><strong>Handles mixed data types</strong> — numeric, categorical, and binary features in one model.</li>
+    <li><strong>Captures non-linear relationships</strong> — models complex interactions naturally.</li>
+    <li><strong>Robust to outliers</strong> — a single extreme value rarely changes a split threshold much.</li>
+    <li><strong>Handles missing values reasonably</strong> — many implementations route missing values down a default branch.</li>
+    <li><strong>Fast to train and predict</strong> — prediction is O(depth), extremely quick.</li>
+    <li><strong>Automatic feature selection</strong> — unused features are effectively discarded.</li>
+    <li><strong>Great for feature engineering insights</strong> — tells you which features matter most.</li>
+    <li><strong>Foundation for ensembles</strong> — Random Forest, XGBoost and LightGBM are all built on decision trees.</li>
+    <li><strong>Non-parametric</strong> — no distributional assumptions.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🔍</div>
+      <h4 style="color:var(--accent);">Explainable</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Every prediction has a human-readable "because".</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent);">Fast</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Trains in seconds, predicts in microseconds.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🧩</div>
+      <h4 style="color:var(--accent);">Versatile</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Classification, regression, mixed data types.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Severe overfitting</strong> — a fully grown tree can memorise training data and fail on new data.</li>
+    <li><strong>High variance / instability</strong> — small data changes can completely change the tree structure.</li>
+    <li><strong>Biased toward features with more levels</strong> — Information Gain favours high-cardinality features.</li>
+    <li><strong>Greedy, not globally optimal</strong> — picks the best split right now, never backtracks.</li>
+    <li><strong>Axis-aligned splits only</strong> — struggles with diagonal or rotated decision boundaries.</li>
+    <li><strong>Poor at smooth / linear relationships</strong> — regression trees produce jagged step functions.</li>
+    <li><strong>Unstable probability estimates</strong> — leaf probabilities can be extreme and poorly calibrated.</li>
+    <li><strong>Cannot extrapolate</strong> — regression trees can never predict outside the training range.</li>
+    <li><strong>Not great for high-dimensional sparse data</strong> — text or image data usually favours other models.</li>
+    <li><strong>Class imbalance problems</strong> — tend to ignore the minority class without correction.</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#fff7ed);">
+    <strong>The overfitting trap:</strong> Think of a student who memorises the exact answers to last year's exam. They score 100% on the practice paper but fail the real exam because the questions changed. That's a fully grown decision tree.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>These are measured <strong>before</strong> the model goes live, using a held-out test set or cross-validation. They answer: <em>"Is this model good enough to ship?"</em></p>
+
+  <h3>5.1 Confusion Matrix — The Foundation</h3>
+  <p>Almost every classification metric is derived from four numbers. Before formulas make sense, you must understand these four cells.</p>
+
+  <table>
+    <tr><th style="width:18%;">Cell</th><th style="width:22%;">Name</th><th>Meaning in plain English</th></tr>
+    <tr><td><strong style="color:var(--green);">TP</strong></td><td>True Positive</td><td>The model said <em>positive</em>, and the truth <em>was positive</em>. ✅ A correct hit.</td></tr>
+    <tr><td><strong style="color:var(--green);">TN</strong></td><td>True Negative</td><td>The model said <em>negative</em>, and the truth <em>was negative</em>. ✅ A correct rejection.</td></tr>
+    <tr><td><strong style="color:var(--red);">FP</strong></td><td>False Positive</td><td>The model said <em>positive</em>, but the truth was <em>negative</em>. ❌ A "false alarm" (Type I error).</td></tr>
+    <tr><td><strong style="color:var(--red);">FN</strong></td><td>False Negative</td><td>The model said <em>negative</em>, but the truth was <em>positive</em>. ❌ A "miss" (Type II error).</td></tr>
+  </table>
+
+  <div class="interp">
+    <strong>Convention:</strong> In medical testing, "positive" means "disease present". In fraud detection, "positive" means "this transaction is fraudulent". Always ask: <em>"What does 'positive' mean in this problem?"</em>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">Confusion Matrix — Visual Layout</div>
+    <div id="cmDiagram" style="height:400px;"></div>
+    <div class="chart-note">Rows = actual truth. Columns = what the model predicted. The diagonal (TP, TN) is where the model is correct.</div>
+  </div>
+
+  <h3>5.2 Classification KPIs — Detailed</h3>
+
+  <!-- Accuracy -->
+  <div class="metric">
+    <h4>Accuracy <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The overall fraction of predictions that were correct — both positives and negatives.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Accuracy = (TP + TN) / (TP + TN + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, TN = 850, FP = 50, FN = 120<br>
+      Accuracy = (480 + 850) / (480 + 850 + 50 + 120) = 1330 / 1500 = <code>0.887 → 88.7%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 88.7% of all predictions were correct. Range: 0 to 1 (higher is better).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are balanced and every correct prediction has equal business value.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Classes are imbalanced. A model that always says "legitimate" scores 99% accuracy but catches zero fraud.</div>
+    </div>
+  </div>
+
+  <!-- Precision -->
+  <div class="metric">
+    <h4>Precision (Positive Predictive Value) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of everything the model flagged as positive, how many actually were positive?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Precision = TP / (TP + FP)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, FP = 50<br>
+      Precision = 480 / (480 + 50) = 480 / 530 = <code>0.906 → 90.6%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> When the model says "positive", it's right 90.6% of the time. High precision = few false alarms.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> False positives are expensive — spam filters, product recommendations, targeted ads.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Missing a real positive is far worse than a false alarm (e.g. cancer screening).</div>
+    </div>
+  </div>
+
+  <!-- Recall -->
+  <div class="metric">
+    <h4>Recall / Sensitivity / True Positive Rate <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of all the actual positives, how many did the model correctly catch?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Recall = TP / (TP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP = 480, FN = 120<br>
+      Recall = 480 / (480 + 120) = 480 / 600 = <code>0.800 → 80.0%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The model catches 80% of all real positives. It misses 20%. High recall = few missed cases.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Missing a positive is costly — fraud detection, disease screening, safety systems.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> False alarms cause serious harm (e.g. flagging innocent customers).</div>
+    </div>
+  </div>
+
+  <!-- Specificity -->
+  <div class="metric">
+    <h4>Specificity / True Negative Rate <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Of all the actual negatives, how many did the model correctly identify?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Specificity = TN / (TN + FP)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TN = 850, FP = 50<br>
+      Specificity = 850 / (850 + 50) = 850 / 900 = <code>0.944 → 94.4%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The model correctly clears 94.4% of the actual negatives. It wrongly flags 5.6% as positive.</div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px;"><strong>Relationship:</strong> Specificity + False Positive Rate (FPR) = 1. So FPR = 1 − Specificity = FP / (FP + TN).</p>
+  </div>
+
+  <!-- F1 -->
+  <div class="metric">
+    <h4>F1-Score <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> A single number that balances Precision and Recall. It's the <em>harmonic mean</em> — so it punishes extreme imbalance between them.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      F1 = 2 × (Precision × Recall) / (Precision + Recall)
+      <br><br>
+      <span class="lbl">Equivalent form</span>
+      F1 = 2·TP / (2·TP + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Precision = 0.906, Recall = 0.800<br>
+      F1 = 2 × (0.906 × 0.800) / (0.906 + 0.800) = 1.4496 / 1.706 = <code>0.850</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. A high F1 means the model is good at both finding positives <em>and</em> not crying wolf.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are imbalanced and you care about both precision and recall roughly equally.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Precision and recall have very different business costs — use a weighted F-beta score.</div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-top:8px;"><strong>F-beta generalisation:</strong> F<sub>β</sub> = (1+β²)·(P·R) / (β²·P + R). β &gt; 1 weights recall higher; β &lt; 1 weights precision higher.</p>
+  </div>
+
+  <!-- ROC-AUC -->
+  <div class="metric">
+    <h4>ROC-AUC (Area Under the ROC Curve) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The probability that the model ranks a random positive example higher than a random negative example. It evaluates the model across <em>all possible thresholds</em>.</p>
+    <div class="formula">
+      <span class="lbl">ROC Curve</span>
+      x-axis: FPR = FP / (FP + TN) = 1 − Specificity
+      <br>
+      y-axis: TPR = TP / (TP + FN) = Recall
+      <br><br>
+      <span class="lbl">AUC (via trapezoidal rule)</span>
+      AUC = Σ<sub>i</sub> ½ · (x<sub>i+1</sub> − x<sub>i</sub>) · (y<sub>i+1</sub> + y<sub>i</sub>)
+      <br><br>
+      <span class="lbl">Probabilistic interpretation (Mann–Whitney U)</span>
+      AUC = P( score(positive) &gt; score(negative) )
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • 0.50 → no better than random guessing<br>
+      • 0.70–0.80 → acceptable<br>
+      • 0.80–0.90 → excellent<br>
+      • 0.90–1.00 → outstanding (be suspicious of data leakage)<br>
+      • Below 0.50 → the model is systematically wrong (flip its predictions!)
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want a threshold-independent measure and classes are reasonably balanced.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> The positive class is extremely rare — use PR-AUC instead.</div>
+    </div>
+  </div>
+
+  <!-- PR-AUC -->
+  <div class="metric">
+    <h4>PR-AUC (Precision–Recall Area Under the Curve) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Area under the Precision–Recall curve. It focuses only on the positive class, making it far more informative when positives are rare.</p>
+    <div class="formula">
+      <span class="lbl">PR Curve</span>
+      x-axis: Recall = TP / (TP + FN)
+      <br>
+      y-axis: Precision = TP / (TP + FP)
+      <br><br>
+      <span class="lbl">PR-AUC</span>
+      PR-AUC = ∫ Precision d(Recall) &nbsp;(approximated by trapezoids)
+      <br><br>
+      <span class="lbl">Baseline</span>
+      Baseline PR-AUC = prevalence = (TP + FN) / (TP + TN + FP + FN)
+    </div>
+    <div class="worked">
+      <strong>Example:</strong> In a fraud dataset with 1% fraud, a random classifier gets PR-AUC ≈ 0.01 (not 0.5). So a PR-AUC of 0.45 is actually very strong!
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> The positive class is rare — fraud, disease, defects, intrusions.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Both classes matter equally; ROC-AUC is more general.</div>
+    </div>
+  </div>
+
+  <!-- Log Loss -->
+  <div class="metric">
+    <h4>Log Loss (Binary Cross-Entropy) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> How well the model's <em>predicted probabilities</em> match reality. It punishes confident wrong predictions very heavily.</p>
+    <div class="formula">
+      <span class="lbl">Formula (binary)</span>
+      LogLoss = −(1/N) · Σ<sub>i=1</sub><sup>N</sup> [ y<sub>i</sub>·log(p<sub>i</sub>) + (1−y<sub>i</sub>)·log(1−p<sub>i</sub>) ]
+      <br><br>
+      y<sub>i</sub> ∈ {0,1} = actual label &nbsp;|&nbsp; p<sub>i</sub> = predicted probability of class 1
+      <br><br>
+      <span class="lbl">Multi-class extension</span>
+      LogLoss = −(1/N) · Σ<sub>i</sub> Σ<sub>k</sub> y<sub>i,k</sub> · log(p<sub>i,k</sub>)
+    </div>
+    <div class="worked">
+      <strong>Worked example (N=2):</strong><br>
+      • Sample 1: actual = 1, predicted prob = 0.9 → loss = −log(0.9) = 0.105<br>
+      • Sample 2: actual = 0, predicted prob = 0.8 → loss = −log(0.2) = 1.609<br>
+      LogLoss = (0.105 + 1.609) / 2 = <code>0.857</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to ∞ (lower is better). Perfect predictions → 0. A model that always predicts 0.5 gets LogLoss ≈ 0.693 (binary).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You need well-calibrated probabilities — risk scoring, insurance pricing, medical estimates.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> You only care about the hard class label, not the probability.</div>
+    </div>
+  </div>
+
+  <!-- MCC -->
+  <div class="metric">
+    <h4>Matthews Correlation Coefficient (MCC) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> A balanced metric that uses all four confusion-matrix cells. It behaves like a correlation coefficient between predictions and truth.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MCC = (TP·TN − FP·FN) / √[ (TP+FP)(TP+FN)(TN+FP)(TN+FN) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> TP=480, TN=850, FP=50, FN=120<br>
+      Numerator = (480×850) − (50×120) = 408,000 − 6,000 = 402,000<br>
+      Denominator = √(530 × 600 × 900 × 1000) ≈ 535,000<br>
+      MCC = 402,000 / 535,000 = <code>0.751</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range −1 to +1. +1 = perfect, 0 = random, −1 = total disagreement.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are very imbalanced and you want a single trustworthy number.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Explaining to a non-technical audience — harder to interpret.</div>
+    </div>
+  </div>
+
+  <!-- Cohen's Kappa -->
+  <div class="metric">
+    <h4>Cohen's Kappa (κ) <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> Agreement between predictions and truth, <em>corrected for agreement that would happen by chance</em>.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)
+      <br><br>
+      p<sub>o</sub> = observed accuracy = (TP + TN) / N
+      <br>
+      p<sub>e</sub> = expected chance accuracy = [ (TP+FP)(TP+FN) + (TN+FP)(TN+FN) ] / N²
+    </div>
+    <div class="interp">
+      <strong>Landis &amp; Koch scale:</strong><br>
+      • &lt; 0.00 → poor · 0.00–0.20 → slight · 0.21–0.40 → fair<br>
+      • 0.41–0.60 → moderate · 0.61–0.80 → substantial · 0.81–1.00 → almost perfect
+    </div>
+  </div>
+
+  <!-- Balanced Accuracy -->
+  <div class="metric">
+    <h4>Balanced Accuracy <span class="badge">Classification</span></h4>
+    <p><strong>What it measures:</strong> The average of Recall (on positives) and Specificity (on negatives) — each class contributes equally regardless of size.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Balanced Accuracy = (Recall + Specificity) / 2
+      <br><br>
+      = ½ · [ TP/(TP+FN) + TN/(TN+FP) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Recall = 0.800, Specificity = 0.944<br>
+      Balanced Accuracy = (0.800 + 0.944) / 2 = <code>0.872</code>
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Classes are imbalanced but you want a simple, class-balanced accuracy.</div>
+    </div>
+  </div>
+
+  <h3>5.3 Regression KPIs — Detailed</h3>
+  <p>For regression trees (predicting a continuous number), classification metrics don't apply. These are the equivalents.</p>
+
+  <!-- MAE -->
+  <div class="metric reg">
+    <h4>MAE (Mean Absolute Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The average size of the prediction error, in the same units as the target.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> | y<sub>i</sub> − ŷ<sub>i</sub> |
+      <br><br>
+      y<sub>i</sub> = actual value &nbsp;|&nbsp; ŷ<sub>i</sub> = predicted value &nbsp;|&nbsp; N = number of samples
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Actual = [100, 200, 300], Predicted = [110, 190, 320]<br>
+      Errors = |−10|, |10|, |−20| = 10, 10, 20<br>
+      MAE = (10 + 10 + 20) / 3 = <code>13.33</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> On average the prediction is off by 13.33 units. Easy to explain to stakeholders.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want an easy-to-explain metric and all errors have equal importance.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Large errors are dramatically worse than small ones (use RMSE).</div>
+    </div>
+  </div>
+
+  <!-- MSE -->
+  <div class="metric reg">
+    <h4>MSE (Mean Squared Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The average of squared errors. Squaring heavily penalises large mistakes.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MSE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )²
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Errors = [−10, 10, −20]<br>
+      MSE = (100 + 100 + 400) / 3 = <code>200</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> MSE is in <em>squared</em> units (₹², °C²) so it's hard to interpret directly. It's mostly used as a loss function during training.</div>
+  </div>
+
+  <!-- RMSE -->
+  <div class="metric reg">
+    <h4>RMSE (Root Mean Squared Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The square root of MSE, bringing the metric back to the original units of the target.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      RMSE = √[ (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( y<sub>i</sub> − ŷ<sub>i</sub> )² ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> MSE = 200<br>
+      RMSE = √200 = <code>14.14</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> On average the model is off by 14.14 units, but large errors are penalised more than in MAE. RMSE ≥ MAE always.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Large errors are genuinely worse (e.g. financial forecasting).</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> The target has outliers you don't care about — use MAE.</div>
+    </div>
+  </div>
+
+  <!-- R² -->
+  <div class="metric reg">
+    <h4>R² (Coefficient of Determination) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The proportion of the target's variance that the model explains. Compares against the naive "always predict the mean" baseline.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      R² = 1 − ( SS<sub>res</sub> / SS<sub>tot</sub> )
+      <br><br>
+      SS<sub>res</sub> = Σ ( y<sub>i</sub> − ŷ<sub>i</sub> )² &nbsp;&nbsp;(residual sum of squares)
+      <br>
+      SS<sub>tot</sub> = Σ ( y<sub>i</sub> − ȳ )² &nbsp;&nbsp;(total sum of squares)
+      <br>
+      ȳ = mean of the actual values
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> y = [100, 200, 300], ŷ = [110, 190, 320], ȳ = 200<br>
+      SS<sub>res</sub> = 100 + 100 + 400 = 600<br>
+      SS<sub>tot</sub> = 10,000 + 0 + 10,000 = 20,000<br>
+      R² = 1 − (600 / 20,000) = <code>0.97</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> R² = 1 → perfect; R² = 0 → no better than predicting the mean; R² &lt; 0 → worse than the mean (very bad).</div>
+  </div>
+
+  <!-- Adjusted R2 -->
+  <div class="metric reg">
+    <h4>Adjusted R² <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> R² adjusted for the number of predictors, penalising models that add features without adding real explanatory power.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Adjusted R² = 1 − [ (1 − R²) · (N − 1) ] / (N − k − 1)
+      <br><br>
+      N = number of samples &nbsp;|&nbsp; k = number of predictors
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);">Note: for decision trees, "number of predictors" is loosely defined (it's really the tree's complexity), so Adjusted R² is more commonly used for linear models.</p>
+  </div>
+
+  <!-- MAPE -->
+  <div class="metric reg">
+    <h4>MAPE (Mean Absolute Percentage Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> The average error expressed as a percentage of the actual value. Very intuitive for business reporting.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAPE = (100% / N) · Σ<sub>i=1</sub><sup>N</sup> | ( y<sub>i</sub> − ŷ<sub>i</sub> ) / y<sub>i</sub> |
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> y = [100, 200, 300], ŷ = [110, 190, 320]<br>
+      Errors % = |−10/100|, |10/200|, |−20/300| = 0.10, 0.05, 0.0667<br>
+      MAPE = (0.10 + 0.05 + 0.0667) / 3 × 100 = <code>7.22%</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> On average, predictions are off by 7.22%. Range 0% to ∞ (lower is better).</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Reporting to business stakeholders and actual values are well above zero.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Actual values can be zero or near-zero — MAPE explodes to infinity.</div>
+    </div>
+  </div>
+
+  <!-- SMAPE -->
+  <div class="metric reg">
+    <h4>SMAPE (Symmetric Mean Absolute Percentage Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> A symmetric version of MAPE that keeps errors bounded between 0% and 200%.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      SMAPE = (100% / N) · Σ<sub>i=1</sub><sup>N</sup> | y<sub>i</sub> − ŷ<sub>i</sub> | / [ (|y<sub>i</sub>| + |ŷ<sub>i</sub>|) / 2 ]
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0% to 200% (lower is better). Handles zero values better than MAPE.</div>
+  </div>
+
+  <!-- MSLE -->
+  <div class="metric reg">
+    <h4>MSLE (Mean Squared Logarithmic Error) <span class="badge">Regression</span></h4>
+    <p><strong>What it measures:</strong> Squared error on the log scale. Penalises under-prediction more than over-prediction.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MSLE = (1/N) · Σ<sub>i=1</sub><sup>N</sup> ( log(1 + y<sub>i</sub>) − log(1 + ŷ<sub>i</sub>) )²
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> The target spans several orders of magnitude (e.g. revenue, population counts).</div>
+    </div>
+  </div>
+
+  <h3>5.4 Model Quality &amp; Robustness KPIs</h3>
+
+  <!-- Cross-validation -->
+  <div class="metric">
+    <h4>Cross-Validation Score <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> The average performance across K different train/test splits. Gives a more reliable estimate than a single split.</p>
+    <div class="formula">
+      <span class="lbl">K-Fold CV Score</span>
+      CV = (1/K) · Σ<sub>k=1</sub><sup>K</sup> Metric<sub>k</sub>
+      <br><br>
+      <span class="lbl">Standard deviation (stability)</span>
+      σ<sub>CV</sub> = √[ (1/K) · Σ<sub>k</sub> ( Metric<sub>k</sub> − CV )² ]
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> High mean + low standard deviation = trustworthy model. High mean + high SD = unstable, may not generalise.</div>
+  </div>
+
+  <!-- Train-Test Gap -->
+  <div class="metric">
+    <h4>Train–Test Gap (Overfitting Indicator) <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> How much better the model performs on training data than on unseen test data.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Gap = Metric<sub>train</sub> − Metric<sub>test</sub>
+      <br><br>
+      For error metrics (MAE, RMSE, LogLoss): Gap = Metric<sub>test</sub> − Metric<sub>train</sub>
+    </div>
+    <div class="interp">
+      <strong>Rule of thumb:</strong><br>
+      • Gap &lt; 5% → healthy<br>
+      • Gap 5–10% → mild overfitting, consider pruning<br>
+      • Gap &gt; 10% → serious overfitting, must reduce depth or add regularisation
+    </div>
+  </div>
+
+  <!-- Tree Depth -->
+  <div class="metric">
+    <h4>Tree Depth &amp; Number of Leaves <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> The structural complexity of the tree. More depth and leaves = more capacity to memorise training noise.</p>
+    <div class="formula">
+      <span class="lbl">Complexity indicators</span>
+      Depth = max levels from root to any leaf
+      <br>
+      Leaves = number of terminal nodes
+      <br>
+      Nodes = total internal + leaf nodes
+      <br><br>
+      <span class="lbl">Rule of thumb for healthy depth</span>
+      max_depth ≈ log₂(N) &nbsp;&nbsp;(N = number of training samples)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> If depth ≫ log₂(N), the tree is likely memorising. If depth ≪ log₂(N), it may be underfitting.</div>
+  </div>
+
+  <h3>5.5 📊 Interactive: Overfitting — Depth vs Accuracy</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Drag the slider to change <code>max_depth</code>. Watch how training accuracy keeps climbing while test accuracy peaks and then falls. That peak is the sweet spot.</p>
+  <div class="chart">
+    <div class="chart-title">Tree Depth vs. Training / Test Accuracy</div>
+    <div id="depthChart" style="height:400px;"></div>
+    <div class="chart-note">The gap between the blue and green curves is the <strong>overfitting gap</strong>. Pruning aims to keep the tree near the green curve's maximum.</div>
+  </div>
+
+  <h3>5.6 📊 Interactive: ROC Curve</h3>
+  <div class="chart">
+    <div class="chart-title">ROC Curve — Pre-Deployment Model Evaluation</div>
+    <div id="rocChart" style="height:420px;"></div>
+    <div class="chart-note">The closer the curve hugs the top-left corner, the better. AUC = area under this curve.</div>
+  </div>
+
+  <h3>5.7 📊 Interactive: Confusion Matrix</h3>
+  <div class="chart">
+    <div class="chart-title">Confusion Matrix — Where Does the Model Go Wrong?</div>
+    <div id="cmChart" style="height:400px;"></div>
+    <div class="chart-note">Hover over each cell for its meaning. Everything off the main diagonal is an error.</div>
+  </div>
+
+  <h3>5.8 🧮 Interactive KPI Calculator</h3>
+  <p>Change the four confusion-matrix values below and watch every classification metric recompute instantly. This is the fastest way to build intuition for how the metrics interact.</p>
+
+  <div class="calc-grid">
+    <div>
+      <label>TP — True Positive</label>
+      <input type="number" id="inTP" value="480" min="0">
+    </div>
+    <div>
+      <label>TN — True Negative</label>
+      <input type="number" id="inTN" value="850" min="0">
+    </div>
+    <div>
+      <label>FP — False Positive</label>
+      <input type="number" id="inFP" value="50" min="0">
+    </div>
+    <div>
+      <label>FN — False Negative</label>
+      <input type="number" id="inFN" value="120" min="0">
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid"></div>
+
+  <div class="chart">
+    <div class="chart-title">Live Confusion Matrix</div>
+    <div id="liveCM" style="height:360px;"></div>
+    <div class="chart-note">Recalculated as you type. The diagonal (darker cells) shows correct predictions.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">ROC Curve (Synthetic — based on current class balance)</div>
+    <div id="liveROC" style="height:380px;"></div>
+    <div class="chart-note">Illustrative ROC curve shaped by the current precision/recall balance. AUC value shown in the legend.</div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once the model is live, the questions change. You're no longer asking <em>"is it accurate?"</em> — you're asking <em>"is it still accurate today, and is anything silently breaking?"</em></p>
+
+  <h3>6.1 Data &amp; Model Health KPIs</h3>
+
+  <!-- PSI -->
+  <div class="metric post">
+    <h4>PSI (Population Stability Index) <span class="badge">Data Drift</span></h4>
+    <p><strong>What it measures:</strong> How much the distribution of a single feature (or the model's scores) has shifted between training and production.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI = Σ<sub>i=1</sub><sup>B</sup> ( Actual%<sub>i</sub> − Expected%<sub>i</sub> ) · ln( Actual%<sub>i</sub> / Expected%<sub>i</sub> )
+      <br><br>
+      B = number of bins (usually 10 deciles)
+      <br>
+      Expected%<sub>i</sub> = % of training samples in bin i
+      <br>
+      Actual%<sub>i</sub> = % of production samples in bin i
+    </div>
+    <div class="interp">
+      <strong>Interpretation thresholds:</strong><br>
+      • PSI &lt; 0.10 → no significant change, model is stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → moderate shift, monitor closely ⚠️<br>
+      • PSI ≥ 0.25 → major shift, retrain the model 🚨
+    </div>
+  </div>
+
+  <!-- KS -->
+  <div class="metric post">
+    <h4>KS Statistic (Kolmogorov–Smirnov) <span class="badge">Data Drift</span></h4>
+    <p><strong>What it measures:</strong> The maximum vertical distance between two cumulative distribution functions (training vs. production).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      KS = max<sub>x</sub> | F<sub>train</sub>(x) − F<sub>prod</sub>(x) |
+      <br><br>
+      F(x) = empirical cumulative distribution function
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. Higher = more drift. A p-value &lt; 0.05 from the KS test indicates statistically significant drift.</div>
+  </div>
+
+  <!-- KL Divergence -->
+  <div class="metric post">
+    <h4>KL Divergence (Kullback–Leibler) <span class="badge">Data Drift</span></h4>
+    <p><strong>What it measures:</strong> How much one probability distribution diverges from another (asymmetric).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      D<sub>KL</sub>(P ‖ Q) = Σ<sub>i</sub> P(i) · log( P(i) / Q(i) )
+      <br><br>
+      P = production distribution &nbsp;|&nbsp; Q = training distribution
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> 0 = identical distributions. Higher = more drift. Not symmetric: D<sub>KL</sub>(P‖Q) ≠ D<sub>KL</sub>(Q‖P).</div>
+  </div>
+
+  <!-- Concept Drift -->
+  <div class="metric post">
+    <h4>Concept Drift (Performance Decay) <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> How much the model's live performance has degraded vs. its validation performance.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Drift Magnitude = Metric<sub>validation</sub> − Metric<sub>live</sub>
+      <br><br>
+      <span class="lbl">Relative decay</span>
+      Decay % = ( Metric<sub>validation</sub> − Metric<sub>live</sub> ) / Metric<sub>validation</sub> × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Decay &gt; 10% typically triggers a retraining investigation.</div>
+  </div>
+
+  <!-- Prediction Distribution -->
+  <div class="metric post">
+    <h4>Prediction Distribution Shift <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the model's own output distribution has changed over time.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      PSI<sub>pred</sub> = Σ ( ProdPred%<sub>i</sub> − TrainPred%<sub>i</sub> ) · ln( ProdPred%<sub>i</sub> / TrainPred%<sub>i</sub> )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A sudden jump (e.g. predicting "churn" for 60% of users instead of 8%) signals a problem in the data pipeline or the model itself.</div>
+  </div>
+
+  <!-- Feature Importance Stability -->
+  <div class="metric post">
+    <h4>Feature Importance Stability <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the same features are still driving decisions over time.</p>
+    <div class="formula">
+      <span class="lbl">Stability Index</span>
+      Stability = 1 − ( Σ | Imp<sub>train</sub>(f) − Imp<sub>prod</sub>(f) | / 2 )
+      <br><br>
+      Imp(f) = normalised feature importance of feature f
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Stability close to 1 = stable. A sudden reshuffle hints at data pipeline problems or drift.</div>
+  </div>
+
+  <!-- Missing Value Rate -->
+  <div class="metric post">
+    <h4>Missing Value Rate <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> The percentage of null/empty inputs arriving in production.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Missing % = ( Missing values / Total values ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A spike usually means an upstream pipeline broke. Even a small increase can degrade tree performance if the tree wasn't trained to handle missing values.</div>
+  </div>
+
+  <h3>6.2 Live Performance KPIs</h3>
+
+  <!-- Live Accuracy -->
+  <div class="metric post">
+    <h4>Live Accuracy / Precision / Recall <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> The same classification metrics, but recomputed on labelled production data as ground truth arrives.</p>
+    <div class="formula">
+      <span class="lbl">Same formulas as pre-deployment</span>
+      Live Accuracy = (TP<sub>live</sub> + TN<sub>live</sub>) / N<sub>live</sub>
+      <br>
+      Live Precision = TP<sub>live</sub> / (TP<sub>live</sub> + FP<sub>live</sub>)
+      <br>
+      Live Recall = TP<sub>live</sub> / (TP<sub>live</sub> + FN<sub>live</sub>)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ground truth often arrives with a delay (days or weeks), so live metrics lag behind reality. Set up automated pipelines to compute them as soon as labels arrive.</div>
+  </div>
+
+  <!-- Actual vs Predicted -->
+  <div class="metric post">
+    <h4>Actual vs. Predicted Monitoring <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> Continuous tracking of the delta between what the model said and what actually happened.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Delta<sub>t</sub> = Metric<sub>predicted,t</sub> − Metric<sub>actual,t</sub>
+      <br><br>
+      <span class="lbl">CUSUM (cumulative sum control chart)</span>
+      CUSUM<sub>t</sub> = max(0, CUSUM<sub>t−1</sub> + Delta<sub>t</sub> − k)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A steadily rising CUSUM indicates systematic drift. Alert when CUSUM crosses a threshold h.</div>
+  </div>
+
+  <!-- Model Age -->
+  <div class="metric post">
+    <h4>Model Age / Time Since Retrain <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> How long since the last retraining.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Model Age = Current Date − Last Retrain Date
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Many teams set a hard limit (e.g. 90 days) as a retraining trigger, regardless of measured drift.</div>
+  </div>
+
+  <!-- Latency -->
+  <div class="metric post">
+    <h4>Latency Percentiles (p50, p95, p99) <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> The time taken to return a prediction, measured at different points in the distribution.</p>
+    <div class="formula">
+      <span class="lbl">Definition</span>
+      p95 = the latency value below which 95% of requests fall
+      <br><br>
+      <span class="lbl">Why not use the average?</span>
+      Average latency hides tail problems. A few very slow requests (p99) can ruin user experience even if the average looks fine.
+    </div>
+    <div class="interp"><strong>Target example:</strong> p50 &lt; 20 ms, p95 &lt; 50 ms, p99 &lt; 100 ms for real-time APIs.</div>
+  </div>
+
+  <h3>6.3 Operational &amp; Business KPIs</h3>
+
+  <!-- Throughput -->
+  <div class="metric post">
+    <h4>Throughput <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> How many predictions the model service handles per unit time.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Throughput = Total predictions served / Time window
+      <br><br>
+      <span class="lbl">Utilisation</span>
+      Utilisation % = (Actual throughput / Peak capacity) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Throughput must exceed peak traffic. Utilisation &gt; 80% is risky — no headroom for bursts.</div>
+  </div>
+
+  <!-- Error Rate -->
+  <div class="metric post">
+    <h4>Error Rate / Failure Rate <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> The percentage of prediction requests that fail (timeouts, exceptions, bad inputs).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Error Rate % = ( Failed requests / Total requests ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Should be near zero. A sudden spike usually means an upstream data pipeline broke or the model service is overloaded.</div>
+  </div>
+
+  <!-- Uptime -->
+  <div class="metric post">
+    <h4>Uptime / Availability <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> The percentage of time the model endpoint is reachable.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Uptime % = ( Total time − Downtime ) / Total time × 100%
+      <br><br>
+      <span class="lbl">Common targets</span>
+      99% &nbsp;→ 3.65 days downtime/year<br>
+      99.9% &nbsp;→ 8.77 hours downtime/year<br>
+      99.99% → 52.6 minutes downtime/year
+    </div>
+  </div>
+
+  <!-- Business Impact KPI -->
+  <div class="metric post">
+    <h4>Business Impact KPI <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> The metric the business actually cares about — revenue uplift, cost saved, fraud prevented, churn reduced, conversion rate.</p>
+    <div class="formula">
+      <span class="lbl">Example formulas</span>
+      Revenue Uplift = Revenue<sub>with model</sub> − Revenue<sub>without model</sub>
+      <br>
+      Cost Saved = ( Errors<sub>without</sub> − Errors<sub>with</sub> ) × Cost per error
+      <br>
+      Churn Reduction % = ( Churn<sub>baseline</sub> − Churn<sub>model</sub> ) / Churn<sub>baseline</sub> × 100
+    </div>
+  </div>
+
+  <!-- ROI -->
+  <div class="metric post">
+    <h4>ROI (Return on Investment) <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Whether the value the model generates exceeds the cost of building and running it.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ROI % = ( Net Gain / Total Cost ) × 100%
+      <br><br>
+      Net Gain = Business Value Generated − Total Cost
+      <br>
+      Total Cost = Development + Infrastructure + Maintenance + Monitoring
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Fraud prevented = ₹5,00,000. Total cost = ₹1,00,000.<br>
+      Net Gain = ₹4,00,000. ROI = (4,00,000 / 1,00,000) × 100 = <code>400%</code>
+    </div>
+  </div>
+
+  <!-- Human Override Rate -->
+  <div class="metric post">
+    <h4>Human Override Rate <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> How often a human disagrees with and overrides the model's recommendation.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Override Rate % = ( Overrides / Total decisions ) × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A high override rate (e.g. &gt; 30%) means users don't trust the model — investigate feature explanations, UI, or model bias.</div>
+  </div>
+
+  <!-- Alert Count -->
+  <div class="metric post">
+    <h4>Alert / Incident Count <span class="badge">Governance</span></h4>
+    <p><strong>What it measures:</strong> Number of monitoring alerts triggered per week. A rising trend signals the model needs attention.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Alert Rate = Alerts triggered / Time period
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#f0fdfa);">
+    <strong>Golden rule:</strong> A model is not "done" when it's deployed. It's done when it's retired. Post-deployment monitoring is what keeps it from silently degrading.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How the Model Actually Works</h2>
+  <p>The core idea is simple: <strong>choose the split that makes the resulting groups as "pure" as possible.</strong> "Purity" is measured by an <em>impurity function</em>. Here are the ones that matter.</p>
+
+  <h3>7.1 Entropy (used by ID3 and C4.5)</h3>
+  <p>Entropy measures the <em>disorder</em> or uncertainty in a node. If a node contains only one class, entropy = 0 (perfectly pure). If classes are 50/50, entropy is at its maximum (1 for binary).</p>
+
+  <div class="formula">
+    <span class="lbl">Shannon Entropy</span>
+    H(S) = − Σ<sub>i=1</sub><sup>c</sup> p<sub>i</sub> · log<sub>2</sub>(p<sub>i</sub>)
+  </div>
+
+  <table>
+    <tr><th>Symbol</th><th>Meaning</th></tr>
+    <tr><td><code>S</code></td><td>The set of samples at the current node</td></tr>
+    <tr><td><code>c</code></td><td>Number of distinct classes</td></tr>
+    <tr><td><code>p<sub>i</sub></code></td><td>Proportion of samples in S that belong to class i</td></tr>
+    <tr><td><code>log<sub>2</sub></code></td><td>Base-2 logarithm (so entropy is measured in <em>bits</em>)</td></tr>
+  </table>
+
+  <h4>Worked example — the classic 9/5 tennis set</h4>
+  <p>Suppose a node has 14 samples: 9 "Play" and 5 "No Play".</p>
+  <div class="formula">
+    p(Play) = 9/14 = 0.643 &nbsp;&nbsp;|&nbsp;&nbsp; p(No) = 5/14 = 0.357<br><br>
+    H(S) = −(0.643 × log₂0.643) − (0.357 × log₂0.357)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= −(0.643 × (−0.637)) − (0.357 × (−1.485))<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 0.410 + 0.530 = <strong>0.940 bits</strong>
+  </div>
+
+  <h3>7.2 Gini Impurity (used by CART)</h3>
+  <p>Gini measures the probability of <em>misclassifying</em> a randomly chosen sample if you labelled it according to the node's class distribution. It's slightly cheaper to compute than entropy (no logarithm) and usually gives similar trees.</p>
+
+  <div class="formula">
+    <span class="lbl">Gini Impurity</span>
+    Gini(S) = 1 − Σ<sub>i=1</sub><sup>c</sup> p<sub>i</sub><sup>2</sup>
+  </div>
+
+  <p>For the same 9/5 example:</p>
+  <div class="formula">
+    Gini(S) = 1 − (0.643² + 0.357²) = 1 − (0.413 + 0.127) = <strong>0.460</strong>
+  </div>
+
+  <h3>7.3 Misclassification Error</h3>
+  <p>The simplest impurity measure, but it is <em>not</em> used for growing trees because it is not smooth — it gives zero gradient in many places. It's only useful for pruning.</p>
+  <div class="formula">
+    <span class="lbl">Misclassification Error</span>
+    Error(S) = 1 − max<sub>i</sub>(p<sub>i</sub>)
+  </div>
+
+  <h3>7.4 Information Gain — the split criterion</h3>
+  <p>Information Gain is the <strong>reduction in entropy</strong> achieved by splitting on a feature A. The algorithm picks the feature with the highest gain.</p>
+
+  <div class="formula">
+    <span class="lbl">Information Gain</span>
+    IG(S, A) = H(S) − Σ<sub>v ∈ Values(A)</sub> ( |S<sub>v</sub>| / |S| ) · H(S<sub>v</sub>)
+  </div>
+
+  <table>
+    <tr><th>Symbol</th><th>Meaning</th></tr>
+    <tr><td><code>IG(S, A)</code></td><td>Information gain from splitting set S on feature A</td></tr>
+    <tr><td><code>H(S)</code></td><td>Entropy of the parent node before the split</td></tr>
+    <tr><td><code>Values(A)</code></td><td>All possible values/branches of feature A</td></tr>
+    <tr><td><code>S<sub>v</sub></code></td><td>Subset of S where feature A takes value v</td></tr>
+    <tr><td><code>|S<sub>v</sub>| / |S|</code></td><td>Weight of that branch (proportion of samples going down it)</td></tr>
+  </table>
+
+  <h4>Worked example — Outlook split</h4>
+  <div class="formula">
+    Parent entropy H(S) = 0.940 bits<br><br>
+    Outlook = Sunny &nbsp;→ 5 samples (2 Play, 3 No) → H = 0.971<br>
+    Outlook = Overcast → 4 samples (4 Play, 0 No) → H = 0.000<br>
+    Outlook = Rain &nbsp;&nbsp;&nbsp;→ 5 samples (3 Play, 2 No) → H = 0.971<br><br>
+    Weighted child entropy = (5/14)(0.971) + (4/14)(0.000) + (5/14)(0.971)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 0.347 + 0.000 + 0.347 = 0.694<br><br>
+    IG(S, Outlook) = 0.940 − 0.694 = <strong>0.246 bits</strong>
+  </div>
+
+  <h3>7.5 Gain Ratio (used by C4.5)</h3>
+  <p>Information Gain is biased toward features with many distinct values. Gain Ratio fixes this by dividing by the "intrinsic information" of the feature.</p>
+
+  <div class="formula">
+    <span class="lbl">Split Information</span>
+    SplitInfo(S, A) = − Σ<sub>v</sub> ( |S<sub>v</sub>| / |S| ) · log<sub>2</sub>( |S<sub>v</sub>| / |S| )
+    <br><br>
+    <span class="lbl">Gain Ratio</span>
+    GainRatio(S, A) = IG(S, A) / SplitInfo(S, A)
+  </div>
+
+  <h3>7.6 Regression Trees — Variance Reduction / MSE</h3>
+  <p>For regression, "impurity" is replaced by the variance of the target values. The best split is the one that most reduces the weighted variance of the children.</p>
+
+  <div class="formula">
+    <span class="lbl">Mean Squared Error at a node</span>
+    MSE(S) = (1/|S|) · Σ<sub>i ∈ S</sub> ( y<sub>i</sub> − ȳ<sub>S</sub> )²
+    <br><br>
+    where ȳ<sub>S</sub> = (1/|S|) · Σ<sub>i ∈ S</sub> y<sub>i</sub> &nbsp;(the mean target in node S)
+  </div>
+
+  <div class="formula">
+    <span class="lbl">Variance Reduction (the regression "Information Gain")</span>
+    VR(S, A) = MSE(S) − Σ<sub>v</sub> ( |S<sub>v</sub>| / |S| ) · MSE(S<sub>v</sub>)
+  </div>
+
+  <p>The leaf prediction for a regression tree is simply the <strong>mean of the target values</strong> of the training samples that land in that leaf:</p>
+  <div class="formula">
+    <span class="lbl">Leaf prediction</span>
+    ŷ<sub>leaf</sub> = (1/|S<sub>leaf</sub>|) · Σ<sub>i ∈ S<sub>leaf</sub></sub> y<sub>i</sub>
+  </div>
+
+  <h3>7.7 Leaf Class Probability (Classification)</h3>
+  <p>For a classification tree, the leaf's predicted probability for class k is the fraction of training samples of class k in that leaf:</p>
+  <div class="formula">
+    <span class="lbl">Leaf class probability</span>
+    P(class = k | leaf) = ( count of class-k samples in leaf ) / ( total samples in leaf )
+    <br><br>
+    <span class="lbl">Final prediction</span>
+    ŷ = argmax<sub>k</sub> P(class = k | leaf)
+  </div>
+
+  <h3>7.8 Cost-Complexity Pruning (CART)</h3>
+  <p>After growing a full tree T, CART prunes it by minimising a penalised error. α controls the trade-off between accuracy and simplicity.</p>
+  <div class="formula">
+    <span class="lbl">Cost-Complexity Criterion</span>
+    R<sub>α</sub>(T) = R(T) + α · |T̃|
+    <br><br>
+    R(T) = misclassification error of tree T<br>
+    |T̃| = number of terminal (leaf) nodes<br>
+    α ≥ 0 = complexity penalty (larger α → smaller tree)
+  </div>
+  <p>You choose α by cross-validation; scikit-learn exposes this as the <code>ccp_alpha</code> parameter.</p>
+
+  <h3>7.9 Feature Importance</h3>
+  <p>A tree's importance for feature f is the total weighted impurity decrease contributed by all splits on that feature, normalised to sum to 1.</p>
+  <div class="formula">
+    <span class="lbl">Gini Importance</span>
+    Importance(f) = Σ<sub>nodes t splitting on f</sub> ( N<sub>t</sub> / N ) · ΔImpurity<sub>t</sub>
+    <br><br>
+    then normalise: Importance(f) ← Importance(f) / Σ<sub>f'</sub> Importance(f')
+  </div>
+
+  <h3>📊 Interactive: Impurity Curves</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Hover over the chart to compare Entropy, Gini and Misclassification Error. Notice all three hit 0 at p=0 and p=1 (pure) and peak around p=0.5 (maximum disorder).</p>
+  <div class="chart">
+    <div class="chart-title">Impurity vs. Class Proportion</div>
+    <div id="impurityChart" style="height:400px;"></div>
+    <div class="chart-note">Entropy (blue) and Gini (green) are smooth — that's why they're used for splitting. Misclassification error (amber) is piecewise-linear and less sensitive.</div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithms &amp; Model Types</h3>
+  <div class="gloss">
+    <div>ML</div><div><strong>Machine Learning</strong> — a field of AI where systems learn patterns from data instead of being explicitly programmed.</div>
+    <div>DT</div><div><strong>Decision Tree</strong> — a model that predicts by asking a series of if/else questions about the features.</div>
+    <div>CART</div><div><strong>Classification And Regression Trees</strong> — the algorithm behind scikit-learn's <code>DecisionTreeClassifier</code> and <code>DecisionTreeRegressor</code>. Uses Gini (classification) or MSE (regression) and only binary splits.</div>
+    <div>ID3</div><div><strong>Iterative Dichotomiser 3</strong> — an early tree algorithm by Ross Quinlan that uses Information Gain and only handles categorical features.</div>
+    <div>C4.5</div><div><strong>Successor to ID3</strong> — uses Gain Ratio, handles numeric features and missing values, and performs pruning.</div>
+    <div>C5.0</div><div><strong>Commercial successor to C4.5</strong> — faster, more memory-efficient, supports boosting.</div>
+    <div>CHAID</div><div><strong>Chi-square Automatic Interaction Detector</strong> — uses chi-square tests to decide splits; allows multi-way splits.</div>
+    <div>RF</div><div><strong>Random Forest</strong> — an ensemble of many decision trees trained on random subsets, then averaged/voted.</div>
+    <div>XGBoost</div><div><strong>Extreme Gradient Boosting</strong> — a powerful ensemble of trees built sequentially, each correcting the previous one's errors.</div>
+    <div>GBM</div><div><strong>Gradient Boosting Machine</strong> — a general framework for boosting weak learners (usually trees).</div>
+  </div>
+
+  <h3>Impurity &amp; Splitting</h3>
+  <div class="gloss">
+    <div>IG</div><div><strong>Information Gain</strong> — the reduction in entropy after a split. Higher is better.</div>
+    <div>Entropy</div><div>A measure of disorder/uncertainty in a node, measured in bits. 0 = pure, 1 = maximum disorder (binary case).</div>
+    <div>Gini</div><div><strong>Gini Impurity</strong> — probability of misclassifying a random sample. 0 = pure.</div>
+    <div>SplitInfo</div><div><strong>Split Information</strong> — the intrinsic entropy of the way a feature divides the data. Used in Gain Ratio.</div>
+    <div>Gain Ratio</div><div><strong>Information Gain ÷ Split Information</strong> — corrects IG's bias toward high-cardinality features.</div>
+    <div>Chi-square</div><div>A statistical test measuring whether observed frequencies differ from expected. Used by CHAID to pick splits.</div>
+    <div>Variance Reduction</div><div>The regression-tree equivalent of Information Gain — how much the target's variance drops after a split.</div>
+    <div>Pruning</div><div>Cutting back branches of a fully grown tree to reduce overfitting.</div>
+    <div>Pre-pruning</div><div>Stopping tree growth early (e.g. max depth, min samples per leaf). Also called <em>early stopping</em>.</div>
+    <div>Post-pruning</div><div>Growing the tree fully and then trimming it back. Also called <em>backward pruning</em>.</div>
+    <div>ccp_alpha</div><div><strong>Cost-Complexity Pruning alpha</strong> — the penalty parameter in scikit-learn's pruning. Larger = simpler tree.</div>
+    <div>max_depth</div><div>The maximum number of levels allowed in the tree. A key hyperparameter for controlling overfitting.</div>
+    <div>min_samples_leaf</div><div>The minimum number of samples that must end up in a leaf. Prevents tiny, overfitted leaves.</div>
+    <div>min_samples_split</div><div>The minimum number of samples a node must have before it can be split.</div>
+  </div>
+
+  <h3>Evaluation Metrics — Classification</h3>
+  <div class="gloss">
+    <div>TP</div><div><strong>True Positive</strong> — model predicted positive, actual was positive. ✅</div>
+    <div>TN</div><div><strong>True Negative</strong> — model predicted negative, actual was negative. ✅</div>
+    <div>FP</div><div><strong>False Positive</strong> — model predicted positive, actual was negative. Also called a <em>Type I error</em> or "false alarm". ❌</div>
+    <div>FN</div><div><strong>False Negative</strong> — model predicted negative, actual was positive. Also called a <em>Type II error</em> or "miss". ❌</div>
+    <div>Accuracy</div><div>(TP + TN) / (TP + TN + FP + FN) — overall correctness.</div>
+    <div>Precision</div><div>TP / (TP + FP) — of the positives predicted, how many were right.</div>
+    <div>Recall</div><div>TP / (TP + FN) — of the actual positives, how many were found. Also called <em>Sensitivity</em> or <em>True Positive Rate</em>.</div>
+    <div>Specificity</div><div>TN / (TN + FP) — of the actual negatives, how many were correctly identified. Also called <em>True Negative Rate</em>.</div>
+    <div>F1</div><div><strong>F1-Score</strong> — harmonic mean of Precision and Recall: 2·(P·R)/(P+R).</div>
+    <div>ROC</div><div><strong>Receiver Operating Characteristic</strong> — a curve plotting True Positive Rate vs. False Positive Rate across all thresholds.</div>
+    <div>AUC</div><div><strong>Area Under the Curve</strong> — the area under the ROC curve. 0.5 = random, 1.0 = perfect.</div>
+    <div>FPR</div><div><strong>False Positive Rate</strong> — FP / (FP + TN). The x-axis of the ROC curve.</div>
+    <div>TPR</div><div><strong>True Positive Rate</strong> — same as Recall. The y-axis of the ROC curve.</div>
+    <div>PR-AUC</div><div><strong>Precision–Recall Area Under the Curve</strong> — better than ROC-AUC for heavily imbalanced datasets.</div>
+    <div>Log Loss</div><div><strong>Logarithmic Loss / Cross-Entropy</strong> — penalises confident wrong probability predictions.</div>
+    <div>MCC</div><div><strong>Matthews Correlation Coefficient</strong> — a balanced metric ranging from −1 to +1, robust to class imbalance.</div>
+    <div>Cohen's Kappa</div><div>A metric measuring agreement between predictions and truth, corrected for chance.</div>
+  </div>
+
+  <h3>Evaluation Metrics — Regression</h3>
+  <div class="gloss">
+    <div>MAE</div><div><strong>Mean Absolute Error</strong> — average of |actual − predicted|. Same units as the target.</div>
+    <div>MSE</div><div><strong>Mean Squared Error</strong> — average of (actual − predicted)². Punishes large errors heavily.</div>
+    <div>RMSE</div><div><strong>Root Mean Squared Error</strong> — the square root of MSE. Same units as the target.</div>
+    <div>MAPE</div><div><strong>Mean Absolute Percentage Error</strong> — average error expressed as a percentage.</div>
+    <div>SMAPE</div><div><strong>Symmetric Mean Absolute Percentage Error</strong> — bounded version of MAPE (0–200%).</div>
+    <div>MSLE</div><div><strong>Mean Squared Logarithmic Error</strong> — squared error on the log scale; good for wide-ranging targets.</div>
+    <div>R²</div><div><strong>Coefficient of Determination</strong> — proportion of target variance explained by the model. 1 = perfect, 0 = no better than the mean.</div>
+    <div>Adjusted R²</div><div>R² penalised for the number of predictors. Useful when comparing models of different complexity.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value used to track how well a model or business process is performing.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures how much a variable's distribution has shifted between training and production.</div>
+    <div>KS Test</div><div><strong>Kolmogorov–Smirnov Test</strong> — a statistical test for whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback–Leibler Divergence</strong> — measures how one probability distribution diverges from another.</div>
+    <div>CSI</div><div><strong>Characteristic Stability Index</strong> — the per-feature version of PSI.</div>
+    <div>Data Drift</div><div>A change in the distribution of input features over time.</div>
+    <div>Concept Drift</div><div>A change in the relationship between features and the target over time.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — a sequential analysis technique for monitoring change detection.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — the practice of deploying, monitoring and maintaining ML models in production.</div>
+    <div>CI/CD</div><div><strong>Continuous Integration / Continuous Deployment</strong> — automated pipelines that test and ship code/model changes.</div>
+    <div>p50/p95/p99</div><div><strong>Percentile latency</strong> — p95 = 95% of requests are faster than this value. Better than averages for spotting tail latency.</div>
+    <div>Uptime</div><div>The percentage of time a service is available and responding.</div>
+    <div>ROI</div><div><strong>Return On Investment</strong> — (gain from investment − cost) ÷ cost.</div>
+    <div>Shadow Deployment</div><div>Running a new model alongside the old one without acting on its output, to compare performance safely.</div>
+    <div>A/B Test</div><div>Splitting live traffic between two model versions to measure which performs better.</div>
+    <div>Champion/Challenger</div><div>The current production model (champion) vs. a candidate model (challenger) being evaluated.</div>
+  </div>
+
+  <h3>Data &amp; Training Concepts</h3>
+  <div class="gloss">
+    <div>Feature</div><div>An input variable used by the model (also called a predictor, attribute, or column).</div>
+    <div>Target</div><div>The output variable the model is trying to predict (also called label, response, or y).</div>
+    <div>Label</div><div>The ground-truth value for a training example.</div>
+    <div>Overfitting</div><div>When a model learns the training data too well — including its noise — and performs poorly on new data.</div>
+    <div>Underfitting</div><div>When a model is too simple to capture the underlying pattern, performing poorly on both training and test data.</div>
+    <div>Bias</div><div>Error from overly simplistic assumptions. High bias = underfitting.</div>
+    <div>Variance</div><div>Error from sensitivity to small fluctuations in training data. High variance = overfitting.</div>
+    <div>Bias–Variance Tradeoff</div><div>The balance between a model that is too simple (biased) and one that is too complex (high variance).</div>
+    <div>Cross-Validation</div><div>Splitting data into K folds and training K times, each time holding out a different fold, to get a robust performance estimate.</div>
+    <div>K-Fold</div><div>The specific cross-validation scheme using K folds (commonly K = 5 or 10).</div>
+    <div>Hyperparameter</div><div>A setting you choose before training (e.g. max_depth), as opposed to a parameter the model learns.</div>
+    <div>Grid Search</div><div>Exhaustively trying every combination of hyperparameters to find the best set.</div>
+    <div>Random Search</div><div>Randomly sampling hyperparameter combinations — often faster than grid search.</div>
+    <div>Train/Test Split</div><div>Dividing data into a portion for training and a portion for evaluation.</div>
+    <div>Hold-out Set</div><div>A portion of data never used during training, reserved for final evaluation.</div>
+    <div>Class Imbalance</div><div>When one class has far fewer samples than another, which can bias the model.</div>
+    <div>Resampling</div><div>Adjusting class balance via oversampling, undersampling, or SMOTE.</div>
+    <div>SMOTE</div><div><strong>Synthetic Minority Over-sampling Technique</strong> — generates synthetic examples of the minority class.</div>
+    <div>Feature Engineering</div><div>Creating new, more informative features from existing ones.</div>
+    <div>One-Hot Encoding</div><div>Converting a categorical variable into multiple binary columns.</div>
+    <div>Ordinal Encoding</div><div>Mapping categories to integers that preserve order.</div>
+    <div>Normalisation</div><div>Rescaling features to a 0–1 range. (Not needed for decision trees!)</div>
+    <div>Standardisation</div><div>Rescaling features to mean 0 and standard deviation 1. (Not needed for decision trees!)</div>
+  </div>
+
+  <h3>Explainability</h3>
+  <div class="gloss">
+    <div>XAI</div><div><strong>Explainable AI</strong> — methods and tools that make model decisions understandable to humans.</div>
+    <div>SHAP</div><div><strong>SHapley Additive exPlanations</strong> — a game-theory-based method that assigns each feature a contribution to a prediction.</div>
+    <div>LIME</div><div><strong>Local Interpretable Model-agnostic Explanations</strong> — explains individual predictions by fitting a simple local model around them.</div>
+    <div>Feature Importance</div><div>A score showing how much each feature contributed to the model's decisions.</div>
+    <div>PDP</div><div><strong>Partial Dependence Plot</strong> — shows the marginal effect of one feature on the predicted outcome.</div>
+    <div>ICE Plot</div><div><strong>Individual Conditional Expectation Plot</strong> — like a PDP but one line per sample, revealing heterogeneity.</div>
+    <div>White-box</div><div>A model whose internals are directly interpretable (e.g. a decision tree or linear regression).</div>
+    <div>Black-box</div><div>A model whose internals are opaque (e.g. a deep neural network).</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:20%;">KPI</th>
+      <th style="width:12%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>Accuracy</td><td>Class.</td><td>(TP + TN) / (TP + TN + FP + FN)</td><td>↑ Higher</td></tr>
+    <tr><td>Precision</td><td>Class.</td><td>TP / (TP + FP)</td><td>↑ Higher</td></tr>
+    <tr><td>Recall</td><td>Class.</td><td>TP / (TP + FN)</td><td>↑ Higher</td></tr>
+    <tr><td>Specificity</td><td>Class.</td><td>TN / (TN + FP)</td><td>↑ Higher</td></tr>
+    <tr><td>F1-Score</td><td>Class.</td><td>2·P·R / (P + R)</td><td>↑ Higher</td></tr>
+    <tr><td>Balanced Accuracy</td><td>Class.</td><td>(Recall + Specificity) / 2</td><td>↑ Higher</td></tr>
+    <tr><td>ROC-AUC</td><td>Class.</td><td>∫ TPR d(FPR)</td><td>↑ → 1.0</td></tr>
+    <tr><td>PR-AUC</td><td>Class.</td><td>∫ Precision d(Recall)</td><td>↑ → 1.0</td></tr>
+    <tr><td>Log Loss</td><td>Class.</td><td>−1/N · Σ [y·log p + (1−y)·log(1−p)]</td><td>↓ Lower</td></tr>
+    <tr><td>MCC</td><td>Class.</td><td>(TP·TN − FP·FN) / √[(TP+FP)(TP+FN)(TN+FP)(TN+FN)]</td><td>↑ → 1.0</td></tr>
+    <tr><td>Cohen's κ</td><td>Class.</td><td>(p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>)</td><td>↑ → 1.0</td></tr>
+    <tr><td>MAE</td><td>Reg.</td><td>1/N · Σ |y − ŷ|</td><td>↓ Lower</td></tr>
+    <tr><td>MSE</td><td>Reg.</td><td>1/N · Σ (y − ŷ)²</td><td>↓ Lower</td></tr>
+    <tr><td>RMSE</td><td>Reg.</td><td>√MSE</td><td>↓ Lower</td></tr>
+    <tr><td>R²</td><td>Reg.</td><td>1 − SS<sub>res</sub>/SS<sub>tot</sub></td><td>↑ → 1.0</td></tr>
+    <tr><td>Adjusted R²</td><td>Reg.</td><td>1 − [(1−R²)(N−1)]/(N−k−1)</td><td>↑ → 1.0</td></tr>
+    <tr><td>MAPE</td><td>Reg.</td><td>100/N · Σ |(y−ŷ)/y|</td><td>↓ Lower</td></tr>
+    <tr><td>SMAPE</td><td>Reg.</td><td>100/N · Σ |y−ŷ| / [(|y|+|ŷ|)/2]</td><td>↓ Lower</td></tr>
+    <tr><td>MSLE</td><td>Reg.</td><td>1/N · Σ (log(1+y) − log(1+ŷ))²</td><td>↓ Lower</td></tr>
+    <tr><td>Cross-Val Score</td><td>Robust.</td><td>1/K · Σ Metric<sub>k</sub></td><td>↑ Higher</td></tr>
+    <tr><td>Train-Test Gap</td><td>Robust.</td><td>Metric<sub>train</sub> − Metric<sub>test</sub></td><td>↓ Smaller</td></tr>
+    <tr><td>PSI</td><td>Post</td><td>Σ (A% − E%)·ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>KS Statistic</td><td>Post</td><td>max |F<sub>train</sub>(x) − F<sub>prod</sub>(x)|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>KL Divergence</td><td>Post</td><td>Σ P(i)·log(P(i)/Q(i))</td><td>↓ → 0</td></tr>
+    <tr><td>Uptime</td><td>Post</td><td>(Total − Downtime)/Total × 100%</td><td>↑ → 100%</td></tr>
+    <tr><td>Error Rate</td><td>Post</td><td>Failed / Total × 100%</td><td>↓ → 0%</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+    <tr><td>Override Rate</td><td>Post</td><td>Overrides / Total decisions × 100%</td><td>↓ Lower</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> Never optimise a single KPI in isolation. A model with 99% accuracy but 5% recall on fraud is useless. A model with perfect F1 but 2-second latency is unusable. Always check a <em>portfolio</em> of metrics — one from each category (performance, robustness, operational, business).
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Decision Tree Model — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   1. INTERACTIVE DECISION TREE — node click handler
+   ============================================================ */
+const nodeData = {
+  root: {
+    title: "Root Node — 'Outlook?'",
+    body: "<p>The root is the single most informative question in the whole tree. The algorithm tested every feature (Outlook, Temperature, Humidity, Wind) and computed the <strong>Information Gain</strong> for each.</p><p><strong>Outlook</strong> produced the highest gain (0.246 bits), so it became the root. Notice that 'Overcast' leads straight to a pure 'Play' leaf — that branch is solved in one step.</p><p><span class='pill'>Decision Node</span> Splits data into 3 branches.</p>"
+  },
+  humidity: {
+    title: "Decision Node — 'Humidity?'",
+    body: "<p>This node only sees the 5 samples that arrived via the <em>Sunny</em> branch. Within that subset, Humidity gives the best split.</p><p>High humidity → no play. Normal humidity → play. The node is asking a <strong>binary question</strong> because CART-style trees only produce two-way splits.</p><p><span class='pill'>Decision Node</span> Depth = 2.</p>"
+  },
+  wind: {
+    title: "Decision Node — 'Wind?'",
+    body: "<p>This node only sees the 5 samples that arrived via the <em>Rain</em> branch. Within that subset, Wind is the most informative feature.</p><p>Strong wind → no play. Weak wind → play. Each subtree is built independently using only the rows that reach it.</p><p><span class='pill'>Decision Node</span> Depth = 2.</p>"
+  },
+  overcast: {
+    title: "Leaf Node — 'Play ✔' (from Overcast)",
+    body: "<p>All 4 training samples with Outlook = Overcast were 'Play'. The node is <strong>100% pure</strong> (Entropy = 0, Gini = 0), so the algorithm stops splitting immediately.</p><p>Prediction: <strong>Play</strong>. Confidence: 100% based on training data.</p><p><span class='pill'>Leaf</span> Pure node.</p>"
+  },
+  high: {
+    title: "Leaf Node — 'No Play' (Sunny + High Humidity)",
+    body: "<p>Samples reaching this leaf: Sunny weather <em>and</em> high humidity. All of them resulted in 'No Play' in the training data.</p><p>The path is: Outlook = Sunny → Humidity = High → <strong>No Play</strong>.</p><p><span class='pill'>Leaf</span> Pure node.</p>"
+  },
+  normal: {
+    title: "Leaf Node — 'Play ✔' (Sunny + Normal Humidity)",
+    body: "<p>Samples reaching this leaf: Sunny weather <em>and</em> normal humidity. All resulted in 'Play'.</p><p>The path is: Outlook = Sunny → Humidity = Normal → <strong>Play</strong>.</p><p><span class='pill'>Leaf</span> Pure node.</p>"
+  },
+  strong: {
+    title: "Leaf Node — 'No Play' (Rain + Strong Wind)",
+    body: "<p>Samples reaching this leaf: Rainy weather <em>and</em> strong wind. All resulted in 'No Play'.</p><p>The path is: Outlook = Rain → Wind = Strong → <strong>No Play</strong>.</p><p><span class='pill'>Leaf</span> Pure node.</p>"
+  },
+  weak: {
+    title: "Leaf Node — 'Play ✔' (Rain + Weak Wind)",
+    body: "<p>Samples reaching this leaf: Rainy weather <em>and</em> weak wind. All resulted in 'Play'.</p><p>The path is: Outlook = Rain → Wind = Weak → <strong>Play</strong>.</p><p><span class='pill'>Leaf</span> Pure node.</p>"
+  }
+};
+
+document.querySelectorAll('.node').forEach(node => {
+  node.addEventListener('click', () => {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+    node.classList.add('active');
+    const key = node.getAttribute('data-info');
+    const d = nodeData[key];
+    if (d) {
+      document.getElementById('nodeInfo').innerHTML = `<h4>${d.title}</h4>${d.body}`;
+    }
+  });
+});
+
+/* ============================================================
+   2. CONFUSION MATRIX DIAGRAM
+   ============================================================ */
+(function(){
+  const text = [
+    ['TN = 850<br>Correct rejection ✅', 'FP = 50<br>False alarm ❌'],
+    ['FN = 120<br>Missed case ❌', 'TP = 480<br>Correct hit ✅']
+  ];
+  const trace = {
+    z: [[850, 50], [120, 480]],
+    x: ['Predicted: Negative', 'Predicted: Positive'],
+    y: ['Actual: Negative', 'Actual: Positive'],
+    type: 'heatmap',
+    colorscale: [[0,'#f8fafc'],[0.35,'#bfdbfe'],[0.7,'#60a5fa'],[1,'#1d4ed8']],
+    text: text,
+    texttemplate: '%{text}',
+    textfont: {size: 14, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+    hovertemplate: '%{text}<extra></extra>',
+    showscale: false, xgap: 8, ygap: 8
+  };
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    margin:{l:140, r:40, t:40, b:70}, height: 400
+  };
+  Plotly.newPlot('cmDiagram', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   3. IMPURITY CURVES
+   ============================================================ */
+(function(){
+  const ps = [];
+  for (let i = 1; i <= 99; i++) ps.push(i/100);
+  const entropy = ps.map(p => (p===0||p===1) ? 0 : -(p*Math.log2(p)) - ((1-p)*Math.log2(1-p)));
+  const gini = ps.map(p => 1 - (p*p + (1-p)*(1-p)));
+  const misclass = ps.map(p => 1 - Math.max(p, 1-p));
+
+  const traceEntropy = {x:ps, y:entropy, mode:'lines', name:'Entropy', line:{color:'#2563eb', width:3}};
+  const traceGini = {x:ps, y:gini, mode:'lines', name:'Gini Impurity', line:{color:'#059669', width:3}};
+  const traceMis = {x:ps, y:misclass, mode:'lines', name:'Misclassification Error', line:{color:'#d97706', width:3, dash:'dot'}};
+  const markerTrace = {x:[0.5], y:[1], mode:'markers', name:'p = 0.5 (max disorder)',
+    marker:{color:'#dc2626', size:12, symbol:'x', line:{color:'#ffffff', width:1.5}}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'p  (proportion of class 1)', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#cbd5e1', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Impurity', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#cbd5e1', range:[0,1.05], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+    margin:{l:65, r:30, t:30, b:60}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('impurityChart', [traceEntropy, traceGini, traceMis, markerTrace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   4. DEPTH vs ACCURACY (overfitting) + slider
+   ============================================================ */
+(function(){
+  const depths = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+  const trainAcc = [0.752,0.821,0.864,0.903,0.934,0.952,0.970,0.981,0.990,0.995,0.998,0.999,1.000,1.000,1.000];
+  const testAcc  = [0.742,0.808,0.851,0.872,0.883,0.887,0.880,0.870,0.859,0.848,0.838,0.827,0.816,0.806,0.795];
+
+  const traceTrain = {x:depths, y:trainAcc, mode:'lines+markers', name:'Training Accuracy',
+    line:{color:'#2563eb', width:3}, marker:{size:8, color:'#2563eb', line:{color:'#ffffff', width:1.5}}};
+  const traceTest = {x:depths, y:testAcc, mode:'lines+markers', name:'Test Accuracy',
+    line:{color:'#059669', width:3}, marker:{size:8, color:'#059669', line:{color:'#ffffff', width:1.5}}};
+  const bestMarker = {x:[6], y:[0.887], mode:'markers', name:'Sweet Spot (depth=6)',
+    marker:{color:'#d97706', size:16, symbol:'star', line:{color:'#ffffff', width:1.5}}};
+  const vline = {x:[6,6], y:[0.70,1.02], mode:'lines', name:'Selected depth',
+    line:{color:'#7c3aed', width:2, dash:'dash'}, showlegend:false, hoverinfo:'skip'};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'max_depth (tree complexity) →', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#cbd5e1', dtick:1, showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Accuracy', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#cbd5e1', range:[0.70,1.02], tickformat:'.0%', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.02, orientation:'h', font:{size:11}},
+    margin:{l:75, r:30, t:30, b:65}, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'rect', xref:'x', yref:'paper', x0:9.5, x1:15.5, y0:0, y1:1,
+      fillcolor:'rgba(220,38,38,0.07)', line:{width:0}, layer:'below'}],
+    annotations:[{x:12.5, yref:'paper', y:0.96, text:'⚠ Overfitting zone', showarrow:false,
+      font:{color:'#b91c1c', size:13, family:'Segoe UI, sans-serif', weight:'bold'}}]
+  };
+
+  Plotly.newPlot('depthChart', [traceTrain, traceTest, bestMarker, vline], layout, {responsive:true, displayModeBar:false});
+
+  const chartDiv = document.getElementById('depthChart');
+  const sliderWrap = document.createElement('div');
+  sliderWrap.style.cssText = 'padding:12px 22px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#ffffff;border-top:1px solid #e2e8f0;border-radius:0 0 12px 12px;';
+  sliderWrap.innerHTML = `
+    <label style="color:#475569;font-size:.9rem;font-weight:700;">Adjust max_depth:</label>
+    <input type="range" id="depthSlider" min="1" max="15" value="6" step="1"
+      style="flex:1;min-width:200px;accent-color:#2563eb;cursor:pointer;">
+    <span id="depthLabel" style="color:#1d4ed8;font-weight:700;min-width:260px;font-size:.88rem;background:#eff6ff;padding:6px 12px;border-radius:8px;">depth = 6 | train = 95.2% | test = 88.7%</span>
+  `;
+  chartDiv.parentNode.insertBefore(sliderWrap, chartDiv.nextSibling);
+
+  document.getElementById('depthSlider').addEventListener('input', function(){
+    const d = parseInt(this.value);
+    const idx = d - 1;
+    const newVline = {x:[d,d], y:[0.70,1.02], mode:'lines',
+      line:{color:'#7c3aed', width:2, dash:'dash'}, showlegend:false, hoverinfo:'skip'};
+    Plotly.addTraces('depthChart', newVline);
+    Plotly.deleteTraces('depthChart', [4]);
+    document.getElementById('depthLabel').textContent =
+      `depth = ${d} | train = ${(trainAcc[idx]*100).toFixed(1)}% | test = ${(testAcc[idx]*100).toFixed(1)}%`;
+  });
+})();
+
+/* ============================================================
+   5. ROC CURVE (static example)
+   ============================================================ */
+(function(){
+  const fpr = [0,0.02,0.05,0.08,0.12,0.18,0.25,0.35,0.48,0.62,0.78,1.0];
+  const tpr = [0,0.35,0.52,0.63,0.72,0.81,0.87,0.92,0.955,0.975,0.99,1.0];
+
+  const rocTrace = {x:fpr, y:tpr, mode:'lines+markers', name:'Decision Tree (AUC = 0.91)',
+    line:{color:'#2563eb', width:3}, marker:{size:7, color:'#2563eb', line:{color:'#ffffff', width:1.5}},
+    fill:'tozeroy', fillcolor:'rgba(37,99,235,0.08)'};
+  const randomLine = {x:[0,1], y:[0,1], mode:'lines', name:'Random Guessing (AUC = 0.50)',
+    line:{color:'#dc2626', width:2, dash:'dash'}};
+  const perfectPoint = {x:[0], y:[1], mode:'markers', name:'Perfect Classifier',
+    marker:{color:'#059669', size:15, symbol:'star', line:{color:'#ffffff', width:1.5}}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'False Positive Rate (1 − Specificity)', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#cbd5e1', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'True Positive Rate (Recall)', font:{size:13}}, gridcolor:'#e2e8f0', zerolinecolor:'#cbd5e1', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.08, font:{size:11}},
+    margin:{l:75, r:30, t:30, b:65}, hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    shapes:[{type:'rect', xref:'x', yref:'y', x0:0, x1:0.25, y0:0.75, y1:1.0,
+      fillcolor:'rgba(5,150,105,0.07)', line:{color:'rgba(5,150,105,0.4)', width:1.5, dash:'dot'}, layer:'below'}],
+    annotations:[{x:0.125, y:0.88, text:'Ideal zone', showarrow:false,
+      font:{color:'#047857', size:12, weight:'bold'}}]
+  };
+  Plotly.newPlot('rocChart', [rocTrace, randomLine, perfectPoint], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   6. CONFUSION MATRIX (static example)
+   ============================================================ */
+(function(){
+  const z = [[850, 50], [120, 480]];
+  const text = [
+    ['TN = 850<br>Correctly predicted "No Churn"', 'FP = 50<br>Wrongly flagged as "Churn"<br>(False Alarm)'],
+    ['FN = 120<br>Missed a real "Churn"<br>(The costly one)', 'TP = 480<br>Correctly predicted "Churn"']
+  ];
+  const trace = {
+    z: z,
+    x: ['Predicted: Negative', 'Predicted: Positive'],
+    y: ['Actual: Negative', 'Actual: Positive'],
+    type: 'heatmap',
+    colorscale: [[0,'#f8fafc'],[0.35,'#bfdbfe'],[0.7,'#60a5fa'],[1,'#1d4ed8']],
+    text: text, texttemplate: '%{text}',
+    textfont: {size: 13, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+    hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 6, ygap: 6
+  };
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{side:'bottom', gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+    margin:{l:140, r:40, t:40, b:70}, height: 400
+  };
+  Plotly.newPlot('cmChart', [trace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   7. INTERACTIVE KPI CALCULATOR
+   ============================================================ */
+(function(){
+  const inTP = document.getElementById('inTP');
+  const inTN = document.getElementById('inTN');
+  const inFP = document.getElementById('inFP');
+  const inFN = document.getElementById('inFN');
+  const resultsGrid = document.getElementById('resultsGrid');
+
+  function safeDiv(a, b){ return b === 0 ? 0 : a / b; }
+  function fmtPct(v){ return (v * 100).toFixed(2) + '%'; }
+  function fmt3(v){ return isFinite(v) ? v.toFixed(3) : '—'; }
+
+  function update(){
+    const TP = +inTP.value || 0;
+    const TN = +inTN.value || 0;
+    const FP = +inFP.value || 0;
+    const FN = +inFN.value || 0;
+    const N = TP + TN + FP + FN;
+
+    if (N === 0){
+      resultsGrid.innerHTML = '<div class="result-card"><div class="name">Enter values</div><div class="value">—</div></div>';
+      return;
+    }
+
+    const accuracy = safeDiv(TP + TN, N);
+    const precision = safeDiv(TP, TP + FP);
+    const recall = safeDiv(TP, TP + FN);
+    const specificity = safeDiv(TN, TN + FP);
+    const fpr = safeDiv(FP, FP + TN);
+    const f1 = (precision + recall) === 0 ? 0 : 2 * precision * recall / (precision + recall);
+    const balAcc = (recall + specificity) / 2;
+    const mccNum = (TP * TN) - (FP * FN);
+    const mccDen = Math.sqrt((TP+FP) * (TP+FN) * (TN+FP) * (TN+FN));
+    const mcc = mccDen === 0 ? 0 : mccNum / mccDen;
+
+    const p = accuracy === 0 || accuracy === 1 ? accuracy : Math.min(Math.max(accuracy, 0.001), 0.999);
+    const logLoss = -((TP + FN) * Math.log(p) + (TN + FP) * Math.log(1 - p)) / N;
+
+    const po = accuracy;
+    const pe = safeDiv((TP + FP) * (TP + FN) + (TN + FP) * (TN + FN), N * N);
+    const kappa = pe === 1 ? 0 : (po - pe) / (1 - pe);
+
+    const prevalence = safeDiv(TP + FN, N);
+    const prAucProxy = (precision + recall) / 2;
+    const rocAucProxy = (recall + specificity) / 2;
+
+    const cards = [
+      { name:'Accuracy', value: fmtPct(accuracy), formula:'(TP+TN)/N' },
+      { name:'Precision', value: fmtPct(precision), formula:'TP/(TP+FP)' },
+      { name:'Recall', value: fmtPct(recall), formula:'TP/(TP+FN)' },
+      { name:'Specificity', value: fmtPct(specificity), formula:'TN/(TN+FP)' },
+      { name:'False Positive Rate', value: fmtPct(fpr), formula:'FP/(FP+TN)' },
+      { name:'F1-Score', value: fmt3(f1), formula:'2PR/(P+R)' },
+      { name:'Balanced Accuracy', value: fmtPct(balAcc), formula:'(Recall+Spec)/2' },
+      { name:'MCC', value: fmt3(mcc), formula:'(TP·TN−FP·FN)/√…' },
+      { name:"Cohen's Kappa", value: fmt3(kappa), formula:'(po−pe)/(1−pe)' },
+      { name:'ROC-AUC (proxy)', value: fmt3(rocAucProxy), formula:'(TPR+TNR)/2' },
+      { name:'PR-AUC (proxy)', value: fmt3(prAucProxy), formula:'(P+R)/2' },
+      { name:'Log Loss (proxy)', value: fmt3(logLoss), formula:'−Σ[y·logp+…]' },
+      { name:'Total samples', value: N.toLocaleString(), formula:'TP+TN+FP+FN' },
+      { name:'Positive rate', value: fmtPct(prevalence), formula:'(TP+FN)/N' }
+    ];
+
+    resultsGrid.innerHTML = cards.map(c => `
+      <div class="result-card">
+        <div class="name">${c.name}</div>
+        <div class="value">${c.value}</div>
+        <div class="formula-small">${c.formula}</div>
+      </div>
+    `).join('');
+
+    updateCM(TP, TN, FP, FN);
+    updateROC(recall, specificity, rocAucProxy);
+  }
+
+  let cmInitialized = false;
+  function updateCM(TP, TN, FP, FN){
+    const text = [['TN = ' + TN, 'FP = ' + FP], ['FN = ' + FN, 'TP = ' + TP]];
+    const z = [[TN, FP], [FN, TP]];
+    const trace = {
+      z: z,
+      x: ['Predicted: Negative', 'Predicted: Positive'],
+      y: ['Actual: Negative', 'Actual: Positive'],
+      type: 'heatmap',
+      colorscale: [[0,'#f8fafc'],[0.35,'#bfdbfe'],[0.7,'#60a5fa'],[1,'#1d4ed8']],
+      text: text, texttemplate: '%{text}',
+      textfont: {size: 15, color:'#0f172a', family:'Segoe UI, sans-serif', weight:'bold'},
+      hovertemplate: '%{text}<extra></extra>', showscale: false, xgap: 8, ygap: 8
+    };
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+      yaxis:{gridcolor:'#e2e8f0', autorange:'reversed', showline:true, linecolor:'#cbd5e1', mirror:true, tickfont:{size:12, color:'#475569'}},
+      margin:{l:140, r:40, t:30, b:70}, height: 360
+    };
+    if (!cmInitialized){
+      Plotly.newPlot('liveCM', [trace], layout, {responsive:true, displayModeBar:false});
+      cmInitialized = true;
+    } else {
+      Plotly.react('liveCM', [trace], layout, {responsive:true, displayModeBar:false});
+    }
+  }
+
+  let rocInitialized = false;
+  function updateROC(recall, specificity, auc){
+    const pts = [];
+    const N = 30;
+    for (let i = 0; i <= N; i++){
+      const f = i / N;
+      const k = Math.max(0.05, Math.log(1 - recall) / Math.log(1 - (1 - specificity) + 1e-9));
+      const t = Math.pow(f, 1 / Math.max(k, 0.2));
+      pts.push({x: f, y: Math.min(1, t)});
+    }
+    pts[pts.length - 1].y = 1;
+
+    const rocTrace = {
+      x: pts.map(p => p.x), y: pts.map(p => p.y),
+      mode: 'lines', name: `Synthetic ROC (AUC ≈ ${auc.toFixed(3)})`,
+      line: {color:'#2563eb', width:3}, fill: 'tozeroy', fillcolor: 'rgba(37,99,235,0.08)'
+    };
+    const randomLine = {x:[0,1], y:[0,1], mode:'lines', name:'Random (AUC 0.5)',
+      line:{color:'#dc2626', width:2, dash:'dash'}};
+    const currentPoint = {x:[1 - specificity], y:[recall], mode:'markers',
+      name:'Current model operating point',
+      marker:{color:'#d97706', size:13, symbol:'circle', line:{color:'#ffffff', width:2}}};
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+      xaxis:{title:{text:'False Positive Rate', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'True Positive Rate', font:{size:12}}, gridcolor:'#e2e8f0', range:[0,1.02], showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.45, y:0.05, font:{size:11}},
+      margin:{l:65, r:30, t:20, b:60}, height: 380
+    };
+    if (!rocInitialized){
+      Plotly.newPlot('liveROC', [rocTrace, randomLine, currentPoint], layout, {responsive:true, displayModeBar:false});
+      rocInitialized = true;
+    } else {
+      Plotly.react('liveROC', [rocTrace, randomLine, currentPoint], layout, {responsive:true, displayModeBar:false});
+    }
+  }
+
+  [inTP, inTN, inFP, inFN].forEach(inp => inp.addEventListener('input', update));
+  update();
+})();
+
+/* ============================================================
+   8. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
