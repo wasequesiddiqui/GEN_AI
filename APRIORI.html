@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apriori Algorithm — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#ea580c;
+    --accent-dark:#c2410c;
+    --accent2:#0891b2;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --pink:#db2777;
+    --purple:#7c3aed;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#9a3412 0%,#ea580c 30%,#0891b2 70%,#0e7490 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(234,88,12,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:880px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent-dark);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#ea580c,#0891b2);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(234,88,12,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#fff7ed,#ecfeff);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent-dark);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#fff7ed;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent-dark);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.apriori{border-left-color:var(--accent);}
+  .metric.rule{border-left-color:var(--purple);}
+  .metric.business{border-left-color:var(--pink);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.apriori h4{color:var(--accent-dark);}
+  .metric.rule h4{color:var(--purple);}
+  .metric.business h4{color:var(--pink);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.apriori .badge{background:#fff7ed;color:#c2410c;}
+  .metric.rule .badge{background:#f5f3ff;color:#5b21b6;}
+  .metric.business .badge{background:#fdf2f8;color:#9d174d;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .demo-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .demo-controls .info{flex:1;min-width:130px;}
+  .demo-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .demo-controls .info .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);
+  }
+  .demo-sliders{padding:4px 0 12px;}
+  .demo-sliders label{
+    display:block;font-size:.82rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-top:10px;
+  }
+  .demo-sliders input[type=range]{
+    width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0;
+  }
+  .btn{
+    background:linear-gradient(135deg,#ea580c,#0891b2);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(234,88,12,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(234,88,12,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+  .btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+  .btn-group .toggle{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:700;
+    cursor:pointer;font-family:'Segoe UI',sans-serif;
+    transition:all .15s;
+  }
+  .btn-group .toggle.active{
+    background:linear-gradient(135deg,#ea580c,#0891b2);
+    color:#ffffff;border-color:transparent;
+    box-shadow:0 3px 10px rgba(234,88,12,.28);
+  }
+  .btn-group .toggle:hover:not(.active){background:#f1f5f9;}
+
+  /* Level explorer chips */
+  .level-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 14px;border-radius:10px;font-weight:700;font-size:.85rem;
+    background:#ffffff;border:2px solid var(--border);cursor:pointer;
+    transition:all .15s;font-family:'Segoe UI',sans-serif;
+  }
+  .level-chip:hover{border-color:var(--accent);background:#fff7ed;}
+  .level-chip.active{background:linear-gradient(135deg,#ea580c,#0891b2);color:#ffffff;border-color:transparent;}
+  .level-chip .badge-count{
+    background:rgba(255,255,255,0.35);padding:1px 8px;border-radius:20px;
+    font-size:.75rem;
+  }
+  .level-chip.active .badge-count{background:rgba(255,255,255,0.4);}
+
+  /* Itemset cards */
+  .itemset-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;
+    margin:16px 0;
+  }
+  .itemset-card{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;transition:all .15s;
+  }
+  .itemset-card.frequent{border-left:4px solid var(--green);}
+  .itemset-card.infrequent{border-left:4px solid var(--red);opacity:0.55;text-decoration:line-through;}
+  .itemset-card .items{font-weight:700;color:var(--text);font-size:.9rem;}
+  .itemset-card .support{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .itemset-card .support strong{color:var(--accent-dark);}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#c2410c;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#fff7ed;
+    color:#c2410c;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .steps-list{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .steps-list .step{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;border-top:3px solid var(--accent);
+  }
+  .steps-list .step .n{
+    font-size:.78rem;color:var(--accent-dark);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  }
+  .steps-list .step .t{
+    font-size:.95rem;font-weight:800;color:var(--text);margin-top:2px;
+  }
+  .steps-list .step .d{
+    font-size:.85rem;color:var(--muted);margin-top:4px;line-height:1.55;
+  }
+  .assumptions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .assumptions .item{
+    background:linear-gradient(135deg,#fff7ed,#ecfeff);
+    border:1px solid #fed7aa;border-radius:10px;padding:14px 16px;
+    text-align:center;
+  }
+  .assumptions .item .letter{
+    font-size:1.6rem;font-weight:900;color:#c2410c;line-height:1;
+  }
+  .assumptions .item .name{
+    font-size:.85rem;font-weight:800;color:#1e293b;margin-top:4px;
+  }
+  .assumptions .item .desc{
+    font-size:.76rem;color:#64748b;margin-top:2px;
+  }
+
+  /* Rule table */
+  .rule-table-wrap{
+    overflow-x:auto;margin:16px 0;
+    border-radius:10px;border:1px solid var(--border);
+    background:#ffffff;
+  }
+  .rule-table-wrap table{margin:0;box-shadow:none;border-radius:0;}
+  .rule-table-wrap th{cursor:pointer;user-select:none;position:relative;transition:background .15s;}
+  .rule-table-wrap th:hover{background:#e2e8f0;}
+  .rule-table-wrap th::after{
+    content:"⇅";position:absolute;right:8px;opacity:0.4;font-size:.75rem;
+  }
+  .rule-table-wrap th.asc::after{content:"▲";opacity:1;color:var(--accent-dark);}
+  .rule-table-wrap th.desc::after{content:"▼";opacity:1;color:var(--accent-dark);}
+  .rule-table-wrap td.num{text-align:right;font-family:'Consolas',monospace;font-size:.85rem;}
+  .rule-table-wrap td.mono{font-family:'Consolas',monospace;font-size:.83rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛒 Apriori Algorithm — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine you're a supermarket manager who wants to know which products are bought together so you can place them near each other. You have 10,000 receipts. Reading each one and asking "which pairs appear together?" is easy. But asking "which triples? quadruples? quintuples?" explodes combinatorially. The Apriori algorithm solves this by using one clever rule: <em>"if a set of products is rare, then any larger set containing it must also be rare."</em> This lets you prune millions of useless combinations and find the truly interesting patterns fast.
+  </div>
+
+  <h3>What is the Apriori Algorithm?</h3>
+  <p><span class="highlight">Apriori</span> is a classic <strong>association rule mining</strong> algorithm. Given a dataset of transactions (each transaction is a set of items), it discovers <em>frequent itemsets</em> — groups of items that appear together in at least a minimum fraction of transactions — and then derives <em>association rules</em> like <code>{Bread, Butter} → {Milk}</code> with a measurable confidence.</p>
+
+  <p>Two output types:</p>
+  <ul class="clean">
+    <li><strong>Frequent itemsets</strong> — sets of items whose support ≥ min_support. E.g. <code>{Bread, Butter, Milk}</code> appears in 12% of baskets.</li>
+    <li><strong>Association rules</strong> — implications A → B with confidence, lift, and other metrics. E.g. <code>{Bread} → {Butter}</code> has confidence 0.65.</li>
+  </ul>
+
+  <h3>The Key Insight — The Apriori Property (Downward Closure)</h3>
+  <div class="box" style="background:linear-gradient(90deg,#fff7ed,#ecfeff);">
+    <p style="font-size:1.05rem;margin:0;"><strong>Apriori Property:</strong> If an itemset is <em>frequent</em>, then all of its subsets are also frequent. Equivalently: if an itemset is <em>infrequent</em>, then all of its supersets are also infrequent.</p>
+  </div>
+  <div class="interp">
+    <strong>Why it works:</strong> Adding an item can only <em>decrease</em> support. So if {Bread, Caviar} appears in only 0.1% of baskets, then {Bread, Caviar, Champagne} can appear in at most 0.1% — it can't magically become more common. This gives us a way to <strong>prune</strong> huge parts of the search space.
+  </div>
+
+  <h3>How the Algorithm Works (Step by Step)</h3>
+  <div class="steps-list">
+    <div class="step">
+      <div class="n">Step 1</div>
+      <div class="t">Scan for 1-itemsets</div>
+      <div class="d">Count the support of every single item. Keep only those with support ≥ min_support. These form L₁, the frequent 1-itemsets.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 2</div>
+      <div class="t">Generate candidates</div>
+      <div class="d">From L₁, generate candidate 2-itemsets C₂ by joining pairs. Then from L₂ generate C₃, and so on. Only generate candidates whose subsets are all frequent (the pruning step).</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 3</div>
+      <div class="t">Count support</div>
+      <div class="d">Scan the database once per level. For each candidate itemset, count how many transactions contain it.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 4</div>
+      <div class="t">Prune infrequent</div>
+      <div class="d">Keep only candidates with support ≥ min_support. These form Lₖ, the frequent k-itemsets.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 5</div>
+      <div class="t">Repeat until no candidates</div>
+      <div class="d">Loop Steps 2–4 with k = k+1. Stop when Lₖ is empty — no more frequent itemsets exist.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 6</div>
+      <div class="t">Generate rules</div>
+      <div class="d">For each frequent itemset X with |X| ≥ 2, generate rules A → B where A ⊂ X, B = X − A. Keep only rules with confidence ≥ min_confidence.</div>
+    </div>
+  </div>
+
+  <h3>Apriori vs. Other Frequent-Pattern Algorithms</h3>
+  <table>
+    <tr><th>Algorithm</th><th>Approach</th><th>Database Scans</th><th>Speed</th><th>Notes</th></tr>
+    <tr><td><strong>Apriori</strong></td><td>Level-wise, candidate generation</td><td>k+1 scans (k = max itemset size)</td><td>Slow on large data</td><td>Simple, classic, easy to implement</td></tr>
+    <tr><td>FP-Growth</td><td>FP-Tree, no candidate generation</td><td>2 scans</td><td>Much faster</td><td>Uses more memory</td></tr>
+    <tr><td>Eclat</td><td>Vertical data format (TID-sets)</td><td>k scans (via intersections)</td><td>Fast on sparse data</td><td>Elegant, but memory-heavy</td></tr>
+    <tr><td>FP-Max</td><td>FP-Tree + maximal itemsets</td><td>2 scans</td><td>Fast</td><td>Only maximal patterns</td></tr>
+    <tr><td>H-Mine</td><td>Hyper-structure mining</td><td>1–2 scans</td><td>Fast, memory-efficient</td><td>Good for dense data</td></tr>
+    <tr><td>RELIM</td><td>Recursive elimination</td><td>Multiple scans</td><td>Fast in practice</td><td>Simple, competitive</td></tr>
+  </table>
+
+  <h3>🔬 Interactive: Watch Apriori Mine Frequent Itemsets</h3>
+  <p style="color:var(--muted);font-size:.93rem;">This is the centerpiece. We've generated a synthetic dataset of 20 market-basket transactions. Click a level chip (L₁, L₂, L₃, L₄) to see the itemsets discovered at each stage. <strong>Green cards</strong> passed the support threshold; <strong>grey struck-through cards</strong> were pruned. Adjust the <code>min_support</code> slider to see how the algorithm's output changes.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Transactions</div>
+        <div class="val" id="apTransactions">20</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Distinct items</div>
+        <div class="val" id="apItems">10</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Frequent itemsets</div>
+        <div class="val" id="apFreqCount" style="color:#059669;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Rules generated</div>
+        <div class="val" id="apRuleCount" style="color:#7c3aed;">—</div>
+      </div>
+      <button class="btn secondary" id="apRegenBtn">🔀 Regenerate Dataset</button>
+    </div>
+
+    <div class="demo-sliders">
+      <label>Minimum support: <span id="apSupLbl" style="color:var(--accent-dark);">0.20 (4 transactions)</span></label>
+      <input type="range" id="apSupSlider" min="1" max="10" value="4" step="1">
+      <label>Minimum confidence: <span id="apConfLbl" style="color:var(--accent-dark);">0.60</span></label>
+      <input type="range" id="apConfSlider" min="10" max="95" value="60" step="5">
+    </div>
+
+    <div style="margin: 16px 0;">
+      <div style="font-size:.82rem;color:var(--muted);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Frequent itemsets by level — click a level to inspect</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;" id="apLevelChips"></div>
+    </div>
+
+    <div class="chart" style="margin:0;">
+      <div class="chart-title" id="apLevelTitle">Level L₁ — Frequent 1-itemsets</div>
+      <div style="padding:0 16px 8px;font-size:.88rem;color:var(--muted);" id="apLevelDesc"></div>
+      <div class="itemset-grid" id="apItemsetGrid" style="padding:0 16px 16px;"></div>
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Support of each itemset at this level</div>
+      <div id="apSupportChart" style="height:320px;"></div>
+      <div class="chart-note">Green bars = frequent (pass min_support). Red bars = infrequent (pruned). The dashed line is the min_support threshold.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Sample Transactions</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Below are the synthetic transactions the algorithm is mining. Each row is a shopping basket. Look for patterns — the algorithm will find them for you.</p>
+
+  <div class="chart">
+    <div class="chart-title">Transaction Database</div>
+    <div id="apTransactionsChart" style="height:420px;"></div>
+    <div class="chart-note">Each row is one transaction. Each coloured cell is an item present in that basket. The Apriori algorithm scans this table to count support.</div>
+  </div>
+
+  <h3>🔬 Interactive: The Effect of min_support</h3>
+  <p style="color:var(--muted);font-size:.93rem;">As you lower <code>min_support</code>, more itemsets become frequent — but the search space explodes. This chart shows how many itemsets survive at each level for different support thresholds. Notice how low support thresholds rapidly blow up the number of candidates.</p>
+
+  <div class="chart">
+    <div class="chart-title">Number of Frequent Itemsets vs. min_support</div>
+    <div id="apSupportSensitivityChart" style="height:420px;"></div>
+    <div class="chart-note">Each line = one level (L₁, L₂, L₃, L₄). Lower support → more frequent itemsets, especially at higher levels. This is why Apriori is expensive on low support thresholds.</div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>Apriori was originally invented for market basket analysis, but the pattern-mining idea generalises to any domain where you have sets of co-occurring events.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🛒 Retail &amp; E-commerce</h4>
+      <ul class="clean">
+        <li><strong>Market basket analysis</strong> — find products bought together.</li>
+        <li><strong>Product placement</strong> — arrange shelves so related items are near each other.</li>
+        <li><strong>Cross-sell &amp; up-sell</strong> — recommend add-ons based on the current cart.</li>
+        <li><strong>Bundle pricing</strong> — identify items to package together.</li>
+        <li><strong>Promotion planning</strong> — target discounts on frequently co-purchased goods.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🌐 Web &amp; Media</h4>
+      <ul class="clean">
+        <li><strong>Click-stream analysis</strong> — pages users visit together.</li>
+        <li><strong>Content recommendations</strong> — articles/movies often consumed together.</li>
+        <li><strong>Search query suggestions</strong> — queries that co-occur.</li>
+        <li><strong>A/B test pattern discovery</strong> — which behaviours correlate.</li>
+        <li><strong>Online advertising</strong> — ad placements that drive conversions together.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏥 Healthcare &amp; Bioinformatics</h4>
+      <ul class="clean">
+        <li><strong>Symptom co-occurrence</strong> — diseases with related symptoms.</li>
+        <li><strong>Drug interaction patterns</strong> — medicines prescribed together.</li>
+        <li><strong>Gene expression</strong> — genes expressed together.</li>
+        <li><strong>Adverse event detection</strong> — drug-event associations.</li>
+        <li><strong>Medical claim analysis</strong> — procedures often performed together.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏦 Banking &amp; Insurance</h4>
+      <ul class="clean">
+        <li><strong>Cross-selling financial products</strong> — accounts opened together.</li>
+        <li><strong>Fraud detection</strong> — suspicious transaction patterns.</li>
+        <li><strong>Credit risk</strong> — borrower behaviour associations.</li>
+        <li><strong>Insurance bundling</strong> — policies bought together.</li>
+        <li><strong>AML patterns</strong> — unusual account activity combos.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📞 Telecom &amp; Cybersecurity</h4>
+      <ul class="clean">
+        <li><strong>Service bundling</strong> — services purchased together.</li>
+        <li><strong>Network intrusion detection</strong> — attack signature patterns.</li>
+        <li><strong>User behaviour profiling</strong> — actions that co-occur.</li>
+        <li><strong>Alarm correlation</strong> — related alerts fired together.</li>
+        <li><strong>Spam pattern mining</strong> — word co-occurrences in spam.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🎓 Other Domains</h4>
+      <ul class="clean">
+        <li><strong>Education</strong> — courses taken together.</li>
+        <li><strong>Recommender systems</strong> — as a baseline for collaborative filtering.</li>
+        <li><strong>Text mining</strong> — words appearing in the same documents.</li>
+        <li><strong>Election analysis</strong> — issues voters care about together.</li>
+        <li><strong>Sports analytics</strong> — plays co-occurring in winning sequences.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why is Apriori still relevant?</strong> It's not the fastest algorithm anymore, but it's the most <em>interpretable</em>. Rules like <code>{Diapers} → {Beer}</code> with confidence 0.65 and lift 2.3 are immediately actionable — no black-box model, no trust required. In domains where decisions need to be explainable (retail, healthcare, banking), Apriori-style rules remain the gold standard.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Simple to understand and implement</strong> — the algorithm is just a few loops. Anyone who understands "if a set is rare, supersets are rare" can follow the logic.</li>
+    <li><strong>Interpretable output</strong> — rules like <code>{Bread, Eggs} → {Milk}</code> are human-readable and directly actionable. No black-box problem.</li>
+    <li><strong>Guaranteed to find all frequent itemsets</strong> — no approximation. If it exists and meets the threshold, Apriori finds it.</li>
+    <li><strong>Uses the pruning principle</strong> — the Apriori property dramatically reduces search space vs. brute-force enumeration of all 2<sup>d</sup> possible itemsets.</li>
+    <li><strong>Parameterisable</strong> — <code>min_support</code> and <code>min_confidence</code> let you trade off between finding more rules and controlling runtime.</li>
+    <li><strong>Works on sparse data</strong> — very effective on typical retail transactions, where each basket has only a few items out of thousands.</li>
+    <li><strong>Extensible to many metrics</strong> — beyond support/confidence, you can filter rules by lift, conviction, leverage, cosine, Jaccard, Kulczynski.</li>
+    <li><strong>Foundation for advanced methods</strong> — FP-Growth, Eclat, H-Mine, and many sequential pattern miners build on the Apriori idea.</li>
+    <li><strong>Handles categorical co-occurrence naturally</strong> — works on any data that can be represented as sets of items per transaction.</li>
+    <li><strong>Easy to parallelise</strong> — the counting step is embarrassingly parallel; each candidate itemset can be counted independently.</li>
+    <li><strong>Available in every ML library</strong> — mlxtend, Weka, R's <code>arules</code>, Spark MLlib, and many more implement it.</li>
+    <li><strong>Good baseline for recommendation systems</strong> — even simple rules often beat naive popularity-based recommendations.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🔍</div>
+      <h4 style="color:var(--accent-dark);">Interpretable</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Rules are readable and explainable.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🎯</div>
+      <h4 style="color:var(--accent-dark);">Complete</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Finds every frequent itemset.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent-dark);">Pruning</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Cuts search space dramatically.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Multiple database scans</strong> — one scan per level. If the longest frequent itemset has k items, Apriori reads the whole database k+1 times. Very slow on large datasets.</li>
+    <li><strong>Exponential candidate generation</strong> — the number of candidate itemsets can explode, especially with low support thresholds. For d distinct items, there are 2<sup>d</sup> possible itemsets.</li>
+    <li><strong>Memory intensive</strong> — all candidate itemsets must be held in memory at once. Can be prohibitive for dense data.</li>
+    <li><strong>Poor on dense datasets</strong> — when items appear in most transactions (e.g. text mining where documents contain most common words), Apriori's pruning barely helps.</li>
+    <li><strong>Sensitive to min_support</strong> — pick it too high and you miss interesting rules; too low and the algorithm runs forever.</li>
+    <li><strong>Confidence has a known flaw</strong> — a rule A → B with high confidence might actually have <em>lower</em> lift than the base rate of B. Always check lift too. (The classic "Diapers → Beer" example is a real illustration.)</li>
+    <li><strong>Doesn't consider rare items</strong> — Apriori's support threshold biases toward common patterns. Rare but interesting rules (e.g., "customers who buy this rare item also buy...") are missed.</li>
+    <li><strong>Generates too many rules</strong> — for dense data, the rule output can be overwhelming. Filtering by lift, conviction, or other metrics is essential.</li>
+    <li><strong>Assumes binary presence/absence</strong> — Apriori works on sets. It ignores quantity (bought 3 vs. 1), price, and time-ordering.</li>
+    <li><strong>No handling of negative items</strong> — "if a customer buys X, they do NOT buy Y" is hard to express in vanilla Apriori.</li>
+    <li><strong>Not aware of taxonomy</strong> — "Bread" and "Whole Wheat Bread" are treated as unrelated unless you build a hierarchy manually.</li>
+    <li><strong>Slow on high-dimensional data</strong> — many distinct items → many candidate 2-itemsets → expensive joins.</li>
+    <li><strong>Doesn't directly optimise for recommendation accuracy</strong> — accuracy metrics like precision@K, NDCG must be computed post-hoc.</li>
+    <li><strong>Rules are correlational, not causal</strong> — a strong rule means items co-occur, not that one causes the other. Placing butter next to bread doesn't necessarily increase butter sales.</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#fff7ed);">
+    <strong>The confidence illusion:</strong> Imagine 90% of baskets contain milk. Then a rule like <code>{Pickles} → {Milk}</code> might have confidence 0.88 — impressive-looking. But milk's base rate is 0.90, so pickles actually <em>reduce</em> milk purchases! Confidence alone is misleading. Always check <strong>lift</strong>. This is why lift and conviction are essential companions to confidence.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Apriori produces association rules. To judge whether a rule is <em>interesting and useful</em>, we compute several metrics. The metrics fall into two groups: <strong>rule interestingness</strong> (is this pattern real?) and <strong>rule-set quality</strong> (is the whole rule set good?).</p>
+
+  <h3>5.1 Core Rule Metrics — The Four Fundamentals</h3>
+
+  <div class="metric apriori">
+    <h4>Support <span class="badge">Frequency</span></h4>
+    <p><strong>What it measures:</strong> How often an itemset appears in the database. The "popularity" of a combination.</p>
+    <div class="formula">
+      <span class="lbl">Support of an itemset X</span>
+      Supp( X ) = | { t ∈ T : X ⊆ t } | / | T |
+      <br><br>
+      <span class="lbl">Support of a rule A → B</span>
+      Supp( A → B ) = Supp( A ∪ B ) = P( A ∩ B )
+      <br><br>
+      T = the transaction database
+      <br>
+      | T | = total number of transactions
+      <br>
+      P( A ∩ B ) = probability a random transaction contains both A and B
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Out of 20 transactions, 8 contain both Bread and Butter.<br>
+      Supp(Bread → Butter) = 8 / 20 = <code>0.40 (40%)</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Higher = more common. Absolute value is dataset-dependent.<br>
+      • Supp &gt; 0.10 → commonly co-occurring<br>
+      • Supp 0.01–0.10 → moderately frequent<br>
+      • Supp &lt; 0.01 → rare, but may still be interesting
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Filtering rules — you only want patterns that appear often enough to be reliable and act on.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Looking for rare but high-value patterns (e.g. luxury co-purchases). Use lift or conviction instead.</div>
+    </div>
+  </div>
+
+  <div class="metric apriori">
+    <h4>Confidence <span class="badge">Reliability</span></h4>
+    <p><strong>What it measures:</strong> Given that a customer bought A, how likely are they to also buy B? The "conditional probability" of B given A.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Conf( A → B ) = Supp( A ∪ B ) / Supp( A ) = P( B | A )
+      <br><br>
+      <span class="lbl">Note asymmetry</span>
+      Conf( A → B ) ≠ Conf( B → A ) in general.
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Supp(Bread ∪ Butter) = 0.40, Supp(Bread) = 0.50.<br>
+      Conf(Bread → Butter) = 0.40 / 0.50 = <code>0.80 (80%)</code><br>
+      Interpretation: 80% of baskets with Bread also have Butter.
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • Conf &gt; 0.8 → very strong implication<br>
+      • Conf 0.5–0.8 → strong<br>
+      • Conf 0.3–0.5 → moderate<br>
+      • Conf &lt; 0.3 → weak, often not useful
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want to know how reliably A predicts B.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> B is a very common item anyway (like milk) — high confidence might just reflect B's base rate. Use lift.</div>
+    </div>
+  </div>
+
+  <div class="metric apriori">
+    <h4>Lift <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> How much more likely A and B occur together, compared to if they were statistically independent. Lift &gt; 1 means positive association; lift = 1 means independence; lift &lt; 1 means negative association.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Lift( A → B ) = Conf( A → B ) / Supp( B )
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Supp( A ∪ B ) / ( Supp( A ) · Supp( B ) )
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= P( A ∩ B ) / ( P( A ) · P( B ) )
+      <br><br>
+      <span class="lbl">Symmetric</span>
+      Lift( A → B ) = Lift( B → A )
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Supp(Bread ∪ Butter) = 0.40, Supp(Bread) = 0.50, Supp(Butter) = 0.45.<br>
+      Lift(Bread → Butter) = 0.40 / (0.50 × 0.45) = 0.40 / 0.225 = <code>1.78</code><br>
+      Interpretation: Bread and Butter co-occur 78% more often than chance.
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • Lift &gt; 2 → strong positive association ✅<br>
+      • Lift 1.5–2 → moderate positive<br>
+      • Lift 1.0–1.5 → weak positive<br>
+      • Lift = 1 → independent (no association)<br>
+      • Lift &lt; 1 → negative association (items avoid each other)
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want to filter out "trivially true" rules (like {pickles} → {milk}). This is the most important metric beyond support.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Support is very low — lift becomes unstable on small samples.</div>
+    </div>
+  </div>
+
+  <div class="metric apriori">
+    <h4>Conviction <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> How much the rule's confidence exceeds what it would be under independence — but with a form that's bounded and asymmetric. Particularly sensitive to the direction of the rule.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Conv( A → B ) = ( 1 − Supp( B ) ) / ( 1 − Conf( A → B ) )
+      <br><br>
+      <span class="lbl">Note</span>
+      Range: [ 0, +∞ ). Conv = 1 means independence.
+      <br>
+      Conv &gt; 1 → positive association.
+      <br>
+      Conv &lt; 1 → negative association.
+      <br>
+      If Conf = 1 (perfect rule), Conv → ∞.
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Supp(Butter) = 0.45, Conf(Bread → Butter) = 0.80.<br>
+      Conv = (1 − 0.45) / (1 − 0.80) = 0.55 / 0.20 = <code>2.75</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Higher is better. Conviction directly measures how "surprising" the rule is compared to the baseline of B's rarity. More asymmetric than lift — Conv(A→B) ≠ Conv(B→A).
+    </div>
+  </div>
+
+  <h3>5.2 Additional Interestingness Metrics</h3>
+
+  <div class="metric rule">
+    <h4>Leverage (Piatetsky-Shapiro's Metric) <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> The difference between the observed co-occurrence and the expected co-occurrence under independence.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Lev( A → B ) = Supp( A ∪ B ) − Supp( A ) · Supp( B )
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= P( A ∩ B ) − P( A ) · P( B )
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Supp(Bread ∪ Butter) = 0.40, Supp(Bread) = 0.50, Supp(Butter) = 0.45.<br>
+      Lev = 0.40 − (0.50 × 0.45) = 0.40 − 0.225 = <code>0.175</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Range [ −0.25, +0.25 ] in the binary case.<br>
+      • Lev &gt; 0 → positive association<br>
+      • Lev = 0 → independence<br>
+      • Lev &lt; 0 → negative association
+      <br><br>
+      Leverage is symmetric (Lev(A→B) = Lev(B→A)) and additive across items — useful for aggregate scoring.
+    </div>
+  </div>
+
+  <div class="metric rule">
+    <h4>Cosine Similarity <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> The cosine of the angle between the two item vectors in binary space. Ranges 0–1 and is bounded — unlike lift, which can blow up.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Cos( A, B ) = Supp( A ∪ B ) / √( Supp( A ) · Supp( B ) )
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= P( A ∩ B ) / √( P( A ) · P( B ) )
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Supp(Bread ∪ Butter) = 0.40, Supp(Bread) = 0.50, Supp(Butter) = 0.45.<br>
+      Cos = 0.40 / √(0.50 × 0.45) = 0.40 / √0.225 = 0.40 / 0.4743 = <code>0.843</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Range 0 to 1 (higher = stronger). Cos = 1 means perfect co-occurrence. Cos is bounded — never exceeds 1 — so it's robust to rare items.
+    </div>
+  </div>
+
+  <div class="metric rule">
+    <h4>Jaccard Coefficient <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> The size of the intersection over the size of the union of the two item sets.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      J( A, B ) = Supp( A ∪ B ) / ( Supp( A ) + Supp( B ) − Supp( A ∪ B ) )
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Supp(Bread ∪ Butter) = 0.40, Supp(Bread) = 0.50, Supp(Butter) = 0.45.<br>
+      J = 0.40 / (0.50 + 0.45 − 0.40) = 0.40 / 0.55 = <code>0.727</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1 (higher = more overlap). Symmetric and bounded. Popular in text mining for document similarity.</div>
+  </div>
+
+  <div class="metric rule">
+    <h4>Kulczynski Measure <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> The average of the two conditional probabilities. Symmetric and bounded.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Kulc( A, B ) = ½ · [ P( A | B ) + P( B | A ) ]
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= ½ · [ Conf( B → A ) + Conf( A → B ) ]
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Conf(Bread → Butter) = 0.80, Conf(Butter → Bread) = 0.89.<br>
+      Kulc = (0.80 + 0.89) / 2 = <code>0.845</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Range 0 to 1 (higher = stronger bidirectional association).<br>
+      Kulczynski is valued because it's <em>null-invariant</em> — it doesn't inflate when one item is very rare, unlike confidence.
+    </div>
+  </div>
+
+  <div class="metric rule">
+    <h4>All-Confidence <span class="badge">Rule-Set Quality</span></h4>
+    <p><strong>What it measures:</strong> For an itemset X, the minimum confidence across all rules derivable from X. Measures how "tightly bound" the itemset is.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      allConf( X ) = min<sub>A ⊂ X, A ≠ ∅</sub> Conf( A → X \ A )
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Supp( X ) / max<sub>i ∈ X</sub> Supp( {i} )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher = the itemset is more cohesive. Used to filter out itemsets where one item is much rarer than the others.</div>
+  </div>
+
+  <div class="metric rule">
+    <h4>Zhang's Metric <span class="badge">Interestingness</span></h4>
+    <p><strong>What it measures:</strong> A statistical measure of association that ranges from −1 to +1, treating positive and negative associations symmetrically.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Zhang( A → B ) = ( Supp( A ∪ B ) − Supp( A ) Supp( B ) ) / max( Supp( A ∪ B )(1 − Supp(A)), Supp( A )( Supp( B ) − Supp( A ∪ B )) )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range −1 to +1. +1 = perfect positive association, −1 = perfect negative, 0 = independence. Symmetric and null-invariant.</div>
+  </div>
+
+  <h3>5.3 Rule-Set Quality Metrics</h3>
+
+  <div class="metric">
+    <h4>Rule Count &amp; Rule Density <span class="badge">Rule Set</span></h4>
+    <p><strong>What it measures:</strong> The total number of rules generated and how "dense" they are relative to the search space.</p>
+    <div class="formula">
+      <span class="lbl">Rule density</span>
+      Density = #rules / ( 2<sup>d</sup> ) &nbsp;&nbsp; where d = number of distinct items
+      <br><br>
+      <span class="lbl">Rules per frequent itemset</span>
+      RPFI = #rules / #frequent_itemsets
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A high rule count with low density is normal (pruning worked). A density close to 1 suggests the threshold is too low.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Redundancy Rate <span class="badge">Rule Set</span></h4>
+    <p><strong>What it measures:</strong> Fraction of rules that are "covered" by a more general rule with equal or higher confidence.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Redundancy = #redundant_rules / #total_rules
+      <br><br>
+      A rule A → B is redundant if there exists A' ⊂ A with Conf(A' → B) ≥ Conf(A → B).
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lower is better. Redundant rules waste space and confuse interpretation.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Rule Coverage <span class="badge">Rule Set</span></h4>
+    <p><strong>What it measures:</strong> The fraction of transactions covered by at least one rule's antecedent.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Coverage = | ∪<sub>r ∈ Rules</sub> { t : antecedent(r) ⊆ t } | / | T |
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher = the rules apply to more of the database. A rule set covering only 5% of baskets is limited in impact.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Average Lift / Median Conviction <span class="badge">Rule Set</span></h4>
+    <p><strong>What it measures:</strong> Aggregate quality of the rule set. Averaging lift or taking median conviction gives a one-number summary.</p>
+    <div class="formula">
+      <span class="lbl">Average lift</span>
+      Lift̄ = (1/|R|) · Σ<sub>r ∈ R</sub> Lift( r )
+      <br><br>
+      <span class="lbl">Median conviction</span>
+      Conṽ = median { Conv( r ) : r ∈ R }
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher is better. Use median for conviction because it can be infinite; use mean for lift.</div>
+  </div>
+
+  <h3>5.4 Recommendation-Specific Metrics (If Rules Are Used for Recommendation)</h3>
+
+  <div class="metric business">
+    <h4>Precision@K <span class="badge">Recommendation</span></h4>
+    <p><strong>What it measures:</strong> Of the top-K items recommended to a user, how many did they actually purchase?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Prec@K = | RecommendedTopK ∩ ActuallyPurchased | / K
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1 (higher is better). A rule set with high precision@K produces relevant recommendations.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Recall@K <span class="badge">Recommendation</span></h4>
+    <p><strong>What it measures:</strong> Of all items the user purchased, how many appeared in the top-K recommendations?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Rec@K = | RecommendedTopK ∩ ActuallyPurchased | / | ActuallyPurchased |
+    </div>
+  </div>
+
+  <div class="metric business">
+    <h4>MAP@K (Mean Average Precision) <span class="badge">Recommendation</span></h4>
+    <p><strong>What it measures:</strong> Average precision across the top-K positions, accounting for rank order.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAP@K = (1/|U|) · Σ<sub>u ∈ U</sub> (1/min(K, |R<sub>u</sub>|)) · Σ<sub>k=1</sub><sup>K</sup> Prec@k · rel(k)
+      <br><br>
+      rel(k) = 1 if the item at position k is relevant, 0 otherwise.
+    </div>
+  </div>
+
+  <div class="metric business">
+    <h4>NDCG@K (Normalised Discounted Cumulative Gain) <span class="badge">Recommendation</span></h4>
+    <p><strong>What it measures:</strong> Rank-weighted relevance score, discounted logarithmically by position. The industry standard for ranking quality.</p>
+    <div class="formula">
+      <span class="lbl">DCG@K</span>
+      DCG@K = Σ<sub>k=1</sub><sup>K</sup> rel(k) / log<sub>2</sub>(k + 1)
+      <br><br>
+      <span class="lbl">NDCG@K</span>
+      NDCG@K = DCG@K / IDCG@K
+      <br><br>
+      IDCG@K = ideal DCG (all relevant items at top)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1 (higher is better). NDCG@K = 1 means perfect ranking.</div>
+  </div>
+
+  <h3>5.5 📊 Interactive: Rule Metrics Comparison</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Each bar is a rule generated from our synthetic dataset. Bars show support, confidence, and lift side by side. Adjust the min_confidence and min_support sliders in the demo above to change which rules appear here. Sort by clicking any column header.</p>
+
+  <div class="demo">
+    <div class="chart" style="margin:0;">
+      <div class="chart-title">Top Rules by Lift — Support, Confidence, Lift</div>
+      <div id="apRuleChart" style="height:480px;"></div>
+      <div class="chart-note">Rules sorted by lift descending. Bars on the left show raw counts; the confidence and lift bars are on the same relative scale. Lift &gt; 1 means positive association.</div>
+    </div>
+  </div>
+
+  <h3>5.6 🧮 Interactive: Support / Confidence / Lift Calculator</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Enter the counts for a candidate rule and see every interestingness metric computed live. This is what you'd do for a single rule you want to evaluate by hand.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">N — total transactions</div>
+        <div class="val" style="color:#0f172a;">
+          <input type="number" id="calcN" value="1000" min="1" style="width:110px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:6px;font-size:.95rem;font-weight:700;">
+        </div>
+      </div>
+      <div class="info">
+        <div class="lbl">|A| — transactions with A</div>
+        <div class="val" style="color:#0f172a;">
+          <input type="number" id="calcA" value="500" min="0" style="width:110px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:6px;font-size:.95rem;font-weight:700;">
+        </div>
+      </div>
+      <div class="info">
+        <div class="lbl">|B| — transactions with B</div>
+        <div class="val" style="color:#0f172a;">
+          <input type="number" id="calcB" value="450" min="0" style="width:110px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:6px;font-size:.95rem;font-weight:700;">
+        </div>
+      </div>
+      <div class="info">
+        <div class="lbl">|A ∪ B| — with both</div>
+        <div class="val" style="color:#0f172a;">
+          <input type="number" id="calcAB" value="400" min="0" style="width:110px;padding:6px 10px;border:1px solid var(--border-strong);border-radius:6px;font-size:.95rem;font-weight:700;">
+        </div>
+      </div>
+    </div>
+
+    <div class="grid3" id="calcResults" style="margin-top:16px;"></div>
+  </div>
+
+  <h3>5.7 📊 Interactive: Support vs Confidence vs Lift Scatter</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Each dot is a rule. X = support, Y = confidence, bubble size and colour = lift. Rules in the top-right with large bubbles are the "star rules" — frequent, confident, AND positively associated. Rules in the top-left have high confidence but low support (niche); rules in the bottom-right are frequent but not predictive.</p>
+
+  <div class="chart">
+    <div class="chart-title">Support × Confidence × Lift — Rule Landscape</div>
+    <div id="apScatterChart" style="height:480px;"></div>
+    <div class="chart-note">Dashed horizontal line at lift = 1 separates positive (above) from negative (below) association. Use this chart to spot which rules to actually act on.</div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once a rule set is deployed (e.g., driving recommendations, shelf placement, or promotions), you must monitor whether the rules still reflect current purchasing behaviour.</p>
+
+  <h3>6.1 Rule Set Stability</h3>
+
+  <div class="metric post">
+    <h4>Rule Overlap (Jaccard between Rule Sets) <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> How many rules from the training-time rule set remain in the production-time rule set.</p>
+    <div class="formula">
+      <span class="lbl">Rule-set Jaccard</span>
+      J( R<sub>train</sub>, R<sub>prod</sub> ) = | R<sub>train</sub> ∩ R<sub>prod</sub> | / | R<sub>train</sub> ∪ R<sub>prod</sub> |
+      <br><br>
+      <span class="lbl">Note</span>
+      Two rules are "the same" only if both the antecedent and consequent are identical.
+      <br>
+      Some teams relax this to "same antecedent" or "same consequent".
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. &gt; 0.75 = stable. &lt; 0.50 = the rule set has fundamentally changed — retrain or investigate.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Rule Support Drift <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> Change in support for each rule between training and production.</p>
+    <div class="formula">
+      <span class="lbl">Per-rule support drift</span>
+      ΔSupp( r ) = | Supp<sub>prod</sub>( r ) − Supp<sub>train</sub>( r ) |
+      <br><br>
+      <span class="lbl">Aggregate</span>
+      AvgDrift = (1/|R|) · Σ<sub>r ∈ R</sub> ΔSupp( r )
+      <br><br>
+      <span class="lbl">Relative drift</span>
+      RelDrift( r ) = ΔSupp( r ) / Supp<sub>train</sub>( r )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> RelDrift &lt; 0.10 = stable. &gt; 0.30 = the pattern has weakened — consider removing the rule.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Rule Confidence Drift <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> Change in confidence for each rule. Confidence is what drives recommendations, so this is critical.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ΔConf( r ) = Conf<sub>train</sub>( r ) − Conf<sub>prod</sub>( r )
+      <br><br>
+      <span class="lbl">Sign matters</span>
+      Positive = confidence degraded. Negative = rule got stronger.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> ΔConf &gt; 0.10 = significant decay, investigate. ΔConf &gt; 0.20 = remove the rule or retrain.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Rule Lift Drift <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> Change in lift. Lift is the "interestingness" signal; if it falls below 1, the rule has become useless.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ΔLift( r ) = Lift<sub>train</sub>( r ) − Lift<sub>prod</sub>( r )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> If Lift<sub>prod</sub> drops below 1.0, the rule no longer indicates positive association — it should be removed immediately.</div>
+  </div>
+
+  <h3>6.2 Business Impact Metrics</h3>
+
+  <div class="metric business">
+    <h4>Basket Size Change <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Whether using the rules has increased the average number of items per basket.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ΔBasketSize = AvgBasketSize<sub>post-deploy</sub> − AvgBasketSize<sub>baseline</sub>
+      <br><br>
+      <span class="lbl">Relative change</span>
+      RelChange = ΔBasketSize / AvgBasketSize<sub>baseline</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Positive = recommendations are working. Negative = recommendations are annoying users or the rules are wrong.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Recommendation Click-Through Rate (CTR) <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Of the recommendations shown, what fraction did users click on?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      CTR = #clicks / #recommendations_shown
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1. Compare to a baseline (e.g., popularity-based recommendations). Typical lift: 10–40% improvement.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Conversion Rate Uplift <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> The increase in purchase conversion attributable to the rules.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Uplift = ( CR<sub>with_rules</sub> − CR<sub>without_rules</sub> ) / CR<sub>without_rules</sub>
+      <br><br>
+      CR = conversion rate = #conversions / #sessions
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher is better. Typical successful uplifts are 5–25%.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Cross-Sell Revenue <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Additional revenue from cross-sold items that the user wouldn't have bought otherwise.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      CrossSellRevenue = Σ ( additional items purchased via recommendation × unit price )
+    </div>
+  </div>
+
+  <div class="metric business">
+    <h4>Segment-Level Actionability <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Whether the rules' business impact differs significantly across customer segments.</p>
+    <div class="formula">
+      <span class="lbl">F-ratio across segments</span>
+      F = Var<sub>between</sub> / Var<sub>within</sub>
+      <br><br>
+      Var<sub>between</sub> = Σ<sub>s</sub> w<sub>s</sub> · ( KPI<sub>s</sub> − KPI<sub>overall</sub> )²
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher F = rules work well in some segments but not others — leads to segment-specific rule sets.</div>
+  </div>
+
+  <h3>6.3 Operational Metrics</h3>
+
+  <div class="metric post">
+    <h4>Rule Generation Latency <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> How long it takes to mine rules on the current dataset.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Latency = time to mine rules given thresholds
+      <br><br>
+      Track p50, p95, p99 across retraining runs.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Apriori is slower than FP-Growth. For datasets with &gt;1M transactions, consider upgrading to FP-Growth or using Spark's distributed Apriori.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Rule Serving Latency <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> Time to look up applicable rules and generate recommendations for a new basket.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ServeLatency = O( |basket| × |rules_index| )
+      <br><br>
+      With a good hash index on antecedents: near-constant time per rule.
+    </div>
+    <div class="interp"><strong>Target:</strong> p50 &lt; 5 ms, p95 &lt; 50 ms for a real-time recommendation service.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Recommendation Coverage <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> Fraction of sessions for which at least one recommendation could be generated.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Coverage = #sessions_with_recommendation / #total_sessions
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher = the rule set is applicable to more sessions. Low coverage = missing patterns or rules too specific.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Retrain Trigger <span class="badge">Governance</span></h4>
+    <p><strong>What it measures:</strong> When to retrain the rule set.</p>
+    <div class="formula">
+      <span class="lbl">Common triggers</span>
+      • Rule Jaccard &lt; 0.65 (rule set has shifted)
+      <br>
+      • Median lift drop &gt; 20%
+      <br>
+      • Coverage drops &gt; 15%
+      <br>
+      • CTR drops &gt; 10% vs. baseline
+      <br>
+      • Scheduled monthly/quarterly retrain
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#fff7ed);">
+    <strong>Golden rule:</strong> A rule set is a snapshot of customer behaviour at one point in time. Preferences shift, seasons change, products come and go. Monitor rule lift, confidence, and business KPIs. Retrain when the rule set stops matching reality — or on a fixed schedule (monthly for retail, quarterly for banking).
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How Apriori Actually Works</h2>
+  <p>The core idea: <strong>find all itemsets whose support exceeds a threshold, then derive high-confidence rules from them.</strong></p>
+
+  <h3>7.1 The Apriori Property (Downward Closure)</h3>
+  <div class="formula">
+    <span class="lbl">Property</span>
+    If X ⊆ Y, then Supp( X ) ≥ Supp( Y )
+    <br><br>
+    <span class="lbl">Contrapositive (the pruning rule)</span>
+    If Supp( X ) &lt; min_support, then for every superset Y ⊇ X:
+    <br>
+    Supp( Y ) &lt; min_support
+    <br>
+    → All supersets of an infrequent itemset can be safely ignored.
+  </div>
+
+  <h3>7.2 Candidate Generation (Join Step)</h3>
+  <p>Given L<sub>k−1</sub> (frequent (k−1)-itemsets), generate C<sub>k</sub> (candidate k-itemsets).</p>
+  <div class="formula">
+    <span class="lbl">Join rule</span>
+    Two (k−1)-itemsets p and q can be joined if their first k−2 items are identical:
+    <br><br>
+    p = { i₁, i₂, …, i<sub>k−2</sub>, i<sub>k−1</sub> }
+    <br>
+    q = { i₁, i₂, …, i<sub>k−2</sub>, i<sub>k</sub>' }
+    <br>
+    → Join produces: { i₁, i₂, …, i<sub>k−2</sub>, i<sub>k−1</sub>, i<sub>k</sub>' }
+    <br><br>
+    <span class="lbl">Condition</span>
+    Requires itemsets to be sorted lexicographically so that the join is well-defined.
+  </div>
+
+  <h3>7.3 Candidate Pruning (The Apriori Step)</h3>
+  <div class="formula">
+    <span class="lbl">Rule</span>
+    For each candidate c ∈ C<sub>k</sub>:
+    <br>
+    If any (k−1)-subset of c is NOT in L<sub>k−1</sub>, then remove c from C<sub>k</sub>.
+    <br><br>
+    <span class="lbl">Reason</span>
+    By the Apriori property, c can only be frequent if ALL its subsets are frequent.
+    <br>
+    This pruning dramatically reduces C<sub>k</sub>.
+  </div>
+
+  <h3>7.4 Support Counting</h3>
+  <div class="formula">
+    <span class="lbl">Formula</span>
+    Supp( X ) = | { t ∈ T : X ⊆ t } | / | T |
+    <br><br>
+    <span class="lbl">Equivalent count form</span>
+    count( X ) = | { t ∈ T : X ⊆ t } |
+    <br>
+    min_count = ceil( min_support × | T | )
+    <br>
+    Keep X if count( X ) ≥ min_count
+  </div>
+
+  <h3>7.5 Rule Generation from Frequent Itemsets</h3>
+  <div class="formula">
+    <span class="lbl">For each frequent itemset Z with | Z | ≥ 2:</span>
+    For each non-empty proper subset A ⊂ Z:
+    <br>
+    Let B = Z \ A
+    <br>
+    Compute Conf( A → B ) = Supp( Z ) / Supp( A )
+    <br>
+    If Conf( A → B ) ≥ min_confidence, output the rule A → B.
+    <br><br>
+    <span class="lbl">Property (fewer rules with larger consequents)</span>
+    Conf( A → B ) ≥ Conf( A → B' ) when B' ⊆ B
+    <br>
+    So if a rule with a small consequent fails the confidence threshold, so will all rules with larger consequents.
+  </div>
+
+  <h3>7.6 The Four Fundamental Metrics — Full Formulas</h3>
+  <div class="formula">
+    <span class="lbl">Support</span>
+    Supp( A → B ) = P( A ∩ B ) = | A ∩ B | / N
+    <br><br>
+    <span class="lbl">Confidence</span>
+    Conf( A → B ) = P( B | A ) = P( A ∩ B ) / P( A ) = Supp( A ∪ B ) / Supp( A )
+    <br><br>
+    <span class="lbl">Lift</span>
+    Lift( A → B ) = P( A ∩ B ) / ( P( A ) · P( B ) ) = Conf( A → B ) / Supp( B )
+    <br><br>
+    <span class="lbl">Conviction</span>
+    Conv( A → B ) = ( 1 − Supp( B ) ) / ( 1 − Conf( A → B ) )
+  </div>
+
+  <h3>7.7 Additional Metrics — Full Formulas</h3>
+  <div class="formula">
+    <span class="lbl">Leverage (Piatetsky-Shapiro)</span>
+    Lev( A → B ) = P( A ∩ B ) − P( A ) · P( B )
+    <br><br>
+    <span class="lbl">Cosine</span>
+    Cos( A, B ) = P( A ∩ B ) / √( P( A ) · P( B ) )
+    <br><br>
+    <span class="lbl">Jaccard</span>
+    J( A, B ) = P( A ∩ B ) / ( P( A ) + P( B ) − P( A ∩ B ) )
+    <br><br>
+    <span class="lbl">Kulczynski</span>
+    Kulc( A, B ) = ½ · [ P( A | B ) + P( B | A ) ]
+    <br><br>
+    <span class="lbl">All-confidence of itemset X</span>
+    allConf( X ) = Supp( X ) / max<sub>i ∈ X</sub> Supp( { i } )
+    <br><br>
+    <span class="lbl">Zhang's metric</span>
+    Zhang( A → B ) = ( P( A ∩ B ) − P( A ) P( B ) ) / max( P( A ∩ B )( 1 − P( A ) ), P( A )( P( B ) − P( A ∩ B ) ) )
+  </div>
+
+  <h3>7.8 Complexity Analysis</h3>
+  <div class="formula">
+    <span class="lbl">Worst-case time complexity</span>
+    O( 2<sup>d</sup> · | T | · w )
+    <br><br>
+    d = number of distinct items
+    <br>
+    | T | = number of transactions
+    <br>
+    w = average transaction width
+    <br><br>
+    <span class="lbl">Database scans</span>
+    k + 1 scans, where k = length of the longest frequent itemset
+    <br><br>
+    <span class="lbl">Memory</span>
+    O( | C<sub>k</sub> | + | L<sub>k</sub> | ) for each level
+    <br><br>
+    <span class="lbl">Practical note</span>
+    With the Apriori property, the effective complexity is much smaller than 2<sup>d</sup>
+    on typical sparse datasets.
+  </div>
+
+  <h3>7.9 Anti-Monotonicity and Other Pattern Types</h3>
+  <div class="formula">
+    <span class="lbl">Downward closure (Apriori property)</span>
+    Support is <em>anti-monotone</em>: Supp(X) ≥ Supp(Y) if X ⊆ Y
+    <br><br>
+    <span class="lbl">Upward closure (consequence)</span>
+    If X is infrequent, all supersets are infrequent.
+    <br>
+    If X is frequent, all subsets are frequent.
+    <br><br>
+    <span class="lbl">Maximal frequent itemset</span>
+    X is maximal frequent if it's frequent but no superset of X is frequent.
+    <br><br>
+    <span class="lbl">Closed frequent itemset</span>
+    X is closed if it's frequent and no proper superset has the same support.
+    <br><br>
+    <span class="lbl">Why maximal / closed matter</span>
+    Maximal itemsets are the "border" of frequency; closed itemsets retain
+    all support information with far fewer patterns.
+  </div>
+
+  <h3>7.10 Generalised Sequential Patterns (GSP) and Beyond</h3>
+  <div class="formula">
+    <span class="lbl">Sequential pattern</span>
+    A sequence of itemsets ⟨ s₁, s₂, …, s<sub>m</sub> ⟩ where items in each s<sub>j</sub>
+    occur together and s₁ precedes s₂, etc.
+    <br><br>
+    <span class="lbl">GSP support</span>
+    Supp( s ) = fraction of sequences containing s as a subsequence
+    <br><br>
+    <span class="lbl">Anti-monotonicity still holds</span>
+    If s is frequent, every subsequence of s is frequent.
+    <br>
+    This is what makes Apriori-style algorithms apply to sequences.
+  </div>
+
+  <h3>7.11 Assumptions of Apriori</h3>
+  <div class="assumptions">
+    <div class="item">
+      <div class="letter">B</div>
+      <div class="name">Binary data</div>
+      <div class="desc">Items are present or absent</div>
+    </div>
+    <div class="item">
+      <div class="letter">T</div>
+      <div class="name">Transaction structure</div>
+      <div class="desc">Data is grouped into transactions</div>
+    </div>
+    <div class="item">
+      <div class="letter">I</div>
+      <div class="name">Independence of transactions</div>
+      <div class="desc">No temporal or hierarchical structure</div>
+    </div>
+    <div class="item">
+      <div class="letter">S</div>
+      <div class="name">Sufficient support</div>
+      <div class="desc">Patterns of interest occur often enough</div>
+    </div>
+    <div class="item">
+      <div class="letter">M</div>
+      <div class="name">Manually chosen thresholds</div>
+      <div class="desc">min_support and min_confidence specified</div>
+    </div>
+  </div>
+
+  <h3>📊 Interactive: How Support Threshold Affects the Lattice</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The lattice of all possible itemsets is huge (2<sup>d</sup> nodes for d items). Apriori's pruning lets it explore only the "frequent" region — shown in green — while skipping everything below the support threshold. Drag the slider to see how the frequent region shrinks or grows.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Items</div>
+        <div class="val" style="color:#0f172a;">10</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Total itemsets</div>
+        <div class="val" style="color:#dc2626;">1,023</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Frequent itemsets</div>
+        <div class="val" id="latFreqCount" style="color:#059669;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Pruning ratio</div>
+        <div class="val" id="latPruneRatio" style="color:#7c3aed;">—</div>
+      </div>
+    </div>
+
+    <div class="demo-sliders">
+      <label>Minimum support: <span id="latSupLbl" style="color:var(--accent-dark);">0.20</span></label>
+      <input type="range" id="latSupSlider" min="1" max="15" value="4" step="1">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Frequent Itemsets by Level — Lattice View</div>
+      <div id="apLatticeChart" style="height:440px;"></div>
+      <div class="chart-note">Each bar is the number of frequent itemsets at that level (L₁, L₂, L₃, …). Apriori's pruning ensures levels after L₁ shrink rapidly — no need to check all 2<sup>d</sup> itemsets.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithm &amp; Model Concepts</h3>
+  <div class="gloss">
+    <div>Apriori</div><div>A classic association-rule mining algorithm that finds frequent itemsets using the downward-closure property.</div>
+    <div>Association Rule</div><div>An implication A → B expressing that transactions containing A tend to also contain B.</div>
+    <div>Frequent Itemset</div><div>A set of items whose support meets or exceeds a threshold.</div>
+    <div>Candidate Itemset</div><div>A set of items that is being tested for frequency.</div>
+    <div>Apriori Property</div><div>If an itemset is frequent, all its subsets are frequent. Equivalently: if an itemset is infrequent, all its supersets are infrequent.</div>
+    <div>Downward Closure</div><div>Another name for the Apriori property.</div>
+    <div>Anti-Monotone</div><div>A property P is anti-monotone if P(X) implies P(Y) for all Y ⊆ X. Support is anti-monotone.</div>
+    <div>Maximal Frequent Itemset</div><div>A frequent itemset none of whose supersets are frequent.</div>
+    <div>Closed Frequent Itemset</div><div>A frequent itemset with no proper superset having the same support.</div>
+    <div>FP-Growth</div><div>A faster alternative to Apriori that avoids candidate generation using an FP-Tree.</div>
+    <div>Eclat</div><div>An Apriori alternative using a vertical (TID-set) data layout for fast intersection-based counting.</div>
+    <div>GSP</div><div><strong>Generalised Sequential Pattern</strong> — an Apriori-style algorithm for sequential patterns.</div>
+    <div>PrefixSpan</div><div>A faster sequential pattern miner using prefix-projection.</div>
+    <div>HAM</div><div><strong>Hyper-linked Array Mining</strong> — Apriori variant that uses a prefix tree.</div>
+    <div>RE-LIM</div><div><strong>Recursive Elimination</strong> — a simple frequent-itemset miner often faster than Apriori.</div>
+  </div>
+
+  <h3>Rule Metrics</h3>
+  <div class="gloss">
+    <div>Support</div><div>P(A ∩ B) — the fraction of transactions containing both A and B.</div>
+    <div>Confidence</div><div>P(B | A) — the conditional probability of B given A.</div>
+    <div>Lift</div><div>P(A ∩ B) / (P(A)·P(B)) — how much more often A and B co-occur than chance.</div>
+    <div>Conviction</div><div>(1 − P(B)) / (1 − Conf(A→B)) — asymmetric, sensitive to the direction of the rule.</div>
+    <div>Leverage</div><div>P(A ∩ B) − P(A)·P(B) — the "Piatetsky-Shapiro" measure.</div>
+    <div>Cosine</div><div>P(A ∩ B) / √(P(A)·P(B)) — bounded similarity metric.</div>
+    <div>Jaccard</div><div>|A ∩ B| / |A ∪ B| — intersection over union.</div>
+    <div>Kulczynski</div><div>½ [P(A|B) + P(B|A)] — average conditional probability; null-invariant.</div>
+    <div>All-Confidence</div><div>min confidence over all rules derived from an itemset.</div>
+    <div>Zhang's Metric</div><div>A signed measure of association ranging from −1 to +1.</div>
+    <div>Interest Factor</div><div>Another name for lift.</div>
+    <div>Collective Strength</div><div>A measure of how concentrated the data is in a rule's joint presence and joint absence.</div>
+    <div>Certainty Factor</div><div>A variant of confidence that ranges from −1 to +1.</div>
+    <div>Odds Ratio</div><div>A measure of association for binary items.</div>
+    <div>Yule's Q</div><div>A measure of association similar to a correlation coefficient.</div>
+  </div>
+
+  <h3>Recommendation Metrics</h3>
+  <div class="gloss">
+    <div>Precision@K</div><div>Of the top-K recommended items, the fraction that are relevant.</div>
+    <div>Recall@K</div><div>Of all relevant items, the fraction appearing in top-K recommendations.</div>
+    <div>MAP@K</div><div><strong>Mean Average Precision at K</strong> — average precision across the top-K, averaged over users.</div>
+    <div>NDCG@K</div><div><strong>Normalised Discounted Cumulative Gain at K</strong> — rank-weighted ranking quality measure.</div>
+    <div>MRR</div><div><strong>Mean Reciprocal Rank</strong> — 1 / rank of the first relevant item, averaged over users.</div>
+    <div>CTR</div><div><strong>Click-Through Rate</strong> — clicks / impressions.</div>
+    <div>Coverage</div><div>Fraction of users or sessions receiving at least one recommendation.</div>
+    <div>Diversity</div><div>How different the recommended items are from each other.</div>
+    <div>Novelty</div><div>How unexpected the recommendations are to the user.</div>
+    <div>Serendipity</div><div>How surprising-yet-relevant the recommendations are.</div>
+  </div>
+
+  <h3>Data &amp; Preprocessing</h3>
+  <div class="gloss">
+    <div>Transaction</div><div>A set of items that co-occur in one event (e.g., one shopping basket).</div>
+    <div>Item</div><div>A single element of a transaction (e.g., one product).</div>
+    <div>Itemset</div><div>A set of items.</div>
+    <div>k-itemset</div><div>An itemset containing exactly k items.</div>
+    <div>Transaction Database</div><div>The full collection of transactions, denoted T.</div>
+    <div>Lattice</div><div>The partial-order structure of all itemsets under subset inclusion.</div>
+    <div>Sparse Data</div><div>Data where most items appear in few transactions — typical for retail.</div>
+    <div>Dense Data</div><div>Data where items appear in many transactions — e.g., text mining on common words.</div>
+    <div>min_support</div><div>The minimum support threshold for an itemset to be considered frequent.</div>
+    <div>min_confidence</div><div>The minimum confidence threshold for a rule to be kept.</div>
+    <div>Threshold Tuning</div><div>Adjusting min_support and min_confidence to balance runtime and rule quality.</div>
+    <div>Binning</div><div>Converting continuous attributes to categorical items (e.g., age ranges) so Apriori can be applied.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model or business performance.</div>
+    <div>Rule Set Stability</div><div>How consistent the rules are over time.</div>
+    <div>Rule Drift</div><div>Change in support, confidence, or lift of a rule.</div>
+    <div>Rule Jaccard</div><div>Intersection-over-union between two rule sets.</div>
+    <div>Data Drift</div><div>Change in the distribution of items or baskets over time.</div>
+    <div>Concept Drift</div><div>Change in the underlying purchasing behaviour.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift between training and production.</div>
+    <div>KS Test</div><div><strong>Kolmogorov-Smirnov Test</strong> — statistical test for whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback-Leibler Divergence</strong> — measures how one distribution differs from another.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — sequential change detection.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — deploying and monitoring ML in production.</div>
+    <div>A/B Test</div><div>Comparing two versions (with vs. without rules) on a randomly split audience.</div>
+    <div>Champion / Challenger</div><div>The current production rule set vs. a candidate.</div>
+    <div>Shadow Deployment</div><div>Running a new rule set in parallel without acting on its output.</div>
+    <div>Bandit</div><div>A multi-armed bandit framework for balancing exploration and exploitation of rules.</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs and core formulas in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:22%;">KPI / Formula</th>
+      <th style="width:16%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>Support</td><td>Rule</td><td>Supp(A ∪ B) = P(A ∩ B)</td><td>↑ Higher</td></tr>
+    <tr><td>Confidence</td><td>Rule</td><td>Conf(A→B) = Supp(A ∪ B) / Supp(A)</td><td>↑ Higher</td></tr>
+    <tr><td>Lift</td><td>Rule</td><td>Supp(A ∪ B) / (Supp(A)·Supp(B))</td><td>↑ &gt; 1</td></tr>
+    <tr><td>Conviction</td><td>Rule</td><td>(1 − Supp(B)) / (1 − Conf(A→B))</td><td>↑ &gt; 1</td></tr>
+    <tr><td>Leverage</td><td>Rule</td><td>P(A∩B) − P(A)P(B)</td><td>↑ &gt; 0</td></tr>
+    <tr><td>Cosine</td><td>Rule</td><td>P(A∩B) / √(P(A)P(B))</td><td>↑ → 1</td></tr>
+    <tr><td>Jaccard</td><td>Rule</td><td>P(A∩B) / (P(A) + P(B) − P(A∩B))</td><td>↑ → 1</td></tr>
+    <tr><td>Kulczynski</td><td>Rule</td><td>½ [P(A|B) + P(B|A)]</td><td>↑ → 1</td></tr>
+    <tr><td>All-Confidence</td><td>Rule Set</td><td>Supp(X) / max<sub>i∈X</sub> Supp({i})</td><td>↑ Higher</td></tr>
+    <tr><td>Zhang's Metric</td><td>Rule</td><td>(P(A∩B) − P(A)P(B)) / max(...)</td><td>↑ → 1</td></tr>
+    <tr><td>Apriori Property</td><td>Math</td><td>X ⊆ Y ⇒ Supp(X) ≥ Supp(Y)</td><td>Guarantees pruning</td></tr>
+    <tr><td>Join step</td><td>Math</td><td>Merge itemsets with matching prefix of length k−2</td><td>Generate C<sub>k</sub></td></tr>
+    <tr><td>Prune step</td><td>Math</td><td>Remove candidate if any (k−1)-subset not in L<sub>k−1</sub></td><td>Shrink C<sub>k</sub></td></tr>
+    <tr><td>Rule confidence</td><td>Math</td><td>Conf(A→B) = Supp(A ∪ B) / Supp(A)</td><td>↑ ≥ min_conf</td></tr>
+    <tr><td>Time complexity</td><td>Math</td><td>O(2<sup>d</sup> · |T| · w)</td><td>↓ Smaller</td></tr>
+    <tr><td>Database scans</td><td>Math</td><td>k+1 (k = max frequent itemset size)</td><td>↓ Smaller</td></tr>
+    <tr><td>Precision@K</td><td>Rec.</td><td>|Recommended ∩ Purchased| / K</td><td>↑ → 1</td></tr>
+    <tr><td>Recall@K</td><td>Rec.</td><td>|Recommended ∩ Purchased| / |Purchased|</td><td>↑ → 1</td></tr>
+    <tr><td>MAP@K</td><td>Rec.</td><td>mean over users of average precision@K</td><td>↑ → 1</td></tr>
+    <tr><td>NDCG@K</td><td>Rec.</td><td>DCG@K / IDCG@K</td><td>↑ → 1</td></tr>
+    <tr><td>Rule Jaccard</td><td>Post</td><td>|R<sub>train</sub> ∩ R<sub>prod</sub>| / |R<sub>train</sub> ∪ R<sub>prod</sub>|</td><td>↑ &gt; 0.75</td></tr>
+    <tr><td>Support drift</td><td>Post</td><td>|Supp<sub>prod</sub>(r) − Supp<sub>train</sub>(r)|</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>Confidence drift</td><td>Post</td><td>Conf<sub>train</sub>(r) − Conf<sub>prod</sub>(r)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>Lift drift</td><td>Post</td><td>Lift<sub>train</sub>(r) − Lift<sub>prod</sub>(r)</td><td>↓ Small</td></tr>
+    <tr><td>Basket size change</td><td>Post</td><td>AvgBasket<sub>post</sub> − AvgBasket<sub>base</sub></td><td>↑ Higher</td></tr>
+    <tr><td>CTR</td><td>Post</td><td>#clicks / #impressions</td><td>↑ Higher</td></tr>
+    <tr><td>Conversion uplift</td><td>Post</td><td>(CR<sub>with</sub> − CR<sub>without</sub>) / CR<sub>without</sub></td><td>↑ Higher</td></tr>
+    <tr><td>Rule coverage</td><td>Post</td><td>#sessions with a recommendation / total</td><td>↑ Higher</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> Apriori is the most interpretable association-mining algorithm ever invented. Always (1) balance <code>min_support</code> against runtime — lower thresholds explode the search; (2) never trust confidence alone — always check lift, since common items inflate confidence artificially; (3) prefer lift or Kulczynski for ranking rules in sparse data; (4) monitor rule Jaccard and business KPIs in production to catch drift early; and (5) if the dataset grows beyond a few hundred thousand transactions, consider FP-Growth or Spark's distributed implementation of Apriori.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Apriori Algorithm — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   Apriori implementation
+   ============================================================ */
+function apriori(transactions, minSupport){
+  const N = transactions.length;
+  const minCount = Math.ceil(minSupport * N);
+  const levels = [];         // array of levels, each level is array of {items:[], count, support}
+  const allFrequent = {};    // map: itemsetKey -> {items, count, support}
+
+  // Step 1: count 1-itemsets
+  const itemCounts = {};
+  for (const t of transactions){
+    for (const item of t){
+      itemCounts[item] = (itemCounts[item] || 0) + 1;
+    }
+  }
+  const L1 = Object.keys(itemCounts)
+    .filter(item => itemCounts[item] >= minCount)
+    .map(item => ({ items: [item], count: itemCounts[item], support: itemCounts[item] / N }))
+    .sort((a, b) => b.count - a.count);
+  levels.push(L1);
+  L1.forEach(fi => allFrequent[fi.items.join('|')] = fi);
+
+  // Also record candidates at level 1 (all items)
+  const allItems = Object.keys(itemCounts).sort();
+  levels[0]._allCandidates = allItems.map(item => ({
+    items: [item], count: itemCounts[item], support: itemCounts[item] / N
+  }));
+
+  // Iteratively build higher levels
+  let k = 2;
+  while (true){
+    const prevLevel = levels[k - 2];
+    if (prevLevel.length === 0) break;
+
+    // Generate candidates C_k
+    const candidates = new Map(); // key -> items array
+    for (let i = 0; i < prevLevel.length; i++){
+      for (let j = i + 1; j < prevLevel.length; j++){
+        const a = prevLevel[i].items;
+        const b = prevLevel[j].items;
+        // Check if first k-2 items match
+        let match = true;
+        for (let m = 0; m < k - 2; m++){
+          if (a[m] !== b[m]){ match = false; break; }
+        }
+        if (!match) continue;
+        const candidate = [...a, b[k - 2]].sort();
+        const key = candidate.join('|');
+        // Prune: check all (k-1)-subsets are frequent
+        let allFreq = true;
+        for (let drop = 0; drop < k; drop++){
+          const sub = candidate.filter((_, idx) => idx !== drop);
+          if (!allFrequent[sub.join('|')]){
+            allFreq = false; break;
+          }
+        }
+        if (allFreq){
+          candidates.set(key, candidate);
+        }
+      }
+    }
+
+    if (candidates.size === 0) break;
+
+    // Count support for each candidate
+    const candidateArray = [];
+    for (const [key, items] of candidates){
+      let count = 0;
+      for (const t of transactions){
+        let contains = true;
+        for (const item of items){
+          if (!t.includes(item)){ contains = false; break; }
+        }
+        if (contains) count++;
+      }
+      candidateArray.push({ items, count, support: count / N, key });
+    }
+
+    // Filter to frequent
+    const Lk = candidateArray
+      .filter(c => c.count >= minCount)
+      .sort((a, b) => b.count - a.count);
+    Lk.forEach(fi => allFrequent[fi.items.join('|')] = fi);
+
+    // Store candidates and frequent itemsets for this level
+    const levelData = Lk.slice();
+    levelData._allCandidates = candidateArray;
+    levels.push(levelData);
+
+    if (Lk.length === 0) break;
+    k++;
+    if (k > 10) break; // safety
+  }
+
+  return { levels, allFrequent, N, minCount };
+}
+
+/* Generate association rules from frequent itemsets */
+function generateRules(frequent, N, minConfidence){
+  const rules = [];
+  for (const key of Object.keys(frequent)){
+    const fi = frequent[key];
+    const items = fi.items;
+    if (items.length < 2) continue;
+    // Generate all non-empty proper subsets as antecedents
+    const k = items.length;
+    for (let mask = 1; mask < (1 << k) - 1; mask++){
+      const antecedent = [];
+      const consequent = [];
+      for (let i = 0; i < k; i++){
+        if (mask & (1 << i)) antecedent.push(items[i]);
+        else consequent.push(items[i]);
+      }
+      const antKey = antecedent.join('|');
+      const consKey = consequent.join('|');
+      if (!frequent[antKey]) continue;
+      const antSupport = frequent[antKey].support;
+      const conf = fi.support / antSupport;
+      if (conf >= minConfidence){
+        const consSupport = frequent[consKey] ? frequent[consKey].support : 0;
+        const lift = consSupport > 0 ? conf / consSupport : 0;
+        const conviction = conf < 1 ? (1 - consSupport) / (1 - conf) : Infinity;
+        const leverage = fi.support - antSupport * consSupport;
+        const cosine = consSupport > 0 ? fi.support / Math.sqrt(antSupport * consSupport) : 0;
+        const jaccard = (antSupport + consSupport - fi.support) > 0
+          ? fi.support / (antSupport + consSupport - fi.support) : 0;
+        rules.push({
+          antecedent, consequent,
+          support: fi.support,
+          confidence: conf,
+          lift, conviction, leverage, cosine, jaccard,
+          antSupport, consSupport
+        });
+      }
+    }
+  }
+  // Deduplicate (each (antecedent, consequent) pair)
+  const seen = new Set();
+  const uniqueRules = [];
+  for (const r of rules){
+    const key = r.antecedent.join('|') + '=>' + r.consequent.join('|');
+    if (!seen.has(key)){ seen.add(key); uniqueRules.push(r); }
+  }
+  return uniqueRules;
+}
+
+/* ============================================================
+   Synthetic dataset
+   ============================================================ */
+const ITEMS = ['Bread', 'Milk', 'Eggs', 'Butter', 'Cheese', 'Beer', 'Diapers', 'Chips', 'Soda', 'Apples'];
+
+function generateTransactions(n){
+  const patterns = [
+    ['Bread', 'Milk', 'Eggs'],
+    ['Bread', 'Butter'],
+    ['Beer', 'Diapers', 'Chips'],
+    ['Soda', 'Chips'],
+    ['Milk', 'Eggs', 'Cheese'],
+    ['Apples', 'Cheese'],
+    ['Bread', 'Milk']
+  ];
+  const out = [];
+  for (let i = 0; i < n; i++){
+    const basket = new Set();
+    // Include 1-2 patterns with high probability
+    const numPatterns = Math.random() < 0.5 ? 1 : 2;
+    for (let p = 0; p < numPatterns; p++){
+      const pat = patterns[Math.floor(Math.random() * patterns.length)];
+      if (Math.random() < 0.7){
+        pat.forEach(item => basket.add(item));
+      }
+    }
+    // Add random noise items
+    if (Math.random() < 0.6){
+      const randomItem = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+      basket.add(randomItem);
+    }
+    if (basket.size === 0){
+      basket.add(ITEMS[Math.floor(Math.random() * ITEMS.length)]);
+    }
+    out.push(Array.from(basket).sort());
+  }
+  return out;
+}
+
+/* ============================================================
+   1. Main Apriori Explorer
+   ============================================================ */
+(function(){
+  const itemColors = {
+    'Bread':   '#ea580c',
+    'Milk':    '#0891b2',
+    'Eggs':    '#d97706',
+    'Butter':  '#7c3aed',
+    'Cheese':  '#059669',
+    'Beer':    '#dc2626',
+    'Diapers': '#db2777',
+    'Chips':   '#2563eb',
+    'Soda':    '#0891b2',
+    'Apples':  '#65a30d'
+  };
+
+  let transactions = generateTransactions(20);
+  let currentLevel = 0;
+  let aprioriResult = null;
+
+  const txnCountEl = document.getElementById('apTransactions');
+  const itemCountEl = document.getElementById('apItems');
+  const freqCountEl = document.getElementById('apFreqCount');
+  const ruleCountEl = document.getElementById('apRuleCount');
+  const supSlider = document.getElementById('apSupSlider');
+  const supLbl = document.getElementById('apSupLbl');
+  const confSlider = document.getElementById('apConfSlider');
+  const confLbl = document.getElementById('apConfLbl');
+  const regenBtn = document.getElementById('apRegenBtn');
+  const levelChips = document.getElementById('apLevelChips');
+  const levelTitle = document.getElementById('apLevelTitle');
+  const levelDesc = document.getElementById('apLevelDesc');
+  const itemsetGrid = document.getElementById('apItemsetGrid');
+
+  function recompute(){
+    const minSupport = parseInt(supSlider.value) / 20;  // slider 1-10 maps to 0.05-0.5
+    supLbl.textContent = minSupport.toFixed(2) + ' (' + Math.ceil(minSupport * transactions.length) + ' transactions)';
+    const minConf = parseInt(confSlider.value) / 100;
+    confLbl.textContent = minConf.toFixed(2);
+
+    aprioriResult = apriori(transactions, minSupport);
+    const rules = generateRules(aprioriResult.allFrequent, aprioriResult.N, minConf);
+
+    txnCountEl.textContent = transactions.length;
+    itemCountEl.textContent = ITEMS.length;
+    const totalFreq = Object.keys(aprioriResult.allFrequent).length;
+    freqCountEl.textContent = totalFreq;
+    ruleCountEl.textContent = rules.length;
+
+    // Build level chips
+    levelChips.innerHTML = '';
+    aprioriResult.levels.forEach((level, idx) => {
+      if (idx > 0 && level.length === 0) return; // hide empty levels beyond L1
+      const chip = document.createElement('button');
+      chip.className = 'level-chip' + (idx === currentLevel ? ' active' : '');
+      chip.innerHTML = `L${idx+1} <span class="badge-count">${level.length} frequent</span>`;
+      chip.addEventListener('click', () => {
+        currentLevel = idx;
+        renderLevel();
+        document.querySelectorAll('.level-chip').forEach((c, i) => {
+          c.classList.toggle('active', i === idx);
+        });
+      });
+      levelChips.appendChild(chip);
+    });
+
+    // Reset to level 0 if current level is out of range
+    if (currentLevel >= aprioriResult.levels.length) currentLevel = 0;
+
+    renderLevel();
+    renderSupportChart();
+    renderTransactionsChart();
+    renderRuleChart(rules);
+    renderScatterChart(rules);
+    renderSensitivityChart();
+    renderLatticeChart();
+  }
+
+  function renderLevel(){
+    const level = aprioriResult.levels[currentLevel];
+    if (!level) return;
+    const allCandidates = level._allCandidates || level;
+    levelTitle.textContent = `Level L${currentLevel+1} — ${currentLevel === 0 ? 'Frequent 1-itemsets' : `Frequent ${currentLevel+1}-itemsets`}`;
+    const k = currentLevel + 1;
+    levelDesc.textContent = `Candidates tested: ${allCandidates.length}. Frequent itemsets: ${level.length}. Pruned: ${allCandidates.length - level.length}.`;
+
+    itemsetGrid.innerHTML = '';
+    // Sort: frequent first, then infrequent, both by support
+    const sorted = allCandidates.slice().sort((a, b) => {
+      const aFreq = a.count >= aprioriResult.minCount ? 1 : 0;
+      const bFreq = b.count >= aprioriResult.minCount ? 1 : 0;
+      if (aFreq !== bFreq) return bFreq - aFreq;
+      return b.count - a.count;
+    });
+
+    sorted.forEach(c => {
+      const isFreq = c.count >= aprioriResult.minCount;
+      const card = document.createElement('div');
+      card.className = 'itemset-card ' + (isFreq ? 'frequent' : 'infrequent');
+      card.innerHTML = `
+        <div class="items">${c.items.join(' + ')}</div>
+        <div class="support">Support: <strong>${(c.support).toFixed(3)}</strong> (${c.count}/${aprioriResult.N})</div>
+      `;
+      itemsetGrid.appendChild(card);
+    });
+  }
+
+  function renderSupportChart(){
+    const level = aprioriResult.levels[currentLevel];
+    if (!level) return;
+    const allCandidates = level._allCandidates || level;
+    // Top 20 by count
+    const sorted = allCandidates.slice().sort((a, b) => b.count - a.count).slice(0, 20);
+    const labels = sorted.map(c => c.items.join('+'));
+    const counts = sorted.map(c => c.count);
+    const colors = sorted.map(c => c.count >= aprioriResult.minCount ? '#059669' : '#dc2626');
+
+    const trace = {
+      x: labels,
+      y: counts,
+      type: 'bar',
+      marker: {color: colors, line: {color: '#ffffff', width: 1}},
+      hovertemplate: '%{x}<br>Count = %{y}<br>Support = %{customdata:.3f}<extra></extra>',
+      customdata: sorted.map(c => c.support)
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{
+        title:{text:'Itemset', font:{size:11}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true,
+        tickangle: -40, automargin: true
+      },
+      yaxis:{
+        title:{text:'Support count', font:{size:11}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true
+      },
+      margin:{l:55, r:20, t:20, b:120},
+      height: 320,
+      showlegend: false,
+      shapes: [{
+        type: 'line', xref: 'paper', yref: 'y',
+        x0: 0, x1: 1, y0: aprioriResult.minCount, y1: aprioriResult.minCount,
+        line: {color: '#7c3aed', width: 2, dash: 'dash'}
+      }],
+      annotations: [{
+        x: 0.02, xref: 'paper', y: aprioriResult.minCount,
+        text: 'min_support = ' + aprioriResult.minCount,
+        showarrow: false, xanchor: 'left', yanchor: 'bottom',
+        font: {color: '#7c3aed', size: 10, weight: 'bold'},
+        bgcolor: 'rgba(255,255,255,0.9)', borderpad: 2
+      }],
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('apSupportChart', [trace], layout, {responsive:true, displayModeBar:false});
+  }
+
+  function renderTransactionsChart(){
+    const data = [];
+    const n = transactions.length;
+    for (let i = 0; i < n; i++){
+      const t = transactions[i];
+      for (const item of t){
+        data.push({ y: 'T' + (i+1), x: item, item });
+      }
+    }
+    // Build a matrix
+    const itemsOrder = ITEMS.slice().sort();
+    const z = [];
+    const text = [];
+    for (let i = 0; i < n; i++){
+      const rowZ = [];
+      const rowText = [];
+      for (const item of itemsOrder){
+        const has = transactions[i].includes(item);
+        rowZ.push(has ? 1 : 0);
+        rowText.push(has ? item : '');
+      }
+      z.push(rowZ);
+      text.push(rowText);
+    }
+
+    const trace = {
+      z: z,
+      x: itemsOrder,
+      y: Array.from({length: n}, (_, i) => 'T' + (i+1)),
+      type: 'heatmap',
+      colorscale: [
+        [0, '#f8fafc'],
+        [0.01, '#fed7aa'],
+        [0.99, '#fb923c'],
+        [1, '#ea580c']
+      ],
+      showscale: false,
+      xgap: 2, ygap: 2,
+      hovertemplate: 'Transaction %{y}<br>Item: %{x}<br>Present: %{z}<extra></extra>'
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:10},
+      xaxis:{
+        title:{text:'Item', font:{size:11}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true,
+        tickangle: -40, automargin: true
+      },
+      yaxis:{
+        title:{text:'Transaction', font:{size:11}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true,
+        autorange: 'reversed'
+      },
+      margin:{l:60, r:20, t:20, b:100},
+      height: 420,
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('apTransactionsChart', [trace], layout, {responsive:true, displayModeBar:false});
+  }
+
+  function renderRuleChart(rules){
+    const sorted = rules.slice().sort((a, b) => b.lift - a.lift).slice(0, 15);
+    const labels = sorted.map(r => r.antecedent.join('+') + ' → ' + r.consequent.join('+'));
+    const supports = sorted.map(r => r.support);
+    const confidences = sorted.map(r => r.confidence);
+    const lifts = sorted.map(r => r.lift);
+
+    const traceSup = {
+      x: supports, y: labels, type: 'bar', orientation: 'h', name: 'Support',
+      marker: {color: '#0891b2'},
+      hovertemplate: 'Support = %{x:.3f}<extra></extra>'
+    };
+    const traceConf = {
+      x: confidences, y: labels, type: 'bar', orientation: 'h', name: 'Confidence',
+      marker: {color: '#ea580c'},
+      hovertemplate: 'Confidence = %{x:.3f}<extra></extra>'
+    };
+    const traceLift = {
+      x: lifts, y: labels, type: 'bar', orientation: 'h', name: 'Lift',
+      marker: {color: '#7c3aed'},
+      hovertemplate: 'Lift = %{x:.3f}<extra></extra>',
+      xaxis: 'x2'
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:10},
+      grid: {rows: 1, columns: 2, pattern: 'independent'},
+      xaxis: {title:{text:'Support / Confidence', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range: [0, 1]},
+      xaxis2: {title:{text:'Lift', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, anchor: 'y'},
+      yaxis: {gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, automargin: true},
+      barmode: 'group',
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.02, orientation: 'h', font:{size:10}},
+      margin:{l:180, r:30, t:20, b:50},
+      height: 480,
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('apRuleChart', [traceSup, traceConf, traceLift], layout, {responsive:true, displayModeBar:false});
+  }
+
+  function renderScatterChart(rules){
+    if (rules.length === 0){
+      Plotly.react('apScatterChart', [], {
+        paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+        font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+        xaxis:{title:{text:'Support', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range:[0,1]},
+        yaxis:{title:{text:'Confidence', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range:[0,1]},
+        height: 480,
+        annotations: [{text: 'No rules pass current thresholds', showarrow: false, xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, font:{size:14, color:'#94a3b8'}}]
+      }, {responsive:true, displayModeBar:false});
+      return;
+    }
+    const supports = rules.map(r => r.support);
+    const confidences = rules.map(r => r.confidence);
+    const lifts = rules.map(r => r.lift);
+    const labels = rules.map(r => r.antecedent.join('+') + ' → ' + r.consequent.join('+'));
+
+    const trace = {
+      x: supports,
+      y: confidences,
+      mode: 'markers',
+      type: 'scatter',
+      text: labels,
+      marker: {
+        size: lifts.map(l => Math.max(8, Math.min(40, 10 + 15 * Math.log(Math.max(l, 0.1))))),
+        color: lifts,
+        colorscale: [
+          [0, '#dc2626'],
+          [0.25, '#f59e0b'],
+          [0.5, '#a3e635'],
+          [0.75, '#0891b2'],
+          [1, '#7c3aed']
+        ],
+        showscale: true,
+        colorbar: {
+          title: {text: 'Lift', font:{size:10}},
+          tickfont: {size:9},
+          thickness: 12,
+          len: 0.7
+        },
+        line: {color: '#ffffff', width: 1}
+      },
+      hovertemplate: '<b>%{text}</b><br>Support = %{x:.3f}<br>Confidence = %{y:.3f}<br>Lift = %{marker.color:.3f}<extra></extra>'
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{
+        title:{text:'Support', font:{size:12}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true,
+        range: [0, Math.max(0.5, Math.max(...supports) * 1.15)]
+      },
+      yaxis:{
+        title:{text:'Confidence', font:{size:12}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true,
+        range: [0, 1.05]
+      },
+      margin:{l:60, r:20, t:30, b:55},
+      height: 480,
+      hovermode: 'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('apScatterChart', [trace], layout, {responsive:true, displayModeBar:false});
+  }
+
+  function renderSensitivityChart(){
+    // Compute for a range of min_support values
+    const supports = [];
+    for (let i = 1; i <= 10; i++) supports.push(i / 20);
+    const levelCounts = [];
+    supports.forEach(s => {
+      const result = apriori(transactions, s);
+      const counts = result.levels.map(l => l.length);
+      levelCounts.push(counts);
+    });
+
+    const maxLevels = Math.max(...levelCounts.map(l => l.length));
+    const traces = [];
+    const colors = ['#ea580c', '#0891b2', '#7c3aed', '#059669', '#db2777'];
+    for (let lvl = 0; lvl < maxLevels; lvl++){
+      const y = levelCounts.map(c => c[lvl] || 0);
+      if (y.every(v => v === 0)) continue;
+      traces.push({
+        x: supports,
+        y: y,
+        mode: 'lines+markers',
+        name: 'L' + (lvl+1),
+        line: {color: colors[lvl % colors.length], width: 3},
+        marker: {size: 8, color: colors[lvl % colors.length], line: {color:'#ffffff', width: 1.5}}
+      });
+    }
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{
+        title:{text:'min_support', font:{size:12}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true,
+        tickformat: '.2f'
+      },
+      yaxis:{
+        title:{text:'Number of frequent itemsets', font:{size:12}},
+        gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true
+      },
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.75, y:0.98, font:{size:11}},
+      margin:{l:60, r:20, t:20, b:55},
+      height: 420,
+      hovermode:'x unified',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('apSupportSensitivityChart', traces, layout, {responsive:true, displayModeBar:false});
+  }
+
+  function renderLatticeChart(){
+    // Use current aprioriResult
+    const levelCounts = aprioriResult.levels.map(l => l.length);
+    const labels = levelCounts.map((_, i) => 'L' + (i+1));
+    const trace = {
+      x: labels,
+      y: levelCounts,
+      type: 'bar',
+      marker: {
+        color: levelCounts.map((_, i) => ['#ea580c','#0891b2','#7c3aed','#059669','#db2777'][i % 5]),
+        line: {color: '#ffffff', width: 1}
+      },
+      hovertemplate: '%{x}<br>Frequent itemsets = %{y}<extra></extra>'
+    };
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Level', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Frequent itemsets', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      margin:{l:60, r:20, t:20, b:55},
+      height: 440,
+      showlegend: false,
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('apLatticeChart', [trace], layout, {responsive:true, displayModeBar:false});
+  }
+
+  supSlider.addEventListener('input', recompute);
+  confSlider.addEventListener('input', recompute);
+  regenBtn.addEventListener('click', function(){
+    transactions = generateTransactions(20);
+    currentLevel = 0;
+    recompute();
+  });
+
+  recompute();
+})();
+
+/* ============================================================
+   2. Calculator
+   ============================================================ */
+(function(){
+  const calcN = document.getElementById('calcN');
+  const calcA = document.getElementById('calcA');
+  const calcB = document.getElementById('calcB');
+  const calcAB = document.getElementById('calcAB');
+  const results = document.getElementById('calcResults');
+
+  function update(){
+    const N = parseFloat(calcN.value) || 1;
+    const A = parseFloat(calcA.value) || 0;
+    const B = parseFloat(calcB.value) || 0;
+    const AB = parseFloat(calcAB.value) || 0;
+
+    const suppA = A / N;
+    const suppB = B / N;
+    const suppAB = AB / N;
+
+    const conf_AB = suppA > 0 ? suppAB / suppA : 0;
+    const conf_BA = suppB > 0 ? suppAB / suppB : 0;
+    const lift = (suppA * suppB) > 0 ? suppAB / (suppA * suppB) : 0;
+    const conviction = conf_AB < 1 ? (1 - suppB) / (1 - conf_AB) : Infinity;
+    const leverage = suppAB - suppA * suppB;
+    const cosine = (suppA * suppB) > 0 ? suppAB / Math.sqrt(suppA * suppB) : 0;
+    const jaccard = (suppA + suppB - suppAB) > 0 ? suppAB / (suppA + suppB - suppAB) : 0;
+    const kulczynski = (conf_AB + conf_BA) / 2;
+
+    function fmt(v){ return isFinite(v) ? v.toFixed(4) : '∞'; }
+    function classify(val, metric){
+      if (metric === 'lift') return val > 2 ? 'Strong ↑' : (val > 1 ? 'Positive' : (val === 1 ? 'Independent' : 'Negative'));
+      if (metric === 'conviction') return val > 2 ? 'Strong ↑' : (val > 1 ? 'Positive' : 'Negative');
+      if (metric === 'leverage') return val > 0 ? 'Positive' : (val === 0 ? 'Independent' : 'Negative');
+      if (metric === 'confidence') return val > 0.8 ? 'Strong' : (val > 0.5 ? 'Moderate' : 'Weak');
+      return '';
+    }
+
+    const cards = [
+      {name: 'Support(A∪B)', value: suppAB.toFixed(4), note: `= ${AB} / ${N}`, color: '#0891b2'},
+      {name: 'Support(A)', value: suppA.toFixed(4), note: `= ${A} / ${N}`, color: '#0891b2'},
+      {name: 'Support(B)', value: suppB.toFixed(4), note: `= ${B} / ${N}`, color: '#0891b2'},
+      {name: 'Confidence(A→B)', value: conf_AB.toFixed(4), note: classify(conf_AB, 'confidence'), color: '#ea580c'},
+      {name: 'Confidence(B→A)', value: conf_BA.toFixed(4), note: 'Asymmetric', color: '#ea580c'},
+      {name: 'Lift(A→B)', value: fmt(lift), note: classify(lift, 'lift'), color: '#7c3aed'},
+      {name: 'Conviction(A→B)', value: fmt(conviction), note: classify(conviction, 'conviction'), color: '#059669'},
+      {name: 'Leverage', value: leverage.toFixed(4), note: classify(leverage, 'leverage'), color: '#d97706'},
+      {name: 'Cosine', value: cosine.toFixed(4), note: '', color: '#0891b2'},
+      {name: 'Jaccard', value: jaccard.toFixed(4), note: '', color: '#0891b2'},
+      {name: 'Kulczynski', value: kulczynski.toFixed(4), note: '', color: '#db2777'},
+      {name: 'N', value: N.toLocaleString(), note: 'Total transactions', color: '#64748b'}
+    ];
+
+    results.innerHTML = cards.map(c => `
+      <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;border-top:3px solid ${c.color};box-shadow:0 1px 3px rgba(15,23,42,.05);">
+        <div style="font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.6px;font-weight:800;margin-bottom:4px;">${c.name}</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#1e293b;line-height:1.2;">${c.value}</div>
+        <div style="font-size:.76rem;color:#64748b;margin-top:4px;">${c.note}</div>
+      </div>
+    `).join('');
+  }
+
+  [calcN, calcA, calcB, calcAB].forEach(el => el.addEventListener('input', update));
+  update();
+})();
+
+/* ============================================================
+   3. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

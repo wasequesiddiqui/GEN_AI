@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-Means Clustering — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#d97706;
+    --accent-dark:#b45309;
+    --accent2:#7c3aed;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --pink:#db2777;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#b45309 0%,#d97706 25%,#db2777 65%,#7c3aed 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(217,119,6,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:860px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent-dark);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#d97706,#db2777);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(217,119,6,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#fffbeb,#fdf2f8);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent-dark);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#fffbeb;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent-dark);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.kmeans{border-left-color:var(--accent);}
+  .metric.internal{border-left-color:var(--accent2);}
+  .metric.external{border-left-color:var(--pink);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.kmeans h4{color:var(--accent-dark);}
+  .metric.internal h4{color:var(--accent2);}
+  .metric.external h4{color:var(--pink);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.kmeans .badge{background:#fffbeb;color:#b45309;}
+  .metric.internal .badge{background:#f5f3ff;color:#5b21b6;}
+  .metric.external .badge{background:#fdf2f8;color:#9d174d;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .demo-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .demo-controls .info{flex:1;min-width:130px;}
+  .demo-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .demo-controls .info .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);
+  }
+  .demo-sliders{padding:4px 0 12px;}
+  .demo-sliders label{
+    display:block;font-size:.82rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-top:10px;
+  }
+  .demo-sliders input[type=range]{
+    width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0;
+  }
+  .btn{
+    background:linear-gradient(135deg,#d97706,#db2777);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(217,119,6,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(217,119,6,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#b45309;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#fffbeb;
+    color:#b45309;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .assumptions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .assumptions .item{
+    background:linear-gradient(135deg,#fffbeb,#fdf2f8);
+    border:1px solid #fde68a;border-radius:10px;padding:14px 16px;
+    text-align:center;
+  }
+  .assumptions .item .letter{
+    font-size:1.6rem;font-weight:900;color:#b45309;line-height:1;
+  }
+  .assumptions .item .name{
+    font-size:.85rem;font-weight:800;color:#1e293b;margin-top:4px;
+  }
+  .assumptions .item .desc{
+    font-size:.76rem;color:#64748b;margin-top:2px;
+  }
+  .steps-list{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .steps-list .step{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;border-top:3px solid var(--accent);
+  }
+  .steps-list .step .n{
+    font-size:.78rem;color:var(--accent-dark);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  }
+  .steps-list .step .t{
+    font-size:.95rem;font-weight:800;color:var(--text);margin-top:2px;
+  }
+  .steps-list .step .d{
+    font-size:.85rem;color:var(--muted);margin-top:4px;line-height:1.55;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 K-Means Clustering — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine you're organising a huge party for 300 guests. You have 5 tables. You want each guest to sit with people most similar to them (by age, interests, industry). At first, you randomly assign guests to tables. Then, for each table, you compute the "average guest" profile. Next, you reassign each guest to whichever table's average profile is closest to them. Repeat. Eventually, guests stop switching tables — that's your final seating arrangement. This iterative "assign → update → repeat" loop is exactly K-Means.
+  </div>
+
+  <h3>What is K-Means?</h3>
+  <p><span class="highlight">K-Means</span> is an <strong>unsupervised clustering algorithm</strong> that partitions <code>N</code> data points into <code>K</code> non-overlapping groups (clusters), where each point belongs to the cluster with the nearest centroid (the mean of the points in that cluster). It is one of the simplest, fastest, and most widely used clustering algorithms in the world.</p>
+
+  <p>Key properties:</p>
+  <ul class="clean">
+    <li><strong>Unsupervised</strong> — no labels. The algorithm discovers structure on its own.</li>
+    <li><strong>Partition-based</strong> — every point belongs to exactly one cluster (hard assignment).</li>
+    <li><strong>Centroid-based</strong> — each cluster is represented by its mean.</li>
+    <li><strong>Iterative</strong> — refines centroids and assignments until convergence.</li>
+    <li><strong>Guaranteed to converge</strong> — but only to a local optimum, not necessarily the global one.</li>
+  </ul>
+
+  <h3>How the Algorithm Works (Step by Step)</h3>
+  <div class="steps-list">
+    <div class="step">
+      <div class="n">Step 1</div>
+      <div class="t">Choose K</div>
+      <div class="d">Decide how many clusters you want. This is a hyperparameter you choose.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 2</div>
+      <div class="t">Initialise centroids</div>
+      <div class="d">Pick K initial centroid positions — often randomly from the data (or use K-Means++).</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 3</div>
+      <div class="t">Assign points</div>
+      <div class="d">Assign each data point to the nearest centroid (usually by Euclidean distance).</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 4</div>
+      <div class="t">Update centroids</div>
+      <div class="d">Recompute each centroid as the mean of all points currently assigned to it.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 5</div>
+      <div class="t">Repeat or stop</div>
+      <div class="d">Repeat Steps 3–4 until centroids stop moving (convergence) or max iterations reached.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 6</div>
+      <div class="t">Return clusters</div>
+      <div class="d">Final centroids and cluster assignments are your output. Optionally run multiple restarts and pick the best.</div>
+    </div>
+  </div>
+
+  <h3>K-Means vs. Other Clustering Algorithms</h3>
+  <table>
+    <tr><th>Algorithm</th><th>Cluster Shape</th><th>Need K?</th><th>Handles Outliers</th><th>Deterministic</th></tr>
+    <tr><td><strong>K-Means</strong></td><td>Spherical, equal-size</td><td>Yes</td><td>Poorly</td><td>No (depends on init)</td></tr>
+    <tr><td>K-Medoids (PAM)</td><td>Arbitrary, uses real points</td><td>Yes</td><td>Better</td><td>No</td></tr>
+    <tr><td>Hierarchical</td><td>Nested dendrogram</td><td>No (cut later)</td><td>Varies</td><td>Yes</td></tr>
+    <tr><td>DBSCAN</td><td>Arbitrary, density-based</td><td>No (uses ε, minPts)</td><td>Yes (as noise)</td><td>Yes</td></tr>
+    <tr><td>Gaussian Mixture</td><td>Elliptical (probabilistic)</td><td>Yes</td><td>Moderate</td><td>No (EM init)</td></tr>
+    <tr><td>Spectral</td><td>Arbitrary, graph-based</td><td>Yes</td><td>Varies</td><td>Yes</td></tr>
+  </table>
+
+  <h3>🔬 Interactive: Watch K-Means Iterate</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Click <strong>"Run Next Iteration"</strong> to step through the algorithm. Watch how points get assigned to the nearest centroid (the ✖ marks), then centroids move to the mean of their assigned points. The algorithm converges when centroids stop moving.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Iteration</div>
+        <div class="val"><span id="kmIter">0</span></div>
+      </div>
+      <div class="info">
+        <div class="lbl">Inertia (WCSS)</div>
+        <div class="val" id="kmInertia" style="color:#dc2626;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Centroid Shift</div>
+        <div class="val" id="kmShift" style="color:#7c3aed;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">K</div>
+        <div class="val" id="kmK" style="color:#d97706;">3</div>
+      </div>
+      <button class="btn" id="kmStepBtn">▶ Run Next Iteration</button>
+      <button class="btn secondary" id="kmResetBtn">↺ Reset</button>
+    </div>
+
+    <div class="demo-sliders">
+      <label>Number of clusters K: <span id="kmKLbl" style="color:var(--accent-dark);">3</span></label>
+      <input type="range" id="kmKSlider" min="2" max="6" value="3" step="1">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">K-Means Iterations — Watch Centroids Move</div>
+      <div id="kmeansChart" style="height:460px;"></div>
+      <div class="chart-note">Coloured points = clusters. Large ✖ = centroids. Watch the centroids migrate to the "centre of mass" of their clusters.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Initialisation Sensitivity — Why K-Means++ Matters</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Random initialisation can lead to bad local optima. K-Means++ chooses initial centroids spread far apart, which dramatically improves results. Click "Run Random Init ×10" multiple times to see how much the final result varies.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Final Inertia</div>
+        <div class="val" id="initInertia" style="color:#dc2626;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Init Method</div>
+        <div class="val" id="initMethod" style="color:#7c3aed;">K-Means++</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Restarts</div>
+        <div class="val" id="initRestarts" style="color:#059669;">—</div>
+      </div>
+      <button class="btn" id="initKppBtn">✨ Run K-Means++</button>
+      <button class="btn" id="initRandomBtn">🎲 Run Random Init ×10</button>
+    </div>
+
+    <div class="grid2" style="gap:14px;">
+      <div class="chart" style="margin:0;">
+        <div class="chart-title">Random Init (best of 10)</div>
+        <div id="initRandomChart" style="height:340px;"></div>
+      </div>
+      <div class="chart" style="margin:0;">
+        <div class="chart-title">K-Means++ Init</div>
+        <div id="initKppChart" style="height:340px;"></div>
+      </div>
+    </div>
+    <div class="chart-note" style="padding-top:12px;">Random initialisation often produces uneven, misshapen clusters. K-Means++ spreads the seeds out, producing more natural partitions and lower inertia.</div>
+  </div>
+
+  <h3>🔬 Interactive: Choose the Right K — The Elbow Method</h3>
+  <p style="color:var(--muted);font-size:.93rem;">How do you know how many clusters exist? Run K-Means for K = 1, 2, 3… 10 and plot inertia (WCSS) vs K. The curve will drop sharply at first, then flatten. The "elbow" — where the slope changes — is a good candidate for K. The chart below uses multiple K-Means restarts per K to smooth the curve, and detects the elbow automatically (Kneedle method).</p>
+
+  <div class="chart">
+    <div class="chart-title">Elbow Method — Inertia vs. Number of Clusters K</div>
+    <div id="elbowChart" style="height:420px;"></div>
+    <div class="chart-note">Look for the "elbow" — the point where the curve changes from steep to flat. The red star marks the automatically-detected elbow for this dataset.</div>
+  </div>
+
+  <h3>🔬 Interactive: Silhouette Score — How Good Is Each Assignment?</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The silhouette coefficient measures how well each point fits its own cluster versus the next-closest cluster. Values near +1 mean the point is well inside its cluster. Values near 0 mean it's on the boundary. Negative values mean the point is probably assigned to the wrong cluster.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Average Silhouette</div>
+        <div class="val" id="silAvg" style="color:#059669;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Best K (max silhouette)</div>
+        <div class="val" id="silBestK" style="color:#d97706;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Current K</div>
+        <div class="val" id="silK" style="color:#7c3aed;">4</div>
+      </div>
+      <button class="btn secondary" id="silRegenBtn">🔀 Regenerate Data</button>
+    </div>
+
+    <div class="demo-sliders">
+      <label>K: <span id="silKLbl" style="color:var(--accent-dark);">4</span></label>
+      <input type="range" id="silKSlider" min="2" max="8" value="4" step="1">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Silhouette Plot — Sorted by Cluster</div>
+      <div id="silhouetteChart" style="height:440px;"></div>
+      <div class="chart-note">Each bar is one point's silhouette coefficient. Bars are grouped by cluster. The red dashed line is the average silhouette score. A good clustering has: all clusters wide, average score &gt; 0.5, and no negative scores.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>K-Means is used everywhere data needs to be grouped into natural buckets. It is often the first clustering algorithm people try — and often the one that works well enough to keep.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🛒 Customer Segmentation</h4>
+      <ul class="clean">
+        <li><strong>Marketing segments</strong> — group customers by purchase behaviour for targeted campaigns.</li>
+        <li><strong>RFM analysis</strong> — Recency, Frequency, Monetary value clustering.</li>
+        <li><strong>Churn cohorts</strong> — identify similar groups of at-risk customers.</li>
+        <li><strong>Persona building</strong> — cluster users for product design.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🖼️ Image Processing</h4>
+      <ul class="clean">
+        <li><strong>Colour quantisation</strong> — reduce an image to K dominant colours.</li>
+        <li><strong>Image compression</strong> — represent pixels by their cluster centroids.</li>
+        <li><strong>Segmentation</strong> — group pixels with similar colours/textures.</li>
+        <li><strong>Background subtraction</strong> — cluster foreground vs. background.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📝 Document &amp; Text</h4>
+      <ul class="clean">
+        <li><strong>Topic discovery</strong> — cluster documents by topic.</li>
+        <li><strong>News grouping</strong> — group similar articles.</li>
+        <li><strong>Search deduplication</strong> — collapse near-duplicate results.</li>
+        <li><strong>Word embeddings</strong> — cluster word vectors into semantic groups.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏥 Healthcare</h4>
+      <ul class="clean">
+        <li><strong>Patient stratification</strong> — cluster patients by symptoms and outcomes.</li>
+        <li><strong>Gene expression</strong> — group genes by expression patterns.</li>
+        <li><strong>Medical imaging</strong> — segment tissue types.</li>
+        <li><strong>Epidemiology</strong> — cluster regions by disease rates.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🌐 Technology &amp; Networks</h4>
+      <ul class="clean">
+        <li><strong>Anomaly detection</strong> — points far from any centroid are anomalies.</li>
+        <li><strong>Network clustering</strong> — group users by behaviour.</li>
+        <li><strong>Data compression</strong> — codebook learning (vector quantisation).</li>
+        <li><strong>Recommendation systems</strong> — cluster users/items for candidate generation.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Operations &amp; Science</h4>
+      <ul class="clean">
+        <li><strong>Warehouse location</strong> — cluster delivery points to find optimal hubs.</li>
+        <li><strong>Inventory grouping</strong> — cluster SKUs by demand patterns.</li>
+        <li><strong>Sensor networks</strong> — group sensors by behaviour.</li>
+        <li><strong>Astronomy</strong> — classify stars and galaxies.</li>
+        <li><strong>Seismology</strong> — cluster earthquake epicentres.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why so popular?</strong> Because it scales to millions of points, produces compact understandable clusters, and its results are easy to interpret. Whenever you need to "bucket" data without labels, K-Means is the natural first choice.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Extremely simple to understand and implement</strong> — the algorithm fits in a few lines of code, and its intuition is easy to explain to non-technical stakeholders.</li>
+    <li><strong>Fast and scalable</strong> — O(N·K·d·i) per iteration (N points, K clusters, d dimensions, i iterations). Lloyd's algorithm is essentially linear in N. Can cluster millions of points in minutes.</li>
+    <li><strong>Guaranteed convergence</strong> — inertia decreases monotonically at every step. The algorithm always terminates.</li>
+    <li><strong>Easy to interpret results</strong> — each cluster has a clear centroid that can be described in terms of feature means.</li>
+    <li><strong>Works well with spherical, well-separated clusters</strong> — if the data actually has K globular groups, K-Means is optimal.</li>
+    <li><strong>Requires only one hyperparameter K</strong> — unlike DBSCAN (which needs ε and minPts) or Gaussian Mixture (which needs covariance structure).</li>
+    <li><strong>Produces hard partitions</strong> — every point belongs to exactly one cluster. Useful when you need definitive assignment.</li>
+    <li><strong>Works with any distance metric</strong> — Euclidean is standard, but cosine, Manhattan, etc. can be used.</li>
+    <li><strong>Foundation for more advanced algorithms</strong> — Mini-Batch K-Means, K-Medoids, Fuzzy C-Means, Spectral Clustering, and vector quantisation all build on it.</li>
+    <li><strong>Memory efficient</strong> — only K centroids need to be stored, plus one label per point.</li>
+    <li><strong>Parallelisable</strong> — the assignment step can be distributed across many machines (used in Spark MLlib, Dask, etc.).</li>
+    <li><strong>Well-studied theoretically</strong> — convergence, complexity, and quality bounds are well understood.</li>
+    <li><strong>Multiple restarts improve reliability</strong> — running K-Means 10 times with different inits and picking the best is standard practice.</li>
+    <li><strong>Feature of many pipelines</strong> — vector quantisation for deep learning, bag-of-words, image compression, and more.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent-dark);">Fast</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Scales to millions of points.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🔍</div>
+      <h4 style="color:var(--accent-dark);">Simple</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Easy to explain and implement.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🎯</div>
+      <h4 style="color:var(--accent-dark);">Interpretable</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Cluster centroids are meaningful.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>You must specify K in advance</strong> — the number of clusters is a hyperparameter. There's no way to know it from the algorithm itself. You must use elbow, silhouette, gap statistic, or domain knowledge.</li>
+    <li><strong>Sensitive to initialisation</strong> — different random seeds can produce very different clusters. A bad init leads to a bad local optimum. Always use K-Means++ or multiple restarts.</li>
+    <li><strong>Assumes spherical, equal-variance clusters</strong> — K-Means implicitly assumes clusters are round, similarly sized, and driven by Euclidean distance. Elongated or uneven clusters are handled poorly.</li>
+    <li><strong>Sensitive to outliers</strong> — because centroids are means, a single far-away point drags the centroid significantly. Use K-Medoids or trim outliers first.</li>
+    <li><strong>Only finds convex clusters</strong> — cannot separate concentric rings, moons, or other non-convex shapes. Use DBSCAN or Spectral Clustering instead.</li>
+    <li><strong>Hard assignment only</strong> — every point belongs to exactly one cluster, even if it's on a boundary. Fuzzy C-Means provides soft memberships.</li>
+    <li><strong>Requires feature scaling</strong> — Euclidean distance is scale-sensitive, so features must be standardised or normalised first.</li>
+    <li><strong>Fails with different cluster densities</strong> — if one cluster is dense and another is sparse, K-Means struggles to separate them.</li>
+    <li><strong>Fails with categorical data</strong> — Euclidean distance is meaningless for categorical features. Use K-Modes or K-Prototypes.</li>
+    <li><strong>Suffers from the "curse of dimensionality"</strong> — in high dimensions, distances become less discriminative. Reduce dimensions first (PCA, UMAP).</li>
+    <li><strong>Inconsistent results across runs</strong> — unless you set a random seed and use K-Means++, results may not be reproducible.</li>
+    <li><strong>No p-values or statistical guarantees</strong> — clustering is exploratory. Unlike regression, you cannot say "this cluster is statistically significant."</li>
+    <li><strong>Convergence to local optimum only</strong> — the algorithm finds the best solution <em>near its starting point</em>, not the globally optimal one. Multiple restarts help but don't guarantee the global optimum.</li>
+    <li><strong>Empty cluster problem</strong> — sometimes a centroid ends up with no points assigned. Common workarounds: reassign the farthest point, or drop the cluster and reduce K.</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#fffbeb);">
+    <strong>The spherical assumption trap:</strong> Imagine you have two concentric rings of points (inner circle and outer ring). No matter what K you choose, K-Means cannot separate them — it only draws straight-line boundaries between centroids. For non-convex clusters, use DBSCAN or Spectral Clustering.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Unlike supervised learning, clustering has no ground-truth labels, so we cannot compute accuracy. Instead, we use <strong>internal</strong> metrics (measuring cluster quality from the data alone) and <strong>external</strong> metrics (when we do have labels for validation).</p>
+
+  <h3>5.1 Internal Metrics — Quality of the Clustering</h3>
+
+  <div class="metric kmeans">
+    <h4>Inertia / WCSS (Within-Cluster Sum of Squares) <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> The total squared distance from each point to its assigned centroid. This is the objective K-Means minimises. Lower is better, but it always decreases as K grows.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Inertia = Σ<sub>k=1</sub><sup>K</sup> Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> || x<sub>i</sub> − μ<sub>k</sub> ||²
+      <br><br>
+      K = number of clusters
+      <br>
+      C<sub>k</sub> = set of points in cluster k
+      <br>
+      μ<sub>k</sub> = centroid of cluster k
+      <br>
+      ||·||² = squared Euclidean distance
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Cluster has 3 points: (0,0), (2,0), (1,2). Centroid = (1, 0.67).<br>
+      Distances²: (0−1)²+(0−0.67)² = 1.45; (2−1)²+(0−0.67)² = 1.45; (1−1)²+(2−0.67)² = 1.78<br>
+      Cluster inertia = 1.45 + 1.45 + 1.78 = <code>4.68</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lower = tighter clusters. Compare across K values to find the elbow. Absolute value is dataset-specific and not directly interpretable.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Comparing multiple K values (elbow method) or comparing different initialisations with the same K.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Comparing across datasets or different feature scales — inertia is scale-dependent.</div>
+    </div>
+  </div>
+
+  <div class="metric internal">
+    <h4>Silhouette Score <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> For each point, how similar it is to its own cluster compared to the next-closest cluster. Combines cohesion (intra-cluster tightness) and separation (inter-cluster distance).</p>
+    <div class="formula">
+      <span class="lbl">Per-point silhouette</span>
+      s(i) = ( b(i) − a(i) ) / max( a(i), b(i) )
+      <br><br>
+      a(i) = mean distance from point i to all other points in its own cluster (cohesion)
+      <br>
+      b(i) = minimum mean distance from point i to all points in any other cluster (separation)
+      <br><br>
+      <span class="lbl">Overall silhouette</span>
+      Silhouette = (1/N) · Σ<sub>i=1</sub><sup>N</sup> s(i)
+      <br><br>
+      <span class="lbl">Range</span>
+      −1 ≤ s(i) ≤ +1
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Point i is 2.0 units from its own cluster on average (a = 2.0) and 5.0 units from the nearest other cluster (b = 5.0).<br>
+      s(i) = (5.0 − 2.0) / max(5.0, 2.0) = 3.0 / 5.0 = <code>0.60</code> (good!)
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • s ≈ +1 → point is far from neighbours, in the "right" cluster ✅<br>
+      • s ≈ 0 → point is on the boundary between clusters ⚠️<br>
+      • s &lt; 0 → point might be in the wrong cluster ❌<br>
+      • Average &gt; 0.5 → strong structure<br>
+      • Average 0.25–0.5 → weak but usable<br>
+      • Average &lt; 0.25 → no real structure
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Choosing K, comparing clusterings, or identifying misclassified points.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Data has non-convex clusters — silhouette favours convex clusters.</div>
+    </div>
+  </div>
+
+  <div class="metric internal">
+    <h4>Davies-Bouldin Index (DBI) <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> The average ratio of within-cluster scatter to between-cluster separation. Lower = better.</p>
+    <div class="formula">
+      <span class="lbl">Cluster scatter</span>
+      S<sub>k</sub> = (1/|C<sub>k</sub>|) · Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> || x<sub>i</sub> − μ<sub>k</sub> ||
+      <br><br>
+      <span class="lbl">Distance between clusters</span>
+      M<sub>jk</sub> = || μ<sub>j</sub> − μ<sub>k</sub> ||
+      <br><br>
+      <span class="lbl">Similarity between clusters j and k</span>
+      R<sub>jk</sub> = ( S<sub>j</sub> + S<sub>k</sub> ) / M<sub>jk</sub>
+      <br><br>
+      <span class="lbl">Davies-Bouldin Index</span>
+      DBI = (1/K) · Σ<sub>k=1</sub><sup>K</sup> max<sub>j ≠ k</sub> R<sub>jk</sub>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Lower is better.<br>
+      • DBI &lt; 1 → excellent separation<br>
+      • DBI ≈ 1 → reasonable<br>
+      • DBI &gt; 2 → poor separation<br>
+      DBI has no upper bound. Always compare against other K values.
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want a compact score to compare multiple K values (lower DBI = better K).</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Clusters have very different densities — DBI is biased toward spherical, equal-size clusters.</div>
+    </div>
+  </div>
+
+  <div class="metric internal">
+    <h4>Calinski-Harabasz Index (CH) <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> The ratio of between-cluster dispersion to within-cluster dispersion. Higher = better.</p>
+    <div class="formula">
+      <span class="lbl">Between-cluster dispersion</span>
+      SS<sub>B</sub> = Σ<sub>k=1</sub><sup>K</sup> |C<sub>k</sub>| · || μ<sub>k</sub> − μ ||²
+      <br><br>
+      <span class="lbl">Within-cluster dispersion</span>
+      SS<sub>W</sub> = Σ<sub>k=1</sub><sup>K</sup> Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> || x<sub>i</sub> − μ<sub>k</sub> ||²
+      <br><br>
+      <span class="lbl">CH Index</span>
+      CH = ( SS<sub>B</sub> / (K − 1) ) / ( SS<sub>W</sub> / (N − K) )
+      <br><br>
+      μ = global mean of all points
+      <br>
+      N = total number of points
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong> Higher is better.<br>
+      • CH has no upper bound<br>
+      • Higher CH = clusters are dense and well-separated<br>
+      • Typically peaks at the "correct" K
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> Comparing K values and looking for a peak.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> Clusters are non-convex — CH favours globular clusters.</div>
+    </div>
+  </div>
+
+  <div class="metric internal">
+    <h4>Dunn Index <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> The ratio of the smallest inter-cluster distance to the largest intra-cluster diameter. Higher = better.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Dunn = min<sub>j ≠ k</sub> d( C<sub>j</sub>, C<sub>k</sub> ) / max<sub>k</sub> diam( C<sub>k</sub> )
+      <br><br>
+      d( C<sub>j</sub>, C<sub>k</sub> ) = minimum distance between any two points in clusters j and k
+      <br>
+      diam( C<sub>k</sub> ) = maximum distance between any two points in cluster k
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher is better. Dunn &gt; 1 means clusters are well-separated. Very sensitive to outliers (one extreme point can destroy the metric).</div>
+  </div>
+
+  <div class="metric internal">
+    <h4>Gap Statistic <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> Compares the observed within-cluster dispersion to that expected under a null reference (uniform random data). Helps identify the true K.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Gap(K) = (1/B) · Σ<sub>b=1</sub><sup>B</sup> log( W<sub>K</sub><sup>(b)</sup> ) − log( W<sub>K</sub> )
+      <br><br>
+      W<sub>K</sub> = within-cluster dispersion for K clusters on real data
+      <br>
+      W<sub>K</sub><sup>(b)</sup> = same on the b-th reference dataset
+      <br>
+      B = number of Monte Carlo reference datasets
+      <br><br>
+      <span class="lbl">Choose K as the smallest K such that</span>
+      Gap(K) ≥ Gap(K+1) − s<sub>K+1</sub>
+      <br>
+      where s<sub>K+1</sub> is the standard error of Gap(K+1)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Larger gap = stronger evidence for that K. The Gap Statistic is more rigorous than the elbow method but also more expensive (requires Monte Carlo simulation).</div>
+  </div>
+
+  <div class="metric internal">
+    <h4>Elbow Method (Visual Heuristic) <span class="badge">Internal</span></h4>
+    <p><strong>What it measures:</strong> Plot inertia vs K and look for the "elbow" where the curve flattens.</p>
+    <div class="formula">
+      <span class="lbl">Heuristic</span>
+      1. Run K-Means for K = 1, 2, 3, …, K<sub>max</sub>
+      <br>
+      2. Plot inertia(K) vs K
+      <br>
+      3. Look for the "elbow" where the slope changes abruptly
+      <br>
+      4. Choose that K
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The elbow is a visual heuristic — not a formal metric. It works well when clusters are well-separated. Combine with silhouette score for confidence.</div>
+  </div>
+
+  <h3>5.2 External Metrics — When You Have Ground-Truth Labels</h3>
+
+  <div class="metric external">
+    <h4>Adjusted Rand Index (ARI) <span class="badge">External</span></h4>
+    <p><strong>What it measures:</strong> Similarity between the predicted clustering and the true labels, corrected for chance. Range −1 to +1.</p>
+    <div class="formula">
+      <span class="lbl">Rand Index</span>
+      RI = ( a + b ) / C(N, 2)
+      <br><br>
+      a = pairs of points that are together in both clusterings
+      <br>
+      b = pairs of points that are apart in both clusterings
+      <br>
+      C(N, 2) = total number of pairs
+      <br><br>
+      <span class="lbl">Adjusted Rand Index</span>
+      ARI = ( RI − E[RI] ) / ( max(RI) − E[RI] )
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • ARI = 1 → perfect match<br>
+      • ARI = 0 → random labelling<br>
+      • ARI &lt; 0 → worse than random
+    </div>
+  </div>
+
+  <div class="metric external">
+    <h4>Normalised Mutual Information (NMI) <span class="badge">External</span></h4>
+    <p><strong>What it measures:</strong> How much information the predicted clusters share with the true labels.</p>
+    <div class="formula">
+      <span class="lbl">Mutual Information</span>
+      MI( U, V ) = Σ<sub>i</sub> Σ<sub>j</sub> P( i, j ) · log( P( i, j ) / ( P(i) · P(j) ) )
+      <br><br>
+      U = predicted clusters &nbsp;|&nbsp; V = true labels
+      <br><br>
+      <span class="lbl">NMI</span>
+      NMI = MI( U, V ) / √( H(U) · H(V) )
+      <br><br>
+      H(U), H(V) = entropies of U and V
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1 (higher is better). NMI = 1 means perfect correspondence; NMI = 0 means no shared information.</div>
+  </div>
+
+  <div class="metric external">
+    <h4>Fowlkes-Mallows Index (FMI) <span class="badge">External</span></h4>
+    <p><strong>What it measures:</strong> Geometric mean of precision and recall for pairwise cluster membership.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      FMI = √( ( TP / (TP + FP) ) · ( TP / (TP + FN) ) )
+      <br><br>
+      TP = pairs together in both clusterings
+      <br>
+      FP = pairs together in predicted but not true
+      <br>
+      FN = pairs together in true but not predicted
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1 (higher is better). FMI = 1 means identical clusterings.</div>
+  </div>
+
+  <div class="metric external">
+    <h4>Purity &amp; Homogeneity / Completeness <span class="badge">External</span></h4>
+    <div class="formula">
+      <span class="lbl">Purity</span>
+      Purity = (1/N) · Σ<sub>k</sub> max<sub>j</sub> | C<sub>k</sub> ∩ L<sub>j</sub> |
+      <br><br>
+      C<sub>k</sub> = predicted cluster, L<sub>j</sub> = true label
+      <br><br>
+      <span class="lbl">Homogeneity</span>
+      Each cluster contains only members of a single class.
+      <br><br>
+      <span class="lbl">Completeness</span>
+      All members of a given class are in the same cluster.
+      <br><br>
+      <span class="lbl">V-measure</span>
+      V = 2 · (homogeneity · completeness) / (homogeneity + completeness)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> All range 0 to 1 (higher is better). Purity is easy but biased toward many clusters; V-measure balances both directions.</div>
+  </div>
+
+  <h3>5.3 Model Quality &amp; Robustness KPIs</h3>
+
+  <div class="metric">
+    <h4>Cluster Stability Across Restarts <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> How consistent the clusters are across multiple random initialisations. High stability = reliable clustering.</p>
+    <div class="formula">
+      <span class="lbl">Pairwise stability</span>
+      Stability = (1 / C(R, 2)) · Σ<sub>a &lt; b</sub> ARI( labels<sub>a</sub>, labels<sub>b</sub> )
+      <br><br>
+      R = number of K-Means runs with different seeds
+      <br>
+      ARI = Adjusted Rand Index between two runs
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Range 0 to 1 (higher is better). Stability &gt; 0.8 = very consistent. Stability &lt; 0.5 = the choice of K or the data is unstable.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Bootstrap Stability <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> Refit K-Means on bootstrap samples and check if the same clusters reappear.</p>
+    <div class="formula">
+      <span class="lbl">Procedure</span>
+      1. Draw B bootstrap samples from the data
+      <br>
+      2. Run K-Means on each
+      <br>
+      3. For each cluster in the original, find its "best match" in the bootstrap runs
+      <br>
+      4. Compute the Jaccard similarity of memberships
+      <br><br>
+      <span class="lbl">Jaccard similarity</span>
+      J( C<sub>k</sub>, C'<sub>k</sub> ) = | C<sub>k</sub> ∩ C'<sub>k</sub> | / | C<sub>k</sub> ∪ C'<sub>k</sub> |
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Mean Jaccard &gt; 0.75 = stable clusters. &lt; 0.5 = clusters are not reliable.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Number of Empty Clusters <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> How many clusters ended up with zero points.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Empty = | { k : |C<sub>k</sub>| = 0 } |
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ideal = 0. Any empty cluster means K is too large, initialisation was bad, or the algorithm hit a degenerate solution. Common fixes: reduce K, use K-Means++, or reassign the farthest point.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Smallest Cluster Size Ratio <span class="badge">Robustness</span></h4>
+    <p><strong>What it measures:</strong> The ratio of the smallest cluster to the expected cluster size.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Size Ratio = min<sub>k</sub> |C<sub>k</sub>| / (N/K)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ratio close to 1 = balanced clusters. Very small ratio suggests a tiny "junk" cluster — often an outlier being isolated. Consider whether that's meaningful or a problem.</div>
+  </div>
+
+  <h3>5.4 📊 Interactive: Elbow Method + Silhouette + Davies-Bouldin</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The three most common heuristics for choosing K side by side. Each uses multiple K-Means restarts to ensure smooth, reliable curves. All three should agree on the same K for well-separated data.</p>
+
+  <div class="grid3">
+    <div class="chart">
+      <div class="chart-title">Elbow Method (Inertia ↓)</div>
+      <div id="elbowSmall" style="height:300px;"></div>
+    </div>
+    <div class="chart">
+      <div class="chart-title">Silhouette Score (↑)</div>
+      <div id="silSmall" style="height:300px;"></div>
+    </div>
+    <div class="chart">
+      <div class="chart-title">Davies-Bouldin (↓)</div>
+      <div id="dbSmall" style="height:300px;"></div>
+    </div>
+  </div>
+  <div class="chart-note" style="padding-top:12px;text-align:center;">All three metrics agree on the "correct" K for this dataset. In real data, metrics often disagree — combine multiple heuristics with domain knowledge.</div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once clusters are deployed (e.g., customers are assigned to segments), you must monitor whether the clusters still mean something. If customers shift, clusters become stale.</p>
+
+  <h3>6.1 Cluster Stability &amp; Drift</h3>
+
+  <div class="metric post">
+    <h4>Centroid Drift <span class="badge">Cluster Health</span></h4>
+    <p><strong>What it measures:</strong> How much each centroid has moved between the training run and the production refit.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Drift<sub>k</sub> = || μ<sub>k</sub><sup>train</sup> − μ<sub>k</sub><sup>prod</sup> ||
+      <br><br>
+      <span class="lbl">Normalised drift</span>
+      Drift%<sub>k</sub> = Drift<sub>k</sub> / || μ<sub>k</sub><sup>train</sup> ||
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Small drift = clusters are stable. Large drift (&gt; 20%) means the cluster definitions have changed significantly — investigate or retrain.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Cluster Population Shift <span class="badge">Cluster Health</span></h4>
+    <p><strong>What it measures:</strong> How the relative sizes of clusters change over time.</p>
+    <div class="formula">
+      <span class="lbl">Population shift for cluster k</span>
+      Shift<sub>k</sub> = | p<sub>k</sub><sup>prod</sup> − p<sub>k</sub><sup>train</sup> |
+      <br><br>
+      p<sub>k</sub> = |C<sub>k</sub>| / N (fraction of points in cluster k)
+      <br><br>
+      <span class="lbl">Total variation distance</span>
+      TVD = ½ · Σ<sub>k</sub> | p<sub>k</sub><sup>prod</sup> − p<sub>k</sub><sup>train</sup> |
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> TVD &lt; 0.05 = stable. TVD &gt; 0.15 = significant shift. A cluster that shrinks to near-zero is a warning sign.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Cluster Assignment Entropy <span class="badge">Cluster Health</span></h4>
+    <p><strong>What it measures:</strong> How uniformly points are distributed across clusters.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      H = − Σ<sub>k=1</sub><sup>K</sup> p<sub>k</sub> · log( p<sub>k</sub> )
+      <br><br>
+      p<sub>k</sub> = |C<sub>k</sub>| / N
+      <br><br>
+      <span class="lbl">Normalised entropy</span>
+      H<sub>norm</sub> = H / log(K)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> H<sub>norm</sub> close to 1 = balanced clusters. H<sub>norm</sub> close to 0 = all points collapse into one cluster.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Average Silhouette Over Time <span class="badge">Cluster Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the cluster separation is degrading over time.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Silhouette<sub>t</sub> = mean silhouette at time t
+      <br><br>
+      <span class="lbl">Decay</span>
+      Decay % = ( Silhouette<sub>train</sub> − Silhouette<sub>t</sub> ) / Silhouette<sub>train</sub> × 100
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Decay &gt; 15% suggests the clusters no longer reflect the current data — retrain.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Feature Distribution Shift per Cluster <span class="badge">Cluster Health</span></h4>
+    <p><strong>What it measures:</strong> For each cluster, whether the distribution of input features has changed.</p>
+    <div class="formula">
+      <span class="lbl">PSI per cluster and feature</span>
+      PSI<sub>k,f</sub> = Σ<sub>i</sub> ( A%<sub>i</sub> − E%<sub>i</sub> ) · ln( A%<sub>i</sub> / E%<sub>i</sub> )
+      <br><br>
+      A% = production distribution of feature f within cluster k
+      <br>
+      E% = training distribution of feature f within cluster k
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong><br>
+      • PSI &lt; 0.10 → stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → monitor ⚠️<br>
+      • PSI ≥ 0.25 → cluster meaning has shifted 🚨
+    </div>
+  </div>
+
+  <h3>6.2 Assignment Quality KPIs</h3>
+
+  <div class="metric post">
+    <h4>Distance to Assigned Centroid <span class="badge">Assignment</span></h4>
+    <p><strong>What it measures:</strong> Average distance from each point to its assigned centroid — a per-point version of inertia.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      AvgDist = (1/N) · Σ<sub>i=1</sub><sup>N</sup> || x<sub>i</sub> − μ<sub>assign(i)</sub> ||
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Watch for a rising average distance — it means new points are landing far from existing centroids, suggesting the clusters no longer cover the data.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Outlier Rate (Far from Any Centroid) <span class="badge">Assignment</span></h4>
+    <p><strong>What it measures:</strong> Fraction of production points whose distance to the nearest centroid exceeds a threshold (e.g., 99th percentile of training distances).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      OutlierRate = ( # { i : d( x<sub>i</sub>, μ<sub>assign(i)</sub> ) &gt; τ } ) / N
+      <br><br>
+      τ = threshold (e.g., the 99th percentile of training distances)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A sudden spike in outlier rate means new data is unlike the training data — a signal of concept drift or a broken upstream pipeline.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Cluster Assignment Confidence <span class="badge">Assignment</span></h4>
+    <p><strong>What it measures:</strong> How much closer a point is to its assigned centroid than to the second-closest one.</p>
+    <div class="formula">
+      <span class="lbl">Confidence</span>
+      Conf(i) = ( d<sub>2</sub>(i) − d<sub>1</sub>(i) ) / d<sub>2</sub>(i)
+      <br><br>
+      d<sub>1</sub>(i) = distance to nearest centroid
+      <br>
+      d<sub>2</sub>(i) = distance to second-nearest centroid
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Confidence near 1 = clear winner. Confidence near 0 = the point is on a boundary — treat the assignment with caution.</div>
+  </div>
+
+  <h3>6.3 Business &amp; Operational KPIs</h3>
+
+  <div class="metric post">
+    <h4>Segment Actionability <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Whether business metrics differ significantly across clusters — proving the segmentation is useful.</p>
+    <div class="formula">
+      <span class="lbl">Between-cluster variance of business KPI</span>
+      Var<sub>between</sub> = Σ<sub>k</sub> p<sub>k</sub> · ( KPI<sub>k</sub> − KPI<sub>overall</sub> )²
+      <br><br>
+      <span class="lbl">F-ratio</span>
+      F = Var<sub>between</sub> / Var<sub>within</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Higher F = segments differ meaningfully on business metrics — the segmentation is useful for targeting.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Cluster-Level Conversion / Revenue <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Business outcomes per cluster — the ultimate test of whether clustering adds value.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Revenue<sub>k</sub> = Σ<sub>i ∈ C<sub>k</sub></sub> revenue<sub>i</sub>
+      <br>
+      Conversion<sub>k</sub> = conversions<sub>k</sub> / |C<sub>k</sub>|
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> If all clusters have similar revenue, the segmentation isn't useful for targeting. Retrain or reconsider K.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Assignment Latency <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> Time to assign a new point to a cluster in production.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      AssignTime = O(K · d)
+      <br><br>
+      One distance computation per centroid per dimension. Extremely fast even for K = 1000.
+    </div>
+    <div class="interp"><strong>Target example:</strong> K-Means is one of the fastest assignment algorithms. p50 &lt; 0.1 ms, p95 &lt; 1 ms for K = 100 and d = 50.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Retrain Frequency <span class="badge">Governance</span></h4>
+    <p><strong>What it measures:</strong> How often clusters are refit as data drifts.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Retrains/month = # of refits in last 30 days
+      <br><br>
+      <span class="lbl">Typical cadence</span>
+      Monthly to quarterly, depending on data velocity.
+      <br>
+      Trigger-based: when centroid drift &gt; 20% or population shift &gt; 15%.
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Business Impact (ROI) <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ROI % = ( Net Gain / Total Cost ) × 100%
+      <br><br>
+      Net Gain = Uplift from segmentation − Cost of building/running
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Uplift from targeted campaigns = ₹8,00,000. Cost = ₹2,00,000.<br>
+      Net Gain = ₹6,00,000. ROI = (6,00,000 / 2,00,000) × 100 = <code>300%</code>
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#fffbeb);">
+    <strong>Golden rule:</strong> Clusters drift just like supervised models. Monitor centroid positions, cluster populations, and business outcomes per cluster. If cluster 3 used to be "high-value loyal customers" but now looks like "one-off buyers," the segmentation has lost its meaning — retrain.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How K-Means Actually Works</h2>
+  <p>The core idea: <strong>minimise the total squared distance between points and their assigned centroids.</strong></p>
+
+  <h3>7.1 The Objective Function (Inertia / WCSS)</h3>
+  <div class="formula">
+    <span class="lbl">Objective</span>
+    J = Σ<sub>k=1</sub><sup>K</sup> Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> || x<sub>i</sub> − μ<sub>k</sub> ||²
+    <br><br>
+    K = number of clusters
+    <br>
+    C<sub>k</sub> = set of points in cluster k
+    <br>
+    μ<sub>k</sub> = centroid of cluster k
+    <br>
+    x<sub>i</sub> ∈ ℝ<sup>d</sup> = a data point in d-dimensional space
+  </div>
+
+  <h3>7.2 Euclidean Distance</h3>
+  <div class="formula">
+    <span class="lbl">Distance between point and centroid</span>
+    d( x<sub>i</sub>, μ<sub>k</sub> ) = √[ Σ<sub>j=1</sub><sup>d</sup> ( x<sub>ij</sub> − μ<sub>kj</sub> )² ]
+    <br><br>
+    <span class="lbl">Squared distance (used in the objective)</span>
+    d²( x<sub>i</sub>, μ<sub>k</sub> ) = Σ<sub>j=1</sub><sup>d</sup> ( x<sub>ij</sub> − μ<sub>kj</sub> )²
+  </div>
+
+  <h3>7.3 Assignment Step (E-step)</h3>
+  <p>Each point is assigned to the nearest centroid.</p>
+  <div class="formula">
+    <span class="lbl">Assignment rule</span>
+    assign(i) = argmin<sub>k</sub> || x<sub>i</sub> − μ<sub>k</sub> ||²
+    <br><br>
+    This is the "E-step" (Expectation) of the EM algorithm under a hard-assignment assumption.
+  </div>
+
+  <h3>7.4 Update Step (M-step)</h3>
+  <p>Each centroid is recomputed as the mean of all points assigned to it.</p>
+  <div class="formula">
+    <span class="lbl">Centroid update</span>
+    μ<sub>k</sub> = ( 1 / |C<sub>k</sub>| ) · Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> x<sub>i</sub>
+    <br><br>
+    This is the "M-step" (Maximisation) — it minimises the objective given the current assignments.
+  </div>
+
+  <h3>7.5 The Alternating Minimisation View</h3>
+  <p>K-Means is an instance of <strong>alternating minimisation</strong> (also called Block Coordinate Descent). Each step decreases the objective:</p>
+  <div class="formula">
+    <span class="lbl">Monotone decrease</span>
+    J( assignments<sub>t</sub>, centroids<sub>t</sub> ) ≥ J( assignments<sub>t+1</sub>, centroids<sub>t</sub> ) ≥ J( assignments<sub>t+1</sub>, centroids<sub>t+1</sub> )
+    <br><br>
+    Because J is bounded below by 0, the algorithm must converge (to a local minimum, not necessarily global).
+  </div>
+
+  <h3>7.6 K-Means++ Initialisation</h3>
+  <p>Random initialisation can be poor. K-Means++ chooses initial centroids that are far apart, which dramatically improves the final result.</p>
+  <div class="formula">
+    <span class="lbl">Procedure</span>
+    1. Choose the first centroid μ<sub>1</sub> uniformly at random from the data.
+    <br>
+    2. For each point x<sub>i</sub>, compute D(x<sub>i</sub>) = squared distance to nearest already-chosen centroid.
+    <br>
+    3. Choose the next centroid μ<sub>k</sub> with probability proportional to D(x<sub>i</sub>)²:
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;P( choose x<sub>i</sub> ) = D(x<sub>i</sub>)² / Σ<sub>j</sub> D(x<sub>j</sub>)²
+    <br>
+    4. Repeat steps 2–3 until K centroids are chosen.
+    <br>
+    5. Run standard K-Means from these initial centroids.
+    <br><br>
+    <span class="lbl">Guarantee</span>
+    K-Means++ yields an expected approximation ratio of O(log K) relative to the global optimum.
+  </div>
+
+  <h3>7.7 The Elbow Method (Kneedle Algorithm)</h3>
+  <p>Formalises the visual "elbow" using the maximum curvature of the inertia curve.</p>
+  <div class="formula">
+    <span class="lbl">Normalised inertia</span>
+    y<sub>k</sub> = ( Inertia(k) − min ) / ( max − min )
+    <br><br>
+    <span class="lbl">Line from first to last point</span>
+    L(k) = y<sub>1</sub> + ( y<sub>K<sub>max</sub></sub> − y<sub>1</sub> ) · ( k − 1 ) / ( K<sub>max</sub> − 1 )
+    <br><br>
+    <span class="lbl">Elbow at the point of maximum deviation</span>
+    K<sub>elbow</sub> = argmax<sub>k</sub> | y<sub>k</sub> − L(k) |
+  </div>
+
+  <h3>7.8 Silhouette Coefficient — Full Formula</h3>
+  <div class="formula">
+    <span class="lbl">Cohesion (a)</span>
+    a(i) = ( 1 / (|C<sub>k</sub>| − 1) ) · Σ<sub>j ∈ C<sub>k</sub>, j ≠ i</sub> d( x<sub>i</sub>, x<sub>j</sub> )
+    <br><br>
+    <span class="lbl">Separation (b)</span>
+    b(i) = min<sub>l ≠ k</sub> ( 1 / |C<sub>l</sub>| ) · Σ<sub>j ∈ C<sub>l</sub></sub> d( x<sub>i</sub>, x<sub>j</sub> )
+    <br><br>
+    <span class="lbl">Silhouette of point i</span>
+    s(i) = ( b(i) − a(i) ) / max( a(i), b(i) )
+    <br><br>
+    <span class="lbl">Overall silhouette</span>
+    S = ( 1 / N ) · Σ<sub>i=1</sub><sup>N</sup> s(i)
+  </div>
+
+  <h3>7.9 Davies-Bouldin Index — Full Formula</h3>
+  <div class="formula">
+    <span class="lbl">Scatter of cluster k</span>
+    S<sub>k</sub> = ( 1 / |C<sub>k</sub>| ) · Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> || x<sub>i</sub> − μ<sub>k</sub> ||
+    <br><br>
+    <span class="lbl">Distance between centroids j and k</span>
+    M<sub>jk</sub> = || μ<sub>j</sub> − μ<sub>k</sub> ||
+    <br><br>
+    <span class="lbl">Similarity of clusters j and k</span>
+    R<sub>jk</sub> = ( S<sub>j</sub> + S<sub>k</sub> ) / M<sub>jk</sub>
+    <br><br>
+    <span class="lbl">DBI</span>
+    DBI = ( 1 / K ) · Σ<sub>k=1</sub><sup>K</sup> max<sub>j ≠ k</sub> R<sub>jk</sub>
+  </div>
+
+  <h3>7.10 Calinski-Harabasz Index — Full Formula</h3>
+  <div class="formula">
+    <span class="lbl">Between-cluster dispersion</span>
+    SS<sub>B</sub> = Σ<sub>k=1</sub><sup>K</sup> |C<sub>k</sub>| · || μ<sub>k</sub> − μ ||²
+    <br><br>
+    <span class="lbl">Within-cluster dispersion</span>
+    SS<sub>W</sub> = Σ<sub>k=1</sub><sup>K</sup> Σ<sub>x<sub>i</sub> ∈ C<sub>k</sub></sub> || x<sub>i</sub> − μ<sub>k</sub> ||²
+    <br><br>
+    <span class="lbl">CH Index</span>
+    CH = ( SS<sub>B</sub> / (K − 1) ) / ( SS<sub>W</sub> / (N − K) )
+  </div>
+
+  <h3>7.11 Complexity Analysis</h3>
+  <div class="formula">
+    <span class="lbl">Time per iteration</span>
+    O( N · K · d )
+    <br><br>
+    N = number of points, K = number of clusters, d = dimensions
+    <br><br>
+    <span class="lbl">Total time</span>
+    O( N · K · d · i )
+    <br><br>
+    i = number of iterations (typically &lt; 100)
+    <br><br>
+    <span class="lbl">Space</span>
+    O( N + K · d )
+    <br>
+    (labels for each point + centroids)
+  </div>
+
+  <h3>7.12 Assumptions of K-Means</h3>
+  <div class="assumptions">
+    <div class="item">
+      <div class="letter">S</div>
+      <div class="name">Spherical</div>
+      <div class="desc">Clusters are round / isotropic</div>
+    </div>
+    <div class="item">
+      <div class="letter">E</div>
+      <div class="name">Equal variance</div>
+      <div class="desc">Clusters have similar spread</div>
+    </div>
+    <div class="item">
+      <div class="letter">S</div>
+      <div class="name">Similar size</div>
+      <div class="desc">Clusters have similar population</div>
+    </div>
+    <div class="item">
+      <div class="letter">N</div>
+      <div class="name">Numeric</div>
+      <div class="desc">Features are continuous numbers</div>
+    </div>
+    <div class="item">
+      <div class="letter">K</div>
+      <div class="name">Known K</div>
+      <div class="desc">Number of clusters specified</div>
+    </div>
+  </div>
+
+  <h3>📊 Interactive: Distance Metric Explorer</h3>
+  <p style="color:var(--muted);font-size:.93rem;">K-Means default uses Euclidean distance, but other metrics change the geometry of clusters. This chart shows 1-unit "distance balls" for three metrics — every point on the curve has distance 1 from the centre.</p>
+
+  <div class="chart">
+    <div class="chart-title">Distance Metric "Balls" — Shapes of the Unit Circle</div>
+    <div id="metricChart" style="height:420px;"></div>
+    <div class="chart-note">Euclidean → circle (spherical clusters). Manhattan → diamond (rectangular clusters). Chebyshev → square (block-like clusters). The choice of metric changes what "near" means.</div>
+  </div>
+
+  <h3>📊 Interactive: Convergence of the Objective</h3>
+  <p style="color:var(--muted);font-size:.93rem;">K-Means is guaranteed to decrease the objective at every iteration — but not to the global minimum. This chart shows the objective across iterations for five random restarts. All reach a local minimum, but only one reaches the best one.</p>
+
+  <div class="chart">
+    <div class="chart-title">Objective Value Across Iterations — 5 Random Restarts</div>
+    <div id="convergenceChart" style="height:420px;"></div>
+    <div class="chart-note">Each line is one K-Means run from a different random initialisation. All converge (flatten out), but they converge to <em>different</em> values. Best practice: run K-Means 10–100 times and keep the run with the lowest inertia.</div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithm &amp; Model Concepts</h3>
+  <div class="gloss">
+    <div>K-Means</div><div>A partitional clustering algorithm that groups points into K clusters by iteratively assigning points to nearest centroids and updating centroids to cluster means.</div>
+    <div>Clustering</div><div>Unsupervised learning that groups similar data points together.</div>
+    <div>Unsupervised</div><div>Learning without labels — the algorithm discovers structure on its own.</div>
+    <div>Supervised</div><div>Learning with labels (contrast with unsupervised).</div>
+    <div>Centroid</div><div>The mean (average) position of all points in a cluster.</div>
+    <div>K-Medoids</div><div>A K-Means variant that uses actual data points as cluster representatives instead of means. More robust to outliers.</div>
+    <div>K-Modes</div><div>A K-Means variant for categorical data, using mode instead of mean.</div>
+    <div>K-Prototypes</div><div>Combines K-Means and K-Modes for mixed numeric/categorical data.</div>
+    <div>Mini-Batch K-Means</div><div>K-Means on random mini-batches — much faster for huge datasets.</div>
+    <div>Fuzzy C-Means</div><div>Soft clustering — each point has a membership degree to each cluster (rather than hard assignment).</div>
+    <div>DBSCAN</div><div>Density-based clustering that finds arbitrary-shaped clusters and flags outliers.</div>
+    <div>Gaussian Mixture</div><div>Probabilistic clustering using a mixture of Gaussian distributions.</div>
+    <div>Spectral Clustering</div><div>Graph-based clustering using eigenvectors of the similarity matrix.</div>
+    <div>Hierarchical Clustering</div><div>Builds a nested tree (dendrogram) of clusters.</div>
+    <div>K-Means++</div><div>A smart initialisation that spreads initial centroids apart, improving results.</div>
+    <div>Elbow Method</div><div>A heuristic for choosing K by looking at where inertia stops decreasing rapidly.</div>
+    <div>Lloyd's Algorithm</div><div>The original K-Means algorithm (assign → update → repeat).</div>
+    <div>EM Algorithm</div><div>Expectation-Maximisation — the general framework K-Means instantiates in the hard-assignment limit.</div>
+  </div>
+
+  <h3>Clustering Metrics</h3>
+  <div class="gloss">
+    <div>Inertia</div><div>Also called WCSS. The sum of squared distances from each point to its centroid. Lower is better.</div>
+    <div>WCSS</div><div><strong>Within-Cluster Sum of Squares</strong> — the K-Means objective.</div>
+    <div>SSE</div><div><strong>Sum of Squared Errors</strong> — same as WCSS.</div>
+    <div>SS<sub>B</sub></div><div><strong>Between-cluster sum of squares</strong> — used in Calinski-Harabasz.</div>
+    <div>SS<sub>W</sub></div><div><strong>Within-cluster sum of squares</strong> — same as inertia.</div>
+    <div>Silhouette</div><div>Per-point score measuring how well it fits its cluster vs. the next-closest.</div>
+    <div>Cohesion</div><div>How close points are within a cluster (a in silhouette).</div>
+    <div>Separation</div><div>How far apart clusters are (b in silhouette).</div>
+    <div>DBI</div><div><strong>Davies-Bouldin Index</strong> — ratio of within-cluster scatter to between-cluster separation. Lower is better.</div>
+    <div>CH</div><div><strong>Calinski-Harabasz Index</strong> — ratio of between-cluster to within-cluster dispersion. Higher is better.</div>
+    <div>Dunn Index</div><div>Ratio of minimum inter-cluster distance to maximum intra-cluster diameter. Higher is better.</div>
+    <div>Gap Statistic</div><div>Compares observed dispersion to a uniform reference. Rigorous but expensive.</div>
+    <div>ARI</div><div><strong>Adjusted Rand Index</strong> — external metric comparing clusterings to ground truth, corrected for chance.</div>
+    <div>NMI</div><div><strong>Normalised Mutual Information</strong> — external metric measuring shared information between clusterings.</div>
+    <div>FMI</div><div><strong>Fowlkes-Mallows Index</strong> — geometric mean of pairwise precision and recall.</div>
+    <div>Purity</div><div>Fraction of points whose label matches the majority label in their cluster.</div>
+    <div>Homogeneity</div><div>Each cluster contains only points of one true class.</div>
+    <div>Completeness</div><div>All points of a true class end up in the same cluster.</div>
+    <div>V-measure</div><div>Harmonic mean of homogeneity and completeness.</div>
+  </div>
+
+  <h3>Mathematics &amp; Computation</h3>
+  <div class="gloss">
+    <div>Euclidean</div><div>The straight-line distance √Σ(xᵢ − yᵢ)². Default metric for K-Means.</div>
+    <div>Manhattan</div><div>Also called city-block or L1 distance: Σ|xᵢ − yᵢ|.</div>
+    <div>Chebyshev</div><div>L∞ distance: max|xᵢ − yᵢ|.</div>
+    <div>Cosine</div><div>1 − cos(angle between vectors). Common for text.</div>
+    <div>L<sub>p</sub> Norm</div><div>Generalisation: (Σ|xᵢ − yᵢ|<sup>p</sup>)<sup>1/p</sup>.</div>
+    <div>Local Optimum</div><div>A solution that's optimal within a neighbourhood but not globally. K-Means converges to one of these.</div>
+    <div>Global Optimum</div><div>The best possible solution across all possible partitions.</div>
+    <div>Convergence</div><div>When the algorithm stops changing — centroids stop moving or assignments stop switching.</div>
+    <div>Alternating Minimisation</div><div>Optimising one set of variables while holding others fixed, then swapping. K-Means is an example.</div>
+    <div>Block Coordinate Descent</div><div>Another name for the alternating minimisation approach.</div>
+    <div>NP-hard</div><div>Finding the globally optimal K-Means solution is NP-hard. That's why we use heuristics like Lloyd's algorithm.</div>
+    <div>Approximation Ratio</div><div>How close an algorithm's solution is to the optimum. K-Means++ has O(log K) expected approximation.</div>
+  </div>
+
+  <h3>Data &amp; Preprocessing</h3>
+  <div class="gloss">
+    <div>Feature</div><div>An input variable (column in the dataset).</div>
+    <div>Feature Scaling</div><div>Transforming features to a comparable range (e.g., standardisation). Required for K-Means.</div>
+    <div>Standardisation</div><div>Mean 0, standard deviation 1 (z-score).</div>
+    <div>Normalisation</div><div>Min-max scaling to [0, 1].</div>
+    <div>Curse of Dimensionality</div><div>In high dimensions, distances become less discriminative. Reduces K-Means effectiveness.</div>
+    <div>PCA</div><div><strong>Principal Component Analysis</strong> — linear dimensionality reduction. Often used before K-Means.</div>
+    <div>UMAP</div><div><strong>Uniform Manifold Approximation and Projection</strong> — nonlinear dimensionality reduction.</div>
+    <div>t-SNE</div><div><strong>t-distributed Stochastic Neighbour Embedding</strong> — nonlinear visualisation technique.</div>
+    <div>Dendrogram</div><div>A tree diagram showing hierarchical clustering merges.</div>
+    <div>Elbow</div><div>The point on the inertia curve where the slope changes — a heuristic for K.</div>
+    <div>Knee</div><div>Another name for the elbow point.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model or business performance.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift between training and production.</div>
+    <div>KS Test</div><div><strong>Kolmogorov-Smirnov test</strong> — statistical test for whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback-Leibler divergence</strong> — measures how one probability distribution diverges from another.</div>
+    <div>CSI</div><div><strong>Characteristic Stability Index</strong> — the per-feature version of PSI.</div>
+    <div>Data Drift</div><div>A change in the distribution of input features over time.</div>
+    <div>Concept Drift</div><div>A change in the underlying data-generating process.</div>
+    <div>Centroid Drift</div><div>Movement of a centroid between training and production.</div>
+    <div>Assignment Drift</div><div>Change in how points are distributed across clusters.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — sequential analysis for change detection.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — deploying and monitoring ML in production.</div>
+    <div>Shadow Deployment</div><div>Running a new model alongside the old one without acting on its output.</div>
+    <div>Champion / Challenger</div><div>The current production model vs. a candidate model.</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs and core formulas in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:22%;">KPI / Formula</th>
+      <th style="width:16%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>Inertia (WCSS)</td><td>Internal</td><td>Σ<sub>k</sub> Σ<sub>x ∈ C<sub>k</sub></sub> ||x − μ<sub>k</sub>||²</td><td>↓ Lower</td></tr>
+    <tr><td>Silhouette (per point)</td><td>Internal</td><td>(b − a) / max(a, b)</td><td>↑ Higher, → 1</td></tr>
+    <tr><td>Overall Silhouette</td><td>Internal</td><td>mean of per-point silhouettes</td><td>↑ → 1</td></tr>
+    <tr><td>Davies-Bouldin</td><td>Internal</td><td>(1/K) Σ<sub>k</sub> max<sub>j≠k</sub> (S<sub>j</sub>+S<sub>k</sub>)/M<sub>jk</sub></td><td>↓ Lower</td></tr>
+    <tr><td>Calinski-Harabasz</td><td>Internal</td><td>(SS<sub>B</sub>/(K−1)) / (SS<sub>W</sub>/(N−K))</td><td>↑ Higher</td></tr>
+    <tr><td>Dunn Index</td><td>Internal</td><td>min inter-cluster dist / max intra-cluster diam</td><td>↑ Higher</td></tr>
+    <tr><td>Gap Statistic</td><td>Internal</td><td>E[log W<sub>K</sub><sup>null</sup>] − log W<sub>K</sub></td><td>↑ Higher</td></tr>
+    <tr><td>Adjusted Rand Index</td><td>External</td><td>(RI − E[RI]) / (max − E[RI])</td><td>↑ → 1</td></tr>
+    <tr><td>NMI</td><td>External</td><td>MI(U,V) / √(H(U)·H(V))</td><td>↑ → 1</td></tr>
+    <tr><td>Fowlkes-Mallows</td><td>External</td><td>√(precision · recall) of pairs</td><td>↑ → 1</td></tr>
+    <tr><td>Purity</td><td>External</td><td>(1/N) Σ<sub>k</sub> max<sub>j</sub> |C<sub>k</sub> ∩ L<sub>j</sub>|</td><td>↑ → 1</td></tr>
+    <tr><td>V-measure</td><td>External</td><td>2·h·c/(h+c)</td><td>↑ → 1</td></tr>
+    <tr><td>Assignment Step</td><td>Math</td><td>assign(i) = argmin<sub>k</sub> ||x<sub>i</sub> − μ<sub>k</sub>||²</td><td>—</td></tr>
+    <tr><td>Centroid Update</td><td>Math</td><td>μ<sub>k</sub> = (1/|C<sub>k</sub>|) Σ<sub>x∈C<sub>k</sub></sub> x</td><td>—</td></tr>
+    <tr><td>K-Means++ weight</td><td>Math</td><td>P(x<sub>i</sub>) = D(x<sub>i</sub>)² / Σ<sub>j</sub> D(x<sub>j</sub>)²</td><td>—</td></tr>
+    <tr><td>Complexity</td><td>Math</td><td>O(N·K·d·i)</td><td>↓ Smaller</td></tr>
+    <tr><td>Centroid Drift</td><td>Post</td><td>||μ<sup>train</sup> − μ<sup>prod</sup>|| / ||μ<sup>train</sup>||</td><td>↓ &lt; 0.20</td></tr>
+    <tr><td>Population TVD</td><td>Post</td><td>½ Σ<sub>k</sub> |p<sub>k</sub><sup>prod</sup> − p<sub>k</sub><sup>train</sup>|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>Assignment Entropy</td><td>Post</td><td>−Σ p<sub>k</sub> log p<sub>k</sub> / log(K)</td><td>↑ → 1</td></tr>
+    <tr><td>Outlier Rate</td><td>Post</td><td>#(dist &gt; τ) / N</td><td>↓ Low</td></tr>
+    <tr><td>Cluster Stability</td><td>Post</td><td>mean ARI across restarts</td><td>↑ &gt; 0.8</td></tr>
+    <tr><td>PSI (per feature)</td><td>Post</td><td>Σ (A% − E%) ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> K-Means is a starting point, not a finished product. Always (1) standardise your features, (2) run multiple restarts and pick the best inertia, (3) use K-Means++ initialisation, (4) combine at least two metrics (silhouette + elbow + gap) before choosing K, and (5) validate with domain expertise — a mathematically clean clustering is useless if the segments don't mean anything to the business.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  K-Means Clustering — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   Helper functions
+   ============================================================ */
+function dist2(a, b){
+  return (a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]);
+}
+function dist(a, b){ return Math.sqrt(dist2(a, b)); }
+
+/* Basic K-Means with K-Means++ init — returns labels, centroids, inertia */
+function runKMeans(data, k, maxIter){
+  maxIter = maxIter || 100;
+  const n = data.length;
+  const centroids = [];
+  centroids.push(data[Math.floor(Math.random() * n)].slice());
+  while (centroids.length < k){
+    const d2 = data.map(p => Math.min(...centroids.map(c => dist2(p, c))));
+    const total = d2.reduce((a,b)=>a+b,0);
+    if (total === 0){ centroids.push(data[Math.floor(Math.random()*n)].slice()); continue; }
+    let r = Math.random() * total;
+    let idx = 0;
+    for (let i = 0; i < n; i++){ r -= d2[i]; if (r <= 0){ idx = i; break; } }
+    centroids.push(data[idx].slice());
+  }
+  let labels = new Array(n).fill(0);
+  for (let iter = 0; iter < maxIter; iter++){
+    let changed = 0;
+    for (let i = 0; i < n; i++){
+      let best = 0, bestD = Infinity;
+      for (let k2 = 0; k2 < k; k2++){
+        const d = dist2(data[i], centroids[k2]);
+        if (d < bestD){ bestD = d; best = k2; }
+      }
+      if (labels[i] !== best){ changed++; labels[i] = best; }
+    }
+    const sums = Array.from({length:k}, () => [0, 0, 0]);
+    for (let i = 0; i < n; i++){
+      sums[labels[i]][0] += data[i][0];
+      sums[labels[i]][1] += data[i][1];
+      sums[labels[i]][2]++;
+    }
+    for (let k2 = 0; k2 < k; k2++){
+      if (sums[k2][2] > 0){
+        centroids[k2][0] = sums[k2][0] / sums[k2][2];
+        centroids[k2][1] = sums[k2][1] / sums[k2][2];
+      }
+    }
+    if (changed === 0) break;
+  }
+  let inertia = 0;
+  for (let i = 0; i < n; i++) inertia += dist2(data[i], centroids[labels[i]]);
+  return { labels, centroids, inertia };
+}
+
+/* Multi-restart K-Means for stability */
+function stableKMeans(data, k, restarts){
+  restarts = restarts || 8;
+  let best = null;
+  for (let r = 0; r < restarts; r++){
+    const res = runKMeans(data, k);
+    if (!best || res.inertia < best.inertia) best = res;
+  }
+  return best;
+}
+
+/* ============================================================
+   1. K-MEANS ITERATION DEMO
+   ============================================================ */
+(function(){
+  const data = [];
+  const centres = [[2, 6], [6, 7], [3, 3], [7, 2], [5, 5], [1, 2]];
+  for (let c = 0; c < 3; c++){
+    for (let i = 0; i < 40; i++){
+      data.push([
+        centres[c][0] + (Math.random() - 0.5) * 3.5,
+        centres[c][1] + (Math.random() - 0.5) * 3.5
+      ]);
+    }
+  }
+  const palette = ['#d97706', '#7c3aed', '#db2777', '#2563eb', '#059669', '#dc2626'];
+
+  let currentK = 3;
+  let iteration = 0;
+  let centroids = [];
+  let labels = [];
+  let prevInertia = null;
+
+  const iterEl = document.getElementById('kmIter');
+  const inertiaEl = document.getElementById('kmInertia');
+  const shiftEl = document.getElementById('kmShift');
+  const kEl = document.getElementById('kmK');
+  const kLbl = document.getElementById('kmKLbl');
+  const kSlider = document.getElementById('kmKSlider');
+  const stepBtn = document.getElementById('kmStepBtn');
+  const resetBtn = document.getElementById('kmResetBtn');
+
+  function reset(){
+    iteration = 0;
+    prevInertia = null;
+    centroids = [];
+    const used = new Set();
+    while (centroids.length < currentK){
+      const i = Math.floor(Math.random() * data.length);
+      if (!used.has(i)){ used.add(i); centroids.push(data[i].slice()); }
+    }
+    labels = new Array(data.length).fill(0);
+    assign();
+    updateView();
+    iterEl.textContent = 0;
+    inertiaEl.textContent = computeInertia().toFixed(2);
+    shiftEl.textContent = '—';
+    shiftEl.style.color = '#7c3aed';
+  }
+
+  function assign(){
+    for (let i = 0; i < data.length; i++){
+      let best = 0, bestD = Infinity;
+      for (let k = 0; k < currentK; k++){
+        const d = dist2(data[i], centroids[k]);
+        if (d < bestD){ bestD = d; best = k; }
+      }
+      labels[i] = best;
+    }
+  }
+
+  function update(){
+    const sums = Array.from({length: currentK}, () => [0, 0, 0]);
+    for (let i = 0; i < data.length; i++){
+      sums[labels[i]][0] += data[i][0];
+      sums[labels[i]][1] += data[i][1];
+      sums[labels[i]][2]++;
+    }
+    for (let k = 0; k < currentK; k++){
+      if (sums[k][2] > 0){
+        centroids[k][0] = sums[k][0] / sums[k][2];
+        centroids[k][1] = sums[k][1] / sums[k][2];
+      }
+    }
+  }
+
+  function computeInertia(){
+    let inertia = 0;
+    for (let i = 0; i < data.length; i++) inertia += dist2(data[i], centroids[labels[i]]);
+    return inertia;
+  }
+
+  function stepOnce(){
+    update();
+    const beforeLabels = labels.slice();
+    assign();
+    iteration++;
+
+    const inertia = computeInertia();
+    const changed = beforeLabels.reduce((acc, l, i) => acc + (l !== labels[i] ? 1 : 0), 0);
+    const delta = prevInertia === null ? 0 : (prevInertia - inertia);
+    prevInertia = inertia;
+
+    iterEl.textContent = iteration;
+    inertiaEl.textContent = inertia.toFixed(2);
+    shiftEl.textContent = prevInertia === null ? '—' : delta.toFixed(2);
+    shiftEl.style.color = delta >= 0 ? '#059669' : '#dc2626';
+
+    updateView(changed);
+  }
+
+  function updateView(){
+    const traces = [];
+    for (let k = 0; k < currentK; k++){
+      const xs = [], ys = [];
+      for (let i = 0; i < data.length; i++) if (labels[i] === k){ xs.push(data[i][0]); ys.push(data[i][1]); }
+      traces.push({
+        x: xs, y: ys, mode:'markers',
+        name: 'Cluster ' + (k+1),
+        marker: {color: palette[k % palette.length], size: 8, opacity: 0.75, line: {color:'#ffffff', width: 1}}
+      });
+    }
+    traces.push({
+      x: centroids.map(c => c[0]),
+      y: centroids.map(c => c[1]),
+      mode:'markers', name: 'Centroids',
+      marker: {color: '#0f172a', size: 20, symbol:'x', line: {color:'#ffffff', width: 2}}
+    });
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Feature X₁', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Feature X₂', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+      margin:{l:55, r:20, t:20, b:50}, height: 460,
+      hovermode:'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('kmeansChart', traces, layout, {responsive:true, displayModeBar:false});
+  }
+
+  stepBtn.addEventListener('click', stepOnce);
+  resetBtn.addEventListener('click', reset);
+  kSlider.addEventListener('input', function(){
+    currentK = parseInt(this.value);
+    kEl.textContent = currentK;
+    kLbl.textContent = currentK;
+    reset();
+  });
+
+  reset();
+})();
+
+/* ============================================================
+   2. INITIALISATION SENSITIVITY
+   ============================================================ */
+(function(){
+  const data = [];
+  const centres = [[2, 6], [6, 7], [3, 3]];
+  for (let c = 0; c < 3; c++){
+    for (let i = 0; i < 40; i++){
+      data.push([
+        centres[c][0] + (Math.random() - 0.5) * 3.5,
+        centres[c][1] + (Math.random() - 0.5) * 3.5
+      ]);
+    }
+  }
+  const palette = ['#d97706', '#7c3aed', '#db2777', '#2563eb', '#059669', '#dc2626'];
+
+  function runWithRandomInit(k){
+    const centroids = [];
+    const used = new Set();
+    while (centroids.length < k){
+      const i = Math.floor(Math.random() * data.length);
+      if (!used.has(i)){ used.add(i); centroids.push(data[i].slice()); }
+    }
+    let labels = new Array(data.length).fill(0);
+    for (let iter = 0; iter < 100; iter++){
+      let changed = 0;
+      for (let i = 0; i < data.length; i++){
+        let best = 0, bestD = Infinity;
+        for (let k2 = 0; k2 < k; k2++){
+          const d = dist2(data[i], centroids[k2]);
+          if (d < bestD){ bestD = d; best = k2; }
+        }
+        if (labels[i] !== best){ changed++; labels[i] = best; }
+      }
+      const sums = Array.from({length:k}, () => [0, 0, 0]);
+      for (let i = 0; i < data.length; i++){
+        sums[labels[i]][0] += data[i][0];
+        sums[labels[i]][1] += data[i][1];
+        sums[labels[i]][2]++;
+      }
+      for (let k2 = 0; k2 < k; k2++){
+        if (sums[k2][2] > 0){
+          centroids[k2][0] = sums[k2][0] / sums[k2][2];
+          centroids[k2][1] = sums[k2][1] / sums[k2][2];
+        }
+      }
+      if (changed === 0) break;
+    }
+    let inertia = 0;
+    for (let i = 0; i < data.length; i++) inertia += dist2(data[i], centroids[labels[i]]);
+    return { labels, centroids, inertia };
+  }
+
+  function plotResult(divId, result){
+    const k = result.centroids.length;
+    const traces = [];
+    for (let c = 0; c < k; c++){
+      const xs = [], ys = [];
+      for (let i = 0; i < data.length; i++) if (result.labels[i] === c){ xs.push(data[i][0]); ys.push(data[i][1]); }
+      traces.push({
+        x: xs, y: ys, mode:'markers',
+        name: 'Cluster ' + (c+1),
+        marker: {color: palette[c % palette.length], size: 8, opacity: 0.75, line: {color:'#ffffff', width: 1}}
+      });
+    }
+    traces.push({
+      x: result.centroids.map(c => c[0]),
+      y: result.centroids.map(c => c[1]),
+      mode:'markers', name: 'Centroids',
+      marker: {color: '#0f172a', size: 18, symbol:'x', line: {color:'#ffffff', width: 2}}
+    });
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:10},
+      xaxis:{title:{text:'X₁', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'X₂', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:9}},
+      margin:{l:45, r:15, t:15, b:40}, height: 340,
+      hovermode:'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react(divId, traces, layout, {responsive:true, displayModeBar:false});
+  }
+
+  function runRandom(){
+    let best = null;
+    for (let r = 0; r < 10; r++){
+      const res = runWithRandomInit(3);
+      if (!best || res.inertia < best.inertia) best = res;
+    }
+    document.getElementById('initInertia').textContent = best.inertia.toFixed(2);
+    document.getElementById('initRestarts').textContent = '10';
+    document.getElementById('initMethod').textContent = 'Random';
+    plotResult('initRandomChart', best);
+  }
+
+  function runKpp(){
+    const res = runKMeans(data, 3);
+    document.getElementById('initInertia').textContent = res.inertia.toFixed(2);
+    document.getElementById('initRestarts').textContent = '1';
+    document.getElementById('initMethod').textContent = 'K-Means++';
+    plotResult('initKppChart', res);
+  }
+
+  document.getElementById('initRandomBtn').addEventListener('click', runRandom);
+  document.getElementById('initKppBtn').addEventListener('click', runKpp);
+  runRandom();
+  runKpp();
+})();
+
+/* ============================================================
+   3. ELBOW METHOD + SILHOUETTE + DAVIES-BOULDIN SMALL PANELS
+      (FIXED: stable multi-restart K-Means, Kneedle elbow detection,
+       fresh trace objects, correct heights)
+   ============================================================ */
+(function(){
+  // Generate well-separated 3-cluster data for a clear elbow
+  function generateElbowData(){
+    const centres = [[2, 8], [8, 8], [5, 2]];
+    const nPerCluster = 50;
+    const data = [];
+    for (const c of centres){
+      for (let i = 0; i < nPerCluster; i++){
+        const x = c[0] + (Math.random() - 0.5) * 2.0;
+        const y = c[1] + (Math.random() - 0.5) * 2.0;
+        data.push([x, y]);
+      }
+    }
+    return data;
+  }
+
+  // Kneedle-style elbow detection (max deviation from chord)
+  function detectElbow(Ks, inertias){
+    const n = Ks.length;
+    const yMin = Math.min(...inertias);
+    const yMax = Math.max(...inertias);
+    const yNorm = inertias.map(v => (v - yMin) / (yMax - yMin + 1e-9));
+    const xNorm = Ks.map((k, i) => (k - Ks[0]) / (Ks[n-1] - Ks[0] + 1e-9));
+    const lineY = xNorm.map(x => yNorm[0] + (yNorm[n-1] - yNorm[0]) * x);
+    let bestIdx = 0, bestDev = -1;
+    for (let i = 0; i < n; i++){
+      const dev = Math.abs(yNorm[i] - lineY[i]);
+      if (dev > bestDev){ bestDev = dev; bestIdx = i; }
+    }
+    return Ks[bestIdx];
+  }
+
+  const data = generateElbowData();
+  const Ks = [1,2,3,4,5,6,7,8,9,10];
+  const inertias = Ks.map(k => stableKMeans(data, k, 8).inertia);
+  const elbowK = detectElbow(Ks, inertias);
+  const elbowY = inertias[Ks.indexOf(elbowK)];
+
+  // ---- Large elbow chart (Section 1) ----
+  const elbowTraceL = {
+    x: Ks, y: inertias, mode:'lines+markers',
+    line: {color: '#d97706', width: 3},
+    marker: {size: 9, color: '#d97706', line: {color: '#ffffff', width: 1.5}},
+    hovertemplate: 'K = %{x}<br>Inertia = %{y:.1f}<extra></extra>',
+    name: 'Inertia (WCSS)'
+  };
+  const bestKMarkerL = {
+    x: [elbowK], y: [elbowY], mode:'markers',
+    name: 'Elbow at K = ' + elbowK,
+    marker: {color: '#dc2626', size: 18, symbol: 'star', line: {color:'#ffffff', width: 2}}
+  };
+  const layoutElbowL = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Number of Clusters K', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick:1},
+    yaxis:{title:{text:'Inertia (WCSS)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.6, y:0.95, font:{size:11}},
+    margin:{l:70, r:20, t:30, b:55},
+    height: 420,
+    hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+    annotations:[{
+      x: elbowK, y: elbowY,
+      text: 'Elbow at K = ' + elbowK,
+      showarrow: true, arrowhead: 2, arrowcolor: '#dc2626',
+      ax: 40, ay: -40,
+      font: {color: '#b91c1c', size: 12, weight: 'bold'},
+      bgcolor: 'rgba(255,255,255,0.9)', borderpad: 3
+    }]
+  };
+  Plotly.newPlot('elbowChart', [elbowTraceL, bestKMarkerL], layoutElbowL, {responsive:true, displayModeBar:false});
+
+  // ---- Small elbow chart (Section 5.4) ----
+  const elbowTraceS = {
+    x: Ks, y: inertias, mode:'lines+markers',
+    line: {color: '#d97706', width: 2.5},
+    marker: {size: 7, color: '#d97706', line: {color: '#ffffff', width: 1}},
+    hovertemplate: 'K = %{x}<br>Inertia = %{y:.1f}<extra></extra>',
+    name: 'Inertia'
+  };
+  const bestKMarkerS = {
+    x: [elbowK], y: [elbowY], mode:'markers',
+    name: 'K = ' + elbowK,
+    marker: {color: '#dc2626', size: 13, symbol: 'star', line: {color:'#ffffff', width: 1.5}}
+  };
+  const layoutElbowS = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:10},
+    xaxis:{title:{text:'K', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick:1},
+    yaxis:{title:{text:'Inertia', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.95, font:{size:9}},
+    margin:{l:50, r:15, t:15, b:40},
+    height: 300,
+    hovermode:'closest'
+  };
+  Plotly.newPlot('elbowSmall', [elbowTraceS, bestKMarkerS], layoutElbowS, {responsive:true, displayModeBar:false});
+
+  // ---- Silhouette small panel ----
+  const Ks2 = [2,3,4,5,6,7,8];
+
+  function silhouetteOf(data, labels, k){
+    const n = data.length;
+    const clusters = Array.from({length:k}, () => []);
+    for (let i = 0; i < n; i++) clusters[labels[i]].push(i);
+    const s = new Array(n).fill(0);
+    for (let i = 0; i < n; i++){
+      const own = clusters[labels[i]];
+      if (own.length <= 1){ s[i] = 0; continue; }
+      let a = 0;
+      for (const j of own) if (j !== i) a += dist(data[i], data[j]);
+      a /= (own.length - 1);
+      let b = Infinity;
+      for (let c = 0; c < k; c++){
+        if (c === labels[i] || clusters[c].length === 0) continue;
+        let mean = 0;
+        for (const j of clusters[c]) mean += dist(data[i], data[j]);
+        mean /= clusters[c].length;
+        if (mean < b) b = mean;
+      }
+      s[i] = (b - a) / Math.max(a, b);
+    }
+    return s;
+  }
+
+  const silScores = Ks2.map(k => {
+    const res = stableKMeans(data, k, 5);
+    const s = silhouetteOf(data, res.labels, k);
+    return s.reduce((a,b)=>a+b,0) / s.length;
+  });
+  const bestSilK = Ks2[silScores.indexOf(Math.max(...silScores))];
+
+  const silTraceS = {
+    x: Ks2, y: silScores, mode:'lines+markers',
+    line: {color: '#7c3aed', width: 2.5},
+    marker: {size: 7, color: '#7c3aed', line: {color:'#ffffff', width: 1}},
+    hovertemplate: 'K = %{x}<br>Silhouette = %{y:.3f}<extra></extra>',
+    name: 'Silhouette'
+  };
+  const bestSilMarkerS = {
+    x: [bestSilK], y: [Math.max(...silScores)], mode:'markers',
+    name: 'Best K = ' + bestSilK,
+    marker: {color: '#dc2626', size: 13, symbol: 'star', line: {color:'#ffffff', width: 1.5}}
+  };
+  const layoutSilS = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:10},
+    xaxis:{title:{text:'K', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick:1},
+    yaxis:{title:{text:'Silhouette', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.15, font:{size:9}},
+    margin:{l:50, r:15, t:15, b:40},
+    height: 300
+  };
+  Plotly.newPlot('silSmall', [silTraceS, bestSilMarkerS], layoutSilS, {responsive:true, displayModeBar:false});
+
+  // ---- Davies-Bouldin small panel ----
+  function daviesBouldin(data, labels, centroids, k){
+    const clusters = Array.from({length:k}, () => []);
+    for (let i = 0; i < data.length; i++) clusters[labels[i]].push(i);
+    const S = clusters.map((c, ki) => {
+      if (c.length === 0) return 0;
+      let sum = 0;
+      for (const i of c) sum += dist(data[i], centroids[ki]);
+      return sum / c.length;
+    });
+    let dbi = 0;
+    for (let i = 0; i < k; i++){
+      let maxR = 0;
+      for (let j = 0; j < k; j++){
+        if (i === j) continue;
+        const M = dist(centroids[i], centroids[j]);
+        if (M === 0) continue;
+        const R = (S[i] + S[j]) / M;
+        if (R > maxR) maxR = R;
+      }
+      dbi += maxR;
+    }
+    return dbi / k;
+  }
+
+  const dbiScores = Ks2.map(k => {
+    const res = stableKMeans(data, k, 5);
+    return daviesBouldin(data, res.labels, res.centroids, k);
+  });
+  const bestDbK = Ks2[dbiScores.indexOf(Math.min(...dbiScores))];
+
+  const dbTraceS = {
+    x: Ks2, y: dbiScores, mode:'lines+markers',
+    line: {color: '#db2777', width: 2.5},
+    marker: {size: 7, color: '#db2777', line: {color:'#ffffff', width: 1}},
+    hovertemplate: 'K = %{x}<br>DBI = %{y:.3f}<extra></extra>',
+    name: 'DBI'
+  };
+  const bestDbMarkerS = {
+    x: [bestDbK], y: [Math.min(...dbiScores)], mode:'markers',
+    name: 'Best K = ' + bestDbK,
+    marker: {color: '#dc2626', size: 13, symbol: 'star', line: {color:'#ffffff', width: 1.5}}
+  };
+  const layoutDbS = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:10},
+    xaxis:{title:{text:'K', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick:1},
+    yaxis:{title:{text:'DBI', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.55, y:0.95, font:{size:9}},
+    margin:{l:50, r:15, t:15, b:40},
+    height: 300
+  };
+  Plotly.newPlot('dbSmall', [dbTraceS, bestDbMarkerS], layoutDbS, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   4. SILHOUETTE PLOT (large, per-point)
+      (FIXED: no conflicting 'mode' with type:'bar',
+       dynamic y-range, hidden x-ticks, customdata hover,
+       stable multi-restart K-Means)
+   ============================================================ */
+(function(){
+  // 4 well-separated clusters for a meaningful silhouette plot
+  function generateSilData(){
+    const centres = [[2, 8], [8, 8], [5, 2], [8, 3]];
+    const nPerCluster = 50;
+    const data = [];
+    for (const c of centres){
+      for (let i = 0; i < nPerCluster; i++){
+        const x = c[0] + (Math.random() - 0.5) * 2.2;
+        const y = c[1] + (Math.random() - 0.5) * 2.2;
+        data.push([x, y]);
+      }
+    }
+    return data;
+  }
+
+  let data = generateSilData();
+  const palette = ['#d97706', '#7c3aed', '#db2777', '#2563eb', '#059669', '#dc2626', '#0891b2', '#be123c'];
+
+  const kSlider   = document.getElementById('silKSlider');
+  const kLbl      = document.getElementById('silKLbl');
+  const silAvgEl  = document.getElementById('silAvg');
+  const silBestKEl= document.getElementById('silBestK');
+  const silKEl    = document.getElementById('silK');
+  const regenBtn  = document.getElementById('silRegenBtn');
+
+  // Silhouette coefficient per point
+  function silhouetteOf(data, labels, k){
+    const n = data.length;
+    const clusters = Array.from({length:k}, () => []);
+    for (let i = 0; i < n; i++) clusters[labels[i]].push(i);
+    const s = new Array(n).fill(0);
+    for (let i = 0; i < n; i++){
+      const own = clusters[labels[i]];
+      if (own.length <= 1){ s[i] = 0; continue; }
+      let a = 0;
+      for (const j of own) if (j !== i) a += dist(data[i], data[j]);
+      a /= (own.length - 1);
+      let b = Infinity;
+      for (let c = 0; c < k; c++){
+        if (c === labels[i] || clusters[c].length === 0) continue;
+        let mean = 0;
+        for (const j of clusters[c]) mean += dist(data[i], data[j]);
+        mean /= clusters[c].length;
+        if (mean < b) b = mean;
+      }
+      s[i] = (b - a) / Math.max(a, b);
+    }
+    return s;
+  }
+
+  // Render silhouette plot
+  function update(){
+    const k = parseInt(kSlider.value);
+    kLbl.textContent = k;
+    silKEl.textContent = k;
+
+    const res = stableKMeans(data, k, 6);
+    const s = silhouetteOf(data, res.labels, k);
+
+    // Sort points by cluster, then by silhouette ascending
+    const indices = Array.from({length: data.length}, (_, i) => i);
+    indices.sort((a, b) => {
+      if (res.labels[a] !== res.labels[b]) return res.labels[a] - res.labels[b];
+      return s[a] - s[b];
+    });
+
+    const sortedS      = indices.map(i => s[i]);
+    const sortedColors = indices.map(i => palette[res.labels[i] % palette.length]);
+    const xVals        = indices.map((_, i) => i);
+
+    // Bar trace — NO 'mode' property (that's only valid for scatter traces)
+    const barTrace = {
+      x: xVals,
+      y: sortedS,
+      type: 'bar',
+      name: 'Per-point silhouette',
+      marker: {
+        color: sortedColors,
+        line: {width: 0}
+      },
+      hovertemplate:
+        'Point #%{x}<br>' +
+        'Cluster: %{customdata}<br>' +
+        'Silhouette s(i) = %{y:.3f}<extra></extra>',
+      customdata: indices.map(i => res.labels[i] + 1)
+    };
+
+    // Average silhouette dashed line
+    const avg = s.reduce((a,b)=>a+b,0) / s.length;
+    silAvgEl.textContent = avg.toFixed(3);
+    silAvgEl.style.color = avg > 0.5 ? '#059669' : (avg > 0.25 ? '#d97706' : '#dc2626');
+
+    const avgLine = {
+      x: [0, data.length],
+      y: [avg, avg],
+      type: 'scatter',
+      mode: 'lines',
+      name: 'Average = ' + avg.toFixed(3),
+      line: {color: '#dc2626', width: 2.5, dash: 'dash'},
+      hoverinfo: 'skip'
+    };
+
+    // Dynamic y-range with headroom
+    const yMin = Math.min(-0.15, Math.min(...sortedS) - 0.05);
+    const yMax = Math.max(1.0, Math.max(...sortedS) + 0.05);
+
+    const layout = {
+      paper_bgcolor:'#ffffff',
+      plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{
+        title:{text:'Points (sorted by cluster, then silhouette)', font:{size:11}},
+        gridcolor:'#e2e8f0',
+        showline:true, linecolor:'#cbd5e1', mirror:true,
+        showticklabels: false,
+        range: [-1, data.length]
+      },
+      yaxis:{
+        title:{text:'Silhouette coefficient s(i)', font:{size:11}},
+        gridcolor:'#e2e8f0',
+        zerolinecolor:'#94a3b8', zerolinewidth:1.5,
+        showline:true, linecolor:'#cbd5e1', mirror:true,
+        range: [yMin, yMax]
+      },
+      legend:{
+        bgcolor:'rgba(255,255,255,0.95)',
+        bordercolor:'#e2e8f0', borderwidth:1,
+        x:0.02, y:0.02, font:{size:10}
+      },
+      margin:{l:55, r:20, t:20, b:55},
+      height: 440,
+      bargap: 0,
+      hovermode:'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}},
+      annotations: [
+        {
+          x: data.length * 0.5,
+          y: avg,
+          text: 'Average silhouette = ' + avg.toFixed(3),
+          showarrow: true, arrowhead: 2, arrowcolor: '#dc2626',
+          ax: 0, ay: -30,
+          font: {color: '#b91c1c', size: 11, weight: 'bold'},
+          bgcolor: 'rgba(255,255,255,0.9)', borderpad: 3
+        }
+      ]
+    };
+
+    Plotly.react('silhouetteChart', [barTrace, avgLine], layout,
+                 {responsive:true, displayModeBar:false});
+  }
+
+  // Find best K via silhouette
+  function computeBestK(){
+    const Ks = [2,3,4,5,6,7,8];
+    let best = { k: 2, score: -Infinity };
+    Ks.forEach(k => {
+      const res = stableKMeans(data, k, 4);
+      const s = silhouetteOf(data, res.labels, k);
+      const avg = s.reduce((a,b)=>a+b,0) / s.length;
+      if (avg > best.score){ best = { k, score: avg }; }
+    });
+    silBestKEl.textContent = 'K = ' + best.k + '  (score ' + best.score.toFixed(3) + ')';
+  }
+
+  kSlider.addEventListener('input', update);
+  regenBtn.addEventListener('click', function(){
+    data = generateSilData();
+    computeBestK();
+    update();
+  });
+
+  computeBestK();
+  update();
+})();
+
+/* ============================================================
+   5. DISTANCE METRIC CHART
+   ============================================================ */
+(function(){
+  const theta = [];
+  for (let i = 0; i <= 200; i++) theta.push(i * 2 * Math.PI / 200);
+
+  const euclidX = theta.map(t => Math.cos(t));
+  const euclidY = theta.map(t => Math.sin(t));
+
+  const manhattanX = [1, 0, -1, 0, 1];
+  const manhattanY = [0, 1, 0, -1, 0];
+
+  const chebX = [1, 1, -1, -1, 1];
+  const chebY = [1, -1, -1, 1, 1];
+
+  const traceEuclid = {x:euclidX, y:euclidY, mode:'lines', name:'Euclidean (L2) — circle',
+    line:{color:'#d97706', width:3}};
+  const traceManhattan = {x:manhattanX, y:manhattanY, mode:'lines', name:'Manhattan (L1) — diamond',
+    line:{color:'#7c3aed', width:3}};
+  const traceCheb = {x:chebX, y:chebY, mode:'lines', name:'Chebyshev (L∞) — square',
+    line:{color:'#db2777', width:3}};
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'X', font:{size:12}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-1.5, 1.5], scaleanchor:'y'},
+    yaxis:{title:{text:'Y', font:{size:12}}, gridcolor:'#e2e8f0', zerolinecolor:'#94a3b8', zerolinewidth:1.5, showline:true, linecolor:'#cbd5e1', mirror:true, range:[-1.5, 1.5]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:11}},
+    margin:{l:60, r:30, t:30, b:55}, height: 420, hovermode:'closest',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('metricChart', [traceEuclid, traceManhattan, traceCheb], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   6. CONVERGENCE ACROSS RESTARTS
+   ============================================================ */
+(function(){
+  const data = [];
+  const centres = [[2, 6], [6, 7], [3, 3], [7, 2]];
+  for (let c = 0; c < 4; c++){
+    for (let i = 0; i < 40; i++){
+      data.push([
+        centres[c][0] + (Math.random() - 0.5) * 3.0,
+        centres[c][1] + (Math.random() - 0.5) * 3.0
+      ]);
+    }
+  }
+
+  function runWithHistory(data, k, maxIter){
+    const centroids = [];
+    const used = new Set();
+    while (centroids.length < k){
+      const i = Math.floor(Math.random() * data.length);
+      if (!used.has(i)){ used.add(i); centroids.push(data[i].slice()); }
+    }
+    let labels = new Array(data.length).fill(0);
+    const history = [];
+    for (let iter = 0; iter < maxIter; iter++){
+      let changed = 0;
+      for (let i = 0; i < data.length; i++){
+        let best = 0, bestD = Infinity;
+        for (let k2 = 0; k2 < k; k2++){
+          const d = dist2(data[i], centroids[k2]);
+          if (d < bestD){ bestD = d; best = k2; }
+        }
+        if (labels[i] !== best){ changed++; labels[i] = best; }
+      }
+      const sums = Array.from({length:k}, () => [0, 0, 0]);
+      for (let i = 0; i < data.length; i++){
+        sums[labels[i]][0] += data[i][0];
+        sums[labels[i]][1] += data[i][1];
+        sums[labels[i]][2]++;
+      }
+      for (let k2 = 0; k2 < k; k2++){
+        if (sums[k2][2] > 0){
+          centroids[k2][0] = sums[k2][0] / sums[k2][2];
+          centroids[k2][1] = sums[k2][1] / sums[k2][2];
+        }
+      }
+      let inertia = 0;
+      for (let i = 0; i < data.length; i++) inertia += dist2(data[i], centroids[labels[i]]);
+      history.push(inertia);
+      if (changed === 0) break;
+    }
+    return history;
+  }
+
+  const colors = ['#d97706', '#7c3aed', '#db2777', '#2563eb', '#059669'];
+  const traces = [];
+  for (let r = 0; r < 5; r++){
+    const hist = runWithHistory(data, 3, 30);
+    traces.push({
+      x: Array.from({length: hist.length}, (_, i) => i),
+      y: hist,
+      mode: 'lines+markers',
+      name: 'Run ' + (r+1),
+      line: {color: colors[r], width: 2.5},
+      marker: {size: 6}
+    });
+  }
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:12},
+    xaxis:{title:{text:'Iteration', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'Inertia (WCSS)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.6, y:0.95, font:{size:11}},
+    margin:{l:60, r:20, t:20, b:50}, height: 420, hovermode:'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('convergenceChart', traces, layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   7. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

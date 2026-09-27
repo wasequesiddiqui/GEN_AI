@@ -91,6 +91,7 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
   <div class="tabs">
     <button class="tab-btn active" id="tabStudy" onclick="switchTab('study')">📚 Study Guides</button>
     <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">📝 Practice Quizzes</button>
+    <button class="tab-btn" id="tabML" onclick="switchTab('ml')">🤖 ML Model</button>
     <button class="tab-btn" id="tabAppendix" onclick="switchTab('appendix')">📎 Appendix</button>
     <button class="tab-btn" id="tabGlossary" onclick="switchTab('glossary')">🔤 Acronym Glossary</button>
   </div>
@@ -102,6 +103,9 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
   </div>
   <div class="grid hidden" id="quizGrid">
     <!-- Quiz cards injected by JS below -->
+  </div>
+  <div class="grid hidden" id="mlGrid">
+    <!-- ML Model cards injected by JS below -->
   </div>
   <div class="grid hidden" id="appendixGrid">
     <!-- Appendix cards injected by JS below -->
@@ -167,6 +171,26 @@ const quizzes = [
   { title:"Natural Language Generation", file:"QUIZ/NLG.html", desc:"Test your expertise in NLG: decoder strategies, beam search, temperature sampling, and transformer-based generation.", tag:"Deep Learning" },
   { title:"Advanced Neural Network Concepts", file:"QUIZ/NN_DETAIL.html", desc:"Push your limits with advanced topics: deep architectures, regularization, normalization, and training techniques.", tag:"Deep Learning" },
   { title:"RNN & Transformers", file:"QUIZ/RNN.html", desc:"Challenge yourself on recurrent networks, LSTM/GRU, self-attention, and the transformer architecture.", tag:"Deep Learning" },
+];
+
+const mlModels = [
+  { title:"Confusion Matrix", file:"CONFUSION_MATRIX.html", desc:"Structure and interpretation of the confusion matrix — true positives, true negatives, false positives, false negatives, and the metrics derived from them.", tag:"Evaluation" },
+  { title:"F1 Score", file:"F1_SCORE.html", desc:"Precision, recall, and their harmonic mean — when the F1 score is the right metric for imbalanced classification.", tag:"Evaluation" },
+  { title:"ROC AUC", file:"ROC_AUC.html", desc:"ROC curve construction and AUC interpretation for threshold-independent evaluation of binary classifiers.", tag:"Evaluation" },
+  { title:"PR AUC", file:"PR_AUC.html", desc:"Precision-recall curves and the area under the curve for evaluating classifiers on highly imbalanced data.", tag:"Evaluation" },
+  { title:"Decision Tree", file:"DECISION_TREE.html", desc:"Split criteria such as Gini and entropy, pruning strategies, and interpreting tree-based classification and regression.", tag:"Tree-Based" },
+  { title:"Random Forest", file:"RANDOM_FOREST.html", desc:"Bagged ensembles of decision trees, feature importance, and out-of-bag error estimation.", tag:"Tree-Based" },
+  { title:"Gradient Boosting Model", file:"GBM.html", desc:"Sequential boosting with gradient descent — how many weak learners combine into one strong predictor.", tag:"Ensemble" },
+  { title:"XG Boosting", file:"XGB.html", desc:"XGBoost's regularized objective, tree pruning, and the hyperparameters that drive its performance.", tag:"Ensemble" },
+  { title:"Light Gradient Boosting", file:"LIGHT_GBM.html", desc:"LightGBM's histogram-based, leaf-wise growth strategy for fast training on large datasets.", tag:"Ensemble" },
+  { title:"Linear Regression", file:"LINEAR_REGRESSION.html", desc:"Ordinary least squares, model assumptions, coefficient interpretation, and residual diagnostics for continuous targets.", tag:"Regression" },
+  { title:"Logistic Regression", file:"LOGISTIC_REGRESSION.html", desc:"The sigmoid link function, log-odds interpretation, and maximum likelihood training for binary classification.", tag:"Regression" },
+  { title:"Ridge Regression", file:"RIDGE_REGRESSION.html", desc:"L2 regularization to control variance and multicollinearity, and the role of the alpha penalty term.", tag:"Regression" },
+  { title:"Lasso Regression", file:"LASSO_REGRESSION.html", desc:"L1 regularization that performs feature selection by shrinking coefficients to exactly zero.", tag:"Regression" },
+  { title:"K Means Clustering", file:"K_MEANS_CLUSTERING.html", desc:"Centroid-based partitioning, the elbow method, and choosing k for unsupervised grouping.", tag:"Clustering" },
+  { title:"Heirarchial Clustering", file:"HEIRARCHIAL_CLUSTERING.html", desc:"Agglomerative and divisive clustering, linkage criteria, and reading dendrograms.", tag:"Clustering" },
+  { title:"Gaussian Mixture Models", file:"GMM.html", desc:"Probabilistic clustering with EM — soft assignments, covariance types, and model selection.", tag:"Clustering" },
+  { title:"Apriori Algorithm", file:"APRIORI.html", desc:"Frequent itemset mining and association rules measured with support, confidence, and lift.", tag:"Association" },
 ];
 
 const appendix = [
@@ -251,7 +275,7 @@ function renderGrid(gridId, data) {
   data.forEach(t => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<a href="${t.file}"><h3>${t.title}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></a>`;
+    card.innerHTML = `<a href="${t.file}" target="_blank" rel="noopener"><h3>${t.title}</h3><p>${t.desc}</p><span class="tag">${t.tag}</span></a>`;
     grid.appendChild(card);
   });
 }
@@ -275,17 +299,20 @@ function renderGlossary() {
 
 renderGrid('studyGrid', topics);
 renderGrid('quizGrid', quizzes);
+renderGrid('mlGrid', mlModels);
 renderGrid('appendixGrid', appendix);
 renderGlossary();
 
 function switchTab(tab) {
   const studyGrid = document.getElementById('studyGrid');
   const quizGrid = document.getElementById('quizGrid');
+  const mlGrid = document.getElementById('mlGrid');
   const appendixGrid = document.getElementById('appendixGrid');
   const glossaryGrid = document.getElementById('glossaryGrid');
   const glossaryControls = document.getElementById('glossaryControls');
   const tabStudy = document.getElementById('tabStudy');
   const tabQuiz = document.getElementById('tabQuiz');
+  const tabML = document.getElementById('tabML');
   const tabAppendix = document.getElementById('tabAppendix');
   const tabGlossary = document.getElementById('tabGlossary');
   const gridTitle = document.getElementById('gridTitle');
@@ -293,11 +320,13 @@ function switchTab(tab) {
 
   studyGrid.classList.add('hidden');
   quizGrid.classList.add('hidden');
+  mlGrid.classList.add('hidden');
   appendixGrid.classList.add('hidden');
   glossaryGrid.classList.add('hidden');
   glossaryControls.classList.add('hidden');
   tabStudy.classList.remove('active');
   tabQuiz.classList.remove('active');
+  tabML.classList.remove('active');
   tabAppendix.classList.remove('active');
   tabGlossary.classList.remove('active');
 
@@ -306,6 +335,11 @@ function switchTab(tab) {
     tabQuiz.classList.add('active');
     gridTitle.textContent = '📝 Practice Quizzes';
     gridDesc.textContent = 'Test your knowledge with interactive quizzes. Each quiz covers a specific CGAI topic with scored questions.';
+  } else if (tab === 'ml') {
+    mlGrid.classList.remove('hidden');
+    tabML.classList.add('active');
+    gridTitle.textContent = '🤖 ML Models';
+    gridDesc.textContent = 'Core machine learning models and evaluation metrics — from regression and tree ensembles to clustering and association rules.';
   } else if (tab === 'appendix') {
     appendixGrid.classList.remove('hidden');
     tabAppendix.classList.add('active');
