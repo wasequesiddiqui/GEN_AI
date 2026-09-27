@@ -1,0 +1,2385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LLM Evaluation — A Comprehensive Study Reference</title>
+<meta name="description" content="An illustrated study reference for evaluating Large Language Models: strategies, metrics, real-world examples, interactive visualizations, and Python implementations." />
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+
+<style>
+/* ============================================================
+   1. VIBRANT LIGHT THEME — clean surfaces, saturated accents
+   ============================================================ */
+:root{
+  /* Surfaces */
+  --bg:           #ffffff;
+  --bg-soft:      #fafbfd;
+  --panel:        #ffffff;
+  --panel-2:      #f8fafc;
+  --panel-3:      #f1f5f9;
+
+  /* Borders */
+  --line:         #e5e7eb;
+  --line-2:       #d1d5db;
+
+  /* Text */
+  --txt:          #0f172a;   /* slate-900 */
+  --txt-soft:     #334155;   /* slate-700 */
+  --muted:        #64748b;   /* slate-500 */
+  --dim:          #94a3b8;   /* slate-400 */
+
+  /* Vibrant accents */
+  --indigo:       #6366f1;
+  --pink:         #ec4899;
+  --emerald:      #10b981;
+  --amber:        #f59e0b;
+  --cyan:         #06b6d4;
+  --violet:       #8b5cf6;
+  --rose:         #f43f5e;
+
+  /* Tints (backgrounds for callouts) */
+  --tint-indigo:  #eef2ff;
+  --tint-pink:    #fdf2f8;
+  --tint-emerald: #ecfdf5;
+  --tint-amber:   #fffbeb;
+  --tint-rose:    #fff1f2;
+  --tint-cyan:    #ecfeff;
+
+  /* Code */
+  --code-bg:      #f8fafc;
+  --code-br:      #e2e8f0;
+
+  --radius:       14px;
+  --shadow-xs:    0 1px 2px rgba(15,23,42,.04);
+  --shadow-sm:    0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+  --shadow-md:    0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.04);
+  --shadow-lg:    0 12px 32px rgba(15,23,42,.10), 0 4px 8px rgba(15,23,42,.04);
+  --sidebar-w:    290px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 600px at 100% -10%, #f5f3ff 0%, transparent 55%),
+    radial-gradient(900px 500px at -10% 20%, #ecfeff 0%, transparent 50%),
+    var(--bg);
+  color:var(--txt);
+  font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:15px;line-height:1.68;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+a{color:var(--indigo);text-decoration:none;border-bottom:1px solid transparent;transition:.15s}
+a:hover{border-bottom-color:var(--indigo)}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:700;color:var(--txt);letter-spacing:-.01em}
+h1{font-size:30px}
+h2{font-size:23px;margin-top:0;letter-spacing:-.02em}
+h3{font-size:17px;margin-top:1.6em;color:var(--txt)}
+h4{font-size:12.5px;margin-top:1.4em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+p{margin:0 0 1em;color:var(--txt-soft)}
+ul,ol{margin:0 0 1em;padding-left:1.5em;color:var(--txt-soft)}
+li{margin:.3em 0}
+strong{color:var(--txt);font-weight:700}
+code{
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  font-size:.87em;background:var(--tint-indigo);color:#4338ca;
+  padding:2px 7px;border-radius:6px;border:1px solid #e0e7ff;font-weight:500;
+}
+hr{border:none;border-top:1px solid var(--line);margin:2.4em 0}
+
+/* Progress bar */
+#progress{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--indigo) 0%,var(--violet) 33%,var(--pink) 66%,var(--amber) 100%);
+  z-index:100;transition:width .1s linear;
+  box-shadow:0 0 12px rgba(99,102,241,.35);
+}
+
+/* ============================================================
+   2. SIDEBAR — clean with gradient brand
+   ============================================================ */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+  background:linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+  border-right:1px solid var(--line);
+  padding:22px 14px 40px;overflow-y:auto;z-index:20;
+}
+.sidebar::-webkit-scrollbar{width:8px}
+.sidebar::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:4px}
+.sidebar::-webkit-scrollbar-thumb:hover{background:#cbd5e1}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.brand{display:flex;align-items:center;gap:10px;padding:0 10px 18px;
+  border-bottom:1px solid var(--line);margin-bottom:14px}
+.brand-mark{
+  width:40px;height:40px;border-radius:11px;
+  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
+  color:#fff;font-weight:800;font-size:12px;
+  display:flex;align-items:center;justify-content:center;letter-spacing:.5px;
+  box-shadow:0 6px 20px rgba(99,102,241,.35), inset 0 1px 0 rgba(255,255,255,.3);
+}
+.brand-title{font-size:13.5px;font-weight:700;color:var(--txt)}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.nav-section{
+  font-size:10.5px;font-weight:800;color:var(--dim);
+  text-transform:uppercase;letter-spacing:1.2px;
+  padding:16px 10px 6px;
+}
+.sidebar nav a{
+  display:block;padding:7px 10px;border-radius:8px;
+  color:var(--muted);font-size:13px;transition:.15s;
+  text-decoration:none;border-bottom:none;font-weight:500;
+}
+.sidebar nav a:hover{
+  background:#f1f5f9;color:var(--txt);border-bottom-color:transparent;
+}
+.sidebar nav a.active{
+  background:linear-gradient(90deg, #eef2ff 0%, #f5f3ff 100%);
+  color:#4338ca;font-weight:700;
+  border-left:3px solid var(--indigo);padding-left:7px;
+  box-shadow:inset 0 0 0 1px #e0e7ff;
+}
+
+/* ============================================================
+   3. MAIN CONTENT
+   ============================================================ */
+main{
+  margin-left:var(--sidebar-w);
+  max-width:990px;padding:60px 48px 120px;
+}
+.hero{padding:16px 0 40px;border-bottom:1px solid var(--line);margin-bottom:40px}
+.hero-tag{
+  display:inline-block;padding:6px 14px;border-radius:999px;
+  background:linear-gradient(135deg,#eef2ff 0%,#fdf2f8 100%);
+  color:#4338ca;font-size:11.5px;font-weight:800;letter-spacing:.8px;
+  text-transform:uppercase;margin-bottom:20px;
+  border:1px solid #e0e7ff;
+  box-shadow:0 2px 8px rgba(99,102,241,.10);
+}
+.hero h1{
+  font-size:42px;margin-bottom:16px;line-height:1.12;letter-spacing:-.03em;
+  background:linear-gradient(135deg,#0f172a 0%,#4338ca 60%,#ec4899 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--muted);font-size:16.5px;max-width:720px;line-height:1.65}
+.hero-meta{margin-top:26px;display:flex;gap:26px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--dim);font-weight:500}
+.hero-meta b{color:var(--indigo);font-weight:800}
+
+section.chapter{margin-bottom:70px}
+.chapter-head{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:26px;padding-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+.chapter-num{
+  font-size:11.5px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--indigo),var(--violet));
+  padding:5px 11px;border-radius:7px;
+  letter-spacing:1px;
+  box-shadow:0 3px 10px rgba(99,102,241,.30);
+}
+.chapter-head h2{margin:0;font-size:26px}
+
+/* Cards */
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);padding:26px 28px;margin-bottom:22px;
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s;
+}
+.card:hover{box-shadow:var(--shadow-md)}
+.card > h3:first-child{margin-top:0}
+
+/* Callouts — vibrant tinted */
+.callout{
+  border-radius:12px;padding:17px 20px;margin:18px 0;
+  border-left:4px solid var(--indigo);
+  background:var(--tint-indigo);
+}
+.callout .label{
+  display:block;font-size:11px;font-weight:800;letter-spacing:1.2px;
+  text-transform:uppercase;color:#4338ca;margin-bottom:7px;
+}
+.callout.definition{border-color:var(--violet);background:var(--tint-indigo)}
+.callout.definition .label{color:#6d28d9}
+.callout.takeaway{border-color:var(--emerald);background:var(--tint-emerald)}
+.callout.takeaway .label{color:#047857}
+.callout.pitfall{border-color:var(--rose);background:var(--tint-rose)}
+.callout.pitfall .label{color:#be123c}
+.callout.example{border-color:var(--amber);background:var(--tint-amber)}
+.callout.example .label{color:#b45309}
+.callout p{color:var(--txt-soft);margin:0}
+
+/* Code + ASCII */
+pre.ascii{
+  background:var(--code-bg);border:1px solid var(--code-br);
+  border-radius:10px;padding:18px 20px;overflow-x:auto;
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:11.5px;line-height:1.55;color:#334155;margin:14px 0;
+}
+pre.code{
+  background:#0f172a;border:1px solid #1e293b;
+  border-radius:12px;padding:20px 22px;overflow-x:auto;
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:12.5px;line-height:1.7;color:#e2e8f0;margin:16px 0;
+  box-shadow:var(--shadow-md);
+}
+pre.code code{color:inherit;font-size:inherit;background:none;border:none;padding:0;font-weight:400}
+pre.mermaid{
+  background:#fdfdfe;border:1px solid var(--line);
+  border-radius:12px;padding:22px;margin:16px 0;
+  display:flex;justify-content:center;overflow-x:auto;
+  box-shadow:var(--shadow-xs);
+}
+
+/* Tables */
+table{
+  width:100%;border-collapse:separate;border-spacing:0;margin:16px 0;
+  font-size:13.5px;border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;background:var(--panel);
+  box-shadow:var(--shadow-xs);
+}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{
+  background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);
+  color:var(--txt-soft);font-weight:700;font-size:12.5px;
+  letter-spacing:.3px;border-bottom:2px solid var(--line-2);
+}
+td{color:var(--txt-soft)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafbfd}
+
+/* Chart cards */
+.chart-card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px 22px 8px;margin-bottom:20px;
+  box-shadow:var(--shadow-sm);transition:box-shadow .2s;
+}
+.chart-card:hover{box-shadow:var(--shadow-md)}
+.chart-card h3{margin-top:0;font-size:15.5px}
+.chart-card .desc{color:var(--muted);font-size:13px;margin-bottom:12px}
+.chart-card .plot{height:340px;width:100%}
+
+/* Mini cards */
+.grid-cards{
+  display:grid;gap:14px;margin:28px 0;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+}
+.mini-card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:18px 20px;transition:.22s;
+  box-shadow:var(--shadow-xs);position:relative;overflow:hidden;
+}
+.mini-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--indigo),var(--violet),var(--pink));
+  opacity:0;transition:.22s;
+}
+.mini-card:nth-child(2)::before{background:linear-gradient(90deg,var(--pink),var(--rose),var(--amber))}
+.mini-card:nth-child(3)::before{background:linear-gradient(90deg,var(--emerald),var(--cyan))}
+.mini-card:nth-child(4)::before{background:linear-gradient(90deg,var(--amber),var(--pink))}
+.mini-card:nth-child(5)::before{background:linear-gradient(90deg,var(--cyan),var(--indigo))}
+.mini-card:nth-child(6)::before{background:linear-gradient(90deg,var(--violet),var(--pink))}
+.mini-card:hover{
+  border-color:var(--line-2);transform:translateY(-3px);box-shadow:var(--shadow-lg);
+}
+.mini-card:hover::before{opacity:1}
+.mini-card .num{
+  font-size:11px;color:var(--indigo);font-weight:800;letter-spacing:1px;
+}
+.mini-card h4{margin:8px 0 6px;font-size:14px;color:var(--txt);text-transform:none;letter-spacing:-.01em}
+.mini-card p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.55}
+
+/* Top button */
+.top-btn{
+  position:fixed;right:26px;bottom:26px;z-index:50;
+  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
+  color:#fff;font-weight:700;font-size:12.5px;
+  padding:11px 18px;border-radius:999px;border:none;cursor:pointer;
+  box-shadow:0 10px 28px rgba(99,102,241,.40);
+  transition:.22s;
+}
+.top-btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(99,102,241,.50)}
+
+/* Model chips */
+.model-chip{
+  padding:7px 16px;border-radius:999px;font-size:12.5px;cursor:pointer;
+  user-select:none;font-weight:600;transition:.18s;
+  border:1px solid var(--line-2);background:#fff;color:var(--muted);
+  box-shadow:var(--shadow-xs);
+}
+.model-chip:hover{border-color:var(--line);color:var(--txt);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.model-chip.on{color:#fff;border-color:transparent;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+
+/* Mobile menu */
+.menu-btn{
+  display:none;
+  position:fixed;top:14px;left:14px;z-index:30;
+  width:44px;height:44px;border-radius:11px;border:1px solid var(--line);
+  background:#fff;color:var(--txt);
+  align-items:center;justify-content:center;cursor:pointer;font-size:18px;
+  box-shadow:var(--shadow-md);
+}
+@media (max-width: 960px){
+  .sidebar{transform:translateX(-100%);transition:.25s;box-shadow:0 0 40px rgba(15,23,42,.15)}
+  .sidebar.open{transform:none}
+  main{margin-left:0;padding:80px 20px 100px}
+  .hero h1{font-size:30px}
+  .menu-btn{display:flex}
+}
+@media (min-width: 961px){ .menu-btn{display:none} }
+
+/* Print */
+@media print{
+  .sidebar,.top-btn,.menu-btn,#progress{display:none}
+  main{margin:0;max-width:none;padding:0}
+  body{background:#fff;color:#111}
+  .card,.chart-card,pre.ascii,pre.code,pre.mermaid{border-color:#ddd;background:#fafafa;color:#111;box-shadow:none}
+  a{color:#0366d6}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+
+<!-- ====================== SIDEBAR ====================== -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">LLM</div>
+    <div>
+      <div class="brand-title">Evaluation Reference</div>
+      <div class="brand-sub">Study Guide · v1.0</div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-section">Foundations</div>
+    <a href="#intro">Introduction</a>
+    <a href="#framework">The Six-Layer Framework</a>
+
+    <div class="nav-section">Strategies</div>
+    <a href="#strategy-dataset">1 · Dataset Layer</a>
+    <a href="#strategy-metrics">2 · Metrics Layer</a>
+    <a href="#strategy-judge">3 · Judge Layer</a>
+    <a href="#strategy-ci">4 · CI Gate Layer</a>
+    <a href="#strategy-prod">5 · Production Observation</a>
+    <a href="#strategy-loop">6 · Closed Loop</a>
+
+    <div class="nav-section">Metrics</div>
+    <a href="#metric-bleu">BLEU</a>
+    <a href="#metric-rouge">ROUGE</a>
+    <a href="#metric-bertscore">BERTScore</a>
+    <a href="#metric-perplexity">Perplexity</a>
+    <a href="#metric-em">Exact Match</a>
+    <a href="#metric-judge">LLM-as-a-Judge</a>
+    <a href="#metric-trajectory">Agent Trajectory</a>
+
+    <div class="nav-section">Visualization</div>
+    <a href="#viz-dashboard">Interactive Dashboard</a>
+    <a href="#viz-types">Chart Type Guide</a>
+
+    <div class="nav-section">Implementation</div>
+    <a href="#python-harness">Python Harness</a>
+    <a href="#python-plotly">Plotly Charts</a>
+    <a href="#python-dash">Dash Crossfilter</a>
+
+    <div class="nav-section">Reference</div>
+    <a href="#summary">Summary Tables</a>
+    <a href="#study-guide">Study Guide</a>
+  </nav>
+</aside>
+
+<!-- ====================== MAIN ====================== -->
+<main>
+
+<header class="hero" id="intro">
+  <span class="hero-tag">Study Reference</span>
+  <h1>Evaluating Large Language Models</h1>
+  <p>A complete, illustrated reference for the six-layer evaluation framework, seven core metrics, real-world case studies, interactive visualizations, and production-grade Python implementations.</p>
+  <div class="hero-meta">
+    <span>📚 <b>7</b> chapters</span>
+    <span>🧭 <b>6</b> strategies</span>
+    <span>📊 <b>7</b> metrics</span>
+    <span>🖼️ <b>8</b> interactive charts</span>
+    <span>🐍 <b>3</b> Python implementations</span>
+  </div>
+</header>
+
+<div class="grid-cards">
+  <div class="mini-card"><div class="num">01</div><h4>Framework</h4><p>The six-layer evaluation architecture and end-to-end flow.</p></div>
+  <div class="mini-card"><div class="num">02</div><h4>Strategies</h4><p>Dataset, Metrics, Judge, CI Gate, Production, Closed Loop.</p></div>
+  <div class="mini-card"><div class="num">03</div><h4>Metrics</h4><p>BLEU, ROUGE, BERTScore, Perplexity, EM, Judge, Trajectory.</p></div>
+  <div class="mini-card"><div class="num">04</div><h4>Visualization</h4><p>Eight linked interactive charts with a design rationale.</p></div>
+  <div class="mini-card"><div class="num">05</div><h4>Python</h4><p>Evaluation harness, Plotly figures, and Dash crossfilter.</p></div>
+  <div class="mini-card"><div class="num">06</div><h4>Reference</h4><p>Summary tables, checklists, and study questions.</p></div>
+</div>
+
+<!-- ============================================================
+     CH 01 — FRAMEWORK
+     ============================================================ -->
+<section class="chapter" id="framework">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 01</span>
+    <h2>The Six-Layer Evaluation Framework</h2>
+  </div>
+
+  <p>A modern LLM evaluation strategy is built on <strong>six interconnected layers</strong>. Each has a specific job, and if any is missing, the entire evaluation system fails in a predictable way. The NIST AI 800-2 draft structures the process into three stages — (1) defining the measurement target, (2) implementing and running the evaluation, and (3) analyzing and reporting results — and the six-layer model implements those stages concretely.</p>
+
+  <table>
+    <thead><tr><th>Layer</th><th>Purpose</th><th>Failure if Missing</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Dataset</strong></td><td>Inputs with expected behavior</td><td>Scores nothing useful</td></tr>
+      <tr><td><strong>Metrics</strong></td><td>Rubric definitions</td><td>Pass means whatever you want</td></tr>
+      <tr><td><strong>Judge</strong></td><td>Scoring engine</td><td>Inconsistent rubric application</td></tr>
+      <tr><td><strong>CI Gate</strong></td><td>Block bad PRs</td><td>Regressions ship</td></tr>
+      <tr><td><strong>Production Observation</strong></td><td>Score live traces</td><td>Drift invisible until users complain</td></tr>
+      <tr><td><strong>Closed Loop</strong></td><td>Failures back into dataset</td><td>Same bugs ship twice</td></tr>
+    </tbody>
+  </table>
+
+  <h3>End-to-End Evaluation Flow</h3>
+
+  <pre class="mermaid">
+flowchart TD
+    A[Define Evaluation Objectives] --> B[Select Benchmarks and Build Golden Dataset]
+    B --> C[Design Evaluation Protocol]
+    C --> D[Run Automated Benchmark]
+    D --> E[Apply Metrics: Deterministic + Judge + Human]
+    E --> F[Analyze Results and Calculate Uncertainty]
+    F --> G{Meets Quality Gate?}
+    G -->|Yes| H[Deploy / Promote to Production]
+    G -->|No| I[Diagnose Failures and Iterate]
+    I --> B
+    H --> J[Monitor Production Traces]
+    J --> K[Detect Drift / New Failure Patterns]
+    K --> B
+  </pre>
+
+  <div class="callout takeaway">
+    <span class="label">Key Takeaway</span>
+    The closed loop is what separates a living evaluation system from a static snapshot. Without it, evaluation is a one-time launch checklist.
+  </div>
+</section>
+
+<!-- ============================================================
+     CH 02 — STRATEGIES
+     ============================================================ -->
+<section class="chapter" id="strategies">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 02</span>
+    <h2>Evaluation Strategies in Depth</h2>
+  </div>
+
+  <article class="card" id="strategy-dataset">
+    <h3>2.1 · Dataset Layer</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      A versioned collection of inputs paired with expected behavior. For single-turn QA: <code>(input, expected_output, retrieval_context?, metadata)</code>. For tool-using agents: <code>(input, expected_tool_calls, expected_final_state, retrieval_context?, metadata)</code>.
+    </div>
+
+    <h4>Diagram — Dataset Construction Pipeline</h4>
+    <pre class="mermaid">
+flowchart LR
+    A[Production Traces 100k raw] --> B{Privacy Scrub}
+    B --> C[Clean Traces 60k]
+    C --> D{Failure-Weighted Sampling}
+    D --> E[Hard Cases 40 percent]
+    D --> F[Edge Cases 35 percent]
+    D --> G[Happy Path 25 percent]
+    E --> H[Domain Expert Annotation]
+    F --> H
+    G --> H
+    H --> I[Golden Dataset 50-100 per route]
+    I --> J[(Versioned Dataset v1.2.0)]
+    J --> K[CI Evaluation]
+    J --> L[Judge Calibration]
+    K -.new failures.-> D
+    L -.disagreements.-> H
+    </pre>
+
+    <h4>Anatomy of a Golden Dataset Record</h4>
+<pre class="ascii">┌──────────────────────────────────────────────────────────────────┐
+│                    GOLDEN DATASET RECORD                          │
+├──────────────────────────────────────────────────────────────────┤
+│  id:              "sql_route_0427"                                │
+│  input:           "Show me top 5 customers by revenue in Q3"      │
+│  expected_output: "SELECT customer_name, SUM(revenue) ..."        │
+│  retrieval_context: [schema_ddl, table_metadata]                  │
+│  metadata: {                                                      │
+│      source:        "prod_trace_2025_09_14",                      │
+│      difficulty:    "hard",                                       │
+│      failure_mode:  "joined_wrong_fiscal_quarter",                │
+│      added_by:      "expert_maria",                               │
+│      added_date:    "2025-09-16",                                 │
+│      version:       "v1.2.0"                                      │
+│  }                                                                │
+└──────────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — Enterprise Text-to-SQL Pipeline</h4>
+
+    <p>A production text-to-SQL system filtered and reshaped privacy-scrubbed enterprise records from analyst workflows. Walk through the actual pipeline stages:</p>
+
+    <table>
+      <thead><tr><th>Stage</th><th>Input</th><th>Output</th><th>Yield</th><th>What Happened</th></tr></thead>
+      <tbody>
+        <tr><td>Raw production traces</td><td>100,000</td><td>100,000</td><td>100%</td><td>Logged every analyst SQL query</td></tr>
+        <tr><td>Privacy scrubbing</td><td>100,000</td><td>60,000</td><td>60%</td><td>Removed PII-touching queries</td></tr>
+        <tr><td>Failure-weighted sampling</td><td>60,000</td><td>12,000</td><td>20%</td><td>Over-sampled rare query shapes</td></tr>
+        <tr><td>Expert validation</td><td>12,000</td><td>8,400</td><td>70%</td><td>7 in 10 approved</td></tr>
+        <tr><td>Final training set</td><td>8,400</td><td>8,400</td><td>—</td><td>Used to fine-tune Llama-3.3-Nemotron-Super-49B</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Result.</strong> The fine-tuned model achieved <strong>96% valid-query accuracy</strong> and a <strong>2.50/5 semantic score</strong>, versus <strong>94% and 2.35/5</strong> for Claude Sonnet 4.5 on the same task.</p>
+
+    <p><strong>Why the walkthrough matters.</strong> Notice the yields — only 8.4% of raw production traces became training data. The value was not volume but <em>filtering</em>. Failure-weighting at stage 3 is what moved the model above a frontier general-purpose model.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      Datasets must be sampled from production, weighted toward failures, and versioned like prompt releases. Start at 50–100 examples per route and grow weekly.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Inventing examples instead of sampling from production. An invented dataset tests the author's imagination, not the model's real-world weaknesses.
+    </div>
+  </article>
+
+  <article class="card" id="strategy-metrics">
+    <h3>2.2 · Metrics Layer</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      The rubric definitions that map to failure modes you actually have. Three families: <strong>deterministic</strong> (exact match, schema validity, tool-call success), <strong>semantic</strong> (faithfulness, groundedness, context precision/recall), and <strong>conversation/outcome</strong> (task completion, dialogue reach to expected end state).
+    </div>
+
+    <h4>Diagram — Metric Selection Decision Tree</h4>
+    <pre class="mermaid">
+flowchart TD
+    A[What is the task type?] --> B{Deterministic answer exists?}
+    B -->|Yes| C[Exact Match / Schema Validation]
+    B -->|No| D{Reference text available?}
+    D -->|Yes| E{Surface form or meaning?}
+    E -->|Surface| F[BLEU / ROUGE]
+    E -->|Meaning| G[BERTScore / COMET]
+    D -->|No| H{Multi-step agent?}
+    H -->|No| I[LLM-as-Judge]
+    H -->|Yes| J[Trajectory Eval + Judge]
+    </pre>
+
+    <h4>The Metric Families Stack</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────┐
+│          CONVERSATION / OUTCOME METRICS                  │
+│   Task completion · Dialogue reach · Multi-turn goal    │
+├─────────────────────────────────────────────────────────┤
+│              SEMANTIC METRICS (LLM-as-Judge)             │
+│  Faithfulness · Groundedness · Context precision/recall │
+│  Role adherence · Safety · Tone · Coherence             │
+├─────────────────────────────────────────────────────────┤
+│               DETERMINISTIC METRICS                      │
+│  Exact match · Schema validity · Tool-call success      │
+│  Citation validity · Length bounds · Format compliance  │
+└─────────────────────────────────────────────────────────┘
+     ↑ Higher cost, slower        ↑ Lower cost, faster
+     ↑ Semantic nuance            ↑ Surface exactness</pre>
+
+    <h4>Real-Life Example — JUST-NLP 2025 Legal Translation</h4>
+
+    <p>The JUST-NLP 2025 Shared Task for English-to-Hindi legal translation evaluated seven competing systems simultaneously.</p>
+
+    <table>
+      <thead><tr><th>Rank</th><th>System</th><th>BLEU</th><th>METEOR</th><th>BERTScore</th><th>COMET</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>System A</td><td><strong>51.61</strong></td><td><strong>75.80</strong></td><td>92.61</td><td><strong>76.36</strong></td></tr>
+        <tr><td>4</td><td>System D</td><td>43.20</td><td>70.11</td><td>90.44</td><td>71.20</td></tr>
+        <tr><td>7</td><td>System G</td><td>34.08</td><td>65.20</td><td>87.93</td><td>65.20</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Why the battery was necessary.</strong> BERTScore compresses to a narrow 87.93–92.61 range across all seven systems, while BLEU spans 34.08–51.61. A team choosing on BERTScore alone would see nearly indistinguishable systems; the BLEU and COMET spread reveals the real ranking.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      No single metric is sufficient. Use a battery of orthogonal metrics and always report uncertainty.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Using a single aggregate score. A model can improve on one dimension while silently regressing on another.
+    </div>
+  </article>
+
+  <article class="card" id="strategy-judge">
+    <h3>2.3 · Judge Layer</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      The scoring engine that applies metrics consistently. A calibrated judge requires four components: <strong>rubrics, ground truth, calibration, disagreement review</strong>.
+    </div>
+
+    <h4>Diagram — Four Building Blocks of a Calibrated Judge</h4>
+    <pre class="mermaid">
+flowchart TD
+    A[1. RUBRIC: Plain-English criteria] --> B[2. GROUND TRUTH: Expert-scored traces]
+    B --> C[3. CALIBRATION: Run judge vs expert]
+    C --> D{Agreement 75 to 90 percent?}
+    D -->|No| E[4. DISAGREEMENT REVIEW: Adjudicate, refine rubric]
+    E --> A
+    D -->|Yes| F[Production Judge DEPLOYED]
+    F --> G[Weekly Recalibration]
+    G --> C
+    </pre>
+
+    <h4>The Autopay Hallucination Trace</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│  STATE FARM PRODUCTION TRACE  —  Hallucination Caught        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  USER:  "Am I enrolled in autopay?"                         │
+│                                                              │
+│  RETRIEVED CONTEXT:                                         │
+│    {                                                         │
+│      "payment_method": "credit card",                       │
+│      "next_payment_date": "01/15",                          │
+│      "autopay": NULL          ← field never returned        │
+│    }                                                         │
+│                                                              │
+│  AGENT RESPONSE:                                            │
+│    "Yes, you're enrolled in autopay."                       │
+│                    ↑                                         │
+│                    └── CLAIM NOT SUPPORTED BY CONTEXT       │
+│                                                              │
+│  JUDGE VERDICT:                                             │
+│    Faithfulness: 1 / 5                                      │
+│    Reason: "Agent inferred autopay enrollment from          │
+│    presence of a payment method. Retrieved data does        │
+│    not state autopay status. Hallucination."                │
+│                                                              │
+│  IMPACT:  Human review covered < 1% of monthly messages.    │
+│           Without the judge, this class of error was        │
+│           invisible at scale.                               │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — State Farm Production Deployment</h4>
+
+    <p>State Farm deployed LLM-as-a-Judge to monitor AI agents in production. Subject matter experts could only review <strong>less than 1% of total monthly messages</strong>, and thumbs-up/down feedback was sparse.</p>
+
+    <ol>
+      <li><strong>Input to judge:</strong> <code>(user_question, ai_answer, retrieved_context, rubric)</code></li>
+      <li><strong>Judge's job:</strong> Check every claim in the AI answer against the retrieved context.</li>
+      <li><strong>Autopay trace:</strong> Retrieved data had a <code>payment_method</code> and <code>next_payment_date</code> but no <code>autopay</code> field. The agent inferred autopay from the presence of a payment method — a classic hallucination a human reviewer at 1% sampling would never catch.</li>
+      <li><strong>Judge output:</strong> Score 1/5 with written reason.</li>
+      <li><strong>Value:</strong> The judge covered 100% of production interactions.</li>
+    </ol>
+
+    <p>A second example, from PyCon Colombia: a team collected structured reviews from <strong>five domain experts</strong> across different insurance areas, then used DSPy to distill their judgments into a panel of calibrated LLM judges. A third example, HaluEval hallucination detection, achieved <strong>κ = 1.0 agreement</strong> with human annotation.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      LLM-as-a-Judge enables reference-free evaluation at scale, catching semantic failures that n-gram metrics miss.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Deploying without calibration. Aim for 75–90% judge-to-human agreement before running against production data.
+    </div>
+  </article>
+
+  <article class="card" id="strategy-ci">
+    <h3>2.4 · CI Gate Layer</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      Per-dimension thresholds asserted on every pull request that exit non-zero on the failing axis, not the aggregate.
+    </div>
+
+    <h4>Diagram — Per-Dimension CI Gate</h4>
+    <pre class="mermaid">
+flowchart TD
+    A[Developer opens PR] --> B[Run eval suite on golden dataset]
+    B --> C{Faithfulness >= 4.2?}
+    C -->|No| X1[BLOCK: faithfulness regression]
+    C -->|Yes| D{Safety >= 4.5?}
+    D -->|No| X2[BLOCK: safety regression]
+    D -->|Yes| E{Format compliance >= 95?}
+    E -->|No| X3[BLOCK: format regression]
+    E -->|Yes| F{Latency p95 <= 2000ms?}
+    F -->|No| X4[BLOCK: latency regression]
+    F -->|Yes| G[MERGE ALLOWED]
+    X1 --> H[Comment on PR with failing dimension]
+    X2 --> H
+    X3 --> H
+    X4 --> H
+    H --> I[Attach eval artifact PNG]
+    </pre>
+
+    <h4>Why Per-Dimension Blocking Matters</h4>
+    <table>
+      <thead><tr><th>Dimension</th><th>Before</th><th>After</th><th>Δ</th><th>Gate</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Faithfulness</td><td>4.40</td><td>4.55</td><td>+0.15</td><td>≥ 4.2</td><td>✅ Pass</td></tr>
+        <tr><td>Safety</td><td>4.60</td><td>4.35</td><td>−0.25</td><td>≥ 4.5</td><td>❌ FAIL</td></tr>
+        <tr><td>Format</td><td>4.30</td><td>4.45</td><td>+0.15</td><td>≥ 4.0</td><td>✅ Pass</td></tr>
+      </tbody>
+    </table>
+
+    <p>The <strong>aggregate</strong> would rise (avg from 4.43 to 4.45) — a naive gate passes this PR. But the safety regression of −0.25 could ship a model that occasionally gives unsupported medical advice. The per-dimension gate blocks the merge.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      Gate on the metric that corresponds to your most expensive failure mode.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Making evaluation "advisory" rather than blocking. Advisory gates are ignored under deadline pressure.
+    </div>
+  </article>
+
+  <article class="card" id="strategy-prod">
+    <h3>2.5 · Production Observation Layer</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      Continuous scoring of live traces in production to detect drift, new failure patterns, and degradation.
+    </div>
+
+    <h4>Diagram — Production Observation Loop</h4>
+    <pre class="mermaid">
+flowchart LR
+    A[User Request] --> B[Agent Pipeline]
+    B --> C[Response to User]
+    B --> D[Trace Logged async]
+    D --> E[LLM Judge sampled 100 percent]
+    E --> F{Scores below threshold?}
+    F -->|Yes| G[Alert]
+    F -->|No| H[Store Metric]
+    G --> I[Triage Queue]
+    I --> J[Human Review]
+    J --> K{New failure pattern?}
+    K -->|Yes| L[Promote to Golden Dataset]
+    K -->|No| M[Tune Judge Rubric]
+    H --> N[Weekly Drift Report]
+    N --> O{Drift detected?}
+    O -->|Yes| G
+    </pre>
+
+    <h4>Real-Life Example — KDDI RAG Reliability Monitoring</h4>
+
+    <p>KDDI deployed LLM-as-a-Judge to evaluate a RAG-based AI system across diverse content and use cases. The team traced a metric drop by examining individual production cases.</p>
+
+    <ol>
+      <li>Judge scored every production interaction on groundedness, summarization quality, and reasoning quality.</li>
+      <li>A <strong>drop across multiple metrics</strong> appeared on one content type — not on all content, just one category.</li>
+      <li>The team traced the cause by examining individual production cases from that category.</li>
+      <li>Root cause was a <strong>distribution shift</strong>: user queries in that category had evolved to require information not present in the retrieval index.</li>
+    </ol>
+
+    <p><strong>Why offline eval would have missed this.</strong> The golden dataset from three months earlier contained no examples of the new query shape. Only live production scoring caught the drift.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      Production observability is distinct from offline eval. It catches distribution shifts that the golden dataset cannot predict.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Treating offline eval as sufficient. A model that passes all offline tests can still fail on live traffic.
+    </div>
+  </article>
+
+  <article class="card" id="strategy-loop">
+    <h3>2.6 · Closed Loop Layer</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      The feedback mechanism that promotes production failures into the golden dataset for the next iteration.
+    </div>
+
+    <h4>Diagram — The Closed-Loop Flywheel</h4>
+    <pre class="mermaid">
+flowchart TD
+    A[Production Traffic] --> B[LLM Judge Scoring]
+    B --> C[Error Feed: Failing traces]
+    C --> D[Human Triage]
+    D --> E{Dataset worthy?}
+    E -->|Yes| F[Add to Golden Dataset]
+    E -->|No| G[Log as known issue]
+    F --> H[Retrain / Prompt Update]
+    H --> I[CI Eval]
+    I --> J{All gates pass?}
+    J -->|Yes| K[Deploy to Production]
+    J -->|No| L[Iterate on model / prompt]
+    L --> I
+    K --> A
+    G -.monitor for frequency.-> D
+    </pre>
+
+    <h4>Real-Life Example — NDD Long-Document VLM Pipeline</h4>
+
+    <p>In a long-document vision-language model pipeline, evaluation failures determined which document types and reasoning modes were added next.</p>
+
+    <ol>
+      <li>Initial VLM evaluation on a fixed document set showed poor performance on <strong>multi-page grouped reasoning</strong>.</li>
+      <li>The team expanded the dataset with four complementary generation streams: OCR-grounded text QA, classification-filtered visual QA, general single-page QA, and grouped-page QA.</li>
+      <li>An <strong>independent VLM judge</strong> filtered examples for correctness, question quality, visual grounding, format compliance, and training-signal strength.</li>
+      <li>Failures from each round determined the next round's document types and reasoning modes.</li>
+    </ol>
+
+    <p><strong>Why the closed loop matters.</strong> Without step 4, the team would have kept generating more of the same data. The loop turned evaluation failures into a <em>data acquisition strategy</em>.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      Without a closed loop, the same bug ships twice.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Treating evaluation as a static snapshot rather than a continuously improving system.
+    </div>
+  </article>
+</section>
+
+<!-- ============================================================
+     CH 03 — METRICS
+     ============================================================ -->
+<section class="chapter" id="metrics">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 03</span>
+    <h2>Metrics in Depth</h2>
+  </div>
+
+  <article class="card" id="metric-bleu">
+    <h3>3.1 · BLEU (Bilingual Evaluation Understudy)</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      N-gram precision between candidate and reference, with a brevity penalty. Final score = geometric mean of modified n-gram precisions (n=1..4) × brevity penalty <code>BP = min(1, e^(1−r/c))</code>.
+    </div>
+
+    <h4>Diagram — BLEU Computation</h4>
+    <pre class="mermaid">
+flowchart LR
+    A[Candidate: 'the cat sat on mat'] --> C[Extract 1-4 grams]
+    B[Reference: 'the cat sat on the mat'] --> C
+    C --> D[Count matching n-grams]
+    D --> E[Apply clipping: max = ref count]
+    E --> F[Compute precisions p1 p2 p3 p4]
+    F --> G[Geometric mean]
+    G --> H[Apply brevity penalty]
+    H --> I[BLEU Score]
+    </pre>
+
+    <h4>BLEU on Legal Translation</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│  JUST-NLP 2025  ·  English → Hindi Legal Translation        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  REFERENCE:  "वादी संख्या 1 की मृत्यु हो चुकी थी"             │
+│              (Plaintiff No.1 was dead)                       │
+│                                                              │
+│  CANDIDATE:  "वादी संख्या 1 की मृत्यु हो चुकी थी"             │
+│              (Exact match)                                   │
+│                                                              │
+│  BLEU component scores:                                     │
+│    1-gram precision:   1.00  ████████████████████████       │
+│    2-gram precision:   1.00  ████████████████████████       │
+│    3-gram precision:   1.00  ████████████████████████       │
+│    4-gram precision:   0.75  ███████████████                │
+│    Brevity penalty:    1.00  (candidate >= reference length) │
+│                                                              │
+│  FINAL BLEU:  0.93   (per-sentence, illustrative)           │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│  SYSTEM-LEVEL BLEU ACROSS THE SHARED TASK:                  │
+│    Rank 1:  ████████████████████████████ 51.61             │
+│    Rank 4:  ██████████████████████       43.20             │
+│    Rank 7:  █████████████████            34.08             │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — Medical Brochure Translation</h4>
+
+    <p>A statistical machine translation system for English-to-Sorani-Kurdish medicine brochures produced BLEU scores ranging from <strong>22.65 to 48.93</strong> across seven experiments. Post-processing with a medical dictionary improved one configuration to <strong>56.87</strong>.</p>
+
+    <ol>
+      <li><strong>Stage 1 (baseline):</strong> Raw SMT output scored 22.65 BLEU.</li>
+      <li><strong>Stage 2 (corpus expansion):</strong> Added parallel medical brochures → BLEU rose to ~35.</li>
+      <li><strong>Stage 3 (medical dictionary post-processing):</strong> Replaced mistranslated terms like "dosage" and "contraindication" with domain-correct alternatives → BLEU reached 56.87.</li>
+      <li><strong>Interpretation:</strong> A +21-point BLEU gain from dictionary post-processing alone.</li>
+    </ol>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      BLEU is suitable for translation and tasks with a well-defined reference.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      BLEU measures surface overlap, not semantic correctness. A semantically correct paraphrase scores lower than a semantically wrong copy.
+    </div>
+  </article>
+
+  <article class="card" id="metric-rouge">
+    <h3>3.2 · ROUGE (Recall-Oriented Understudy for Gisting Evaluation)</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      Recall-oriented n-gram overlap between generated and reference summaries. Variants: <strong>ROUGE-1</strong> (unigram), <strong>ROUGE-2</strong> (bigram), <strong>ROUGE-L</strong> (longest common subsequence).
+    </div>
+
+    <h4>Diagram — ROUGE vs BLEU Orientation</h4>
+<pre class="ascii">                    REFERENCE TEXT
+                    ┌─────────────────┐
+                    │ the cat sat on  │
+                    │ the mat         │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┴──────────────┐
+              │                             │
+        BLEU (precision)              ROUGE (recall)
+        "How much of the              "How much of the
+        CANDIDATE is                  REFERENCE is
+        in the reference?"            in the candidate?"
+              │                             │
+              ▼                             ▼
+        ┌───────────┐                 ┌───────────┐
+        │ candidate │                 │ reference │
+        │  words    │                 │  words    │
+        └───────────┘                 └───────────┘</pre>
+
+    <h4>ROUGE on Stock Headlines</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│  STOCK PRICE HEADLINE GENERATION  ·  ROUGE Scores           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ARTICLE EXCERPT:                                           │
+│    "XYZ Corp shares fell 4.2% on Tuesday after the          │
+│     company reported Q3 earnings of $1.12 per share,        │
+│     missing analyst estimates of $1.35."                    │
+│                                                              │
+│  GENERATED HEADLINE:                                        │
+│    "XYZ Corp shares fall 4.2% on missed Q3 earnings"        │
+│                                                              │
+│  REFERENCE HEADLINE:                                        │
+│    "XYZ shares drop after Q3 earnings miss"                 │
+│                                                              │
+│  ROUGE-1 (unigram recall):    8/9  = 0.889  ███████████████│
+│  ROUGE-2 (bigram recall):     5/8  = 0.625  ██████████     │
+│  ROUGE-L (LCS recall):        7/9  = 0.778  ████████████   │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│  BEFORE vs AFTER fine-tuning (994 examples):                │
+│    Metric     No FT      Fine-tuned    Δ                    │
+│    ROUGE-1    2.56       53.03        +50.47  ▲▲▲▲▲▲▲▲▲    │
+│    ROUGE-2    0.29       35.73        +35.44  ▲▲▲▲▲▲▲▲▲    │
+│    ROUGE-L    2.60       52.77        +50.17  ▲▲▲▲▲▲▲▲▲    │
+│                                                              │
+│  MANUAL EVAL (100 test examples):                           │
+│    80/100  contained relevant information                   │
+│    65/80   (81.3%) appropriate as headlines                 │
+│    20/100  contained INCORRECT information  ⚠️              │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — Stock Price Headline Generation</h4>
+
+    <p>A headline generation model was fine-tuned on 994 training examples from stock price fluctuation articles, using ROUGE as the evaluation metric.</p>
+
+    <ul>
+      <li><strong>Without fine-tuning:</strong> ROUGE-1 dropped to 2.56, ROUGE-2 to 0.29, ROUGE-L to 2.60.</li>
+      <li><strong>With fine-tuning:</strong> ROUGE-1 reached 53.03, ROUGE-2 reached 35.73, ROUGE-L reached 52.77.</li>
+      <li><strong>Manual validation:</strong> Of 100 test examples, 80 contained relevant information and 65 of those (81.3%) were appropriate as headlines. But <strong>20 out of 100 contained incorrect information</strong>.</li>
+      <li><strong>Interpretation:</strong> ROUGE measured recall of source content but was <strong>blind to the 20% hallucination rate</strong>.</li>
+    </ul>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      ROUGE is recall-oriented. It measures how much reference content is captured.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      ROUGE rewards copying source text, punishing natural paraphrasing, and cannot detect factual errors that happen to be lexically similar.
+    </div>
+  </article>
+
+  <article class="card" id="metric-bertscore">
+    <h3>3.3 · BERTScore</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      Token-level cosine similarity between candidate and reference using pre-trained contextual embeddings (BERT). Greedy matching aligns each token to its most similar counterpart.
+    </div>
+
+    <h4>Diagram — BERTScore Token Alignment</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│  BERTSCORE ALIGNMENT VISUALIZATION                          │
+│  Candidate: "The vehicle was rapid"                         │
+│  Reference: "The car was fast"                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Candidate tokens →  The    vehicle    was    rapid         │
+│                        │       │         │       │           │
+│                        │    ┌──┘         │       │           │
+│                        │    │            │    ┌──┘           │
+│                        ▼    ▼            ▼    ▼              │
+│  Reference tokens →  The    car         was   fast          │
+│                                                              │
+│  Cosine similarities:                                       │
+│    The       ↔ The       0.98  ████████████████████████     │
+│    vehicle   ↔ car       0.74  ██████████████████           │
+│    was       ↔ was       0.99  █████████████████████████    │
+│    rapid     ↔ fast      0.81  ████████████████████         │
+│                                                              │
+│  Precision (candidate → reference avg): 0.88                │
+│  Recall    (reference → candidate avg): 0.88                │
+│  F1:                                      0.88              │
+│                                                              │
+│  Note: Surface-overlap metrics (BLEU/ROUGE) would score     │
+│        this pair LOW (only "The" and "was" match).          │
+│        BERTScore correctly identifies semantic equivalence. │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — Medical Discharge Instructions</h4>
+
+    <table>
+      <thead><tr><th>Stage</th><th>What Was Measured</th><th>Score</th></tr></thead>
+      <tbody>
+        <tr><td>Per-instruction cosine similarity</td><td>Generated instruction vs. source summary</td><td>0.499 (SD 0.088)</td></tr>
+        <tr><td>BERTScore F1</td><td>Generated vs. reference instructions</td><td>87.63%</td></tr>
+        <tr><td>Manual review</td><td>Clinician validation of 200 instructions</td><td>94% clinically acceptable</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Interpretation.</strong> The average cosine similarity of 0.499 looks low at first glance, but discharge instructions are <em>abstractive summaries</em>, not copies. BERTScore of 87.63% confirms semantic alignment despite surface-level differences. Critically, the manual clinical review agreed with BERTScore.</p>
+
+    <p><strong>Second example — Contract translation.</strong> A study using a 53,334-character corpus of Chinese contracts fine-tuned a neural translation system and assessed outputs using BERTScore and BLEURT. The contract-adaptive model consistently scored higher on both semantic metrics.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      BERTScore identifies semantic equivalence even when wording differs, accounting for synonyms and paraphrases.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Computationally heavier than n-gram metrics and dependent on the quality of the underlying embeddings.
+    </div>
+  </article>
+
+  <article class="card" id="metric-perplexity">
+    <h3>3.4 · Perplexity</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      The uncertainty of a language model when predicting text. Perplexity = <code>exp(cross-entropy)</code> = inverse geometric mean of the probability of the test corpus, normalized by word count.
+    </div>
+
+    <h4>Diagram — Perplexity Intuition</h4>
+<pre class="ascii">  LOW PERPLEXITY (confident model, in-distribution)
+  ┌─────────────────────────────────────────────┐
+  │  "The capital of France is ___"             │
+  │                              ↓              │
+  │  P(Paris) = 0.91  ████████████████████████  │
+  │  P(Lyon)  = 0.04  ██                        │
+  │  P(Berlin)= 0.02  █                         │
+  │  P(other) = 0.03  █                         │
+  │                                              │
+  │  Perplexity ≈ 1.35   (very confident)        │
+  └─────────────────────────────────────────────┘
+
+  HIGH PERPLEXITY (uncertain model, out-of-distribution)
+  ┌─────────────────────────────────────────────┐
+  │  "The zargle blorf of Xyz is ___"           │
+  │                              ↓              │
+  │  P(green) = 0.12  ████                      │
+  │  P(blue)  = 0.11  ████                      │
+  │  P(red)   = 0.10  ████                      │
+  │  P(...)   = 0.67  ██████████████████████    │
+  │                                              │
+  │  Perplexity ≈ 8.7   (high uncertainty)       │
+  └─────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — Pre-Training Corpus Curation</h4>
+
+    <ol>
+      <li>A reference small model is trained on a clean seed corpus.</li>
+      <li>Every candidate document in the large unlabeled corpus is scored for perplexity under the reference model.</li>
+      <li><strong>Extremely low perplexity</strong> documents are often repetitive or boilerplate → <strong>remove</strong>.</li>
+      <li><strong>Extremely high perplexity</strong> documents are often gibberish, non-linguistic, or out-of-distribution → <strong>remove</strong>.</li>
+      <li>The middle band (moderate perplexity) is retained for training.</li>
+    </ol>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      Perplexity is an intrinsic metric. It evaluates the model's internal probability distribution, not task performance.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Perplexity does not measure reasoning, factuality, instruction following, or usefulness.
+    </div>
+  </article>
+
+  <article class="card" id="metric-em">
+    <h3>3.5 · Exact Match (EM)</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      Binary score (1.0 or 0.0) based on exact string equivalence after normalization, usually with optional case-insensitivity and whitespace handling.
+    </div>
+
+    <h4>Diagram — EM Decision Flow</h4>
+    <pre class="mermaid">
+flowchart TD
+    A[Model Output: 'The capital is Paris.'] --> B[Normalize: lowercase, strip]
+    C[Reference: 'Paris'] --> D[Normalize: lowercase, strip]
+    B --> E["'the capital is paris.'"]
+    D --> F["'paris'"]
+    E --> G{String equal?}
+    F --> G
+    G -->|Yes| H[Score = 1.0]
+    G -->|No| I[Score = 0.0]
+    I --> J[SEMANTICALLY CORRECT but scored 0]
+    H --> K[Semantically correct AND exact]
+    </pre>
+
+    <h4>EM in the Wild</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│  EXACT MATCH BEHAVIOR                                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Reference:  "Paris"                                        │
+│                                                              │
+│  Output                          EM    Semantically Correct? │
+│  ───────────────────────────────────────────────────────── │
+│  "Paris"                          1     ✅                  │
+│  "paris"                          1     ✅ (case norm)      │
+│  " Paris "                        1     ✅ (whitespace)      │
+│  "Paris."                         0     ✅   ← scored WRONG │
+│  "The capital is Paris"           0     ✅   ← scored WRONG │
+│  "PARIS, France"                  0     ✅   ← scored WRONG │
+│  "Lyon"                           0     ❌                  │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│  SECURITY NAME EXTRACTION (headline case study):            │
+│    Before fine-tuning:  45.5%  ██████████                   │
+│    After fine-tuning:   ~92%   ███████████████████████████  │
+├─────────────────────────────────────────────────────────────┤
+│  WHEN EM WORKS WELL:                                         │
+│    • Classification labels (spam / not spam)                │
+│    • Enum outputs (red / green / blue)                      │
+│    • Math answers (GSM8K final number)                      │
+│    • Factoid QA with single-span answers                    │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — SQuAD Benchmark</h4>
+
+    <ul>
+      <li>Reference span: <code>"the Eiffel Tower"</code></li>
+      <li>Model output <code>"Eiffel Tower"</code> → <strong>EM = 0</strong> despite being correct.</li>
+      <li>Model output <code>"the eiffel tower"</code> → <strong>EM = 1</strong> if case normalization is applied.</li>
+    </ul>
+
+    <p><strong>Why EM is still valuable.</strong> For structured outputs, code generation, and JSON-schema compliance, EM is the <em>right</em> metric because there is exactly one correct form.</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      Exact Match is fully deterministic, zero-cost, and appropriate when there is exactly one correct answer.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Brittle to phrasing. "The capital is Paris" versus "Paris" scores 0 despite being correct.
+    </div>
+  </article>
+
+  <article class="card" id="metric-judge">
+    <h3>3.6 · LLM-as-a-Judge</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      A judge LLM evaluates another model's output against a rubric written in plain English, returning a score and a written explanation.
+    </div>
+
+    <h4>Diagram — The Full Judge Pipeline</h4>
+    <pre class="mermaid">
+flowchart TD
+    A[Test Case: input + context] --> B[Model Under Test]
+    B --> C[Model Output]
+    C --> D[Judge LLM]
+    E[Rubric: plain-English criteria] --> D
+    F[Ground Truth: expert score] --> D
+    D --> G[Score + Explanation]
+    G --> H{Agrees with ground truth?}
+    H -->|Yes| I[Accept score]
+    H -->|No| J[Disagreement Review]
+    J --> K[Refine rubric]
+    K --> E
+    I --> L[Aggregate Metrics]
+    </pre>
+
+    <h4>Judge Rubric Anatomy</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│                    JUDGE RUBRIC (Faithfulness)              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  Score the response on faithfulness from 1 to 5:            │
+│                                                              │
+│  5 = Every claim is directly supported by the retrieved     │
+│      context. No external knowledge added.                  │
+│                                                              │
+│  4 = Claims are supported, but one minor inference          │
+│      is stated as fact without hedging.                     │
+│                                                              │
+│  3 = One claim is unsupported by the context, but           │
+│      it is not central to the answer.                       │
+│                                                              │
+│  2 = One central claim is unsupported or contradicted       │
+│      by the context.                                        │
+│                                                              │
+│  1 = Multiple claims contradicted by context.               │
+│      Response invents facts.                                │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│  OUTPUT FORMAT:                                             │
+│    {                                                         │
+│      "reason": "...",                                       │
+│      "score": <1-5>,                                        │
+│      "evidence": "quote from context or 'NONE'"             │
+│    }                                                         │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — State Farm Production Deployment</h4>
+
+    <ol>
+      <li><strong>User question:</strong> "Am I enrolled in autopay?"</li>
+      <li><strong>Retrieved context:</strong> <code>{"payment_method": "credit card", "next_payment_date": "01/15"}</code> — no <code>autopay</code> field.</li>
+      <li><strong>Agent response:</strong> "Yes, you're enrolled in autopay."</li>
+      <li><strong>Judge input:</strong> <code>(question, response, context, rubric)</code>.</li>
+      <li><strong>Judge output:</strong> Score 1/5 with reason: <em>"Agent inferred autopay enrollment from presence of a payment method."</em></li>
+      <li><strong>Action:</strong> Trace logged, alert fired, ticket created, rubric refined.</li>
+    </ol>
+
+    <p><strong>Why this scale of monitoring matters.</strong> State Farm's subject matter experts could only review <strong>less than 1% of total monthly messages</strong>. The judge covered 100%.</p>
+
+    <p><strong>Second example — PyCon Colombia insurance calibration.</strong> A team collected structured reviews from <strong>five domain experts</strong> across different insurance areas, then used DSPy to distill their judgments into a panel of calibrated LLM judges.</p>
+
+    <p><strong>Third example — HaluEval.</strong> An LLM-as-a-Judge system achieved <strong>κ = 1.0 agreement</strong> with human annotation on HaluEval (20 examples, 100% factual error detection).</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      LLM-as-a-Judge enables reference-free evaluation at scale, catching semantic failures that n-gram metrics miss.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Deploying without calibration. Aim for 75–90% judge-to-human agreement before running against production data.
+    </div>
+  </article>
+
+  <article class="card" id="metric-trajectory">
+    <h3>3.7 · Agent Trajectory Evaluation</h3>
+
+    <div class="callout definition">
+      <span class="label">Definition</span>
+      Trajectory evaluation assesses the entire sequence of messages — including tool calls, reasoning steps, and observations — not just the final output.
+    </div>
+
+    <h4>Diagram — Output-Only vs Trajectory</h4>
+    <pre class="mermaid">
+flowchart LR
+    subgraph OutputOnly[OUTPUT-ONLY EVALUATION]
+        A1[User query] --> B1[Agent black box]
+        B1 --> C1[Final answer]
+        C1 --> D1[Judge: PASS]
+    end
+    subgraph Trajectory[TRAJECTORY EVALUATION]
+        A2[User query] --> B2[Turn 1: reason]
+        B2 --> C2[Turn 2: tool call]
+        C2 --> D2[Turn 3: observe]
+        D2 --> E2[Turn 4: retry loop]
+        E2 --> F2[Turn 5: tool call]
+        F2 --> G2[Turn 6: final answer]
+        G2 --> H2[Judge: final OK but redundant calls]
+    end
+    </pre>
+
+    <h4>Search Agent Trajectory Diagnostics</h4>
+<pre class="ascii">┌─────────────────────────────────────────────────────────────┐
+│  TRAJECTORY: Search Agent · 12 tool calls · Task: "Find      │
+│  the CFO of the company that acquired GitHub"                │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  T1  💭 Reason: "Need to find who acquired GitHub"          │
+│  T2  🔍 Tool: web_search("GitHub acquisition")              │
+│      ✓ Correct tool                                          │
+│  T3  📄 Observe: "Microsoft acquired GitHub in 2018"        │
+│  T4  💭 Reason: "Need Microsoft's CFO"                      │
+│  T5  🔍 Tool: web_search("Microsoft CFO")                   │
+│      ✓ Correct tool                                          │
+│  T6  📄 Observe: "Amy Hood is CFO"                          │
+│  T7  💭 Reason: "Need to verify current"                    │
+│  T8  🔍 Tool: web_search("Amy Hood current")                │
+│      ⚠️ REDUNDANT — already answered at T6                   │
+│  T9  📄 Observe: "Amy Hood, CFO since 2013"                 │
+│  T10 💭 Reason: "Let me double-check"                       │
+│  T11 🔍 Tool: web_search("Amy Hood 2025")                   │
+│      ⚠️ REDUNDANT LOOP                                       │
+│  T12 ✅ Final: "Amy Hood"                                    │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│  OUTPUT-ONLY JUDGE:   ✅ PASS  (correct final answer)        │
+│  TRAJECTORY JUDGE:    ⚠️ 2 redundant calls                   │
+│                       ⚠️ Unnecessary verification loop       │
+│                       → Token cost 2.4× optimal              │
+│                       → Latency  +3.8 seconds                │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <h4>Real-Life Example — TRACE Framework</h4>
+
+    <ol>
+      <li>TRACE introduces a <strong>reference-free framework</strong> for multi-dimensional evaluation of tool-augmented LLMs.</li>
+      <li>It incorporates an <strong>evidence bank</strong> that accumulates knowledge from preceding steps, allowing it to assess reasoning trajectory.</li>
+      <li>Validated on a meta-evaluation dataset with diverse flawed trajectories, each labeled with multi-faceted performance scores.</li>
+      <li><strong>Result:</strong> TRACE accurately evaluates complex trajectories even with small open-source LLMs.</li>
+    </ol>
+
+    <p><strong>TRAJECT-Bench.</strong> Constructs <strong>5,670 "parallel/serial" tool-calling trajectories</strong> and <strong>"simple/hard" dual-difficulty queries</strong> using <strong>1,228 executable real APIs</strong>. It refines evaluation from "whether the final answer is correct" to trajectory-level diagnostics focusing on "whether tools were selected correctly, parameters filled accurately, and sequence/dependencies met".</p>
+
+    <div class="callout takeaway"><span class="label">Key Takeaway</span>
+      A judge reading only the final response cannot see whether the agent called the right tool, looped unnecessarily, or failed to recover from a tool error.
+    </div>
+    <div class="callout pitfall"><span class="label">Common Pitfall</span>
+      Output-only evaluation. Two agents reporting the same accuracy may not possess the same level of performance.
+    </div>
+  </article>
+</section>
+
+<!-- ============================================================
+     CH 04 — VISUALIZATION
+     ============================================================ -->
+<section class="chapter" id="viz-dashboard">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 04</span>
+    <h2>Interactive Visualization Dashboard</h2>
+  </div>
+
+  <p>The eight charts below render live in this page. They are linked by a shared model-selection state: clicking a bar, line, or point filters every other chart. This single behaviour turns eight static images into one analytical instrument.</p>
+
+  <div class="card">
+    <h3>Model Filter</h3>
+    <p style="color:var(--muted);font-size:13px">Click a chip to toggle a model in/out of every chart below. Click any bar, line, or bubble in the charts to filter as well.</p>
+    <div id="chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>1 · Grouped Bar — Dimension Scores with 95% CI</h3>
+    <div class="desc">Compares models per rubric dimension. Error bars show uncertainty; overlapping bars mean the difference is not significant.</div>
+    <div id="barChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>2 · Radar — Model Shape Profile</h3>
+    <div class="desc">Reveals whether a model is broadly strong or spiky. A large polygon area with one deep notch is a hidden bottleneck.</div>
+    <div id="radarChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>3 · Trend — Score Drift with Confidence Band</h3>
+    <div class="desc">Tracks faithfulness over 12 weekly releases. A falling line inside a stable band is a real regression; a wiggling line inside a wide band is noise.</div>
+    <div id="trendChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>4 · Confusion Heatmap — Routing Behaviour</h3>
+    <div class="desc">Row-normalised. Bright off-diagonal cells are systematic misroutes — e.g. "Refuse" predicted when the truth is "Answerable".</div>
+    <div id="confChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>5 · Violin + Box — Score Distribution</h3>
+    <div class="desc">Same mean, different risk. A long lower tail means the model fails badly on a minority of inputs even if the average looks fine.</div>
+    <div id="violinChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>6 · Pareto — Quality vs Cost</h3>
+    <div class="desc">Upper-left is the efficient frontier. Bubble size = p95 latency. Anything below the frontier is dominated on both axes.</div>
+    <div id="paretoChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>7 · Parallel Coordinates — Multi-Metric Trade-off Explorer</h3>
+    <div class="desc">Each line is a model. Drag along any axis to brush a range; all lines crossing that range stay highlighted.</div>
+    <div id="parcoordsChart" class="plot"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>8 · Sankey — Agent Trajectory Flow</h3>
+    <div class="desc">Where do agent runs die? Thick flows into "Retry Loop" or "Fail" show tool-selection and error-recovery problems invisible in final-answer scoring.</div>
+    <div id="sankeyChart" class="plot" style="height:370px"></div>
+  </div>
+
+  <h3 id="viz-types" style="margin-top:48px">Chart Type Guide — Read This Before Building</h3>
+
+  <table>
+    <thead><tr><th>Chart</th><th>Question it answers</th><th>Failure it reveals</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Grouped bar</strong></td><td>"Which model is better on each dimension?"</td><td>Dimension-specific regression hidden by a good average</td></tr>
+      <tr><td><strong>Radar</strong></td><td>"What is this model's <em>shape</em>?"</td><td>A model that is broadly good vs. spiky</td></tr>
+      <tr><td><strong>Trend + CI band</strong></td><td>"Is this a real improvement or noise?"</td><td>Drift, slow degradation, prompt-change regressions</td></tr>
+      <tr><td><strong>Confusion heatmap</strong></td><td>"Where does it systematically confuse categories?"</td><td>Routing errors, refusal over-triggering</td></tr>
+      <tr><td><strong>Violin / box</strong></td><td>"Is the model consistent or high-variance?"</td><td>Same average, wildly different reliability</td></tr>
+      <tr><td><strong>Pareto scatter</strong></td><td>"What's the quality-per-dollar?"</td><td>A 1% quality gain costing 10× more</td></tr>
+      <tr><td><strong>Parallel coordinates</strong></td><td>"Which dimension is the bottleneck?"</td><td>Multi-metric trade-offs across many models</td></tr>
+      <tr><td><strong>Sankey</strong></td><td>"Where in the agent trajectory do runs die?"</td><td>Tool-selection and error-recovery failures</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Radar Shape Comparison</h4>
+<pre class="ascii">                  Faithfulness
+                      5│
+                       │
+                       │
+            Tone       │       Relevance
+               4.5─────┼─────4.5
+                       │
+                       │
+             Format    │     Safety
+                       
+     Claude Sonnet 5             Llama 4 70B
+     (round, no notch)           (deep notch on Tone)
+         ╱╲                          ╱╲
+        ╱  ╲                        ╱  ╲
+       ╱    ╲                      ╱    ╲
+      ╱      ╲                    ╱      ╲
+     ╱________╲                  ╱___ ___╲
+                                    ▲
+                                    │
+                              Bottleneck at Tone
+                              (score 3.80 vs 4.70)</pre>
+
+  <h4>Routing Confusion Matrix</h4>
+<pre class="ascii">                  PREDICTED
+              Answer  Clarify  Refuse  Tool  Chitchat
+           ┌────────┬────────┬────────┬────────┬────────┐
+  Answer   │  78%   │   6%   │   8%   │   5%   │   3%   │
+           ├────────┼────────┼────────┼────────┼────────┤
+  Clarify  │   9%   │  72%   │   6%   │   7%   │   6%   │
+  TRUE     ├────────┼────────┼────────┼────────┼────────┤
+           │        │        │        │        │        │
+  Refuse   │  12%   │   5%   │  71%   │   4%   │   8%   │
+           ├────────┼────────┼────────┼────────┼────────┤
+  Tool     │   7%   │   6%   │   3%   │  79%   │   5%   │
+           ├────────┼────────┼────────┼────────┼────────┤
+  Chitchat │  11%   │   8%   │   4%   │  14%   │  63%   │  ⚠️
+           └────────┴────────┴────────┴────────┴────────┘
+                                          ▲
+                                          │
+                              Over-eager tool calling
+                              (14% of chitchat → Tool)</pre>
+
+  <h4>Pareto Frontier</h4>
+<pre class="ascii">  Quality
+   4.7 ┤                                    ● Claude
+       │                                     ╱
+   4.6 ┤                                   ╱
+       │                                 ╱
+   4.5 ┤                             ● GPT-5.4
+       │                            ╱
+   4.4 ┤                          ╱
+       │                        ╱
+   4.3 ┤                      ╱
+       │                    ╱
+   4.2 ┤              ● Mistral
+       │             ╱
+   4.1 ┤           ╱
+       │         ╱
+   4.0 ┤ ● Llama ╱
+       └─────┬────┬────┬────┬────┬────┬────┬───
+             1    2    3    4    5    6    7    8
+                    Cost per 1,000 requests ($)</pre>
+
+  <h4>Sankey Trajectory Flow</h4>
+<pre class="ascii">  100 runs
+     │
+     ▼
+  ┌──────────┐
+  │  Router  │
+  └────┬─────┘
+       │
+   ┌───┴────┬─────────┐
+   │        │         │
+   ▼        ▼         ▼
+┌──────┐ ┌──────┐ ┌──────┐
+│Retri-│ │Tool  │ │Direct│
+│ever  │ │API   │ │Answer│
+│55    │ │45    │ │ 0    │
+└──┬───┘ └──┬───┘ └──────┘
+   │        │
+   └───┬────┘
+       ▼
+   ┌──────────┐
+   │LLM draft │
+   └────┬─────┘
+        │
+        ▼
+   ┌──────────┐
+   │ Verifier │
+   └────┬─────┘
+        │
+   ┌────┼──────┬────────┐
+   │    │      │        │
+   ▼    ▼      ▼        ▼
+┌─────┐┌────┐┌──────┐┌─────┐
+│✅ 72││⚠️20││❌ 8  ││     │
+│Suc  ││Re- ││Fail  ││     │
+│cess ││try ││      ││     │
+└─────┘└─┬──┘└──────┘└─────┘
+         │
+         │ 12 of 20 retries
+         │ return to LLM draft
+         └──────────────►
+              (loop)</pre>
+</section>
+
+<!-- ============================================================
+     CH 05 — PYTHON
+     ============================================================ -->
+<section class="chapter" id="python-harness">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 05</span>
+    <h2>Python Implementation</h2>
+  </div>
+
+  <h3 id="python-harness-h">5.1 · Evaluation Harness (Pseudocode)</h3>
+  <p>A three-tier scoring approach: rule-based checks (cheap, deterministic), LLM-as-a-Judge (semantic, scalable), and human review (ground truth).</p>
+
+<pre class="code"><code>import json
+import random
+from dataclasses import dataclass
+from typing import List, Dict, Callable
+
+@dataclass
+class EvalCase:
+    input: str
+    expected_behavior: str
+    context: str = None
+    metadata: Dict = None
+
+class LLMJudge:
+    def __init__(self, model_fn: Callable, rubric: str):
+        self.model_fn = model_fn   # e.g. call to GPT-5.4 nano or Claude Haiku
+        self.rubric = rubric
+
+    def score(self, case: EvalCase, output: str) -> Dict:
+        prompt = f"""
+        Rubric: {self.rubric}
+        Input: {case.input}
+        Context: {case.context}
+        Output: {output}
+        Return JSON: {{"reason": "...", "score": 1-5}}
+        """
+        response = self.model_fn(prompt)
+        return json.loads(response)
+
+class EvalSuite:
+    def __init__(self, cases: List[EvalCase], judge: LLMJudge):
+        self.cases = cases
+        self.judge = judge
+        self.results = []
+
+    def run(self, model_fn: Callable) -&gt; Dict:
+        results = []
+        for case in self.cases:
+            output = model_fn(case.input, case.context)
+            rule_score = self.rule_based_check(case, output)
+            judge_score = self.judge.score(case, output)
+            results.append({
+                "input": case.input,
+                "output": output,
+                "rule_score": rule_score,
+                "judge_score": judge_score,
+                "metadata": case.metadata,
+            })
+        self.results = results
+        return self.aggregate(results)
+
+    def rule_based_check(self, case: EvalCase, output: str) -&gt; Dict:
+        checks = {}
+        try:
+            json.loads(output)
+            checks["json_valid"] = True
+        except Exception:
+            checks["json_valid"] = False
+        checks["within_length"] = len(output.split()) &lt;= 500
+        return checks
+
+    def aggregate(self, results: List[Dict]) -&gt; Dict:
+        avg_judge = sum(r["judge_score"]["score"] for r in results) / len(results)
+        pass_rate = sum(1 for r in results if r["judge_score"]["score"] &gt;= 4) / len(results)
+        return {
+            "avg_judge_score": avg_judge,
+            "pass_rate": pass_rate,
+            "detailed_results": results,
+        }
+
+    def sample_for_human_review(self, n: int = 50) -&gt; List[Dict]:
+        return random.sample(self.results, min(n, len(self.results)))
+
+# Usage
+if __name__ == "__main__":
+    cases = [EvalCase(input="What is the capital of France?",
+                      expected_behavior="Paris")]
+    rubric = """
+    Score the response on faithfulness from 1 to 5:
+    5 = every claim directly supported by retrieved docs
+    1 = reply contradicts or invents facts
+    """
+    judge = LLMJudge(model_fn=my_llm_call, rubric=rubric)
+    suite = EvalSuite(cases, judge)
+    results = suite.run(model_fn=my_target_model)
+    print(f"Average Judge Score: {results['avg_judge_score']:.2f}")
+    print(f"Pass Rate: {results['pass_rate']:.2%}")
+</code></pre>
+
+  <h3 id="python-plotly">5.2 · Plotly Chart Code</h3>
+  <p>Equivalent Python for the interactive charts. The key is using <code>go.Figure</code> + <code>fig.show()</code> for interactivity, and <code>ipywidgets</code> or Dash callbacks for crossfiltering.</p>
+
+<pre class="code"><code># pip install plotly pandas numpy
+import numpy as np
+import plotly.graph_objects as go
+
+MODELS = ["GPT-5.4", "Claude Sonnet 5", "Llama 4 70B", "Mistral Large 3"]
+DIMS   = ["Faithfulness", "Relevance", "Safety", "Format", "Tone"]
+COLOR  = {"GPT-5.4":"#6366f1", "Claude Sonnet 5":"#ec4899",
+          "Llama 4 70B":"#f59e0b", "Mistral Large 3":"#10b981"}
+
+SCORES = {
+    "GPT-5.4":         [4.60, 4.50, 4.80, 4.30, 4.40],
+    "Claude Sonnet 5": [4.70, 4.60, 4.50, 4.50, 4.70],
+    "Llama 4 70B":     [4.10, 4.00, 4.30, 3.90, 3.80],
+    "Mistral Large 3": [4.30, 4.20, 4.10, 4.40, 4.00],
+}
+CI = {
+    "GPT-5.4":         [0.12,0.14,0.09,0.16,0.13],
+    "Claude Sonnet 5": [0.10,0.11,0.14,0.12,0.10],
+    "Llama 4 70B":     [0.22,0.24,0.18,0.26,0.21],
+    "Mistral Large 3": [0.18,0.17,0.20,0.15,0.19],
+}
+
+# ---------- Grouped bar with CI ----------
+fig = go.Figure()
+for m in MODELS:
+    fig.add_trace(go.Bar(
+        name=m, x=DIMS, y=SCORES[m],
+        error_y=dict(type="data", array=CI[m], visible=True, width=4),
+        marker_color=COLOR[m],
+    ))
+fig.update_layout(
+    barmode="group", template="plotly_white", height=380,
+    yaxis=dict(range=[3.3, 5.05], title="Rubric score (1-5)"),
+    legend=dict(orientation="h", y=-0.22),
+)
+fig.show()
+
+# ---------- Radar ----------
+fig = go.Figure()
+for m in MODELS:
+    fig.add_trace(go.Scatterpolar(
+        r=SCORES[m] + [SCORES[m][0]],
+        theta=DIMS + [DIMS[0]],
+        fill="toself", name=m,
+        line=dict(color=COLOR[m], width=2.2),
+    ))
+fig.update_layout(
+    template="plotly_white", height=400,
+    polar=dict(radialaxis=dict(range=[3.5, 5], gridcolor="#e5e7eb")),
+)
+fig.show()
+
+# ---------- Trend with CI band ----------
+weeks = [f"W{i+1}" for i in range(12)]
+fig = go.Figure()
+for i, m in enumerate(MODELS):
+    base  = np.array(SCORES[m][0] + 0.045*np.sin((np.arange(12)+i*2)/2.4)
+                     + 0.035*np.sin(np.arange(12)*7.31 + i*3.17))
+    upper, lower = base + 0.13, base - 0.13
+    fig.add_trace(go.Scatter(x=weeks, y=upper, mode="lines",
+                             line=dict(width=0), showlegend=False))
+    fig.add_trace(go.Scatter(x=weeks, y=lower, mode="lines",
+                             line=dict(width=0), showlegend=False,
+                             fill="tonexty",
+                             fillcolor="rgba(99,102,241,0.14)"))
+    fig.add_trace(go.Scatter(x=weeks, y=base, mode="lines+markers",
+                             name=m, line=dict(color=COLOR[m], width=2.6)))
+fig.add_hline(y=4.2, line_dash="dash", line_color="#f43f5e",
+              annotation_text="quality gate 4.2")
+fig.update_layout(template="plotly_white", height=400, hovermode="x unified")
+fig.show()
+
+# ---------- Confusion heatmap ----------
+classes = ["Answer","Clarify","Refuse","Tool","Chitchat"]
+rng = np.random.default_rng(7)
+M = rng.integers(3, 12, size=(5, 5)).astype(float)
+np.fill_diagonal(M, rng.integers(62, 80, size=5))
+Z = 100 * M / M.sum(axis=1, keepdims=True)
+
+fig = go.Figure(go.Heatmap(
+    z=Z, x=classes, y=classes,
+    text=np.where(Z &gt;= 5, Z.round(0).astype(int).astype(str) + "%", ""),
+    texttemplate="%{text}",
+    colorscale=[[0,"#f8fafc"],[0.25,"#e0e7ff"],[0.55,"#a5b4fc"],
+                [0.8,"#6366f1"],[1.0,"#4338ca"]],
+    zmin=0, zmax=100, xgap=3, ygap=3,
+))
+fig.update_layout(template="plotly_white", height=400,
+                  xaxis_title="Predicted", yaxis_title="True",
+                  yaxis=dict(autorange="reversed"))
+fig.show()
+
+# ---------- Pareto ----------
+OPS = {"GPT-5.4":(8.40,4.52,1840), "Claude Sonnet 5":(6.10,4.60,1520),
+       "Llama 4 70B":(1.20,4.02,2600), "Mistral Large 3":(3.30,4.20,1180)}
+
+fig = go.Figure(go.Scatter(
+    x=[OPS[m][0] for m in MODELS],
+    y=[OPS[m][1] for m in MODELS],
+    mode="markers+text", text=MODELS, textposition="top center",
+    marker=dict(size=[14 + OPS[m][2]/140 for m in MODELS],
+                color=[COLOR[m] for m in MODELS],
+                line=dict(color="#ffffff", width=2)),
+))
+fig.add_hline(y=4.3, line_dash="dash", line_color="#f43f5e",
+              annotation_text="minimum bar")
+fig.update_layout(template="plotly_white", height=400,
+                  xaxis_title="Cost per 1,000 requests ($)",
+                  yaxis_title="Aggregate quality")
+fig.show()
+
+# ---------- Parallel coordinates ----------
+fig = go.Figure(go.Parcoords(
+    line=dict(color=[COLOR[m] for m in MODELS], width=2.6),
+    dimensions=[dict(label=d,
+                     values=[SCORES[m][i] for m in MODELS],
+                     range=[3.6, 5.0])
+                for i, d in enumerate(DIMS)],
+))
+fig.update_layout(template="plotly_white", height=380)
+fig.show()
+
+# ---------- Sankey ----------
+fig = go.Figure(go.Sankey(
+    node=dict(label=["User query","Router","Retriever","Tool API",
+                     "LLM draft","Verifier","Success","Retry loop","Fail"],
+              pad=16, thickness=16),
+    link=dict(source=[0,1,1,2,3,4,5,5,5,7,7],
+              target=[1,2,3,4,4,5,6,7,8,4,8],
+              value =[100,55,45,55,45,100,72,20,8,12,8]),
+))
+fig.update_layout(template="plotly_white", height=400, font=dict(size=11))
+fig.show()
+</code></pre>
+
+  <h3 id="python-dash">5.3 · Dash Crossfilter Wrapper</h3>
+  <p>Plotly in a notebook cannot link charts. For the full crossfilter experience, wrap the same figures in Dash:</p>
+
+<pre class="code"><code># pip install dash
+from dash import Dash, dcc, html, Input, Output
+
+app = Dash(__name__)
+
+app.layout = html.Div([
+    dcc.Checklist(id="model-filter", options=MODELS, value=MODELS,
+                  inline=True, style={"padding":"16px"}),
+    dcc.Graph(id="bar",   config={"displaylogo": False}),
+    dcc.Graph(id="radar", config={"displaylogo": False}),
+    dcc.Graph(id="trend", config={"displaylogo": False}),
+])
+
+@app.callback(
+    Output("bar","figure"), Output("radar","figure"), Output("trend","figure"),
+    Input("model-filter","value"),
+)
+def update(selected_models):
+    if not selected_models:
+        selected_models = MODELS[:1]
+    return (build_bar(selected_models),
+            build_radar(selected_models),
+            build_trend(selected_models))
+
+if __name__ == "__main__":
+    app.run(debug=True)
+</code></pre>
+</section>
+
+<!-- ============================================================
+     CH 06 — SUMMARY
+     ============================================================ -->
+<section class="chapter" id="summary">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 06</span>
+    <h2>Summary Reference Tables</h2>
+  </div>
+
+  <h3>Strategies and Metrics at a Glance</h3>
+  <table>
+    <thead><tr><th>Strategy / Metric</th><th>Definition</th><th>Real-World Example</th><th>Key Takeaway</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Dataset Layer</strong></td><td>Versioned inputs with expected behavior</td><td>Enterprise Text-to-SQL: 96% valid-query vs. 94% Claude Sonnet 4.5</td><td>Sample from production, weight failures</td></tr>
+      <tr><td><strong>Metrics Layer</strong></td><td>Rubric definitions mapping to failure modes</td><td>JUST-NLP 2025: BLEU 51.61, BERTScore 92.61</td><td>No single metric is sufficient</td></tr>
+      <tr><td><strong>Judge Layer</strong></td><td>Calibrated scoring engine</td><td>State Farm: caught autopay hallucination in production</td><td>Calibrate before production</td></tr>
+      <tr><td><strong>CI Gate Layer</strong></td><td>Per-dimension thresholds on PRs</td><td>State Farm: LLM judge + BERTScore in CI/CD</td><td>Gate on most expensive failure mode</td></tr>
+      <tr><td><strong>Production Observation</strong></td><td>Continuous live trace scoring</td><td>KDDI: traced groundedness drop to specific content type</td><td>Offline eval is insufficient</td></tr>
+      <tr><td><strong>Closed Loop</strong></td><td>Failures promoted into golden dataset</td><td>NDD VLM: evaluation failures drove document type expansion</td><td>Same bug ships twice without loop</td></tr>
+      <tr><td><strong>BLEU</strong></td><td>N-gram precision with brevity penalty</td><td>Legal translation: 51.61 (top) vs. 34.08 (7th)</td><td>Precision-oriented; poor for open-ended</td></tr>
+      <tr><td><strong>ROUGE</strong></td><td>Recall-oriented n-gram overlap</td><td>Stock headlines: 53.03 fine-tuned, 2.56 without</td><td>Recall-oriented; opposite of BLEU</td></tr>
+      <tr><td><strong>BERTScore</strong></td><td>Token-level cosine similarity via BERT</td><td>Medical instructions: 87.63% BERTScore</td><td>Semantic equivalence, not surface form</td></tr>
+      <tr><td><strong>Perplexity</strong></td><td>Inverse geometric mean of token probability</td><td>Pre-training data filter</td><td>Intrinsic metric; not task-aligned</td></tr>
+      <tr><td><strong>Exact Match</strong></td><td>Binary string equivalence</td><td>Security extraction: 45.5% pre-fine-tune</td><td>Cheapest metric; brittle to phrasing</td></tr>
+      <tr><td><strong>LLM-as-a-Judge</strong></td><td>Judge LLM scores against plain-English rubric</td><td>State Farm: &lt;1% human review coverage, judge covers all</td><td>Reference-free; requires calibration</td></tr>
+      <tr><td><strong>Agent Trajectory</strong></td><td>Full sequence of tool calls and reasoning</td><td>TRACE: 5,670 trajectories, 1,228 real APIs</td><td>Path matters, not just final answer</td></tr>
+      <tr><td><strong>CLEAR Dashboard</strong></td><td>Interactive error analysis with drill-down</td><td>12 AI practitioners validated</td><td>Answers "why," not just "which"</td></tr>
+      <tr><td><strong>Radar Chart</strong></td><td>Multi-dimension model profile</td><td>Toolchain UI comparison</td><td>Shape matters more than area</td></tr>
+      <tr><td><strong>Confusion Heatmap</strong></td><td>Matrix of true vs predicted labels</td><td>Routing: 14% chitchat → tool</td><td>Bright off-diagonals = misroutes</td></tr>
+      <tr><td><strong>Pareto Scatter</strong></td><td>Cost vs. quality frontier</td><td>5× cost for 0.6 quality points</td><td>Frontier identifies efficient models</td></tr>
+      <tr><td><strong>Sankey Diagram</strong></td><td>Flow through pipeline stages</td><td>20% of runs enter retry loop</td><td>Only chart showing trajectory waste</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================
+     CH 07 — STUDY GUIDE
+     ============================================================ -->
+<section class="chapter" id="study-guide">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 07</span>
+    <h2>Study Guide and Best Practices</h2>
+  </div>
+
+  <h3>Three Questions to Ask of Every Metric</h3>
+  <ol>
+    <li><strong>What failure mode does this catch?</strong> If it does not catch a failure you have, it is not worth the cost.</li>
+    <li><strong>What is the cost of false negatives vs. false positives?</strong> A CI gate that blocks a good release is costly; a production monitor that misses a hallucination is more costly.</li>
+    <li><strong>How will you calibrate and validate?</strong> Every metric, including automated ones, needs a ground-truth set and periodic recalibration.</li>
+  </ol>
+
+  <h3>The Ten Rules of a Production-Grade Eval System</h3>
+  <ol>
+    <li><strong>Calibrate your judge.</strong> Validate LLM-as-a-Judge against human labels weekly. If agreement drops below 75–90%, refine the rubric.</li>
+    <li><strong>Use statistical rigor.</strong> Calculate confidence intervals and p-values for metric deltas.</li>
+    <li><strong>Gate on the metric that corresponds to your most expensive failure mode.</strong></li>
+    <li><strong>Avoid benchmark overfitting.</strong> Public benchmarks show concentrated top performance; use niche, task-specific benchmarks.</li>
+    <li><strong>Account for uncertainty.</strong> NIST recommends reporting error and uncertainty in results.</li>
+    <li><strong>Never show a score without its uncertainty.</strong> Error bars, confidence bands, or violin width.</li>
+    <li><strong>Draw the gate line.</strong> A dashed threshold turns an abstract number into a decision.</li>
+    <li><strong>Colour encodes identity, not rank.</strong> One colour per model, used consistently.</li>
+    <li><strong>Link everything.</strong> Click-to-filter is the single highest-value interaction.</li>
+    <li><strong>Ship static exports too.</strong> CI needs a PNG artifact attached to the PR.</li>
+  </ol>
+
+  <h3>The Three-Layer Minimum</h3>
+  <p>If you only build three layers, build the <strong>dataset</strong>, the <strong>judge</strong>, and the <strong>CI gate</strong>. The other three — production observation, closed loop, and advanced visualizations — are how you keep the playbook honest over time.</p>
+
+  <h3>Self-Assessment Questions</h3>
+  <ul>
+    <li>Can you draw the flow of your evaluation pipeline on a whiteboard in under two minutes?</li>
+    <li>For each metric you use, what is its ground-truth anchor, and when was it last calibrated?</li>
+    <li>If your judge's agreement with humans dropped by 10 points tomorrow, how would you detect it?</li>
+    <li>Which dimension would you most regret regressing on in production? Is that dimension gated?</li>
+    <li>What was the last production failure that became a test case in your golden dataset?</li>
+    <li>If you could only track one chart for the next quarter, which would it be, and why?</li>
+  </ul>
+
+  <div class="callout takeaway">
+    <span class="label">Closing Note</span>
+    A mature LLM evaluation system is not a score. It is a decision-making instrument: it tells you what to ship, what to block, and what to fix next. The six layers, seven metrics, and eight charts in this guide are the components; the discipline of the closed loop is what turns them into a system that improves every week.
+  </div>
+</section>
+
+<hr>
+<p style="text-align:center;color:var(--dim);font-size:12px;margin-top:36px">
+  LLM Evaluation Study Reference · Compiled from the conversation · Renders offline with Mermaid 10 and Plotly 2.35
+</p>
+
+</main>
+
+<button class="top-btn" id="topBtn">↑ Top</button>
+
+<script>
+/* A. PROGRESS */
+const progress = document.getElementById('progress');
+function updateProgress(){
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  progress.style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress, {passive:true});
+updateProgress();
+
+/* B. MOBILE MENU */
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+document.querySelectorAll('.sidebar nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 960) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+  });
+});
+
+/* C. TOP */
+document.getElementById('topBtn').addEventListener('click', () => {
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+/* D. NAV HIGHLIGHT */
+const navLinks = Array.from(document.querySelectorAll('.sidebar nav a'));
+const sections = navLinks
+  .map(a => document.querySelector(a.getAttribute('href')))
+  .filter(Boolean);
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = '#' + entry.target.id;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+    }
+  });
+}, {rootMargin:'-35% 0px -55% 0px', threshold:0});
+sections.forEach(s => io.observe(s));
+
+/* E. MERMAID — vibrant light */
+if (window.mermaid) {
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#eef2ff',
+      primaryTextColor: '#0f172a',
+      primaryBorderColor: '#6366f1',
+      lineColor: '#94a3b8',
+      secondaryColor: '#fdf2f8',
+      tertiaryColor: '#ecfdf5',
+      background: '#ffffff',
+      mainBkg: '#ffffff',
+      nodeBorder: '#c7d2fe',
+      clusterBkg: '#f8fafc',
+      clusterBorder: '#e2e8f0',
+      titleColor: '#0f172a',
+      edgeLabelBackground: '#ffffff',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      fontSize: '13px'
+    },
+    flowchart: { curve:'basis', padding:15, useMaxWidth:true },
+    securityLevel: 'loose'
+  });
+}
+
+/* F. PLOTLY — vibrant light */
+(function(){
+  if (!window.Plotly) return;
+
+  const MODELS = ["GPT-5.4", "Claude Sonnet 5", "Llama 4 70B", "Mistral Large 3"];
+  const DIMS   = ["Faithfulness", "Relevance", "Safety", "Format", "Tone"];
+  const COLOR  = {
+    "GPT-5.4":         "#6366f1",   /* indigo-500 */
+    "Claude Sonnet 5": "#ec4899",   /* pink-500 */
+    "Llama 4 70B":     "#f59e0b",   /* amber-500 */
+    "Mistral Large 3": "#10b981"    /* emerald-500 */
+  };
+
+  const SCORES = {
+    "GPT-5.4":         [4.60, 4.50, 4.80, 4.30, 4.40],
+    "Claude Sonnet 5": [4.70, 4.60, 4.50, 4.50, 4.70],
+    "Llama 4 70B":     [4.10, 4.00, 4.30, 3.90, 3.80],
+    "Mistral Large 3": [4.30, 4.20, 4.10, 4.40, 4.00]
+  };
+  const CI = {
+    "GPT-5.4":         [0.12,0.14,0.09,0.16,0.13],
+    "Claude Sonnet 5": [0.10,0.11,0.14,0.12,0.10],
+    "Llama 4 70B":     [0.22,0.24,0.18,0.26,0.21],
+    "Mistral Large 3": [0.18,0.17,0.20,0.15,0.19]
+  };
+  const OPS = {
+    "GPT-5.4":         {cost: 8.40, quality: 4.52, latency: 1840},
+    "Claude Sonnet 5": {cost: 6.10, quality: 4.60, latency: 1520},
+    "Llama 4 70B":     {cost: 1.20, quality: 4.02, latency: 2600},
+    "Mistral Large 3": {cost: 3.30, quality: 4.20, latency: 1180}
+  };
+
+  const WEEKS = Array.from({length:12}, (_,i)=>'W'+(i+1));
+  const TREND = {};
+  MODELS.forEach((m,mi)=>{
+    TREND[m] = WEEKS.map((_,wi)=>{
+      const base   = SCORES[m][0];
+      const drift  = 0.045*Math.sin((wi + mi*2)/2.4);
+      const decay  = (m === "Llama 4 70B") ? -0.012*wi : 0;
+      const noise  = 0.035*Math.sin(wi*7.31 + mi*3.17);
+      return +(base + drift + decay + noise).toFixed(3);
+    });
+  });
+  const TREND_CI = 0.13;
+
+  const CLASSES = ["Answer","Clarify","Refuse","Tool","Chitchat"];
+  const CONFUSION = {};
+  MODELS.forEach((m,mi)=>{
+    const M = [];
+    for (let r=0;r<5;r++){
+      const row = [];
+      for (let c=0;c<5;c++){
+        row.push(r===c
+          ? 62 + Math.round(14*Math.abs(Math.sin(mi+r+1)))
+          : Math.round(3 + 4*Math.abs(Math.sin((r+1)*(c+2)+mi))));
+      }
+      M.push(row);
+    }
+    CONFUSION[m] = M;
+  });
+
+  const CONFIG = {
+    responsive: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ['select2d','lasso2d','autoScale2d','toggleSpikelines']
+  };
+
+  /* Vibrant light theme for Plotly */
+  const BASE = {
+    paper_bgcolor:'rgba(0,0,0,0)',
+    plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#334155', size:11, family:'Inter, system-ui, sans-serif'},
+    margin:{l:56, r:20, t:16, b:52},
+    hoverlabel:{
+      bgcolor:'#ffffff',
+      bordercolor:'#c7d2fe',
+      font:{size:12, color:'#0f172a', family:'Inter, system-ui, sans-serif'}
+    },
+    legend:{
+      orientation:'h', y:-0.22, x:0,
+      font:{size:10.5, color:'#334155'},
+      bgcolor:'rgba(0,0,0,0)'
+    }
+  };
+
+  const AXIS = {
+    gridcolor:'#e5e7eb',
+    zerolinecolor:'#d1d5db',
+    linecolor:'#d1d5db',
+    tickfont:{size:10.5, color:'#64748b'},
+    titlefont:{size:11, color:'#64748b'}
+  };
+
+  const hexRgba = (hex, a) => {
+    const n = parseInt(hex.slice(1), 16);
+    return 'rgba(' + ((n>>16)&255) + ',' + ((n>>8)&255) + ',' + (n&255) + ',' + a + ')';
+  };
+  const prng = seed => {
+    let s = seed >>> 0;
+    return () => { s = (s*1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  };
+  const gauss = rand => {
+    let u = 0, v = 0;
+    while (u === 0) u = rand();
+    while (v === 0) v = rand();
+    return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
+  };
+  const sample = (mean, sd, n, seed) => {
+    const rand = prng(seed);
+    const out = [];
+    for (let i=0;i<n;i++){
+      out.push(Math.max(0, Math.min(5, mean + sd*gauss(rand))));
+    }
+    return out;
+  };
+
+  let active = new Set(MODELS);
+  const selected = () => MODELS.filter(m => active.has(m));
+
+  function toggleModel(m){
+    if (active.has(m)){
+      if (active.size === 1) return;
+      active.delete(m);
+    } else {
+      active.add(m);
+    }
+    renderChips();
+    renderAll();
+  }
+
+  function renderChips(){
+    const el = document.getElementById('chips');
+    if (!el) return;
+    el.innerHTML = '';
+    MODELS.forEach(m => {
+      const b = document.createElement('div');
+      b.className = 'model-chip' + (active.has(m) ? ' on' : '');
+      b.textContent = m;
+      if (active.has(m)){
+        b.style.background = COLOR[m];
+        b.style.borderColor = COLOR[m];
+      }
+      b.onclick = () => toggleModel(m);
+      el.appendChild(b);
+    });
+  }
+
+  function renderBar(){
+    const models = selected();
+    const traces = models.map(m => ({
+      type:'bar', name:m, x:DIMS, y:SCORES[m], customdata:CI[m],
+      error_y:{
+        type:'data', array:CI[m], visible:true, thickness:1.5, width:4,
+        color:'rgba(15,23,42,.35)'
+      },
+      marker:{color:COLOR[m], line:{width:0}},
+      hovertemplate:'<b>%{fullData.name}</b><br>%{x}: <b>%{y:.2f}</b> ±%{customdata:.2f}<extra></extra>'
+    }));
+    const layout = Object.assign({}, BASE, {
+      barmode:'group', bargap:0.28, bargroupgap:0.08,
+      xaxis: Object.assign({}, AXIS, {tickangle:-12}),
+      yaxis: Object.assign({}, AXIS, {range:[3.3, 5.05], title:'Rubric score (1–5)'})
+    });
+    const gd = document.getElementById('barChart');
+    if (!gd) return;
+    Plotly.react(gd, traces, layout, CONFIG).then(g => {
+      g.removeAllListeners && g.removeAllListeners('plotly_click');
+      g.on('plotly_click', ev => toggleModel(ev.points[0].data.name));
+    });
+  }
+
+  function renderRadar(){
+    const models = selected();
+    const closed = DIMS.concat([DIMS[0]]);
+    const traces = models.map(m => ({
+      type:'scatterpolar', name:m,
+      r: SCORES[m].concat([SCORES[m][0]]),
+      theta: closed, fill:'toself',
+      fillcolor: hexRgba(COLOR[m], 0.22),
+      line:{color:COLOR[m], width:2.6},
+      marker:{size:6, color:COLOR[m]},
+      hovertemplate:'<b>%{fullData.name}</b><br>%{theta}: <b>%{r:.2f}</b><extra></extra>'
+    }));
+    const layout = Object.assign({}, BASE, {
+      margin:{l:46, r:46, t:22, b:46},
+      polar:{
+        bgcolor:'#ffffff',
+        radialaxis:{
+          range:[3.5,5], showline:false,
+          gridcolor:'#e5e7eb', linecolor:'#e5e7eb',
+          tickfont:{size:9, color:'#94a3b8'},
+          angle:90, tickangle:90
+        },
+        angularaxis:{
+          gridcolor:'#e5e7eb', linecolor:'#d1d5db',
+          tickfont:{size:10.5, color:'#64748b'}
+        }
+      }
+    });
+    const gd = document.getElementById('radarChart');
+    if (gd) Plotly.react(gd, traces, layout, CONFIG);
+  }
+
+  function renderTrend(){
+    const models = selected();
+    const traces = [];
+    models.forEach(m => {
+      const base = TREND[m];
+      const upper = base.map(v => v + TREND_CI);
+      const lower = base.map(v => v - TREND_CI);
+      traces.push({
+        type:'scatter', x:WEEKS, y:lower, mode:'lines',
+        line:{width:0}, showlegend:false, hoverinfo:'skip',
+        fillcolor: hexRgba(COLOR[m], 0.14), fill:'tonexty'
+      });
+      traces.push({
+        type:'scatter', x:WEEKS, y:upper, mode:'lines',
+        line:{width:0}, showlegend:false, hoverinfo:'skip'
+      });
+      traces.push({
+        type:'scatter', x:WEEKS, y:base, mode:'lines+markers', name:m,
+        line:{color:COLOR[m], width:2.8, shape:'spline'},
+        marker:{size:7, color:COLOR[m], line:{color:'#ffffff', width:1.5}},
+        hovertemplate:'<b>' + m + '</b><br>%{x}: <b>%{y:.2f}</b><extra></extra>'
+      });
+    });
+    const layout = Object.assign({}, BASE, {
+      xaxis: Object.assign({}, AXIS, {title:'Release week'}),
+      yaxis: Object.assign({}, AXIS, {title:'Faithfulness', range:[3.6, 5.05]}),
+      hovermode:'x unified',
+      shapes:[{
+        type:'line', x0:WEEKS[0], x1:WEEKS[WEEKS.length-1], y0:4.2, y1:4.2,
+        line:{color:'#f43f5e', width:1.5, dash:'dash'}
+      }],
+      annotations:[{
+        x:WEEKS[WEEKS.length-1], y:4.2, text:'quality gate 4.2',
+        showarrow:false, xanchor:'right', yanchor:'bottom',
+        font:{size:10, color:'#e11d48', weight:'bold'}
+      }]
+    });
+    const gd = document.getElementById('trendChart');
+    if (gd) Plotly.react(gd, traces, layout, CONFIG);
+  }
+
+  function renderConfusion(){
+    const models = selected();
+    const M = Array.from({length:5}, () => Array(5).fill(0));
+    models.forEach(m => CONFUSION[m].forEach((row,r) => row.forEach((v,c) => { M[r][c] += v; })));
+    const z = M.map(row => {
+      const tot = row.reduce((a,b) => a+b, 0) || 1;
+      return row.map(v => +(100*v/tot).toFixed(1));
+    });
+    const text = z.map(row => row.map(v => v >= 5 ? v.toFixed(0)+'%' : ''));
+    const trace = {
+      type:'heatmap', z:z, x:CLASSES, y:CLASSES,
+      text:text, texttemplate:'%{text}',
+      textfont:{size:10, color:'#0f172a', weight:'bold'},
+      colorscale:[
+        [0,'#f8fafc'],[0.25,'#e0e7ff'],[0.55,'#a5b4fc'],[0.8,'#6366f1'],[1.0,'#4338ca']
+      ],
+      zmin:0, zmax:100, xgap:3, ygap:3,
+      colorbar:{
+        title:{text:'% of row', side:'right', font:{size:10, color:'#64748b'}},
+        thickness:10, len:0.85,
+        tickfont:{size:9, color:'#64748b'},
+        outlinewidth:0
+      },
+      hovertemplate:'True: <b>%{y}</b><br>Predicted: <b>%{x}</b><br><b>%{z:.1f}%</b> of row<extra></extra>'
+    };
+    const layout = Object.assign({}, BASE, {
+      margin:{l:78, r:30, t:16, b:56},
+      xaxis: Object.assign({}, AXIS, {title:'Predicted label', side:'bottom'}),
+      yaxis: Object.assign({}, AXIS, {title:'True label', autorange:'reversed'})
+    });
+    const gd = document.getElementById('confChart');
+    if (gd) Plotly.react(gd, [trace], layout, CONFIG);
+  }
+
+  function renderViolin(){
+    const models = selected();
+    const traces = models.map((m,i) => ({
+      type:'violin', name:m,
+      y: sample(SCORES[m][0], 0.38 + 0.09*i, 220, 7919*(i+3)),
+      points:false,
+      box:{
+        visible:true, width:0.18,
+        fillcolor:'rgba(15,23,42,0.05)',
+        line:{color:COLOR[m], width:1.6}
+      },
+      meanline:{visible:true, color:'#0f172a', width:1.5},
+      line:{color:COLOR[m], width:2},
+      fillcolor: hexRgba(COLOR[m], 0.40),
+      hovertemplate:'<b>'+m+'</b><br>score: %{y:.2f}<extra></extra>'
+    }));
+    const layout = Object.assign({}, BASE, {
+      margin:{l:52, r:18, t:16, b:46},
+      violingap:0.32, violinmode:'group',
+      xaxis: Object.assign({}, AXIS, {showticklabels:false, title:'Model'}),
+      yaxis: Object.assign({}, AXIS, {title:'Per-example score', range:[1.5, 5.2]})
+    });
+    const gd = document.getElementById('violinChart');
+    if (gd) Plotly.react(gd, traces, layout, CONFIG);
+  }
+
+  function renderPareto(){
+    const models = selected();
+    const costs = models.map(m => OPS[m].cost);
+    const qs    = models.map(m => OPS[m].quality);
+    const trace = {
+      type:'scatter', mode:'markers+text',
+      x:costs, y:qs, text:models, textposition:'top center',
+      textfont:{size:10.5, color:'#334155', weight:'bold'},
+      marker:{
+        size: models.map(m => 18 + OPS[m].latency/160),
+        color: models.map(m => COLOR[m]),
+        opacity:0.92,
+        line:{color:'#ffffff', width:2.5}
+      },
+      customdata: models.map(m => [OPS[m].latency, OPS[m].cost, OPS[m].quality]),
+      hovertemplate:'<b>%{text}</b><br>Cost / 1k: <b>$%{customdata[1]:.2f}</b><br>Quality: <b>%{customdata[2]:.2f}</b><br>p95 latency: <b>%{customdata[0]:,} ms</b><extra></extra>'
+    };
+    const front = {
+      type:'scatter', mode:'lines',
+      x:[Math.min.apply(null,costs), Math.max.apply(null,costs)],
+      y:[Math.max.apply(null,qs), Math.min.apply(null,qs)],
+      line:{color:'#94a3b8', width:1.2, dash:'dot'},
+      hoverinfo:'skip', showlegend:false
+    };
+    const layout = Object.assign({}, BASE, {
+      margin:{l:58, r:24, t:16, b:52},
+      xaxis: Object.assign({}, AXIS, {title:'Cost per 1,000 requests ($)'}),
+      yaxis: Object.assign({}, AXIS, {
+        title:'Aggregate quality (0–5)',
+        range:[Math.min.apply(null,qs)-0.18, Math.max.apply(null,qs)+0.14]
+      }),
+      shapes:[{
+        type:'line', x0:0, x1:1, xref:'paper', y0:4.3, y1:4.3,
+        line:{color:'#f43f5e', width:1.3, dash:'dash'}
+      }],
+      annotations:[{
+        x:1, xref:'paper', xanchor:'right', y:4.3, yanchor:'bottom',
+        text:'minimum bar', showarrow:false,
+        font:{size:10, color:'#e11d48', weight:'bold'}
+      }]
+    });
+    const gd = document.getElementById('paretoChart');
+    if (!gd) return;
+    Plotly.react(gd, [front, trace], layout, CONFIG).then(g => {
+      g.removeAllListeners && g.removeAllListeners('plotly_click');
+      g.on('plotly_click', ev => {
+        const m = ev.points[0].text;
+        if (MODELS.indexOf(m) !== -1) toggleModel(m);
+      });
+    });
+  }
+
+  function renderParcoords(){
+    const models = selected();
+    const trace = {
+      type:'parcoords',
+      line:{
+        color: models.map(m => COLOR[m]),
+        colorscale: models.map((m,i) => [i/Math.max(1, models.length-1), COLOR[m]]),
+        width:3
+      },
+      labelfont:{size:11, color:'#334155', weight:'bold'},
+      tickfont:{size:9.5, color:'#64748b'},
+      rangefont:{size:9, color:'#94a3b8'},
+      dimensions: DIMS.map((d,di) => ({
+        label: d,
+        values: models.map(m => SCORES[m][di]),
+        range:[3.6, 5.0],
+        tickvals:[3.6,4.0,4.4,4.8,5.0]
+      }))
+    };
+    const layout = Object.assign({}, BASE, {
+      margin:{l:70, r:70, t:26, b:30}
+    });
+    const gd = document.getElementById('parcoordsChart');
+    if (gd) Plotly.react(gd, [trace], layout, CONFIG);
+  }
+
+  function renderSankey(){
+    const nodes = ["User query","Router","Retriever","Tool API","LLM draft","Verifier","Success","Retry loop","Fail"];
+    const nodeColor = ["#cbd5e1","#a5b4fc","#6366f1","#ec4899","#f59e0b","#10b981","#10b981","#fb923c","#f43f5e"];
+    const src = [0,1,1,2,3,4,5,5,5,7,7];
+    const dst = [1,2,3,4,4,5,6,7,8,4,8];
+    const val = [100,55,45,55,45,100,72,20,8,12,8];
+    const trace = {
+      type:'sankey', orientation:'h', arrangement:'snap',
+      node:{
+        label:nodes, color:nodeColor, pad:18, thickness:18,
+        line:{color:'#ffffff', width:1.5},
+        hovertemplate:'<b>%{label}</b><br>flow: %{value}<extra></extra>'
+      },
+      link:{
+        source:src, target:dst, value:val,
+        color: src.map(s => hexRgba(nodeColor[s], 0.42)),
+        hovertemplate:'%{source.label} → %{target.label}<br><b>%{value} runs</b><extra></extra>'
+      },
+      textfont:{size:11.5, color:'#0f172a', weight:'bold'}
+    };
+    const layout = Object.assign({}, BASE, {
+      margin:{l:14, r:14, t:12, b:14},
+      font:{size:11.5, color:'#0f172a'}
+    });
+    const gd = document.getElementById('sankeyChart');
+    if (gd) Plotly.react(gd, [trace], layout, CONFIG);
+  }
+
+  function renderAll(){
+    renderBar();
+    renderRadar();
+    renderTrend();
+    renderConfusion();
+    renderViolin();
+    renderPareto();
+    renderParcoords();
+    renderSankey();
+  }
+
+  renderChips();
+  renderAll();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      document.querySelectorAll('.plot').forEach(d => Plotly.Plots.resize(d));
+    }, 150);
+  });
+})();
+</script>
+
+</body>
+</html>
