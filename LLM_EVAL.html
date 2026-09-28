@@ -393,6 +393,7 @@ tbody tr:hover{background:#fafbfd}
     <div class="nav-section">Reference</div>
     <a href="#summary">Summary Tables</a>
     <a href="#study-guide">Study Guide</a>
+    <a href="#glossary">Acronym Glossary</a>
   </nav>
 </aside>
 
@@ -404,7 +405,7 @@ tbody tr:hover{background:#fafbfd}
   <h1>Evaluating Large Language Models</h1>
   <p>A complete, illustrated reference for the six-layer evaluation framework, seven core metrics, real-world case studies, interactive visualizations, and production-grade Python implementations.</p>
   <div class="hero-meta">
-    <span>📚 <b>7</b> chapters</span>
+    <span>📚 <b>8</b> chapters</span>
     <span>🧭 <b>6</b> strategies</span>
     <span>📊 <b>7</b> metrics</span>
     <span>🖼️ <b>8</b> interactive charts</span>
@@ -1865,6 +1866,108 @@ if __name__ == "__main__":
   <div class="callout takeaway">
     <span class="label">Closing Note</span>
     A mature LLM evaluation system is not a score. It is a decision-making instrument: it tells you what to ship, what to block, and what to fix next. The six layers, seven metrics, and eight charts in this guide are the components; the discipline of the closed loop is what turns them into a system that improves every week.
+  </div>
+</section>
+
+<!-- ============================================================
+     CH 08 — ACRONYM GLOSSARY
+     ============================================================ -->
+<section class="chapter" id="glossary">
+  <div class="chapter-head">
+    <span class="chapter-num">CH 08</span>
+    <h2>Acronym Glossary</h2>
+  </div>
+
+  <p>Every acronym, initialism, and short-form label that appears in this guide, expanded and explained in the context in which it is used. Rows are grouped by the part of the workflow they belong to, and identical spellings with different meanings — for example <strong>CI</strong> — are listed separately.</p>
+
+  <h3>8.1 · Metrics and Measurement</h3>
+  <table>
+    <thead><tr><th>Acronym</th><th>Stands For</th><th>How It Is Used in This Guide</th></tr></thead>
+    <tbody>
+      <tr><td><strong>BLEU</strong></td><td>Bilingual Evaluation Understudy</td><td>N-gram precision with a brevity penalty. The surface metric of the legal-translation case study (51.61 for the top-ranked system); the BLEU-4 variant uses 4-gram precisions.</td></tr>
+      <tr><td><strong>BP</strong></td><td>Brevity Penalty</td><td>The BLEU length-correction factor, min(1, e^(1−r/c)), which stops a short candidate from gaming precision.</td></tr>
+      <tr><td><strong>ROUGE</strong></td><td>Recall-Oriented Understudy for Gisting Evaluation</td><td>Recall-oriented overlap for summarization and headline generation. Variants: ROUGE-1 (unigram), ROUGE-2 (bigram), and ROUGE-L.</td></tr>
+      <tr><td><strong>LCS</strong></td><td>Longest Common Subsequence</td><td>The longest in-order overlap scored by ROUGE-L — in the worked example, 7/9 = 0.778 recall.</td></tr>
+      <tr><td><strong>METEOR</strong></td><td>Metric for Evaluation of Translation with Explicit ORdering</td><td>Alignment-based MT metric reported alongside BLEU, BERTScore, and COMET on the shared-task leaderboard.</td></tr>
+      <tr><td><strong>BERTScore</strong></td><td>BERT-based similarity score</td><td>Token-level cosine similarity between contextual embeddings. The semantic metric of the guide (BERTScore 92.61; 87.63% on medical instructions).</td></tr>
+      <tr><td><strong>BLEURT</strong></td><td>Bilingual Evaluation Understudy with Representations from Transformers</td><td>Learned, reference-based metric used together with BERTScore to compare the contract-adaptive translation model.</td></tr>
+      <tr><td><strong>COMET</strong></td><td>Crosslingual Optimized Metric for Evaluation of Translation</td><td>Neural MT metric in the leaderboard table (e.g. 76.36 for System A) — the meaning-oriented counterpart to BLEU's surface exactness.</td></tr>
+      <tr><td><strong>EM</strong></td><td>Exact Match</td><td>Binary 1.0 / 0.0 string-equality score. The cheapest metric, and the anchor for SQuAD-style answer extraction; brittle to phrasing but the hardest to argue with.</td></tr>
+      <tr><td><strong>F1</strong></td><td>F1 score (harmonic mean of precision and recall)</td><td>Reported for BERTScore (BERTScore F1 = 87.63%) and for the precision/recall calculations in the worked examples.</td></tr>
+      <tr><td><strong>SD</strong></td><td>Standard Deviation</td><td>Spread of repeated measurements — for example a semantic-similarity mean of 0.499 with SD 0.088.</td></tr>
+      <tr><td><strong>p95</strong></td><td>95th percentile</td><td>Tail latency. The CI gate blocks on a "Latency p95" threshold, and bubble size on the Pareto chart encodes p95 latency.</td></tr>
+      <tr><td><strong>CI</strong></td><td>Confidence Interval</td><td>Uncertainty on a score: the 95% CI error bars on the grouped-bar chart and the CI[m] array in the Plotly code. Not to be confused with CI = Continuous Integration below.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.2 · Framework, Process, and Tooling</h3>
+  <table>
+    <thead><tr><th>Acronym</th><th>Stands For</th><th>How It Is Used in This Guide</th></tr></thead>
+    <tbody>
+      <tr><td><strong>LLM</strong></td><td>Large Language Model</td><td>The system under evaluation throughout the guide, and the scorer in the LLM-as-a-Judge pattern.</td></tr>
+      <tr><td><strong>AI</strong></td><td>Artificial Intelligence</td><td>"AI system" and "AI practitioners" in the KDDI RAG-monitoring and CLEAR dashboard case studies.</td></tr>
+      <tr><td><strong>NLP</strong></td><td>Natural Language Processing</td><td>The JUST-NLP 2025 shared task on English-to-Hindi legal translation.</td></tr>
+      <tr><td><strong>NIST</strong></td><td>National Institute of Standards and Technology</td><td>Publisher of the AI 800-2 draft whose three stages — define the measurement target, run the evaluation, report the results — the six-layer framework implements. Also the source of the rule to report error and uncertainty.</td></tr>
+      <tr><td><strong>CI</strong></td><td>Continuous Integration</td><td>The CI Gate layer: per-dimension thresholds that run automatically on every change, so a regression blocks the merge instead of shipping.</td></tr>
+      <tr><td><strong>CI/CD</strong></td><td>Continuous Integration / Continuous Delivery</td><td>The delivery pipeline where the calibrated LLM judge plus BERTScore act as the release gate (State Farm case study).</td></tr>
+      <tr><td><strong>PR</strong></td><td>Pull Request</td><td>Each PR triggers the eval suite on the golden dataset; failing dimensions are commented back on the PR with the eval artifact attached.</td></tr>
+      <tr><td><strong>PNG</strong></td><td>Portable Network Graphics</td><td>The static chart CI exports and attaches to the PR, so results are reviewable without a running dashboard.</td></tr>
+      <tr><td><strong>JSON</strong></td><td>JavaScript Object Notation</td><td>The format of a golden-dataset record, and the payload structure passed between the harness, Plotly, and Dash.</td></tr>
+      <tr><td><strong>API</strong></td><td>Application Programming Interface</td><td>The 1,228 executable real APIs used to build tool-calling trajectories in TRAJECT-Bench.</td></tr>
+      <tr><td><strong>SQL</strong></td><td>Structured Query Language</td><td>The enterprise text-to-SQL evaluation case study, where the sample golden record is a SELECT ... GROUP BY query.</td></tr>
+      <tr><td><strong>RAG</strong></td><td>Retrieval-Augmented Generation</td><td>The KDDI production system whose groundedness was continuously monitored by an LLM judge.</td></tr>
+      <tr><td><strong>VLM</strong></td><td>Vision-Language Model</td><td>The long-document VLM pipeline in the NDD case study, and the independent VLM judge that filtered its training data.</td></tr>
+      <tr><td><strong>OCR</strong></td><td>Optical Character Recognition</td><td>OCR-grounded text QA — one of the four complementary generation streams used to expand the document dataset.</td></tr>
+      <tr><td><strong>PII</strong></td><td>Personally Identifiable Information</td><td>Privacy scrubbing removed PII-touching queries from production traces (60% of 100,000 traces) before evaluation.</td></tr>
+      <tr><td><strong>QA</strong></td><td>Question Answering</td><td>Task families in the golden dataset: single-turn QA, multi-hop QA, visual QA, and grouped-page QA.</td></tr>
+      <tr><td><strong>UI</strong></td><td>User Interface</td><td>The "Toolchain UI comparison" radar-chart example, where chart shape matters more than area.</td></tr>
+      <tr><td><strong>CFO</strong></td><td>Chief Financial Officer</td><td>Subject of the search-agent trace: "Find the CFO of the company that acquired GitHub" resolves to Amy Hood.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 · Models, Benchmarks, and Datasets</h3>
+  <table>
+    <thead><tr><th>Acronym</th><th>Stands For</th><th>How It Is Used in This Guide</th></tr></thead>
+    <tbody>
+      <tr><td><strong>GPT</strong></td><td>Generative Pre-trained Transformer</td><td>The decoder-only model family. GPT-5.4 appears in the dashboard model set, and "GPT-5.4 nano" in the judge pseudocode.</td></tr>
+      <tr><td><strong>BERT</strong></td><td>Bidirectional Encoder Representations from Transformers</td><td>The pretrained encoder whose contextual embeddings BERTScore compares token by token.</td></tr>
+      <tr><td><strong>GSM8K</strong></td><td>Grade School Math 8K</td><td>Benchmark of grade-school math problems answered with a single final number, which makes it fully Exact-Match scoreable.</td></tr>
+      <tr><td><strong>SQuAD</strong></td><td>Stanford Question Answering Dataset</td><td>The span-extraction QA benchmark behind the Exact Match example ("the Eiffel Tower") and its threshold discussion.</td></tr>
+      <tr><td><strong>TRAJECT-Bench</strong></td><td>Benchmark name</td><td>5,670 parallel/serial tool-calling trajectories over 1,228 real APIs with simple/hard dual-difficulty queries, built for trajectory-level diagnostics.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.4 · Named Frameworks, Dashboards, and Case Studies</h3>
+  <table>
+    <thead><tr><th>Name</th><th>What It Is</th><th>Role in This Guide</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TRACE</strong></td><td>Framework name</td><td>A reference-free framework for multi-dimensional evaluation of tool-augmented LLMs. Its evidence bank accumulates knowledge from preceding steps so it can judge the reasoning trajectory, not just the final answer.</td></tr>
+      <tr><td><strong>CLEAR</strong></td><td>Dashboard name</td><td>Interactive error-analysis dashboard with drill-down, validated with 12 AI practitioners. It answers "why", not just "which".</td></tr>
+      <tr><td><strong>State Farm</strong></td><td>Organization</td><td>US insurer used as the production case study where the judge caught an autopay hallucination at under 1% human review coverage.</td></tr>
+      <tr><td><strong>KDDI</strong></td><td>Organization</td><td>Japanese telecommunications operator used as the production-observation case study, where live trace scoring located a groundedness drop by content type.</td></tr>
+      <tr><td><strong>NDD</strong></td><td>Case-study label</td><td>The long-document VLM pipeline whose evaluation failures were promoted into the golden dataset and drove the next round of document types.</td></tr>
+      <tr><td><strong>JUST-NLP</strong></td><td>Shared-task name</td><td>The 2025 shared task for English-to-Hindi legal translation that supplies the BLEU and BERTScore figures used in the metrics chapter.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.5 · Diagram and Trace Notation</h3>
+  <table>
+    <thead><tr><th>Token</th><th>Stands For</th><th>How It Is Used in This Guide</th></tr></thead>
+    <tbody>
+      <tr><td><strong>CH</strong></td><td>Chapter</td><td>Section numbering in this guide (CH 01 through CH 08).</td></tr>
+      <tr><td><strong>TD</strong></td><td>Top-Down (Mermaid)</td><td>The direction token at the head of a Mermaid flowchart that lays the flow out vertically — used for the evaluation flow, the CI gate, and the observation loop.</td></tr>
+      <tr><td><strong>LR</strong></td><td>Left-Right (Mermaid)</td><td>The direction token that lays a Mermaid flowchart out horizontally — used for the dataset pipeline and the output-only versus trajectory comparison.</td></tr>
+      <tr><td><strong>T1–T12</strong></td><td>Trace turn index</td><td>Turn numbers in the agent trajectory trace (T6 = the sixth turn, whether a reason step, tool call, observation, or the final answer).</td></tr>
+      <tr><td><strong>X1–X4</strong></td><td>Mermaid node IDs</td><td>The four failure outcomes of the per-dimension CI gate diagram: block on faithfulness, safety, format, and latency regression.</td></tr>
+      <tr><td><strong>A1 … H2</strong></td><td>Mermaid node IDs</td><td>Node identifiers in the output-only versus trajectory diagrams. They are diagram plumbing and carry no domain meaning.</td></tr>
+      <tr><td><strong>Q3</strong></td><td>Third fiscal quarter</td><td>Business shorthand in the text-to-SQL sample query ("top 5 customers by revenue in Q3") and in the stock-headline example.</td></tr>
+      <tr><td><strong>DIMS, MODELS, SCORES, OPS, CI[m]</strong></td><td>Python identifiers</td><td>Variables in the example harness and Plotly code: evaluation dimensions, model list, score matrix, cost/quality/latency tuples, and the confidence-interval array.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout takeaway">
+    <span class="label">Not Acronyms</span>
+    <strong>Perplexity</strong>, <strong>Golden Dataset</strong>, <strong>Judge</strong>, and <strong>Trajectory</strong> are metric and artifact names rather than initialisms, though they often appear in short or capitalised form in diagrams and tables. <strong>MANUAL EVAL</strong> is likewise just short for manual evaluation — the human baseline that 100 test examples were scored against.
   </div>
 </section>
 
