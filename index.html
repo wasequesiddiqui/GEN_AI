@@ -68,10 +68,6 @@ body{font-family:'Inter',sans-serif;background:#f4f1fa;color:#2d2d3a;min-height:
 .card .tag{display:inline-block;font-size:.7rem;padding:.15rem .6rem;border-radius:8px;background:#e8dff5;color:#4a2c7a;font-weight:500}
 .card a{text-decoration:none;color:inherit;display:block}
 .card a:hover{color:inherit}
-.llm-panel{width:100%;height:min(85vh,1100px);min-height:640px;border-radius:16px;overflow:hidden;background:#fff;border:1px solid rgba(108,92,231,.15);box-shadow:0 4px 24px rgba(45,27,78,.10)}
-.llm-panel.hidden{display:none}
-.llm-panel iframe{width:100%;height:100%;border:0;display:block}
-@media (max-width:768px){.llm-panel{height:78vh;min-height:520px}}
 footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:1px solid rgba(108,92,231,.1)}
 </style>
 </head>
@@ -96,7 +92,7 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
     <button class="tab-btn active" id="tabStudy" onclick="switchTab('study')">📚 Study Guides</button>
     <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">📝 Practice Quizzes</button>
     <button class="tab-btn" id="tabML" onclick="switchTab('ml')">🤖 ML Model</button>
-    <button class="tab-btn" id="tabLLM" onclick="switchTab('llm')">📊 LLM Evaluation</button>
+    <button class="tab-btn" id="tabLLM" onclick="switchTab('llm')">🧠 LLM</button>
     <button class="tab-btn" id="tabAppendix" onclick="switchTab('appendix')">📎 Appendix</button>
     <button class="tab-btn" id="tabGlossary" onclick="switchTab('glossary')">🔤 Acronym Glossary</button>
   </div>
@@ -111,6 +107,9 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
   </div>
   <div class="grid hidden" id="mlGrid">
     <!-- ML Model cards injected by JS below -->
+  </div>
+  <div class="grid hidden" id="llmGrid">
+    <!-- LLM Evaluation cards injected by JS below -->
   </div>
   <div class="grid hidden" id="appendixGrid">
     <!-- Appendix cards injected by JS below -->
@@ -127,9 +126,6 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
   </div>
   <div class="grid hidden" id="glossaryGrid">
     <!-- Glossary cards injected by JS below -->
-  </div>
-  <div class="llm-panel hidden" id="llmPanel">
-    <iframe id="llmFrame" data-src="LLM_EVALUATION.html" title="LLM Evaluation — A Comprehensive Study Reference" loading="lazy"></iframe>
   </div>
 </div>
 
@@ -199,6 +195,10 @@ const mlModels = [
   { title:"Heirarchial Clustering", file:"HEIRARCHIAL_CLUSTERING.html", desc:"Agglomerative and divisive clustering, linkage criteria, and reading dendrograms.", tag:"Clustering" },
   { title:"Gaussian Mixture Models", file:"GMM.html", desc:"Probabilistic clustering with EM — soft assignments, covariance types, and model selection.", tag:"Clustering" },
   { title:"Apriori Algorithm", file:"APRIORI.html", desc:"Frequent itemset mining and association rules measured with support, confidence, and lift.", tag:"Association" },
+];
+
+const llmEvals = [
+  { title:"LLM Evaluation", file:"LLM_EVAL.html", desc:"A comprehensive study reference for evaluating Large Language Models — evaluation strategies, metrics, interactive visualizations, real-world examples, and Python implementations.", tag:"Evaluation" },
 ];
 
 const appendix = [
@@ -308,6 +308,7 @@ function renderGlossary() {
 renderGrid('studyGrid', topics);
 renderGrid('quizGrid', quizzes);
 renderGrid('mlGrid', mlModels);
+renderGrid('llmGrid', llmEvals);
 renderGrid('appendixGrid', appendix);
 renderGlossary();
 
@@ -318,8 +319,7 @@ function switchTab(tab) {
   const appendixGrid = document.getElementById('appendixGrid');
   const glossaryGrid = document.getElementById('glossaryGrid');
   const glossaryControls = document.getElementById('glossaryControls');
-  const llmPanel = document.getElementById('llmPanel');
-  const llmFrame = document.getElementById('llmFrame');
+  const llmGrid = document.getElementById('llmGrid');
   const tabStudy = document.getElementById('tabStudy');
   const tabQuiz = document.getElementById('tabQuiz');
   const tabML = document.getElementById('tabML');
@@ -335,7 +335,7 @@ function switchTab(tab) {
   appendixGrid.classList.add('hidden');
   glossaryGrid.classList.add('hidden');
   glossaryControls.classList.add('hidden');
-  llmPanel.classList.add('hidden');
+  llmGrid.classList.add('hidden');
   tabStudy.classList.remove('active');
   tabQuiz.classList.remove('active');
   tabML.classList.remove('active');
@@ -354,12 +354,9 @@ function switchTab(tab) {
     gridTitle.textContent = '🤖 ML Models';
     gridDesc.textContent = 'Core machine learning models and evaluation metrics — from regression and tree ensembles to clustering and association rules.';
   } else if (tab === 'llm') {
-    llmPanel.classList.remove('hidden');
+    llmGrid.classList.remove('hidden');
     tabLLM.classList.add('active');
-    if (!llmFrame.getAttribute('src')) {
-      llmFrame.setAttribute('src', llmFrame.dataset.src);
-    }
-    gridTitle.textContent = '📊 LLM Evaluation';
+    gridTitle.textContent = '🧠 LLM Evaluation';
     gridDesc.textContent = 'Evaluating Large Language Models — strategies, metrics, real-world examples, interactive visualizations, and Python implementations.';
   } else if (tab === 'appendix') {
     appendixGrid.classList.remove('hidden');
