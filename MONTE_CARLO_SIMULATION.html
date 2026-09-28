@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monte Carlo Simulation Models — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#0891b2;
+    --accent-dark:#0e7490;
+    --accent2:#7c3aed;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --pink:#db2777;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#0e7490 0%,#0891b2 30%,#7c3aed 70%,#5b21b6 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(8,145,178,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:880px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent-dark);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#0891b2,#7c3aed);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(8,145,178,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#ecfeff,#f5f3ff);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent-dark);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#ecfeff;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent-dark);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.mc{border-left-color:var(--accent);}
+  .metric.conv{border-left-color:var(--accent2);}
+  .metric.business{border-left-color:var(--pink);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.mc h4{color:var(--accent-dark);}
+  .metric.conv h4{color:var(--accent2);}
+  .metric.business h4{color:var(--pink);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.mc .badge{background:#ecfeff;color:#0e7490;}
+  .metric.conv .badge{background:#f5f3ff;color:#5b21b6;}
+  .metric.business .badge{background:#fdf2f8;color:#9d174d;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .demo-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .demo-controls .info{flex:1;min-width:130px;}
+  .demo-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .demo-controls .info .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);
+  }
+  .demo-sliders{padding:4px 0 12px;}
+  .demo-sliders label{
+    display:block;font-size:.82rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-top:10px;
+  }
+  .demo-sliders input[type=range]{
+    width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0;
+  }
+  .btn{
+    background:linear-gradient(135deg,#0891b2,#7c3aed);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(8,145,178,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(8,145,178,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+  .btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+  .btn-group .toggle{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:700;
+    cursor:pointer;font-family:'Segoe UI',sans-serif;
+    transition:all .15s;
+  }
+  .btn-group .toggle.active{
+    background:linear-gradient(135deg,#0891b2,#7c3aed);
+    color:#ffffff;border-color:transparent;
+    box-shadow:0 3px 10px rgba(8,145,178,.28);
+  }
+  .btn-group .toggle:hover:not(.active){background:#f1f5f9;}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#0e7490;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#ecfeff;
+    color:#0e7490;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .steps-list{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .steps-list .step{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;border-top:3px solid var(--accent);
+  }
+  .steps-list .step .n{
+    font-size:.78rem;color:var(--accent-dark);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  }
+  .steps-list .step .t{
+    font-size:.95rem;font-weight:800;color:var(--text);margin-top:2px;
+  }
+  .steps-list .step .d{
+    font-size:.85rem;color:var(--muted);margin-top:4px;line-height:1.55;
+  }
+  .assumptions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .assumptions .item{
+    background:linear-gradient(135deg,#ecfeff,#f5f3ff);
+    border:1px solid #a5f3fc;border-radius:10px;padding:14px 16px;
+    text-align:center;
+  }
+  .assumptions .item .letter{
+    font-size:1.6rem;font-weight:900;color:#0e7490;line-height:1;
+  }
+  .assumptions .item .name{
+    font-size:.85rem;font-weight:800;color:#1e293b;margin-top:4px;
+  }
+  .assumptions .item .desc{
+    font-size:.76rem;color:#64748b;margin-top:2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎲 Monte Carlo Simulation Models — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> You want to know the probability that a new bridge will collapse in an earthquake. You can't build 10,000 bridges to test. But you <em>can</em> simulate 10,000 virtual earthquakes, each with random magnitude, location, soil conditions, and structural stress, and count how many times the virtual bridge fails. That's Monte Carlo — replacing an impossible experiment with a giant number of random simulations, and using the law of large numbers to get a reliable answer.
+  </div>
+
+  <h3>What is Monte Carlo Simulation?</h3>
+  <p><span class="highlight">Monte Carlo (MC) simulation</span> is a computational technique that solves deterministic or probabilistic problems by <strong>repeated random sampling</strong>. Instead of solving an equation analytically, we generate many random scenarios, compute the outcome for each, and aggregate the results. The answer emerges statistically — more samples give a more accurate estimate.</p>
+
+  <p>The name comes from the famous casino in Monaco. It's the general-purpose "brute force" of probability — when math is too hard, simulate.</p>
+
+  <h3>How it Works (Step by Step)</h3>
+  <div class="steps-list">
+    <div class="step">
+      <div class="n">Step 1</div>
+      <div class="t">Define the problem</div>
+      <div class="d">Identify the quantity you want to estimate: π, a portfolio's VaR, an option price, the probability of system failure.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 2</div>
+      <div class="t">Model the inputs</div>
+      <div class="d">Specify probability distributions for all uncertain inputs (normal, uniform, lognormal, empirical, copulas…).</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 3</div>
+      <div class="t">Generate random samples</div>
+      <div class="d">Draw N random samples from each input distribution. Use a pseudo-random generator (Mersenne Twister, PCG, Sobol for quasi-MC).</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 4</div>
+      <div class="t">Evaluate the model</div>
+      <div class="d">For each sample, compute the deterministic outcome. E.g., price an option, evaluate a portfolio, run a physics simulation.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 5</div>
+      <div class="t">Aggregate results</div>
+      <div class="d">Average, count, or take quantiles of the N outcomes. The sample mean converges to the true expectation as N grows.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 6</div>
+      <div class="t">Estimate error</div>
+      <div class="d">Compute the standard error of the estimate: SE = σ / √N. Use it to build confidence intervals and decide when to stop.</div>
+    </div>
+  </div>
+
+  <h3>How Monte Carlo Differs from Other Methods</h3>
+  <table>
+    <tr><th>Method</th><th>Approach</th><th>Scales with dimension?</th><th>Typical Use</th></tr>
+    <tr><td><strong>Monte Carlo</strong></td><td>Random sampling</td><td>Yes (d-independent rate)</td><td>Complex integrals, VaR, option pricing</td></tr>
+    <tr><td>Analytical</td><td>Closed-form solution</td><td>No (breaks in high-d)</td><td>Simple problems, verified answers</td></tr>
+    <tr><td>Numerical quadrature</td><td>Grid / Simpson's rule</td><td>No (curse of dimensionality)</td><td>Low-dimensional integrals</td></tr>
+    <tr><td>Quasi-Monte Carlo</td><td>Low-discrepancy sequences</td><td>Yes, faster rate O(1/N)</td><td>High-quality MC with fast convergence</td></tr>
+    <tr><td>MCMC</td><td>Markov chain sampling</td><td>Yes</td><td>Bayesian inference, posteriors</td></tr>
+    <tr><td>Bootstrap</td><td>Resample from empirical</td><td>Yes</td><td>Confidence intervals, model uncertainty</td></tr>
+  </table>
+
+  <h3>🔬 Interactive: Estimate π by Simulation</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The classic Monte Carlo demo. We randomly throw darts at a 1×1 square that contains a quarter-circle of radius 1. The ratio (points inside circle) / (total points) times 4 approximates π. Click <strong>"Throw 500 Darts"</strong> to add more samples and watch the estimate converge. The right chart shows the running estimate with a ±1/√N confidence band.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Samples (N)</div>
+        <div class="val" id="piN">0</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Inside circle</div>
+        <div class="val" id="piInside" style="color:#0891b2;">0</div>
+      </div>
+      <div class="info">
+        <div class="lbl">π estimate</div>
+        <div class="val" id="piEstimate" style="color:#7c3aed;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Error vs true π</div>
+        <div class="val" id="piError" style="color:#dc2626;">—</div>
+      </div>
+      <button class="btn" id="piRun500">▶ Throw 500 Darts</button>
+      <button class="btn" id="piRun5000">▶▶ Throw 5,000 Darts</button>
+      <button class="btn secondary" id="piReset">↺ Reset</button>
+    </div>
+
+    <div class="grid2" style="gap:14px;">
+      <div class="chart" style="margin:0;">
+        <div class="chart-title">Dart Throws in the Unit Square</div>
+        <div id="piScatter" style="height:420px;"></div>
+        <div class="chart-note">Blue dots = inside circle. Grey dots = outside. The quarter-circle has area π/4.</div>
+      </div>
+      <div class="chart" style="margin:0;">
+        <div class="chart-title">Running Estimate of π</div>
+        <div id="piConvergence" style="height:420px;"></div>
+        <div class="chart-note">Purple line = estimate after N samples. Dashed green = true π. Blue band = ±1/√N error envelope. The estimate converges to π at a rate of 1/√N.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Convergence Rate — The 1/√N Law</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The error of a Monte Carlo estimate decays as O(1/√N). Double the samples → error drops by ~1.41×. Ten times the samples → error drops by ~3.16×. To get 10× more precision, you need 100× more samples. This is why variance reduction techniques matter so much.</p>
+
+  <div class="chart">
+    <div class="chart-title">Monte Carlo Error vs. Number of Samples (log-log)</div>
+    <div id="mcRateChart" style="height:420px;"></div>
+    <div class="chart-note">Each series is a different problem (π estimation, portfolio VaR, option pricing). All converge at roughly the same 1/√N rate on a log-log plot. The slope of the line is −0.5.</div>
+  </div>
+
+  <h3>🔬 Interactive: Law of Large Numbers</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The Law of Large Numbers (LLN) guarantees that the sample mean converges to the true mean as N grows. Below, we draw samples from a known distribution and watch the running mean stabilize. Different traces are independent simulation runs — they all converge to the same value but wander differently at small N.</p>
+
+  <div class="chart">
+    <div class="chart-title">Running Sample Mean Converging to the True Mean</div>
+    <div id="llnChart" style="height:420px;"></div>
+    <div class="chart-note">Each line is a separate simulation run. The dashed red line is the true mean. Notice how the traces spread wide at low N and collapse onto the truth as N grows.</div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>Monte Carlo is one of the most universally applicable computational techniques — it's used anywhere you need to answer "what happens under uncertainty?" at scale.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>💰 Quantitative Finance</h4>
+      <ul class="clean">
+        <li><strong>Option pricing</strong> — Black-Scholes is closed-form, but exotic options (Asian, barrier, lookback) are priced by Monte Carlo.</li>
+        <li><strong>Value at Risk (VaR)</strong> — simulate 10,000 portfolio scenarios for regulatory risk.</li>
+        <li><strong>Credit portfolio simulation</strong> — correlated defaults, CDO pricing.</li>
+        <li><strong>Interest rate derivatives</strong> — Hull-White, LIBOR Market Model.</li>
+        <li><strong>Real options</strong> — valuation of corporate investment decisions.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏥 Healthcare &amp; Life Sciences</h4>
+      <ul class="clean">
+        <li><strong>Drug trial simulation</strong> — design trials with simulated patients.</li>
+        <li><strong>Epidemic modelling</strong> — stochastic SIR/SEIR models.</li>
+        <li><strong>Radiation therapy planning</strong> — Monte Carlo dose calculation.</li>
+        <li><strong>Cost-effectiveness analysis</strong> — probabilistic health economics.</li>
+        <li><strong>Protein folding</strong> — MCMC over conformational space.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Engineering &amp; Physics</h4>
+      <ul class="clean">
+        <li><strong>Neutron transport</strong> — reactor design (MCNP).</li>
+        <li><strong>Reliability analysis</strong> — probability of system failure.</li>
+        <li><strong>Structural safety</strong> — earthquake / wind load simulation.</li>
+        <li><strong>Molecular dynamics</strong> — Monte Carlo sampling of states.</li>
+        <li><strong>Photon transport</strong> — medical imaging (PET, SPECT).</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📊 Statistics &amp; Machine Learning</h4>
+      <ul class="clean">
+        <li><strong>Bootstrap confidence intervals</strong> — resample to quantify uncertainty.</li>
+        <li><strong>Bayesian inference (MCMC)</strong> — sample from posteriors.</li>
+        <li><strong>Reinforcement learning</strong> — Monte Carlo rollouts, MCTS.</li>
+        <li><strong>Random forest / dropout</strong> — internal randomness.</li>
+        <li><strong>Hyperparameter search</strong> — random search outperforms grid.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏗️ Business &amp; Operations</h4>
+      <ul class="clean">
+        <li><strong>Project risk management</strong> — simulate timelines.</li>
+        <li><strong>Supply chain optimization</strong> — demand and lead-time variability.</li>
+        <li><strong>Inventory policy</strong> — safety stock under stochastic demand.</li>
+        <li><strong>Capacity planning</strong> — queueing with random arrivals.</li>
+        <li><strong>Real estate development</strong> — NPV under uncertain rents.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🎮 Gaming, Graphics &amp; More</h4>
+      <ul class="clean">
+        <li><strong>Path tracing</strong> — photorealistic rendering (Pixar, Blender).</li>
+        <li><strong>Physics engines</strong> — particle simulations.</li>
+        <li><strong>Game AI</strong> — Monte Carlo Tree Search (AlphaGo).</li>
+        <li><strong>Climate models</strong> — ensemble forecasting (IPCC).</li>
+        <li><strong>Nuclear physics, cosmology, epidemiology</strong> — everywhere.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why is Monte Carlo so widely used?</strong> Because real-world problems are almost always probabilistic, high-dimensional, and analytically intractable. Monte Carlo lets you skip the math and go straight to the answer — with a mathematically guaranteed error rate. It's the most general-purpose numerical algorithm in existence.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Works in any dimension</strong> — convergence rate is O(1/√N) regardless of dimension. Numerical quadrature breaks at ~10 dimensions; MC doesn't care.</li>
+    <li><strong>No analytical solution required</strong> — you only need to be able to <em>simulate</em> the system, not solve it in closed form.</li>
+    <li><strong>Handles arbitrary input distributions</strong> — normal, lognormal, empirical, copulas, mixtures, anything you can sample from.</li>
+    <li><strong>Simple to implement</strong> — the basic algorithm is a few lines of code, and parallelism is trivial (each sample is independent).</li>
+    <li><strong>Error is quantifiable</strong> — the standard error σ/√N gives a rigorous confidence interval on the estimate.</li>
+    <li><strong>Works on any integrand</strong> — no smoothness, differentiability, or structure required. It even works on discontinuous functions.</li>
+    <li><strong>Naturally parallelises</strong> — embarrassingly parallel across CPUs, GPUs, and clusters. Rendering farms are Monte Carlo.</li>
+    <li><strong>Variance reduction techniques extend reach</strong> — antithetic variates, control variates, importance sampling, common random numbers, stratification — all reduce SE without more samples.</li>
+    <li><strong>Quasi-Monte Carlo (Sobol, Halton)</strong> — low-discrepancy sequences push convergence to nearly O(1/N) for smooth integrands.</li>
+    <li><strong>Model-free</strong> — you don't need to derive a formula. Real-world complexity is captured in the simulator.</li>
+    <li><strong>Well-understood theory</strong> — LLN, CLT, and concentration inequalities give rigorous guarantees.</li>
+    <li><strong>Easy to communicate</strong> — output is a histogram of outcomes; stakeholders understand "5% chance of losing more than $1M" intuitively.</li>
+    <li><strong>Foundation for modern ML</strong> — MCMC, variational inference, MCTS, and bootstrapping all rest on MC principles.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🎯</div>
+      <h4 style="color:var(--accent-dark);">General Purpose</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Works in any dimension and any distribution.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">📊</div>
+      <h4 style="color:var(--accent-dark);">Quantifiable Error</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Rigorous σ/√N standard error.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚡</div>
+      <h4 style="color:var(--accent-dark);">Parallel</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Trivially distributable.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Slow convergence</strong> — O(1/√N) is very slow. To halve the error, you need 4× the samples. To get 3-digit precision, you might need millions of runs.</li>
+    <li><strong>Computationally expensive</strong> — each sample may require a full simulation (e.g., path-dependent option pricing needs 252 daily steps). 10,000 paths × 252 steps = 2.5M evaluations.</li>
+    <li><strong>Requires good random number generators</strong> — bad PRNGs (short periods, correlations) can silently bias results. Use Mersenne Twister, PCG, or a hardware source.</li>
+    <li><strong>Output is only as good as the input model</strong> — if your assumed input distribution is wrong, the output is wrong. GIGO — garbage in, garbage out.</li>
+    <li><strong>No closed-form insight</strong> — MC gives you the answer, not the "why." Sensitivity to parameters is not directly visible.</li>
+    <li><strong>Reproducibility issues</strong> — results differ between runs unless you fix the random seed. Regulatory and scientific contexts often require this.</li>
+    <li><strong>Standard error can mislead</strong> — for heavy-tailed distributions, the sample variance may not converge, and the CLT-based error can be wildly optimistic.</li>
+    <li><strong>Rare-event simulation is hard</strong> — if the event has probability 1e-6, you need ~1e8 samples to see it once. Requires importance sampling or subset simulation.</li>
+    <li><strong>Memory and storage</strong> — storing all 10M sample paths for post-analysis can be prohibitive.</li>
+    <li><strong>Not a substitute for analytical thinking</strong> — MC can hide modelling errors. It's easy to get a smooth-looking distribution from a wrong model.</li>
+    <li><strong>Variance estimation for tails is unstable</strong> — the 99.9% quantile estimate has much larger error than the mean.</li>
+    <li><strong>Deterministic problems are better solved analytically</strong> — don't use MC to compute π when arctan gives the answer instantly.</li>
+    <li><strong>Adaptive/sequential MC requires care</strong> — particle filters, MCMC chains, and importance sampling all have their own convergence and mixing issues.</li>
+    <li><strong>Curse of dimensionality in function approximation</strong> — while MC integration scales, MC-based function approximation (e.g., value iteration) does not escape the curse.</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#ecfeff);">
+    <strong>The slow-convergence trap:</strong> If your current MC estimate has 5% error with 10,000 paths and you want 1% error, you don't need 5× more paths — you need 25× more, i.e., 250,000. And for 0.1% error, you need 2.5 million. This quadratic relationship is why variance reduction techniques (antithetic, control variates, importance sampling) are essential in production.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Before deploying a Monte Carlo estimator, you must verify three things: (1) is it <em>converged</em>? (2) is it <em>accurate</em>? (3) is it <em>efficient</em>? The KPIs below cover all three.</p>
+
+  <h3>5.1 Convergence KPIs</h3>
+
+  <div class="metric mc">
+    <h4>Standard Error (SE) <span class="badge">Accuracy</span></h4>
+    <p><strong>What it measures:</strong> The standard deviation of the sample mean estimator. This is the most fundamental MC error metric.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      SE = σ̂ / √N
+      <br><br>
+      σ̂ = sample standard deviation of the N simulated outcomes
+      <br>
+      N = number of samples (paths)
+      <br><br>
+      <span class="lbl">Interpretation</span>
+      The MC estimate is approximately normally distributed around the true value
+      <br>
+      with standard deviation SE. This is the CLT in action.
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> 10,000 simulated option payoffs have sample SD = $3.50.<br>
+      SE = 3.50 / √10,000 = 3.50 / 100 = <code>$0.035</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lower is better. Halving SE requires 4× more samples.</div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You want a single number describing the precision of your MC estimate.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> The outcome distribution is heavy-tailed — SE can be misleadingly small.</div>
+    </div>
+  </div>
+
+  <div class="metric mc">
+    <h4>Confidence Interval (CI) <span class="badge">Accuracy</span></h4>
+    <p><strong>What it measures:</strong> A range around the MC estimate that contains the true value with a specified probability (typically 95%).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      CI<sub>95%</sub> = x̄ ± 1.96 · SE
+      <br><br>
+      <span class="lbl">Half-width (absolute error)</span>
+      HW = 1.96 · σ̂ / √N
+      <br><br>
+      <span class="lbl">Required N for target half-width ε</span>
+      N = ( 1.96 · σ̂ / ε )²
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> x̄ = $12.40, SE = $0.035.<br>
+      CI = $12.40 ± $0.069 = [ $12.33, $12.47 ]<br>
+      To achieve ±$0.01 half-width: N = (1.96 · 3.50 / 0.01)² = <code>470,596</code>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> The CI width is what you report to stakeholders. If it's too wide, increase N or reduce σ via variance reduction.</div>
+  </div>
+
+  <div class="metric mc">
+    <h4>Relative Error <span class="badge">Accuracy</span></h4>
+    <p><strong>What it measures:</strong> The CI half-width as a fraction of the estimate. Scale-free accuracy metric.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      RE = HW / |x̄| = ( 1.96 · σ̂ ) / ( √N · |x̄| )
+      <br><br>
+      <span class="lbl">Coefficient of Variation (CV)</span>
+      CV = σ̂ / |x̄|
+      <br>
+      RE = 1.96 · CV / √N
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • RE &lt; 1% → production-ready ✅<br>
+      • RE 1–5% → acceptable for most applications<br>
+      • RE &gt; 10% → increase N or use variance reduction
+    </div>
+  </div>
+
+  <div class="metric conv">
+    <h4>Effective Sample Size (ESS) <span class="badge">Convergence</span></h4>
+    <p><strong>What it measures:</strong> For correlated samples (MCMC, sequential MC), the equivalent number of <em>independent</em> samples that would give the same precision.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ESS = N / ( 1 + 2 · Σ<sub>t=1</sub><sup>T</sup> ρ<sub>t</sub> )
+      <br><br>
+      ρ<sub>t</sub> = autocorrelation at lag t
+      <br>
+      T = truncation lag (where autocorrelation dies out)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> ESS ≪ N means samples are highly correlated and you need more iterations. Only ESS is meaningful; N is misleading.</div>
+  </div>
+
+  <div class="metric conv">
+    <h4>Gelman-Rubin R̂ (R-hat) <span class="badge">Convergence</span></h4>
+    <p><strong>What it measures:</strong> Whether multiple MCMC chains have converged to the same distribution. Compares between-chain and within-chain variance.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      R̂ = √[ ( ( N − 1 ) / N · W + B / N ) / W ]
+      <br><br>
+      W = within-chain variance (average)
+      <br>
+      B = between-chain variance × N
+      <br><br>
+      <span class="lbl">Interpretation</span>
+      R̂ ≈ 1.00 → chains have converged
+      <br>
+      R̂ &gt; 1.01 → not converged, run more iterations
+    </div>
+  </div>
+
+  <h3>5.2 Accuracy &amp; Validation KPIs</h3>
+
+  <div class="metric mc">
+    <h4>Bias vs. Analytical Solution <span class="badge">Validation</span></h4>
+    <p><strong>What it measures:</strong> Whether the MC estimate matches a known analytical truth (for test problems).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Bias = x̄<sub>MC</sub> − x<sub>true</sub>
+      <br><br>
+      <span class="lbl">Bias as multiples of SE</span>
+      z = ( x̄<sub>MC</sub> − x<sub>true</sub> ) / SE
+      <br><br>
+      |z| &lt; 2 → consistent with unbiased estimate at 95% confidence
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> For any known-answer problem (e.g., π, Black-Scholes), MC should be within ~2 SE of truth 95% of the time. Persistent bias indicates a bug or a bad model.</div>
+  </div>
+
+  <div class="metric mc">
+    <h4>Convergence Diagnostic — Geweke Test <span class="badge">Convergence</span></h4>
+    <p><strong>What it measures:</strong> Whether the beginning and end of a sample sequence have the same mean (no drift).</p>
+    <div class="formula">
+      <span class="lbl">Geweke z-score</span>
+      z = ( x̄<sub>early</sub> − x̄<sub>late</sub> ) / √( SE<sub>early</sub>² + SE<sub>late</sub>² )
+      <br><br>
+      <span class="lbl">Interpretation</span>
+      |z| &lt; 1.96 → no evidence of non-convergence
+      <br>
+      |z| &gt; 2 → not converged, run longer
+    </div>
+  </div>
+
+  <div class="metric mc">
+    <h4>Variance Reduction Ratio (VRR) <span class="badge">Efficiency</span></h4>
+    <p><strong>What it measures:</strong> How much a variance reduction technique (antithetic, control variate, importance sampling) reduces the standard error.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      VRR = Var( MC naive ) / Var( MC reduced )
+      <br><br>
+      <span class="lbl">Equivalent speedup</span>
+      Speedup = VRR × (time per naive path / time per reduced path)
+      <br><br>
+      <span class="lbl">Interpretation</span>
+      VRR = 16 → reduced estimator needs 16× fewer paths for the same SE
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> VRR &gt; 4 is worth implementing. VRR &gt; 100 is excellent and usually achievable with control variates on financial derivatives.</div>
+  </div>
+
+  <h3>5.3 Efficiency KPIs</h3>
+
+  <div class="metric conv">
+    <h4>Paths per Second (Throughput) <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> How many simulated paths (samples) the engine processes per second.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Throughput = N / T<sub>run</sub>
+      <br><br>
+      N = total paths simulated
+      <br>
+      T<sub>run</sub> = wall-clock runtime (seconds)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Target depends on problem complexity. Simple option pricing on GPU: 10M+ paths/sec. Complex path-dependent: 100K–1M paths/sec. Longstaff-Schwartz regression at each step: 10–100K paths/sec.</div>
+  </div>
+
+  <div class="metric conv">
+    <h4>Time-to-Precision <span class="badge">Performance</span></h4>
+    <p><strong>What it measures:</strong> Runtime required to reach a target standard error.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      T = ( σ̂² · τ ) / SE²
+      <br><br>
+      τ = average time per path
+      <br>
+      SE = target standard error
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Combine SE and throughput into a single "efficiency" number. Lower is better. Used to compare algorithms, not just hardware.</div>
+  </div>
+
+  <div class="metric conv">
+    <h4>Random Number Generator Quality <span class="badge">Quality</span></h4>
+    <p><strong>What it measures:</strong> The statistical quality of the pseudo-random generator. Test with the Diehard, NIST, or TestU01 suites.</p>
+    <div class="formula">
+      <span class="lbl">Key properties</span>
+      • Long period (≥ 2<sup>128</sup>)
+      <br>
+      • Passes chi-squared uniformity tests
+      <br>
+      • Passes serial correlation tests
+      <br>
+      • Passes spectral tests
+      <br>
+      • No low-order bit correlations
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Use well-tested PRNGs: Mersenne Twister, PCG64, Philox, xoshiro256. Never use language defaults without verification.</div>
+  </div>
+
+  <h3>5.4 📊 Interactive: Error vs. Samples — The 1/√N Rule</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Change the "problem volatility" slider to see how the constant in front of 1/√N changes. All MC estimators have the same slope (−0.5 on log-log), but the intercept depends on the variance of the underlying problem. This is why variance reduction techniques matter — they shift the curve down.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Problem volatility (σ)</div>
+        <div class="val" id="convSigmaVal" style="color:#7c3aed;">1.00</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Samples to reach SE = 0.01</div>
+        <div class="val" id="convRequired" style="color:#0891b2;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Variance reduction factor</div>
+        <div class="val" id="convVRF" style="color:#059669;">1×</div>
+      </div>
+    </div>
+
+    <div class="demo-sliders">
+      <label>σ (problem volatility): <span id="convSigmaLbl" style="color:var(--accent-dark);">1.00</span></label>
+      <input type="range" id="convSigmaSlider" min="0.2" max="5" value="1" step="0.05">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Standard Error vs. Number of Samples (log-log)</div>
+      <div id="convChart" style="height:420px;"></div>
+      <div class="chart-note">The slope is always −0.5 on log-log. Higher σ shifts the entire curve up (worse precision). Variance reduction shifts the curve down (better precision without more samples).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once a Monte Carlo model is in production (pricing options, computing VaR, running simulations for real decisions), you must monitor whether the output remains accurate, well-calibrated, and stable.</p>
+
+  <h3>6.1 Backtesting KPIs</h3>
+
+  <div class="metric post">
+    <h4>Prediction Interval Coverage <span class="badge">Calibration</span></h4>
+    <p><strong>What it measures:</strong> Whether the model's prediction intervals contain the realized outcome at the expected rate.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Coverage = # { t : y<sub>t</sub> ∈ [ L<sub>t</sub>, U<sub>t</sub> ] } / T
+      <br><br>
+      [L<sub>t</sub>, U<sub>t</sub>] = 95% prediction interval at time t
+      <br><br>
+      <span class="lbl">Expected coverage</span>
+      For a 95% interval, coverage should be ≈ 0.95
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Coverage &lt; 0.90 = intervals too narrow (model underestimates uncertainty). Coverage &gt; 0.98 = intervals too wide (model overestimates uncertainty).</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Kupiec POF Test (VaR Backtesting) <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Whether the number of VaR breaches matches the expected breach rate. Standard regulatory test.</p>
+    <div class="formula">
+      <span class="lbl">Null hypothesis</span>
+      H₀: actual breach rate = expected breach rate (e.g., 5% for 95% VaR)
+      <br><br>
+      <span class="lbl">Likelihood ratio statistic</span>
+      LR<sub>POF</sub> = −2 · ln[ ( 1 − p )<sup>N−x</sup> · p<sup>x</sup> ] + 2 · ln[ ( 1 − x/N )<sup>N−x</sup> · ( x/N )<sup>x</sup> ]
+      <br><br>
+      p = expected breach probability
+      <br>
+      x = observed number of breaches
+      <br>
+      N = number of observations
+      <br><br>
+      LR ~ χ²(1) under H₀
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> p-value &lt; 0.05 → model is mis-calibrated; VaR is too low (too many breaches) or too high (too few breaches).</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Christoffersen Independence Test <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Whether VaR breaches are independent over time (no clustering).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      LR<sub>IND</sub> = −2 · ln[ (1−π)<sup>n₀₀+n₁₀</sup> · π<sup>n₀₁+n₁₁</sup> ] + 2 · ln[ (1−π₀)<sup>n₀₀</sup> · π₀<sup>n₀₁</sup> · (1−π₁)<sup>n₁₀</sup> · π₁<sup>n₁₁</sup> ]
+      <br><br>
+      n<sub>ij</sub> = number of transitions from state i to state j (0 = no breach, 1 = breach)
+      <br>
+      π = (n₀₁ + n₁₁) / N, π₀ = n₀₁/(n₀₀+n₀₁), π₁ = n₁₁/(n₁₀+n₁₁)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> p-value &lt; 0.05 → breaches cluster; model misses regime changes.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Expected Shortfall (ES) Backtest <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Whether the model's average loss on breach days matches the ES prediction.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ES<sub>actual</sub> = ( 1 / #breaches ) · Σ<sub>breach days</sub> loss<sub>t</sub>
+      <br><br>
+      <span class="lbl">Ratio</span>
+      ES ratio = ES<sub>actual</sub> / ES<sub>predicted</sub>
+      <br><br>
+      Ratio ≈ 1 → well-calibrated
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ratio &gt; 1.2 → ES underestimated. Ratio &lt; 0.8 → ES overestimated. Basel FRTB mandates ES backtests.</div>
+  </div>
+
+  <h3>6.2 Model Drift KPIs</h3>
+
+  <div class="metric post">
+    <h4>Estimate Stability Across Runs <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> Whether the MC estimate is stable when re-run with different random seeds.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Stability = 1 − ( SD<sub>across runs</sub> / | mean<sub>across runs</sub> | )
+      <br><br>
+      <span class="lbl">Alternative: SE across runs</span>
+      SE<sub>cross</sub> = SD( x̄<sub>run 1</sub>, x̄<sub>run 2</sub>, …, x̄<sub>run K</sub> )
+      <br>
+      Should be ≈ SE / √K
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Cross-run SE should match within-run SE. If it's much larger, the random number generator or model has an issue.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Parameter Sensitivity Drift <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> How much the MC output changes when inputs shift slightly. Monitors the model's "delta."</p>
+    <div class="formula">
+      <span class="lbl">Sensitivity</span>
+      S<sub>θ</sub> = ( ∂ MC / ∂ θ ) · ( θ / MC )
+      <br><br>
+      <span class="lbl">Numerical estimate (bump-and-revalue)</span>
+      S<sub>θ</sub> ≈ [ MC(θ + Δ) − MC(θ) ] / Δ · ( θ / MC(θ) )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> A sensitivity that drifts over time suggests the model's response to inputs has changed — investigate before trusting new outputs.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Output Distribution Drift (PSI / KS) <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> Whether the distribution of MC outputs has shifted vs. training time.</p>
+    <div class="formula">
+      <span class="lbl">Population Stability Index (PSI)</span>
+      PSI = Σ<sub>i</sub> ( A%<sub>i</sub> − E%<sub>i</sub> ) · ln( A%<sub>i</sub> / E%<sub>i</sub> )
+      <br><br>
+      <span class="lbl">Kolmogorov-Smirnov statistic</span>
+      KS = max<sub>x</sub> | F<sub>train</sub>(x) − F<sub>prod</sub>(x) |
+    </div>
+    <div class="interp">
+      <strong>PSI thresholds:</strong><br>
+      • PSI &lt; 0.10 → stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → moderate shift ⚠️<br>
+      • PSI ≥ 0.25 → significant drift, investigate 🚨
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Model Version Stability <span class="badge">Stability</span></h4>
+    <p><strong>What it measures:</strong> When you upgrade the MC engine (new RNG, new hardware, new algorithm), does the output change more than expected?</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Δ = | MC<sub>new</sub> − MC<sub>old</sub> | / SE<sub>combined</sub>
+      <br><br>
+      SE<sub>combined</sub> = √( SE<sub>new</sub>² + SE<sub>old</sub>² )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> |Δ| &lt; 2 → new version consistent with old. |Δ| &gt; 3 → investigate before promoting to production.</div>
+  </div>
+
+  <h3>6.3 Operational KPIs</h3>
+
+  <div class="metric post">
+    <h4>Latency Percentiles (p50/p95/p99) <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> Time to complete a full MC run.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Latency = wall-clock time from request to result
+      <br><br>
+      Track p50, p95, p99 for a rolling window.
+    </div>
+    <div class="interp"><strong>Target example:</strong> For real-time pricing, p95 &lt; 100 ms. For overnight risk, p95 &lt; 4 hours for the whole book.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Throughput (Paths/sec) <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Throughput = # paths completed / second
+      <br><br>
+      <span class="lbl">Scale with resources</span>
+      Ideally scales linearly with CPU/GPU count — parallel efficiency
+      <br>
+      Speedup(p) = T(1) / T(p)
+      <br>
+      Efficiency(p) = Speedup(p) / p
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Failure &amp; Retry Rate <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      FailureRate = failed runs / total runs
+      <br>
+      RetryRate = retried runs / total runs
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Should be near zero. Common failures: numerical overflow, singular matrices, out-of-domain samples.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Cost per Simulation <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Total computational cost (CPU-hours × price) per MC run or per estimate.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Cost = ( CPU-hours ) × ( price per CPU-hour ) + GPU costs + storage
+      <br><br>
+      <span class="lbl">Cost per unit precision</span>
+      Cost / SE
+    </div>
+  </div>
+
+  <div class="metric business">
+    <h4>Business Impact / ROI <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ROI % = ( Net Gain / Total Cost ) × 100%
+      <br><br>
+      <span class="lbl">Example (trading)</span>
+      Net Gain = improvement in P&L from better pricing
+      <br>
+      Cost = infrastructure + development + monitoring
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> Better VaR estimates reduce regulatory capital by ₹50 Cr. Total MC infra cost = ₹5 Cr.<br>
+      ROI = (50 − 5) / 5 × 100 = <code>900%</code>
+    </div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#ecfeff);">
+    <strong>Golden rule:</strong> A Monte Carlo model is only as good as its <em>calibration to reality</em>. A beautiful simulation with wrong inputs produces beautiful nonsense. Always backtest against realized outcomes, monitor drift, and re-validate whenever the input distribution changes.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How Monte Carlo Works</h2>
+  <p>The core idea: <strong>estimate an expectation by averaging random samples.</strong> Everything else is variations on this theme.</p>
+
+  <h3>7.1 The Fundamental Theorem of Monte Carlo</h3>
+  <div class="formula">
+    <span class="lbl">Goal</span>
+    Compute I = E[ f(X) ] = ∫ f(x) p(x) dx
+    <br><br>
+    <span class="lbl">Monte Carlo estimator</span>
+    Î<sub>N</sub> = (1/N) · Σ<sub>i=1</sub><sup>N</sup> f( X<sub>i</sub> )
+    <br><br>
+    where X<sub>i</sub> ~ p (i.i.d. samples from the distribution of X)
+    <br><br>
+    <span class="lbl">Law of Large Numbers</span>
+    Î<sub>N</sub> → I &nbsp; almost surely as N → ∞
+    <br><br>
+    <span class="lbl">Central Limit Theorem</span>
+    √N · ( Î<sub>N</sub> − I ) / σ &nbsp; → &nbsp; N( 0, 1 ) &nbsp; as N → ∞
+    <br>
+    where σ² = Var[ f(X) ]
+  </div>
+
+  <h3>7.2 Standard Error and Confidence Interval</h3>
+  <div class="formula">
+    <span class="lbl">Sample variance of f(X)</span>
+    σ̂² = ( 1 / (N − 1) ) · Σ<sub>i=1</sub><sup>N</sup> ( f(X<sub>i</sub>) − Î<sub>N</sub> )²
+    <br><br>
+    <span class="lbl">Standard error</span>
+    SE = σ̂ / √N
+    <br><br>
+    <span class="lbl">95% confidence interval</span>
+    CI = Î<sub>N</sub> ± 1.96 · SE
+    <br><br>
+    <span class="lbl">Relative error</span>
+    RE = 1.96 · SE / | Î<sub>N</sub> |
+  </div>
+
+  <h3>7.3 Convergence Rate — The 1/√N Law</h3>
+  <div class="formula">
+    <span class="lbl">Error scaling</span>
+    | Î<sub>N</sub> − I | ~ O( σ / √N )
+    <br><br>
+    <span class="lbl">Samples needed to reach target error ε</span>
+    N = ( 1.96 · σ / ε )²
+    <br><br>
+    <span class="lbl">Dimension independence</span>
+    The rate σ/√N is independent of the dimension d of X.
+    <br>
+    This is why MC beats grid-based quadrature for d ≥ 5.
+    <br><br>
+    <span class="lbl">Compare to quadrature</span>
+    Trapezoidal rule: O( N<sup>−2/d</sup> ) &nbsp; (curse of dimensionality!)
+    <br>
+    Monte Carlo: O( N<sup>−1/2</sup> ) &nbsp; (dimension-independent)
+    <br>
+    QMC (Sobol): O( N<sup>−1</sup> · log(N)<sup>d</sup> ) &nbsp; (nearly O(1/N))
+  </div>
+
+  <h3>7.4 Variance Reduction Techniques</h3>
+  <div class="formula">
+    <span class="lbl">Antithetic Variates</span>
+    If U ~ Uniform(0,1) and Ū = 1 − U, use both:
+    <br>
+    Î<sub>AT</sub> = (1/N) · Σ<sub>i=1</sub><sup>N/2</sup> [ f( U<sub>i</sub> ) + f( Ū<sub>i</sub> ) ]
+    <br>
+    Variance reduction when Cov( f(U), f(1−U) ) &lt; 0
+    <br><br>
+    <span class="lbl">Control Variates</span>
+    Suppose we know E[ g(X) ] = μ<sub>g</sub> analytically, where g is correlated with f:
+    <br>
+    Î<sub>CV</sub> = Î<sub>N</sub> − c · ( ĝ<sub>N</sub> − μ<sub>g</sub> )
+    <br>
+    with optimal c* = Cov( f, g ) / Var( g )
+    <br>
+    Variance reduction factor = 1 − ρ<sub>f,g</sub>²
+    <br><br>
+    <span class="lbl">Importance Sampling</span>
+    Sample from a biased distribution q instead of p:
+    <br>
+    I = E<sub>p</sub>[ f(X) ] = E<sub>q</sub>[ f(X) · p(X) / q(X) ]
+    <br>
+    Î<sub>IS</sub> = (1/N) · Σ<sub>i=1</sub><sup>N</sup> f( Y<sub>i</sub> ) · w( Y<sub>i</sub> )
+    <br>
+    where Y<sub>i</sub> ~ q, w( y ) = p( y ) / q( y ) is the importance weight
+    <br>
+    Choose q proportional to |f · p| to get zero variance (ideal case)
+    <br><br>
+    <span class="lbl">Stratified Sampling</span>
+    Split domain into m strata, sample n<sub>k</sub> from each:
+    <br>
+    Î<sub>ST</sub> = Σ<sub>k=1</sub><sup>m</sup> p<sub>k</sub> · Î<sub>k</sub>
+    <br>
+    Var( Î<sub>ST</sub> ) ≤ Var( Î<sub>N</sub> ) when strata are homogeneous
+    <br><br>
+    <span class="lbl">Common Random Numbers (CRN)</span>
+    Use the same random seed across scenarios to compare them consistently.
+    <br>
+    Reduces variance of differences, key for sensitivity analysis.
+  </div>
+
+  <h3>7.5 Quasi-Monte Carlo (QMC)</h3>
+  <div class="formula">
+    <span class="lbl">Low-discrepancy sequences</span>
+    Instead of i.i.d. uniform, use Sobol, Halton, or Faure sequences
+    <br>
+    They fill the unit cube more uniformly than random
+    <br><br>
+    <span class="lbl">Koksma-Hlawka inequality</span>
+    | Î<sub>QMC</sub> − I | ≤ V( f ) · D<sub>N</sub>*
+    <br>
+    D<sub>N</sub>* = star-discrepancy of the point set
+    <br>
+    V( f ) = Hardy-Krause variation of f
+    <br><br>
+    <span class="lbl">Convergence rate</span>
+    For Sobol: D<sub>N</sub>* = O( ( log N )<sup>d</sup> / N )
+    <br>
+    QMC achieves nearly O( 1/N ) for smooth integrands
+  </div>
+
+  <h3>7.6 Monte Carlo for Option Pricing (GBM)</h3>
+  <div class="formula">
+    <span class="lbl">Geometric Brownian Motion</span>
+    dS<sub>t</sub> = μ S<sub>t</sub> dt + σ S<sub>t</sub> dW<sub>t</sub>
+    <br><br>
+    <span class="lbl">Closed-form solution</span>
+    S<sub>t</sub> = S<sub>0</sub> · exp[ ( μ − σ²/2 ) · t + σ · W<sub>t</sub> ]
+    <br><br>
+    <span class="lbl">Discrete simulation (Euler-Maruyama)</span>
+    S<sub>t+Δt</sub> = S<sub>t</sub> · exp[ ( μ − σ²/2 ) · Δt + σ · √Δt · Z ]
+    <br>
+    where Z ~ N( 0, 1 )
+    <br><br>
+    <span class="lbl">European call option price</span>
+    V = e<sup>−rT</sup> · E[ max( S<sub>T</sub> − K, 0 ) ]
+    <br>
+    Î<sub>MC</sub> = e<sup>−rT</sup> · (1/N) · Σ<sub>i=1</sub><sup>N</sup> max( S<sub>T</sub><sup>(i)</sup> − K, 0 )
+    <br><br>
+    <span class="lbl">Black-Scholes closed form (for validation)</span>
+    C = S<sub>0</sub> · Φ( d<sub>1</sub> ) − K · e<sup>−rT</sup> · Φ( d<sub>2</sub> )
+    <br>
+    d<sub>1</sub> = [ ln( S<sub>0</sub> / K ) + ( r + σ²/2 ) · T ] / ( σ · √T )
+    <br>
+    d<sub>2</sub> = d<sub>1</sub> − σ · √T
+  </div>
+
+  <h3>7.7 Value at Risk (VaR) and Expected Shortfall (ES)</h3>
+  <div class="formula">
+    <span class="lbl">VaR at level α</span>
+    VaR<sub>α</sub> = inf { x : P( L &gt; x ) ≤ 1 − α }
+    <br>
+    = the α-quantile of the loss distribution
+    <br><br>
+    <span class="lbl">Monte Carlo VaR</span>
+    1. Simulate N loss scenarios L<sub>1</sub>, L<sub>2</sub>, …, L<sub>N</sub>
+    <br>
+    2. Sort: L<sub>(1)</sub> ≤ L<sub>(2)</sub> ≤ … ≤ L<sub>(N)</sub>
+    <br>
+    3. VaR<sub>α</sub> ≈ L<sub>(⌈α·N⌉)</sub>
+    <br><br>
+    <span class="lbl">Expected Shortfall (CVaR)</span>
+    ES<sub>α</sub> = E[ L | L &gt; VaR<sub>α</sub> ]
+    <br>
+    ES<sub>α</sub> ≈ ( 1 / #breach ) · Σ<sub>i : L<sub>i</sub> &gt; VaR<sub>α</sub></sub> L<sub>i</sub>
+    <br><br>
+    <span class="lbl">Standard error of VaR</span>
+    SE( VaR<sub>α</sub> ) ≈ √[ α( 1 − α ) / N ] / f( q<sub>α</sub> )
+    <br>
+    f( q<sub>α</sub> ) = density of loss distribution at the α-quantile
+  </div>
+
+  <h3>7.8 Bootstrap Confidence Intervals</h3>
+  <div class="formula">
+    <span class="lbl">Procedure</span>
+    1. From the original sample X<sub>1</sub>, …, X<sub>N</sub>, draw B bootstrap samples
+    <br>
+    (each with replacement, same size N)
+    <br>
+    2. Compute the statistic θ̂<sub>b</sub> on each bootstrap sample
+    <br>
+    3. The bootstrap distribution of θ̂ approximates the sampling distribution
+    <br><br>
+    <span class="lbl">Percentile CI</span>
+    CI<sub>95%</sub> = [ θ̂<sub>(0.025)</sub>, θ̂<sub>(0.975)</sub> ]
+    <br><br>
+    <span class="lbl">Bias-corrected (BCa)</span>
+    Adjusts for bias and skewness using the jackknife
+    <br><br>
+    <span class="lbl">Bootstrap standard error</span>
+    SE<sub>boot</sub> = √[ (1/(B−1)) · Σ<sub>b</sub> ( θ̂<sub>b</sub> − θ̄ )² ]
+  </div>
+
+  <h3>7.9 Markov Chain Monte Carlo (MCMC)</h3>
+  <div class="formula">
+    <span class="lbl">Metropolis-Hastings</span>
+    1. Start at θ<sub>0</sub>
+    <br>
+    2. Propose θ' ~ q( θ' | θ<sub>t</sub> )
+    <br>
+    3. Accept with probability:
+    <br>
+    α = min( 1, [ p(θ') · q(θ<sub>t</sub> | θ') ] / [ p(θ<sub>t</sub>) · q(θ' | θ<sub>t</sub>) ] )
+    <br>
+    4. θ<sub>t+1</sub> = θ' if accepted, else θ<sub>t</sub>
+    <br><br>
+    <span class="lbl">Gibbs Sampler</span>
+    Sample each coordinate from its full conditional:
+    <br>
+    θ<sub>i</sub> ~ p( θ<sub>i</sub> | θ<sub>−i</sub>, data )
+    <br><br>
+    <span class="lbl">Effective Sample Size</span>
+    ESS = N / ( 1 + 2 · Σ<sub>t=1</sub><sup>T</sup> ρ<sub>t</sub> )
+  </div>
+
+  <h3>7.10 Assumptions of Monte Carlo</h3>
+  <div class="assumptions">
+    <div class="item">
+      <div class="letter">I</div>
+      <div class="name">i.i.d. samples</div>
+      <div class="desc">Samples must be independent and identically distributed</div>
+    </div>
+    <div class="item">
+      <div class="letter">F</div>
+      <div class="name">Finite variance</div>
+      <div class="desc">Var[f(X)] &lt; ∞ for CLT-based SE to be valid</div>
+    </div>
+    <div class="item">
+      <div class="letter">M</div>
+      <div class="name">Correct model</div>
+      <div class="desc">Input distributions must reflect reality</div>
+    </div>
+    <div class="item">
+      <div class="letter">R</div>
+      <div class="name">Good RNG</div>
+      <div class="desc">Pseudo-random generator must be statistically sound</div>
+    </div>
+    <div class="item">
+      <div class="letter">N</div>
+      <div class="name">Sufficient N</div>
+      <div class="desc">Large enough for CLT to kick in</div>
+    </div>
+  </div>
+
+  <h3>7.11 Central Limit Theorem — The Foundation</h3>
+  <p>Everything in Monte Carlo rests on this one theorem. It's what allows us to put a confidence interval on a simulation.</p>
+  <div class="formula">
+    <span class="lbl">Statement</span>
+    Let X<sub>1</sub>, X<sub>2</sub>, …, X<sub>N</sub> be i.i.d. with mean μ and variance σ² &lt; ∞.
+    <br>
+    Then as N → ∞:
+    <br><br>
+    √N · ( X̄<sub>N</sub> − μ ) / σ &nbsp; →<sub>d</sub>&nbsp; N( 0, 1 )
+    <br><br>
+    <span class="lbl">Practical implication</span>
+    For large N, X̄<sub>N</sub> ≈ N( μ, σ²/N )
+    <br>
+    So X̄<sub>N</sub> ± 1.96 · σ/√N is an approximate 95% CI
+    <br><br>
+    <span class="lbl">Berry-Esseen bound</span>
+    | F<sub>N</sub>(x) − Φ(x) | ≤ C · E[|X−μ|³] / ( σ³ · √N )
+    <br>
+    Gives a rate for how fast CLT convergence happens
+  </div>
+
+  <h3>📊 Interactive: Distribution of the Sample Mean (CLT in Action)</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The CLT says the sample mean is approximately normally distributed, regardless of the underlying distribution (as long as variance is finite). This chart shows the empirical distribution of 10,000 sample means computed from n samples each. Adjust n with the slider to see the distribution become narrower and more bell-shaped.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Samples per mean (n)</div>
+        <div class="val" id="cltNVal" style="color:#7c3aed;">30</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Underlying distribution</div>
+        <div class="val" id="cltDistLabel" style="color:#0891b2;">Exponential</div>
+      </div>
+      <div class="info">
+        <div class="lbl">SD of sample mean</div>
+        <div class="val" id="cltSD" style="color:#059669;">—</div>
+      </div>
+    </div>
+
+    <div class="demo-sliders">
+      <label>Sample size n: <span id="cltNLbl" style="color:var(--accent-dark);">30</span></label>
+      <input type="range" id="cltNSlider" min="1" max="200" value="30" step="1">
+    </div>
+
+    <div class="btn-group" style="margin: 16px 0;">
+      <button class="toggle active" data-clt="exponential">Exponential</button>
+      <button class="toggle" data-clt="uniform">Uniform</button>
+      <button class="toggle" data-clt="bimodal">Bimodal</button>
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Distribution of the Sample Mean</div>
+      <div id="cltChart" style="height:420px;"></div>
+      <div class="chart-note">Underlying distribution is shown in grey. The histogram of 10,000 sample means is shown in purple. As n increases, the sample mean becomes more normally distributed and its spread (SD) shrinks as 1/√n.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Algorithm &amp; Model Concepts</h3>
+  <div class="gloss">
+    <div>Monte Carlo (MC)</div><div>A computational technique that solves problems by repeated random sampling.</div>
+    <div>MCMC</div><div><strong>Markov Chain Monte Carlo</strong> — sampling from a distribution using a Markov chain.</div>
+    <div>QMC</div><div><strong>Quasi-Monte Carlo</strong> — using low-discrepancy sequences instead of random samples.</div>
+    <div>Sequential MC</div><div>Particle filters — sampling as new data arrives.</div>
+    <div>Bootstrap</div><div>Resampling with replacement to estimate uncertainty.</div>
+    <div>Jackknife</div><div>Leave-one-out resampling.</div>
+    <div>Monte Carlo Tree Search (MCTS)</div><div>A search algorithm using MC rollouts — powers AlphaGo.</div>
+    <div>Path Tracing</div><div>Photorealistic rendering via MC simulation of light.</div>
+    <div>Particle Filter</div><div>Sequential MC for state estimation in dynamic systems.</div>
+    <div>Importance Sampling</div><div>Sampling from a different distribution to reduce variance.</div>
+    <div>Antithetic Variates</div><div>Pairing samples to reduce variance (using U and 1−U).</div>
+    <div>Control Variates</div><div>Using a correlated known-quantity to reduce variance.</div>
+    <div>Stratified Sampling</div><div>Dividing the domain into homogeneous strata.</div>
+    <div>CRN</div><div><strong>Common Random Numbers</strong> — same seed across scenarios.</div>
+  </div>
+
+  <h3>Probability &amp; Statistics</h3>
+  <div class="gloss">
+    <div>PDF</div><div><strong>Probability Density Function</strong> — describes continuous probability.</div>
+    <div>CDF</div><div><strong>Cumulative Distribution Function</strong> — P(X ≤ x).</div>
+    <div>i.i.d.</div><div><strong>Independent and Identically Distributed</strong> — the key assumption for MC.</div>
+    <div>LLN</div><div><strong>Law of Large Numbers</strong> — sample mean converges to true mean.</div>
+    <div>CLT</div><div><strong>Central Limit Theorem</strong> — sample mean is approximately normal.</div>
+    <div>SE</div><div><strong>Standard Error</strong> — σ/√N, standard deviation of the estimate.</div>
+    <div>CI</div><div><strong>Confidence Interval</strong> — range containing the true value with a stated probability.</div>
+    <div>CV</div><div><strong>Coefficient of Variation</strong> — σ/μ, relative dispersion.</div>
+    <div>RE</div><div><strong>Relative Error</strong> — error as a fraction of the estimate.</div>
+    <div>ESS</div><div><strong>Effective Sample Size</strong> — equivalent number of independent samples.</div>
+    <div>R̂ (R-hat)</div><div>Gelman-Rubin statistic for MCMC convergence.</div>
+    <div>Quantile</div><div>The value below which a given fraction of data lies.</div>
+    <div>VaR</div><div><strong>Value at Risk</strong> — the α-quantile of the loss distribution.</div>
+    <div>ES</div><div><strong>Expected Shortfall</strong> — average loss beyond VaR. Also called CVaR.</div>
+    <div>GBM</div><div><strong>Geometric Brownian Motion</strong> — standard model for stock prices.</div>
+    <div>GBM Path</div><div>A single simulated trajectory of a stock price.</div>
+  </div>
+
+  <h3>Numerical Methods</h3>
+  <div class="gloss">
+    <div>PRNG</div><div><strong>Pseudo-Random Number Generator</strong> — deterministic algorithm producing statistically random numbers.</div>
+    <div>Mersenne Twister</div><div>A widely used PRNG with period 2<sup>19937</sup>−1.</div>
+    <div>PCG</div><div><strong>Permuted Congruential Generator</strong> — a modern fast PRNG.</div>
+    <div>Sobol Sequence</div><div>A low-discrepancy sequence for QMC.</div>
+    <div>Halton Sequence</div><div>A low-discrepancy sequence using coprime bases.</div>
+    <div>Euler-Maruyama</div><div>A numerical scheme for SDEs (used to simulate GBM).</div>
+    <div>Milstein Scheme</div><div>Higher-order SDE discretisation.</div>
+    <div>Longstaff-Schwartz</div><div>Regression-based MC for American options.</div>
+    <div>Koksma-Hlawka</div><div>Error bound for QMC.</div>
+    <div>Diehard Tests</div><div>A statistical test suite for PRNGs.</div>
+    <div>NIST Test Suite</div><div>Another PRNG test suite.</div>
+  </div>
+
+  <h3>Finance Applications</h3>
+  <div class="gloss">
+    <div>Black-Scholes</div><div>Closed-form European option pricing formula.</div>
+    <div>Exotic Option</div><div>Options with non-standard payoffs (Asian, Barrier, Lookback).</div>
+    <div>Asian Option</div><div>Payoff depends on average price over a period.</div>
+    <div>Barrier Option</div><div>Payoff activated or cancelled when price crosses a barrier.</div>
+    <div>Path-Dependent</div><div>Payoff depends on the entire price trajectory.</div>
+    <div>Greek</div><div>Sensitivity of option price to a parameter (Δ, Γ, Vega, Θ, ρ).</div>
+    <div>Bump-and-Revalue</div><div>Numerical Greek calculation: shift input, recompute.</div>
+    <div>Adjoint MC</div><div>Efficient Greek computation via algorithmic differentiation.</div>
+    <div>Kupiec Test</div><div>VaR backtest based on the proportion of failures.</div>
+    <div>Christoffersen Test</div><div>VaR backtest for independence of breaches.</div>
+  </div>
+
+  <h3>Monitoring &amp; Deployment</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model performance.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift.</div>
+    <div>KS Test</div><div><strong>Kolmogorov-Smirnov test</strong> — tests whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback-Leibler divergence</strong> — measures distribution difference.</div>
+    <div>Geweke Test</div><div>A convergence diagnostic based on comparing beginning and end of a chain.</div>
+    <div>Drift</div><div>Change in data distribution or model behaviour over time.</div>
+    <div>MLOps</div><div><strong>Machine Learning Operations</strong> — deploying and monitoring models.</div>
+    <div>Latency</div><div>Wall-clock time to compute a result.</div>
+    <div>Throughput</div><div>Number of operations completed per unit time.</div>
+    <div>p50/p95/p99</div><div>Percentile latency metrics.</div>
+    <div>ROI</div><div><strong>Return On Investment</strong> — (gain − cost) / cost.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum Control Chart</strong> — sequential change detection.</div>
+  </div>
+
+  <h3>Statistical Tests &amp; Distributions</h3>
+  <div class="gloss">
+    <div>Normal</div><div>The Gaussian distribution — mean μ, variance σ².</div>
+    <div>Lognormal</div><div>Distribution of exp(Normal) — used for stock prices.</div>
+    <div>Uniform</div><div>Equal probability over an interval.</div>
+    <div>Exponential</div><div>Time between Poisson events.</div>
+    <div>Poisson</div><div>Count of events in a fixed interval.</div>
+    <div>Beta</div><div>Bounded [0,1] distribution — used for probabilities.</div>
+    <div>Dirichlet</div><div>Multivariate generalisation of Beta.</div>
+    <div>Copula</div><div>A function coupling marginal distributions into a joint.</div>
+    <div>Gaussian Copula</div><div>Copula based on a multivariate normal.</div>
+    <div>t-distribution</div><div>Heavier tails than normal — used for small-sample CIs.</div>
+    <div>Chi-square</div><div>Distribution of sum of squared normals.</div>
+    <div>Berry-Esseen</div><div>Bound on the rate of CLT convergence.</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs and core formulas in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:24%;">KPI / Formula</th>
+      <th style="width:14%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>MC Estimator</td><td>Math</td><td>Î = (1/N) · Σ f(X<sub>i</sub>)</td><td>Converges to truth</td></tr>
+    <tr><td>Sample Variance</td><td>Math</td><td>σ̂² = (1/(N−1)) · Σ (f(X<sub>i</sub>) − Î)²</td><td>—</td></tr>
+    <tr><td>Standard Error</td><td>KPI</td><td>SE = σ̂ / √N</td><td>↓ Lower</td></tr>
+    <tr><td>95% CI</td><td>KPI</td><td>Î ± 1.96 · SE</td><td>↓ Narrower</td></tr>
+    <tr><td>Relative Error</td><td>KPI</td><td>RE = 1.96 · SE / |Î|</td><td>↓ &lt; 1%</td></tr>
+    <tr><td>Required N</td><td>KPI</td><td>N = (1.96 · σ̂ / ε)²</td><td>—</td></tr>
+    <tr><td>Convergence Rate</td><td>Math</td><td>Error ~ O(σ / √N)</td><td>O(1/√N)</td></tr>
+    <tr><td>Effective Sample Size</td><td>KPI</td><td>ESS = N / (1 + 2·Σρ<sub>t</sub>)</td><td>↑ → N</td></tr>
+    <tr><td>Gelman-Rubin R̂</td><td>KPI</td><td>√[((N−1)/N·W + B/N)/W]</td><td>↓ → 1.00</td></tr>
+    <tr><td>Geweke z-score</td><td>KPI</td><td>(x̄<sub>early</sub> − x̄<sub>late</sub>) / √(SE<sub>e</sub>² + SE<sub>l</sub>²)</td><td>|z| &lt; 2</td></tr>
+    <tr><td>Antithetic Variates</td><td>Math</td><td>(1/N) Σ [f(U<sub>i</sub>) + f(1−U<sub>i</sub>)]</td><td>Var reduction</td></tr>
+    <tr><td>Control Variates</td><td>Math</td><td>Î − c(ĝ − μ<sub>g</sub>)</td><td>Var × (1−ρ²)</td></tr>
+    <tr><td>Importance Sampling</td><td>Math</td><td>(1/N) Σ f(Y<sub>i</sub>) · p(Y<sub>i</sub>)/q(Y<sub>i</sub>)</td><td>Var reduction</td></tr>
+    <tr><td>Koksma-Hlawka</td><td>QMC</td><td>|Î − I| ≤ V(f) · D<sub>N</sub>*</td><td>QMC error bound</td></tr>
+    <tr><td>GBM Path</td><td>Math</td><td>S<sub>t+Δt</sub> = S<sub>t</sub> · exp[(μ − σ²/2)Δt + σ√Δt·Z]</td><td>—</td></tr>
+    <tr><td>Black-Scholes</td><td>Math</td><td>C = S₀Φ(d₁) − Ke<sup>−rT</sup>Φ(d₂)</td><td>Validation</td></tr>
+    <tr><td>VaR (α)</td><td>KPI</td><td>α-quantile of simulated losses</td><td>↓ Lower</td></tr>
+    <tr><td>ES (CVaR)</td><td>KPI</td><td>E[L | L &gt; VaR<sub>α</sub>]</td><td>↓ Lower</td></tr>
+    <tr><td>Kupiec LR</td><td>Post</td><td>−2 ln[LR<sub>null</sub>] + 2 ln[LR<sub>alt</sub>]</td><td>p &gt; 0.05</td></tr>
+    <tr><td>Christoffersen LR</td><td>Post</td><td>Test for independence of breaches</td><td>p &gt; 0.05</td></tr>
+    <tr><td>Coverage</td><td>Post</td><td># {y<sub>t</sub> ∈ CI} / T</td><td>≈ nominal</td></tr>
+    <tr><td>Cross-run Stability</td><td>Post</td><td>1 − SD(estimates) / |mean|</td><td>↑ → 1</td></tr>
+    <tr><td>PSI</td><td>Post</td><td>Σ (A% − E%) ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>KS Statistic</td><td>Post</td><td>max |F<sub>train</sub> − F<sub>prod</sub>|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>Throughput</td><td>Post</td><td>paths / second</td><td>↑ Higher</td></tr>
+    <tr><td>Latency</td><td>Post</td><td>Wall-clock time per run</td><td>↓ Lower</td></tr>
+    <tr><td>Time-to-Precision</td><td>Post</td><td>(σ̂² · τ) / SE²</td><td>↓ Lower</td></tr>
+    <tr><td>ROI</td><td>Post</td><td>(Net Gain / Total Cost) × 100%</td><td>↑ Higher</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> Monte Carlo is the most general-purpose numerical technique in existence — but only if used thoughtfully. Always (1) validate against analytical solutions on known test problems, (2) report SE and CI alongside every estimate, (3) use variance reduction when VRR &gt; 4, (4) verify your RNG quality, (5) monitor cross-run stability in production, and (6) backtest against realized outcomes. A Monte Carlo estimate without an error bar is not a result — it's a wish.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Monte Carlo Simulation Models — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   Utility functions
+   ============================================================ */
+function randn(){
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+function expSample(lambda){
+  return -Math.log(1 - Math.random()) / lambda;
+}
+function uniformSample(a, b){
+  return a + (b - a) * Math.random();
+}
+function bimodalSample(){
+  return Math.random() < 0.5 ? randn() * 0.5 - 1.5 : randn() * 0.5 + 1.5;
+}
+
+/* ============================================================
+   1. PI ESTIMATION
+   ============================================================ */
+(function(){
+  const TRUE_PI = Math.PI;
+  let points = [];           // all points
+  let insideCount = 0;
+  let runningEstimate = [];  // {n, estimate}
+  let runningN = [];
+
+  const piN = document.getElementById('piN');
+  const piInside = document.getElementById('piInside');
+  const piEstimate = document.getElementById('piEstimate');
+  const piError = document.getElementById('piError');
+
+  const btn500 = document.getElementById('piRun500');
+  const btn5000 = document.getElementById('piRun5000');
+  const btnReset = document.getElementById('piReset');
+
+  function addPoints(n){
+    for (let i = 0; i < n; i++){
+      const x = Math.random();
+      const y = Math.random();
+      const isInside = (x*x + y*y) <= 1;
+      points.push({x, y, isInside});
+      if (isInside) insideCount++;
+    }
+    const N = points.length;
+    const estimate = 4 * insideCount / N;
+    runningEstimate.push(estimate);
+    runningN.push(N);
+  }
+
+  function render(){
+    const N = points.length;
+    piN.textContent = N.toLocaleString();
+    piInside.textContent = insideCount.toLocaleString();
+    const estimate = N === 0 ? 0 : 4 * insideCount / N;
+    piEstimate.textContent = N === 0 ? '—' : estimate.toFixed(5);
+    piError.textContent = N === 0 ? '—' : Math.abs(estimate - TRUE_PI).toFixed(5);
+
+    // Scatter
+    const inside = points.filter(p => p.isInside);
+    const outside = points.filter(p => !p.isInside);
+
+    const traceIn = {
+      x: inside.map(p => p.x), y: inside.map(p => p.y),
+      mode: 'markers', name: 'Inside circle (' + inside.length + ')',
+      marker: {color: '#0891b2', size: 4, opacity: 0.7},
+      type: 'scatter'
+    };
+    const traceOut = {
+      x: outside.map(p => p.x), y: outside.map(p => p.y),
+      mode: 'markers', name: 'Outside circle (' + outside.length + ')',
+      marker: {color: '#94a3b8', size: 4, opacity: 0.5},
+      type: 'scatter'
+    };
+
+    // Quarter circle line
+    const theta = [];
+    for (let i = 0; i <= 100; i++) theta.push(i * Math.PI / 200);
+    const traceArc = {
+      x: theta.map(t => Math.cos(t)),
+      y: theta.map(t => Math.sin(t)),
+      mode: 'lines', name: 'Quarter circle',
+      line: {color: '#7c3aed', width: 3}, hoverinfo: 'skip'
+    };
+
+    const layoutScatter = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'x', font:{size:11}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'y', font:{size:11}}, gridcolor:'#e2e8f0', range:[0,1], showline:true, linecolor:'#cbd5e1', mirror:true, scaleanchor:'x'},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+      margin:{l:50, r:20, t:20, b:45},
+      height: 420,
+      hovermode: 'closest'
+    };
+    Plotly.react('piScatter', [traceArc, traceIn, traceOut], layoutScatter, {responsive:true, displayModeBar:false});
+
+    // Convergence
+    const ns = runningN;
+    const ests = runningEstimate;
+    // ±1/sqrt(N) band scaled around 4 for comparison
+    const upper = ns.map(n => TRUE_PI + 4 * 1 / Math.sqrt(n));
+    const lower = ns.map(n => TRUE_PI - 4 * 1 / Math.sqrt(n));
+
+    const traceBand = {
+      x: ns.concat(ns.slice().reverse()),
+      y: upper.concat(lower.slice().reverse()),
+      fill: 'toself', fillcolor: 'rgba(37,99,235,0.10)',
+      line: {color: 'transparent'},
+      name: '±1/√N band', hoverinfo: 'skip', showlegend: true
+    };
+    const traceTrue = {
+      x: [1, Math.max(ns[ns.length-1] || 1, 100)],
+      y: [TRUE_PI, TRUE_PI],
+      mode: 'lines', name: 'True π = ' + TRUE_PI.toFixed(4),
+      line: {color: '#059669', width: 2.5, dash: 'dash'}
+    };
+    const traceEst = {
+      x: ns, y: ests,
+      mode: 'lines', name: 'MC estimate',
+      line: {color: '#7c3aed', width: 2.5}
+    };
+
+    const layoutConv = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Number of samples N', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: ns[ns.length-1] > 5000 ? 'log' : 'linear'},
+      yaxis:{title:{text:'π estimate', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range:[2.8, 3.5]},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+      margin:{l:55, r:20, t:20, b:45},
+      height: 420,
+      hovermode: 'x unified'
+    };
+    Plotly.react('piConvergence', [traceBand, traceTrue, traceEst], layoutConv, {responsive:true, displayModeBar:false});
+  }
+
+  btn500.addEventListener('click', () => { addPoints(500); render(); });
+  btn5000.addEventListener('click', () => { addPoints(5000); render(); });
+  btnReset.addEventListener('click', () => {
+    points = []; insideCount = 0;
+    runningEstimate = []; runningN = [];
+    render();
+  });
+
+  render();
+})();
+
+/* ============================================================
+   2. MC CONVERGENCE RATE (log-log)
+   ============================================================ */
+(function(){
+  const ns = [];
+  for (let i = 1; i <= 30; i++) ns.push(Math.pow(10, i * 0.2));  // log-spaced from 10^0.2 to 10^6
+
+  // Three problems with different sigmas
+  const problems = [
+    {name: 'π estimation (σ ≈ 1.64)', sigma: 1.64, color: '#0891b2'},
+    {name: 'Portfolio VaR (σ = 5)', sigma: 5.0, color: '#7c3aed'},
+    {name: 'Option pricing (σ = 2)', sigma: 2.0, color: '#db2777'}
+  ];
+
+  const traces = problems.map(p => ({
+    x: ns,
+    y: ns.map(n => p.sigma / Math.sqrt(n)),
+    mode: 'lines',
+    name: p.name,
+    line: {color: p.color, width: 3}
+  }));
+
+  // Reference slope 1/√N
+  const refTrace = {
+    x: ns,
+    y: ns.map(n => 3 / Math.sqrt(n)),
+    mode: 'lines',
+    name: 'Reference: 3/√N',
+    line: {color: '#94a3b8', width: 2, dash: 'dot'}
+  };
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'Number of samples N (log scale)', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: 'log'},
+    yaxis:{title:{text:'Standard Error (log scale)', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: 'log'},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.02, orientation: 'h', font:{size:10}},
+    margin:{l:65, r:20, t:20, b:55},
+    height: 420,
+    hovermode: 'x unified'
+  };
+  Plotly.newPlot('mcRateChart', [...traces, refTrace], layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   3. LAW OF LARGE NUMBERS
+   ============================================================ */
+(function(){
+  const TRUE_MEAN = 0;  // standard normal
+  const N = 2000;
+  const numRuns = 5;
+  const ns = [];
+  for (let i = 1; i <= N; i++) ns.push(i);
+
+  const colors = ['#0891b2', '#7c3aed', '#db2777', '#059669', '#d97706'];
+  const traces = [];
+
+  for (let r = 0; r < numRuns; r++){
+    let sum = 0;
+    const runningMean = [];
+    for (let i = 1; i <= N; i++){
+      sum += randn();
+      runningMean.push(sum / i);
+    }
+    traces.push({
+      x: ns, y: runningMean,
+      mode: 'lines', name: 'Run ' + (r+1),
+      line: {color: colors[r], width: 2, opacity: 0.75}
+    });
+  }
+
+  // True mean line
+  traces.push({
+    x: [1, N], y: [TRUE_MEAN, TRUE_MEAN],
+    mode: 'lines', name: 'True mean = 0',
+    line: {color: '#dc2626', width: 2.5, dash: 'dash'}
+  });
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'Number of samples N', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: 'log'},
+    yaxis:{title:{text:'Running sample mean', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range: [-1.2, 1.2]},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.6, y:0.98, font:{size:10}},
+    margin:{l:60, r:20, t:20, b:50},
+    height: 420,
+    hovermode: 'x unified'
+  };
+  Plotly.newPlot('llnChart', traces, layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   4. CONVERGENCE SLIDER DEMO
+   ============================================================ */
+(function(){
+  const sigmaSlider = document.getElementById('convSigmaSlider');
+  const sigmaValEl = document.getElementById('convSigmaVal');
+  const sigmaLbl = document.getElementById('convSigmaLbl');
+  const requiredEl = document.getElementById('convRequired');
+  const vrfEl = document.getElementById('convVRF');
+
+  function update(){
+    const sigma = parseFloat(sigmaSlider.value);
+    sigmaValEl.textContent = sigma.toFixed(2);
+    sigmaLbl.textContent = sigma.toFixed(2);
+
+    // Required N for SE = 0.01
+    const requiredN = Math.pow(1.96 * sigma / 0.01, 2);
+    requiredEl.textContent = Math.round(requiredN).toLocaleString();
+
+    // VRF: variance reduction factor assuming control variate with rho=0.9
+    const rho = 0.9;
+    const vrf = 1 / (1 - rho*rho);
+    vrfEl.textContent = vrf.toFixed(1) + '×';
+
+    // Log-log chart
+    const ns = [];
+    for (let i = 1; i <= 30; i++) ns.push(Math.pow(10, i * 0.2));
+
+    const seNaive = ns.map(n => sigma / Math.sqrt(n));
+    const seReduced = ns.map(n => sigma * Math.sqrt(1 - rho*rho) / Math.sqrt(n));
+
+    const traceNaive = {
+      x: ns, y: seNaive, mode: 'lines', name: 'Naive MC (σ = ' + sigma.toFixed(2) + ')',
+      line: {color: '#0891b2', width: 3}
+    };
+    const traceReduced = {
+      x: ns, y: seReduced, mode: 'lines', name: 'Variance-reduced (VRF = ' + vrf.toFixed(1) + '×)',
+      line: {color: '#7c3aed', width: 3, dash: 'dash'}
+    };
+    const traceTarget = {
+      x: [1, ns[ns.length-1]], y: [0.01, 0.01],
+      mode: 'lines', name: 'Target SE = 0.01',
+      line: {color: '#dc2626', width: 2, dash: 'dot'}
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Number of samples N (log scale)', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: 'log'},
+      yaxis:{title:{text:'Standard Error (log scale)', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: 'log'},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.02, orientation: 'h', font:{size:10}},
+      margin:{l:65, r:20, t:20, b:55},
+      height: 420,
+      hovermode: 'x unified'
+    };
+    Plotly.react('convChart', [traceNaive, traceReduced, traceTarget], layout, {responsive:true, displayModeBar:false});
+  }
+
+  sigmaSlider.addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================
+   5. CLT DEMO
+   ============================================================ */
+(function(){
+  let currentDist = 'exponential';
+
+  const distLabel = document.getElementById('cltDistLabel');
+  const cltSDEl = document.getElementById('cltSD');
+  const cltNEl = document.getElementById('cltNVal');
+  const cltNLbl = document.getElementById('cltNLbl');
+  const nSlider = document.getElementById('cltNSlider');
+
+  function sampleFromDist(dist){
+    if (dist === 'exponential') return expSample(1.0);
+    if (dist === 'uniform') return uniformSample(-1, 1);
+    if (dist === 'bimodal') return bimodalSample();
+    return randn();
+  }
+
+  function computeTrueMean(dist){
+    if (dist === 'exponential') return 1.0;
+    if (dist === 'uniform') return 0;
+    if (dist === 'bimodal') return 0;
+    return 0;
+  }
+
+  function computeTrueSD(dist){
+    if (dist === 'exponential') return 1.0;
+    if (dist === 'uniform') return Math.sqrt(1/3);
+    if (dist === 'bimodal') return Math.sqrt(0.25 + 2.25); // approx
+    return 1;
+  }
+
+  function update(){
+    const n = parseInt(nSlider.value);
+    cltNEl.textContent = n;
+    cltNLbl.textContent = n;
+    distLabel.textContent = currentDist.charAt(0).toUpperCase() + currentDist.slice(1);
+
+    // Generate 10,000 sample means
+    const numMeans = 10000;
+    const means = [];
+    for (let m = 0; m < numMeans; m++){
+      let sum = 0;
+      for (let i = 0; i < n; i++){
+        sum += sampleFromDist(currentDist);
+      }
+      means.push(sum / n);
+    }
+
+    // Empirical SD
+    const meanOfMeans = means.reduce((a,b)=>a+b,0) / numMeans;
+    const varOfMeans = means.reduce((a,v)=>a + (v - meanOfMeans)*(v - meanOfMeans), 0) / (numMeans - 1);
+    const sdOfMeans = Math.sqrt(varOfMeans);
+    const trueSD = computeTrueSD(currentDist) / Math.sqrt(n);
+    cltSDEl.textContent = sdOfMeans.toFixed(4) + ' (theory: ' + trueSD.toFixed(4) + ')';
+
+    // Histogram
+    const traceHist = {
+      x: means, type: 'histogram', name: 'Sample means',
+      marker: {color: '#7c3aed', opacity: 0.7, line: {color: '#ffffff', width: 0.5}},
+      nbinsx: 60,
+      histnorm: 'probability density'
+    };
+
+    // Overlay normal distribution
+    const trueMean = computeTrueMean(currentDist);
+    const xRange = [];
+    for (let i = -100; i <= 100; i++){
+      xRange.push(meanOfMeans + i * sdOfMeans / 20);
+    }
+    const normalPDF = xRange.map(x => Math.exp(-0.5 * Math.pow((x - trueMean) / trueSD, 2)) / (trueSD * Math.sqrt(2 * Math.PI)));
+    const traceNormal = {
+      x: xRange, y: normalPDF, mode: 'lines', name: 'Theoretical N(μ, σ²/n)',
+      line: {color: '#dc2626', width: 3}
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Sample mean', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'Density', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.6, y:0.98, font:{size:10}},
+      margin:{l:60, r:20, t:20, b:50},
+      height: 420,
+      bargap: 0.02,
+      hovermode: 'closest'
+    };
+    Plotly.react('cltChart', [traceHist, traceNormal], layout, {responsive:true, displayModeBar:false});
+  }
+
+  nSlider.addEventListener('input', update);
+  document.querySelectorAll('[data-clt]').forEach(btn => {
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('[data-clt]').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentDist = this.getAttribute('data-clt');
+      update();
+    });
+  });
+
+  update();
+})();
+
+/* ============================================================
+   6. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>

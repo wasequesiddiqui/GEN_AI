@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Value at Risk Models — Complete Study Material</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --card2:#f8fafc;
+    --text:#1e293b;
+    --muted:#64748b;
+    --accent:#dc2626;
+    --accent-dark:#991b1b;
+    --accent2:#0891b2;
+    --blue:#2563eb;
+    --green:#059669;
+    --red:#dc2626;
+    --amber:#d97706;
+    --pink:#db2777;
+    --purple:#7c3aed;
+    --border:#e2e8f0;
+    --border-strong:#cbd5e1;
+    --shadow:0 1px 3px rgba(15,23,42,.08), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    font-size:16px;
+  }
+  header{
+    background:linear-gradient(135deg,#7f1d1d 0%,#dc2626 30%,#0891b2 70%,#0e7490 100%);
+    padding:64px 20px 54px;
+    text-align:center;
+    color:#ffffff;
+    box-shadow:0 4px 24px rgba(220,38,38,.22);
+  }
+  header h1{
+    margin:0 0 14px;
+    font-size:2.5rem;
+    letter-spacing:-0.5px;
+    font-weight:700;
+  }
+  header p{
+    margin:0 auto;
+    color:rgba(255,255,255,.92);
+    font-size:1.08rem;
+    max-width:880px;
+  }
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px 80px;}
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px 28px;
+    margin:34px auto;
+    max-width:1150px;
+    box-shadow:var(--shadow);
+  }
+  nav.toc h3{
+    margin:0 0 14px;
+    color:var(--accent-dark);
+    font-size:.82rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    font-weight:700;
+  }
+  nav.toc ol{margin:0;padding-left:22px;columns:2;column-gap:40px;}
+  nav.toc li{margin-bottom:6px;}
+  nav.toc a{color:var(--text);text-decoration:none;font-weight:500;transition:color .15s;}
+  nav.toc a:hover{color:var(--accent);text-decoration:underline;}
+  @media(max-width:820px){nav.toc ol{columns:1;}}
+
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:34px 36px;
+    margin-bottom:32px;
+    box-shadow:var(--shadow);
+  }
+  section h2{
+    margin-top:0;
+    font-size:1.6rem;
+    color:var(--text);
+    border-bottom:2px solid var(--border);
+    padding-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+  }
+  section h2 .num{
+    background:linear-gradient(135deg,#dc2626,#0891b2);
+    color:#ffffff;
+    font-size:.95rem;
+    width:34px;height:34px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    box-shadow:0 3px 10px rgba(220,38,38,.3);
+  }
+  h3{color:var(--accent2);margin-top:30px;font-size:1.18rem;font-weight:700;}
+  h4{color:var(--amber);margin:22px 0 6px;font-size:1rem;font-weight:700;}
+
+  .analogy{
+    background:linear-gradient(90deg,#fef2f2,#ecfeff);
+    border-left:4px solid var(--accent);
+    padding:15px 20px;
+    border-radius:0 10px 10px 0;
+    margin:20px 0;
+    font-style:italic;
+    color:#334155;
+  }
+  .analogy strong{color:var(--accent-dark);font-style:normal;font-weight:700;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .box:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);}
+  .box h4{margin-top:0;}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{
+    padding:9px 0 9px 30px;
+    position:relative;
+    border-bottom:1px solid rgba(226,232,240,.85);
+  }
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{
+    content:"▸";
+    position:absolute;left:8px;
+    color:var(--accent);
+    font-weight:bold;
+  }
+  ul.pros li::before{content:"✔";color:var(--green);}
+  ul.cons li::before{content:"✘";color:var(--red);}
+
+  .formula{
+    background:#f1f5f9;
+    border:1px solid #cbd5e1;
+    border-left:4px solid var(--accent2);
+    border-radius:8px;
+    padding:16px 20px;
+    margin:14px 0;
+    font-family:'Cambria Math','Consolas',monospace;
+    font-size:1.02rem;
+    overflow-x:auto;
+    color:#1e293b;
+    line-height:1.85;
+  }
+  .formula .lbl{
+    color:var(--muted);
+    font-size:.76rem;
+    font-family:'Segoe UI',sans-serif;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+
+  .worked{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    padding:14px 18px;
+    margin:12px 0;
+    font-size:.94rem;
+  }
+  .worked strong{color:#b45309;}
+  .worked code{background:#fef3c7;border:none;color:#92400e;font-weight:700;padding:1px 6px;}
+
+  .when{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:12px 0;
+  }
+  .when > div{
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    line-height:1.6;
+  }
+  .when .use{background:#ecfdf5;border-left:3px solid var(--green);}
+  .when .avoid{background:#fef2f2;border-left:3px solid var(--red);}
+  .when strong{display:block;margin-bottom:4px;font-size:.84rem;text-transform:uppercase;letter-spacing:.5px;}
+  .when .use strong{color:#047857;}
+  .when .avoid strong{color:#b91c1c;}
+  @media(max-width:640px){.when{grid-template-columns:1fr;}}
+
+  .interp{
+    background:#fef2f2;
+    border-left:3px solid var(--accent);
+    padding:12px 18px;
+    border-radius:0 8px 8px 0;
+    margin:12px 0;
+    font-size:.93rem;
+    color:#334155;
+  }
+  .interp strong{color:var(--accent-dark);}
+
+  .metric{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-left:4px solid var(--blue);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    margin:24px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .metric.post{border-left-color:var(--green);}
+  .metric.var{border-left-color:var(--accent);}
+  .metric.bt{border-left-color:var(--accent2);}
+  .metric.business{border-left-color:var(--pink);}
+  .metric h4{
+    margin:0 0 6px;
+    color:var(--blue);
+    font-size:1.12rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .metric.post h4{color:var(--green);}
+  .metric.var h4{color:var(--accent-dark);}
+  .metric.bt h4{color:#0e7490;}
+  .metric.business h4{color:var(--pink);}
+  .metric .badge{
+    display:inline-block;
+    font-size:.68rem;
+    padding:3px 10px;
+    border-radius:20px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric.post .badge{background:#ecfdf5;color:#047857;}
+  .metric.var .badge{background:#fef2f2;color:#991b1b;}
+  .metric.bt .badge{background:#ecfeff;color:#0e7490;}
+  .metric.business .badge{background:#fdf2f8;color:#9d174d;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0;
+    font-size:.92rem;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  th{
+    background:#f1f5f9;
+    color:#1e293b;
+    text-align:left;
+    padding:11px 13px;
+    border-bottom:2px solid var(--border-strong);
+    font-weight:700;
+    font-size:.84rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  td{
+    padding:10px 13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+
+  code{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    padding:2px 7px;
+    border-radius:5px;
+    color:#b91c1c;
+    font-size:.9em;
+    font-family:'Consolas',monospace;
+  }
+
+  .chart{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    margin:22px 0;
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .chart-title{
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:700;
+    padding:10px 16px 0;
+  }
+  .chart-note{
+    font-size:.86rem;
+    color:var(--muted);
+    padding:6px 16px 12px;
+    line-height:1.55;
+  }
+
+  .demo{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px;
+    margin:22px 0;
+  }
+  .demo-controls{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:16px;
+  }
+  .demo-controls .info{flex:1;min-width:130px;}
+  .demo-controls .info .lbl{
+    font-size:.72rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.6px;font-weight:800;
+  }
+  .demo-controls .info .val{
+    font-size:1.15rem;font-weight:800;color:var(--text);
+  }
+  .demo-sliders{padding:4px 0 12px;}
+  .demo-sliders label{
+    display:block;font-size:.82rem;font-weight:800;color:#475569;
+    text-transform:uppercase;letter-spacing:.4px;margin-top:10px;
+  }
+  .demo-sliders input[type=range]{
+    width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0;
+  }
+  .btn{
+    background:linear-gradient(135deg,#dc2626,#0891b2);
+    color:#ffffff;border:none;padding:11px 22px;border-radius:10px;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    letter-spacing:.3px;transition:transform .15s, box-shadow .15s;
+    box-shadow:0 3px 12px rgba(220,38,38,.28);
+    font-family:'Segoe UI',sans-serif;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(220,38,38,.35);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  }
+  .btn.secondary:hover{background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.1);}
+  .btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+  .btn-group .toggle{
+    background:#ffffff;color:#475569;border:1px solid var(--border-strong);
+    padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:700;
+    cursor:pointer;font-family:'Segoe UI',sans-serif;
+    transition:all .15s;
+  }
+  .btn-group .toggle.active{
+    background:linear-gradient(135deg,#dc2626,#0891b2);
+    color:#ffffff;border-color:transparent;
+    box-shadow:0 3px 10px rgba(220,38,38,.28);
+  }
+  .btn-group .toggle:hover:not(.active){background:#f1f5f9;}
+
+  .gloss{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(15,23,42,.04);
+  }
+  .gloss > div{
+    padding:11px 16px;
+    border-bottom:1px solid var(--border);
+    font-size:.93rem;
+  }
+  .gloss > div:nth-child(odd){
+    background:#f1f5f9;
+    font-weight:800;
+    color:#991b1b;
+    border-right:1px solid var(--border);
+  }
+  .gloss > div:nth-child(even){background:#ffffff;color:#334155;}
+  .gloss > div:last-child,.gloss > div:nth-last-child(2){border-bottom:none;}
+  @media(max-width:640px){
+    .gloss{grid-template-columns:1fr;}
+    .gloss > div:nth-child(odd){border-right:none;}
+  }
+
+  .highlight{color:#b45309;font-weight:700;}
+  .pill{
+    display:inline-block;
+    background:#fef2f2;
+    color:#991b1b;
+    padding:3px 11px;
+    border-radius:20px;
+    font-size:.74rem;
+    font-weight:800;
+    margin-right:6px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  footer{
+    text-align:center;
+    padding:34px 20px 54px;
+    color:var(--muted);
+    font-size:.88rem;
+    border-top:1px solid var(--border);
+    background:#ffffff;
+  }
+  .steps-list{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .steps-list .step{
+    background:#ffffff;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;border-top:3px solid var(--accent);
+  }
+  .steps-list .step .n{
+    font-size:.78rem;color:var(--accent-dark);font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  }
+  .steps-list .step .t{
+    font-size:.95rem;font-weight:800;color:var(--text);margin-top:2px;
+  }
+  .steps-list .step .d{
+    font-size:.85rem;color:var(--muted);margin-top:4px;line-height:1.55;
+  }
+  .assumptions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;
+    margin:16px 0;
+  }
+  .assumptions .item{
+    background:linear-gradient(135deg,#fef2f2,#ecfeff);
+    border:1px solid #fecaca;border-radius:10px;padding:14px 16px;
+    text-align:center;
+  }
+  .assumptions .item .letter{
+    font-size:1.6rem;font-weight:900;color:#991b1b;line-height:1;
+  }
+  .assumptions .item .name{
+    font-size:.85rem;font-weight:800;color:#1e293b;margin-top:4px;
+  }
+  .assumptions .item .desc{
+    font-size:.76rem;color:#64748b;margin-top:2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚠️ Value at Risk Models — Complete Study Material</h1>
+  <p>Algorithm · Applications · Advantages · Disadvantages · Pre- &amp; Post-Deployment KPIs with Formulas · Mathematics · Glossary — all in one interactive guide.</p>
+</header>
+
+<nav class="toc">
+  <h3>What's inside</h3>
+  <ol>
+    <li><a href="#s1">Algorithm Description</a></li>
+    <li><a href="#s2">Applications</a></li>
+    <li><a href="#s3">Advantages</a></li>
+    <li><a href="#s4">Disadvantages</a></li>
+    <li><a href="#s5">Pre-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s6">Post-Deployment KPIs (Detailed with Formulas)</a></li>
+    <li><a href="#s7">Mathematical Formulas</a></li>
+    <li><a href="#s8">Glossary of Acronyms</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= 1. ALGORITHM ================= -->
+<section id="s1">
+  <h2><span class="num">1</span> Algorithm Description</h2>
+
+  <div class="analogy">
+    <strong>Real-life analogy:</strong> Imagine you're a portfolio manager with ₹100 crore under management. Your boss asks: <em>"How much could we lose in a really bad day?"</em> You don't say "it depends." You say: <em>"On 99% of days, our losses won't exceed ₹4 crore. Only 1 day in 100 will be worse."</em> That single number — ₹4 crore — is the 99% 1-day VaR. It answers the boss's question with a specific, defensible number, backed by a statistical model of returns.
+  </div>
+
+  <h3>What is Value at Risk?</h3>
+  <p><span class="highlight">Value at Risk (VaR)</span> is a statistical measure of the maximum loss a portfolio is expected to suffer over a given time horizon, at a given confidence level, under normal market conditions. It summarises an entire loss distribution into a single number that's easy to communicate to management, regulators, and traders.</p>
+
+  <p>VaR is not a prediction — it's a <em>quantile</em> of the loss distribution. It says: <em>"With probability α, the loss will not exceed VaR<sub>α</sub>."</em></p>
+
+  <h3>The Three Main VaR Methodologies</h3>
+  <table>
+    <tr><th>Method</th><th>How it Works</th><th>Assumption</th><th>Speed</th><th>Best For</th></tr>
+    <tr>
+      <td><strong>Historical Simulation</strong></td>
+      <td>Revalue the current portfolio under the last N historical return scenarios; take the α-quantile.</td>
+      <td>Past is a good guide to the future</td>
+      <td>Fast</td>
+      <td>Portfolios with non-normal, fat-tailed returns</td>
+    </tr>
+    <tr>
+      <td><strong>Parametric (Variance-Covariance)</strong></td>
+      <td>Assume returns are Gaussian; compute VaR from portfolio mean and standard deviation.</td>
+      <td>Returns are normally distributed</td>
+      <td>Very fast</td>
+      <td>Large portfolios, linear instruments, quick estimates</td>
+    </tr>
+    <tr>
+      <td><strong>Monte Carlo Simulation</strong></td>
+      <td>Simulate many paths of risk factors; reprice the portfolio; take the α-quantile.</td>
+      <td>Correct factor model + correct distribution</td>
+      <td>Slow</td>
+      <td>Complex, non-linear, path-dependent portfolios</td>
+    </tr>
+    <tr>
+      <td><strong>Filtered Historical</strong></td>
+      <td>GARCH the returns, then apply historical simulation to standardised residuals.</td>
+      <td>Volatility is time-varying</td>
+      <td>Moderate</td>
+      <td>Regime-switching markets</td>
+    </tr>
+    <tr>
+      <td><strong>Extreme Value Theory (EVT)</strong></td>
+      <td>Model the tail of the loss distribution explicitly (GPD).</td>
+      <td>Tail follows a generalised Pareto distribution</td>
+      <td>Moderate</td>
+      <td>Extreme quantiles (99.9% VaR, ES)</td>
+    </tr>
+  </table>
+
+  <h3>How VaR is Computed (Step by Step)</h3>
+  <div class="steps-list">
+    <div class="step">
+      <div class="n">Step 1</div>
+      <div class="t">Choose parameters</div>
+      <div class="d">Pick a confidence level α (typically 95% or 99%) and a horizon T (1 day, 10 days). Regulators often mandate 99% / 10 days.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 2</div>
+      <div class="t">Collect return scenarios</div>
+      <div class="d">Historical: use the last N daily returns. Parametric: estimate μ and σ. Monte Carlo: simulate factor returns.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 3</div>
+      <div class="t">Revalue the portfolio</div>
+      <div class="d">For each scenario, compute the portfolio's P&amp;L. For non-linear portfolios (options), reprice with a full model.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 4</div>
+      <div class="t">Build the loss distribution</div>
+      <div class="d">Sort the N simulated/historical P&amp;L values. This is the empirical loss distribution.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 5</div>
+      <div class="t">Extract the α-quantile</div>
+      <div class="d">VaR is the (1 − α)-quantile of the loss distribution. For α = 99%, it's the worst 1% cutoff.</div>
+    </div>
+    <div class="step">
+      <div class="n">Step 6</div>
+      <div class="t">Compute ES alongside</div>
+      <div class="d">Expected Shortfall = average of all losses beyond VaR. It's a coherent risk measure and complements VaR's blind spot.</div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: VaR &amp; ES on the Loss Distribution</h3>
+  <p style="color:var(--muted);font-size:.93rem;">This is the centerpiece. Below is a simulated daily P&amp;L distribution for a hypothetical portfolio. <strong>Drag the confidence level slider</strong> to change α. The <strong>red line</strong> shows VaR — the cutoff such that only (1 − α)% of days are worse. The <strong>purple shaded region</strong> shows the tail beyond VaR; its average is Expected Shortfall (ES).</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Confidence level α</div>
+        <div class="val" id="varAlphaVal" style="color:#dc2626;">99%</div>
+      </div>
+      <div class="info">
+        <div class="lbl">1-day VaR</div>
+        <div class="val" id="varValue" style="color:#dc2626;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">1-day ES</div>
+        <div class="val" id="varESValue" style="color:#7c3aed;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Portfolio value</div>
+        <div class="val" style="color:#0891b2;">₹100 Cr</div>
+      </div>
+      <button class="btn secondary" id="varRegen">🔀 Regenerate Returns</button>
+    </div>
+
+    <div class="demo-sliders">
+      <label>Confidence level α: <span id="varAlphaLbl" style="color:var(--accent-dark);">99%</span></label>
+      <input type="range" id="varAlphaSlider" min="90" max="99.9" value="99" step="0.1">
+      <label>Horizon (days): <span id="varHorizonLbl" style="color:var(--accent-dark);">1</span></label>
+      <input type="range" id="varHorizonSlider" min="1" max="10" value="1" step="1">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Loss Distribution with VaR and ES Marked</div>
+      <div id="varDistributionChart" style="height:460px;"></div>
+      <div class="chart-note">Histogram = simulated 1-day P&amp;L. Red vertical line = VaR at the chosen confidence level. Purple shaded tail = losses beyond VaR; its average is the Expected Shortfall (ES).</div>
+    </div>
+
+    <div class="grid3" style="margin-top:16px;">
+      <div class="box" style="border-left:4px solid var(--accent);">
+        <h4 style="margin-top:0;color:var(--accent-dark);">VaR Interpretation</h4>
+        <p style="font-size:.9rem;margin:0;" id="varInterpretation">On 99% of days, losses will not exceed ₹X.</p>
+      </div>
+      <div class="box" style="border-left:4px solid var(--purple);">
+        <h4 style="margin-top:0;color:var(--purple);">ES Interpretation</h4>
+        <p style="font-size:.9rem;margin:0;" id="varESInterpretation">When losses exceed VaR, they average ₹Y.</p>
+      </div>
+      <div class="box" style="border-left:4px solid var(--accent2);">
+        <h4 style="margin-top:0;color:#0e7490;">Severity Ratio</h4>
+        <p style="font-size:.9rem;margin:0;" id="varSeverity">ES / VaR = Z. Values &gt; 1.3 signal fat tails.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>🔬 Interactive: Three VaR Methodologies Side by Side</h3>
+  <p style="color:var(--muted);font-size:.93rem;">The same portfolio, three ways. Historical Simulation uses the empirical distribution; Parametric assumes normal returns; Monte Carlo simulates with a fat-tailed distribution. Notice how the parametric VaR underestimates tail risk when returns are non-normal.</p>
+
+  <div class="btn-group" style="margin-bottom:16px;">
+    <button class="toggle active" data-varMethod="all">All Three</button>
+    <button class="toggle" data-varMethod="hist">Historical</button>
+    <button class="toggle" data-varMethod="param">Parametric</button>
+    <button class="toggle" data-varMethod="mc">Monte Carlo</button>
+  </div>
+
+  <div class="chart">
+    <div class="chart-title">VaR Comparison — Method Overlay</div>
+    <div id="varMethodsChart" style="height:460px;"></div>
+    <div class="chart-note">Overlaid loss distributions and VaR cutoffs. Parametric (blue) is symmetric and thinner-tailed; historical (red) captures actual fat tails; Monte Carlo with Student-t (purple) sits between.</div>
+  </div>
+
+  <h3>🔬 Interactive: Normal vs Fat-Tailed Distributions — Why It Matters</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Drag the degrees-of-freedom slider to morph a Student-t distribution from heavy-tailed (ν = 2) to nearly normal (ν = 30). Watch how the 99% VaR cutoff changes. This is why Gaussian VaR underestimates risk in crisis periods.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Degrees of freedom ν</div>
+        <div class="val" id="dfVal" style="color:#dc2626;">5.0</div>
+      </div>
+      <div class="info">
+        <div class="lbl">99% VaR (Student-t)</div>
+        <div class="val" id="tVar" style="color:#7c3aed;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">99% VaR (Normal)</div>
+        <div class="val" id="nVar" style="color:#2563eb;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Underestimate factor</div>
+        <div class="val" id="underestFactor" style="color:#dc2626;">—</div>
+      </div>
+    </div>
+
+    <div class="demo-sliders">
+      <label>ν (degrees of freedom): <span id="dfLbl" style="color:var(--accent-dark);">5.0</span></label>
+      <input type="range" id="dfSlider" min="2" max="30" value="5" step="0.5">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Student-t vs Normal Distribution — Tail Comparison</div>
+      <div id="tailCompareChart" style="height:420px;"></div>
+      <div class="chart-note">Both distributions standardised to mean 0, variance 1. On log-scale Y, the Student-t tail sits far above the normal — that's where VaR lives.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. APPLICATIONS ================= -->
+<section id="s2">
+  <h2><span class="num">2</span> Applications</h2>
+  <p>VaR is the lingua franca of financial risk management. Since the Basel Committee endorsed it in 1996, it has become mandatory for banks worldwide — and it's used far beyond regulatory compliance.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h4>🏦 Banking &amp; Regulation</h4>
+      <ul class="clean">
+        <li><strong>Market risk capital</strong> — Basel II/III require 99% / 10-day VaR for trading books.</li>
+        <li><strong>FRTB</strong> — Basel IV's Fundamental Review of the Trading Book uses Expected Shortfall (ES) at 97.5% instead of VaR.</li>
+        <li><strong>Internal models approach</strong> — banks use their own VaR models, subject to regulatory backtests.</li>
+        <li><strong>Regulatory reporting</strong> — daily VaR disclosure to supervisors.</li>
+        <li><strong>Limit setting</strong> — trading desks get VaR limits; breaches trigger investigation.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📈 Portfolio Management</h4>
+      <ul class="clean">
+        <li><strong>Risk budgeting</strong> — allocate VaR contribution across strategies.</li>
+        <li><strong>Portfolio optimisation</strong> — mean-VaR efficient frontier (alternative to mean-variance).</li>
+        <li><strong>Hedge fund monitoring</strong> — daily risk reporting to investors.</li>
+        <li><strong>Pension funds</strong> — funding-ratio VaR.</li>
+        <li><strong>Sovereign wealth funds</strong> — multi-asset VaR across portfolios.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏢 Corporate Treasury</h4>
+      <ul class="clean">
+        <li><strong>FX exposure</strong> — VaR on foreign currency positions.</li>
+        <li><strong>Interest rate risk</strong> — VaR on debt portfolios.</li>
+        <li><strong>Commodity risk</strong> — airlines hedging jet fuel, miners hedging metals.</li>
+        <li><strong>Cash management</strong> — VaR on short-term investments.</li>
+        <li><strong>Earnings-at-Risk (EaR)</strong> — VaR applied to income statement.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>💼 Asset Managers &amp; Funds</h4>
+      <ul class="clean">
+        <li><strong>Mutual fund risk reporting</strong> — daily VaR disclosure.</li>
+        <li><strong>Benchmark-relative VaR</strong> — active risk vs. index.</li>
+        <li><strong>Drawdown forecasting</strong> — VaR over multiple horizons.</li>
+        <li><strong>Liquidity-adjusted VaR</strong> — accounts for wide bid-ask spreads.</li>
+        <li><strong>Stress-VaR</strong> — VaR under hypothetical crisis scenarios.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>🏭 Non-Financial Applications</h4>
+      <ul class="clean">
+        <li><strong>Energy trading</strong> — power, gas, oil price risk.</li>
+        <li><strong>Supply chain</strong> — VaR on procurement costs.</li>
+        <li><strong>Insurance</strong> — VaR on reserves, underwriting risk.</li>
+        <li><strong>Real estate</strong> — property portfolio VaR.</li>
+        <li><strong>Crypto funds</strong> — 24/7 VaR with heavy tails.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>📊 Data Science &amp; ML</h4>
+      <ul class="clean">
+        <li><strong>Quantile regression</strong> — VaR as a special case of quantile prediction.</li>
+        <li><strong>ML-based VaR</strong> — neural nets for non-linear portfolios.</li>
+        <li><strong>Reinforcement learning</strong> — VaR-constrained trading agents.</li>
+        <li><strong>Anomaly detection</strong> — VaR breaches signal regime change.</li>
+        <li><strong>LLM evaluation</strong> — VaR-like tail metrics for model risk.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="analogy" style="margin-top:24px;">
+    <strong>Why is VaR so dominant?</strong> Because it answers a specific question — <em>"How much can we lose?"</em> — with a single number. Regulators, CEOs, and boards love single numbers. The downside is that VaR hides what happens in the tail beyond that number, which is where catastrophic losses live. That's why ES (Expected Shortfall) is now becoming the regulatory standard.
+  </div>
+</section>
+
+<!-- ================= 3. ADVANTAGES ================= -->
+<section id="s3">
+  <h2><span class="num">3</span> Advantages</h2>
+
+  <ul class="clean pros">
+    <li><strong>Single-number summary</strong> — VaR condenses an entire loss distribution into one number that executives, boards, and regulators can understand immediately.</li>
+    <li><strong>Regulatory acceptance</strong> — Basel Committee endorsed VaR in 1996; it's the standard for market risk capital worldwide.</li>
+    <li><strong>Comparable across portfolios</strong> — VaR lets you compare the risk of a bond portfolio to an equity portfolio to a currency book on the same scale (rupees).</li>
+    <li><strong>Aggregates risks coherently</strong> — correlation-aware; recognises diversification benefits unlike naive sum-of-notionals.</li>
+    <li><strong>Flexible confidence levels</strong> — α can be tuned from 90% to 99.9% depending on regulatory or management needs.</li>
+    <li><strong>Multiple time horizons</strong> — 1-day VaR for trading, 10-day for regulatory, 1-year for pension risk.</li>
+    <li><strong>Works for any asset class</strong> — equities, fixed income, FX, commodities, credit, crypto, real estate.</li>
+    <li><strong>Simple for linear portfolios</strong> — under Gaussian assumptions, parametric VaR reduces to a matrix multiplication.</li>
+    <li><strong>Extensible to other risk measures</strong> — Marginal VaR, Component VaR, Incremental VaR, ES all derived from the same framework.</li>
+    <li><strong>Natural limit framework</strong> — "Desk A has a ₹5 Cr VaR limit" is a straightforward, enforceable policy.</li>
+    <li><strong>Foundation for risk budgeting</strong> — VaR contributions let you allocate capital to strategies by risk, not just by notional.</li>
+    <li><strong>Extensive tooling available</strong> — every major risk system (Murex, Calypso, Bloomberg, RiskMetrics) supports VaR natively.</li>
+  </ul>
+
+  <div class="grid3" style="margin-top:22px;">
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">📊</div>
+      <h4 style="color:var(--accent-dark);">Single Number</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Communicates risk simply.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">⚖️</div>
+      <h4 style="color:var(--accent-dark);">Regulatory</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Basel-endorsed standard.</p>
+    </div>
+    <div class="box" style="text-align:center;">
+      <div style="font-size:2rem;">🎯</div>
+      <h4 style="color:var(--accent-dark);">Comparable</h4>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;">Across all asset classes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DISADVANTAGES ================= -->
+<section id="s4">
+  <h2><span class="num">4</span> Disadvantages</h2>
+
+  <ul class="clean cons">
+    <li><strong>Ignores the tail beyond VaR</strong> — VaR tells you the cutoff, not what happens past it. Two portfolios with identical VaR can have wildly different tail risk. ES fixes this.</li>
+    <li><strong>Not sub-additive (not coherent)</strong> — a classic counterexample: two risky bonds each with VaR = 0 can have combined VaR &gt; 0. This violates the sub-additivity axiom of coherent risk measures.</li>
+    <li><strong>Assumes normal returns (parametric)</strong> — financial returns have fat tails and skew. Gaussian VaR underestimates tail risk by 30–50% in crisis periods.</li>
+    <li><strong>Historical method fails under regime change</strong> — if the last N days were calm, VaR looks small right before a crash.</li>
+    <li><strong>Monte Carlo is computationally expensive</strong> — pricing exotic derivatives across 100,000 paths takes hours; not feasible for intraday risk.</li>
+    <li><strong>Sensitive to correlation assumptions</strong> — correlations rise sharply in crises ("correlation breakdown"); models calibrated to calm periods understate joint losses.</li>
+    <li><strong>Time-varying volatility ignored (basic versions)</strong> — GARCH effects mean volatility clusters; a static VaR model is often wrong.</li>
+    <li><strong>Illiquid positions are hard to model</strong> — no continuous price data means historical VaR can't be computed reliably. Liquidity-adjusted VaR needed.</li>
+    <li><strong>Model risk is significant</strong> — the 2008 crisis revealed that VaR models badly underestimated subprime mortgage risk.</li>
+    <li><strong>Backtesting is noisy</strong> — at 99%, you expect ~2.5 breaches per year of daily data; distinguishing bad luck from bad model is statistically hard.</li>
+    <li><strong>Procyclical</strong> — VaR falls in calm markets (encouraging leverage) and spikes in crises (forcing deleveraging); it amplifies cycles.</li>
+    <li><strong>Confidence level ambiguity</strong> — 95%, 99%, 99.9%? Different choices give wildly different numbers; cross-firm comparison is difficult.</li>
+    <li><strong>Horizon scaling is crude</strong> — the √T rule assumes i.i.d. returns; autocorrelation and mean reversion break this assumption.</li>
+    <li><strong>No information on the shape of losses</strong> — VaR can't tell you whether the worst 1% is 2× VaR or 20× VaR.</li>
+    <li><strong>Gaming risk</strong> — traders can choose positions that minimise VaR while increasing tail risk (short volatility, sell tail insurance).</li>
+  </ul>
+
+  <div class="analogy" style="border-left-color:var(--red);background:linear-gradient(90deg,#fef2f2,#ecfeff);">
+    <strong>The tail trap:</strong> Imagine two portfolios with identical 99% VaR = ₹10 Cr. Portfolio A: worst 1% is uniformly distributed between ₹10–₹12 Cr (ES ≈ ₹11 Cr). Portfolio B: worst 1% is ₹10 Cr 99% of the time but ₹500 Cr once a decade (ES ≈ ₹20 Cr). VaR says they're the same risk. ES, stress tests, and scenario analysis reveal they're worlds apart. This is why Basel IV moved to ES.
+  </div>
+</section>
+
+<!-- ================= 5. PRE-DEPLOYMENT KPIs ================= -->
+<section id="s5">
+  <h2><span class="num">5</span> Pre-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Before deploying a VaR model, you must validate its <strong>accuracy</strong>, <strong>calibration</strong>, and <strong>robustness</strong>. These KPIs are computed on historical or simulated data where the model can be tested against reality.</p>
+
+  <h3>5.1 Accuracy KPIs</h3>
+
+  <div class="metric var">
+    <h4>Violation Ratio (VR) <span class="badge">Accuracy</span></h4>
+    <p><strong>What it measures:</strong> The ratio of observed VaR breaches to expected breaches. The single most important VaR accuracy metric.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      VR = Observed breaches / Expected breaches
+      <br><br>
+      Expected breaches = ( 1 − α ) × T
+      <br><br>
+      T = number of backtesting days
+      <br>
+      α = confidence level (e.g. 0.99)
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> 99% VaR, T = 500 days. Expected breaches = 0.01 × 500 = 5.<br>
+      If actual breaches = 4 → VR = 4 / 5 = <code>0.80</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation scale:</strong><br>
+      • VR ∈ [0.8, 1.2] → well-calibrated ✅<br>
+      • VR &lt; 0.8 → VaR too conservative (overestimates risk)<br>
+      • VR &gt; 1.2 → VaR too aggressive (underestimates risk) ⚠️<br>
+      • VR &gt; 2.0 → model is failing
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You need a quick calibration check. This is the first metric regulators look at.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> T is small (&lt; 250 days) — sampling noise dominates.</div>
+    </div>
+  </div>
+
+  <div class="metric var">
+    <h4>Mean Absolute Percentage Error (MAPE) <span class="badge">Accuracy</span></h4>
+    <p><strong>What it measures:</strong> Average difference between VaR predictions and realised losses on breach days — measures the magnitude error, not just frequency.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      MAPE = (1/T) · Σ<sub>t</sub> | VaR<sub>t</sub> − Loss<sub>t</sub> | / Loss<sub>t</sub> &nbsp; (over breach days)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lower is better. &lt; 10% = excellent. &gt; 30% = the VaR magnitude is systematically off.</div>
+  </div>
+
+  <div class="metric var">
+    <h4>Bias Statistic <span class="badge">Accuracy</span></h4>
+    <p><strong>What it measures:</strong> Whether VaR is systematically too high or too low.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Bias = (1/T) · Σ<sub>t</sub> ( Loss<sub>t</sub> − VaR<sub>t</sub> )
+      <br><br>
+      Bias &gt; 0 → losses systematically exceed VaR (underestimate)
+      <br>
+      Bias &lt; 0 → VaR is systematically too conservative
+    </div>
+  </div>
+
+  <h3>5.2 Backtesting KPIs — Statistical Tests</h3>
+
+  <div class="metric bt">
+    <h4>Kupiec POF Test <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Whether the observed breach frequency is statistically consistent with the expected frequency. The regulatory standard.</p>
+    <div class="formula">
+      <span class="lbl">Null hypothesis</span>
+      H₀: actual breach rate = expected breach rate
+      <br><br>
+      <span class="lbl">Likelihood ratio statistic</span>
+      LR<sub>POF</sub> = −2 · ln[ (1−p)<sup>T−x</sup> · p<sup>x</sup> ] + 2 · ln[ (1−x/T)<sup>T−x</sup> · (x/T)<sup>x</sup> ]
+      <br><br>
+      p = expected breach probability = 1 − α
+      <br>
+      x = observed number of breaches
+      <br>
+      T = number of observations
+      <br><br>
+      LR<sub>POF</sub> ~ χ²(1) under H₀
+    </div>
+    <div class="worked">
+      <strong>Worked example:</strong> p = 0.01, T = 500, x = 12 observed breaches.<br>
+      Expected = 5. Observed = 12 (2.4×).<br>
+      LR<sub>POF</sub> ≈ 6.6, p-value ≈ 0.010 → reject H₀ at 1% level. <code>Model underestimates risk.</code>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong><br>
+      • p-value &gt; 0.05 → cannot reject H₀ (model OK) ✅<br>
+      • p-value &lt; 0.05 → model is mis-calibrated ⚠️<br>
+      • p-value &lt; 0.01 → model is seriously broken 🚨
+    </div>
+    <div class="when">
+      <div class="use"><strong>✔ Use when</strong> You need a formal statistical test for regulatory reporting.</div>
+      <div class="avoid"><strong>✘ Avoid when</strong> T is very small or when breaches cluster (see Christoffersen test).</div>
+    </div>
+  </div>
+
+  <div class="metric bt">
+    <h4>Christoffersen Independence Test <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Whether breaches are independent over time. Cluster of breaches = model misses regime changes.</p>
+    <div class="formula">
+      <span class="lbl">Transition counts</span>
+      n<sub>ij</sub> = number of transitions from state i to state j
+      <br>
+      (0 = no breach, 1 = breach)
+      <br><br>
+      <span class="lbl">LR statistic</span>
+      LR<sub>IND</sub> = −2 · ln[ (1−π)<sup>n₀₀+n₁₀</sup> · π<sup>n₀₁+n₁₁</sup> ] + 2 · ln[ (1−π₀)<sup>n₀₀</sup> · π₀<sup>n₀₁</sup> · (1−π₁)<sup>n₁₀</sup> · π₁<sup>n₁₁</sup> ]
+      <br><br>
+      π = (n₀₁ + n₁₁) / T
+      <br>
+      π₀ = n₀₁ / (n₀₀ + n₀₁)
+      <br>
+      π₁ = n₁₁ / (n₁₀ + n₁₁)
+      <br><br>
+      LR<sub>IND</sub> ~ χ²(1)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> p-value &lt; 0.05 → breaches cluster; the model misses volatility regimes.</div>
+  </div>
+
+  <div class="metric bt">
+    <h4>Christoffersen Conditional Coverage (CC) Test <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Joint test of unconditional coverage (frequency) and independence. The most complete backtest.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      LR<sub>CC</sub> = LR<sub>POF</sub> + LR<sub>IND</sub> &nbsp; ~ χ²(2)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Rejects only if the model fails on either frequency OR independence (or both).</div>
+  </div>
+
+  <div class="metric bt">
+    <h4>TRA (Traffic Light) Test <span class="badge">Backtesting</span></h4>
+    <p><strong>What it measures:</strong> Basel's regulatory backtest — classifies models into green/yellow/red zones based on the number of breaches in 250 days.</p>
+    <div class="formula">
+      <span class="lbl">Basel zones (99% VaR, 250 days, expected = 2.5)</span>
+      Green: 0–4 breaches (model accepted)
+      <br>
+      Yellow: 5–9 breaches (capital multiplier increased)
+      <br>
+      Red: 10+ breaches (model rejected, regulator intervention)
+      <br><br>
+      <span class="lbl">Capital multiplier</span>
+      m<sub>c</sub> = 3 + (yellow zone penalty from 0.00 to 0.85)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Green zone = trust the model. Yellow = penalty. Red = replace the model.</div>
+  </div>
+
+  <h3>5.3 Model Quality KPIs</h3>
+
+  <div class="metric">
+    <h4>Expected Shortfall (ES) Backtest <span class="badge">Model Quality</span></h4>
+    <p><strong>What it measures:</strong> Whether the average loss on breach days matches the predicted ES.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ES<sub>actual</sub> = ( 1 / #breaches ) · Σ<sub>breach days</sub> Loss<sub>t</sub>
+      <br><br>
+      <span class="lbl">Ratio</span>
+      ES ratio = ES<sub>actual</sub> / ES<sub>predicted</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Ratio ∈ [0.8, 1.2] = well-calibrated. Ratio &gt; 1.2 = tail underestimated. Ratio &lt; 0.8 = tail overestimated.</div>
+  </div>
+
+  <div class="metric">
+    <h4>Tail Ratio (ES / VaR) <span class="badge">Model Quality</span></h4>
+    <p><strong>What it measures:</strong> How severe the tail is beyond VaR. High ratio = fat tails.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Tail Ratio = ES<sub>α</sub> / VaR<sub>α</sub>
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong><br>
+      • ~1.15–1.25 → Normal-ish tails<br>
+      • ~1.25–1.5 → Fat tails<br>
+      • &gt; 1.5 → Very heavy tails; VaR alone is dangerously misleading
+    </div>
+  </div>
+
+  <div class="metric">
+    <h4>Stress Test Coverage <span class="badge">Model Quality</span></h4>
+    <p><strong>What it measures:</strong> Whether the model's VaR is exceeded in historical crisis scenarios (2008, COVID-19 crash, etc.).</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ST coverage = # crisis scenarios where VaR is breached / total scenarios
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> VaR is a normal-times measure; a good model should still breach under severe stress. If it doesn't, it's too conservative.</div>
+  </div>
+
+  <h3>5.4 📊 Interactive: Backtesting the VaR Model</h3>
+  <p style="color:var(--muted);font-size:.93rem;">Below is a simulated 500-day backtest of a 99% VaR model. <strong>Red X markers</strong> show breach days — the days where actual losses exceeded the VaR prediction. Count them, then compare with the expected 5 breaches. Adjust the model "bias" slider to see what a broken model looks like.</p>
+
+  <div class="demo">
+    <div class="demo-controls">
+      <div class="info">
+        <div class="lbl">Breaches</div>
+        <div class="val" id="btBreachCount" style="color:#dc2626;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Expected (99% / 500 days)</div>
+        <div class="val" style="color:#64748b;">5</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Violation Ratio</div>
+        <div class="val" id="btVR" style="color:#7c3aed;">—</div>
+      </div>
+      <div class="info">
+        <div class="lbl">Kupiec p-value</div>
+        <div class="val" id="btKupiec" style="color:#0891b2;">—</div>
+      </div>
+      <button class="btn secondary" id="btRegen">🔀 Regenerate 500 Days</button>
+    </div>
+
+    <div class="demo-sliders">
+      <label>Model bias (0 = perfect, 1 = dangerous underestimate): <span id="btBiasLbl" style="color:var(--accent-dark);">0.00</span></label>
+      <input type="range" id="btBiasSlider" min="0" max="100" value="0" step="1">
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">500-Day Backtest — VaR vs Realised P&amp;L</div>
+      <div id="btChart" style="height:460px;"></div>
+      <div class="chart-note">Blue line = daily P&amp;L. Red dashed = VaR prediction. Red X = breach day. Green dashed = ES prediction.</div>
+    </div>
+
+    <div class="chart" style="margin:16px 0 0;">
+      <div class="chart-title">Breach Count Distribution Under H₀ (Binomial Simulation)</div>
+      <div id="btBreachDist" style="height:340px;"></div>
+      <div class="chart-note">Under a correct 99% VaR model over 500 days, breach count follows Binomial(500, 0.01). The green zone is 95% confidence; the red line marks the observed count.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. POST-DEPLOYMENT KPIs ================= -->
+<section id="s6">
+  <h2><span class="num">6</span> Post-Deployment KPIs — Detailed with Formulas</h2>
+  <p>Once a VaR model is live and used for capital, limits, or reporting, you must continuously monitor whether it still reflects current market conditions. Regulators require daily backtesting, and the model must be re-validated regularly.</p>
+
+  <h3>6.1 Continuous Backtesting KPIs</h3>
+
+  <div class="metric post">
+    <h4>Rolling 250-day Breach Count <span class="badge">Regulatory</span></h4>
+    <p><strong>What it measures:</strong> The Basel standard — number of breaches in the trailing 250 trading days.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Rolling breaches<sub>t</sub> = Σ<sub>s=t−249</sub><sup>t</sup> 1{ Loss<sub>s</sub> &gt; VaR<sub>s</sub> }
+      <br><br>
+      Expected under correct model = 0.01 × 250 = 2.5
+    </div>
+    <div class="interp">
+      <strong>Basel traffic light zones:</strong><br>
+      • 0–4 → Green (model OK)<br>
+      • 5–9 → Yellow (capital multiplier increased)<br>
+      • 10+ → Red (model rejected)
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Rolling Violation Ratio <span class="badge">Continuous</span></h4>
+    <p><strong>What it measures:</strong> A moving version of the VR metric to detect calibration drift.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      VR<sub>t</sub> = ( # breaches in window ) / ( (1 − α) × window length )
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Watch the trend. A steadily rising VR is the earliest warning that the model is falling behind.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Breach Magnitude Trend <span class="badge">Continuous</span></h4>
+    <p><strong>What it measures:</strong> Whether breaches are getting larger (severity) even if frequency is stable.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Severity<sub>t</sub> = mean( Loss<sub>breach</sub> − VaR<sub>breach</sub> )
+      <br><br>
+      Track over a rolling window of 60 days.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Rising severity with stable frequency means the tail is getting fatter — a leading indicator of crisis.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>CUSUM on Losses <span class="badge">Continuous</span></h4>
+    <p><strong>What it measures:</strong> Cumulative sum of standardised losses — detects systematic bias quickly.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      CUSUM<sub>t</sub> = max( 0, CUSUM<sub>t−1</sub> + ( Loss<sub>t</sub> / VaR<sub>t</sub> ) − k )
+      <br><br>
+      k = 1 (neutral threshold)
+      <br><br>
+      Alert when CUSUM crosses h (typically 5–10)
+    </div>
+  </div>
+
+  <h3>6.2 Model Health KPIs</h3>
+
+  <div class="metric post">
+    <h4>Volatility Forecast Accuracy <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the volatility input to the parametric VaR model is accurate.</p>
+    <div class="formula">
+      <span class="lbl">RMSE on volatility</span>
+      RMSE<sub>σ</sub> = √[ (1/T) · Σ<sub>t</sub> ( σ<sub>pred,t</sub> − σ<sub>realised,t</sub> )² ]
+      <br><br>
+      <span class="lbl">QLIKE loss (robust to noise)</span>
+      QLIKE = (1/T) · Σ<sub>t</sub> [ σ²<sub>realised,t</sub> / σ²<sub>pred,t</sub> − log( σ²<sub>realised,t</sub> / σ²<sub>pred,t</sub> ) − 1 ]
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Lower is better. Use QLIKE as it's robust to the noise in realised volatility estimates.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Correlation Stability <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the correlation matrix used in the VaR model still matches reality. Correlations rise in crises.</p>
+    <div class="formula">
+      <span class="lbl">Correlation drift</span>
+      Drift<sub>ij</sub> = | ρ<sup>train</sup><sub>ij</sub> − ρ<sup>current</sup><sub>ij</sub> |
+      <br><br>
+      <span class="lbl">Aggregate drift</span>
+      Frobenius norm = || Σ<sup>train</sup> − Σ<sup>current</sup> ||<sub>F</sub> / || Σ<sup>train</sup> ||<sub>F</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Drift &gt; 0.3 suggests the correlation structure has shifted — recalibrate.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Distribution Drift (PSI) <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether the distribution of returns has shifted from the calibration window.</p>
+    <div class="formula">
+      <span class="lbl">Population Stability Index</span>
+      PSI = Σ<sub>i</sub> ( A%<sub>i</sub> − E%<sub>i</sub> ) · ln( A%<sub>i</sub> / E%<sub>i</sub> )
+      <br><br>
+      <span class="lbl">Kolmogorov-Smirnov</span>
+      KS = max<sub>x</sub> | F<sub>train</sub>(x) − F<sub>current</sub>(x) |
+    </div>
+    <div class="interp">
+      <strong>Interpretation:</strong><br>
+      • PSI &lt; 0.10 → distribution stable ✅<br>
+      • 0.10 ≤ PSI &lt; 0.25 → moderate shift, monitor ⚠️<br>
+      • PSI ≥ 0.25 → significant drift, recalibrate 🚨
+    </div>
+  </div>
+
+  <div class="metric post">
+    <h4>Model Version Stability <span class="badge">Model Health</span></h4>
+    <p><strong>What it measures:</strong> Whether a model upgrade changes VaR significantly.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      ΔVaR = | VaR<sub>new</sub> − VaR<sub>old</sub> | / VaR<sub>old</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> ΔVaR &lt; 10% = minor upgrade. ΔVaR &gt; 30% = significant change; requires formal re-validation.</div>
+  </div>
+
+  <h3>6.3 Operational KPIs</h3>
+
+  <div class="metric post">
+    <h4>Daily Calculation Latency <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> Time from market close to production VaR availability.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Latency = VaR<sub>available time</sub> − Market<sub>close time</sub>
+    </div>
+    <div class="interp"><strong>Target:</strong> Parametric: &lt; 5 minutes. Historical: &lt; 30 minutes. Monte Carlo: &lt; 2 hours (must complete overnight).</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Calculation Failure Rate <span class="badge">Operational</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Failure rate = failed VaR runs / total runs
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Should be &lt; 0.5%. Common failures: missing market data, stale positions, covariance matrix not positive definite.</div>
+  </div>
+
+  <div class="metric post">
+    <h4>Data Quality Score <span class="badge">Operational</span></h4>
+    <p><strong>What it measures:</strong> Completeness and freshness of input data.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      DQ score = 1 − ( missing prices + stale prices ) / total inputs
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> DQ &gt; 0.99 required for reliable VaR.</div>
+  </div>
+
+  <h3>6.4 Business &amp; Regulatory KPIs</h3>
+
+  <div class="metric business">
+    <h4>Regulatory Capital Multiplier <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> The Basel multiplier applied to VaR to determine capital. Driven by backtest zone.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Capital = max( VaR<sub>t−1</sub>, m<sub>c</sub> × avg( VaR<sub>60 days</sub> ) )
+      <br><br>
+      m<sub>c</sub> = 3 + yellow zone penalty (0.00 to 0.85)
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Green zone → m<sub>c</sub> = 3. Yellow zone → up to 3.85. Each yellow-zone breach costs real capital.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Limit Utilisation <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> How close each desk is to its VaR limit.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Utilisation = VaR<sub>current</sub> / VaR<sub>limit</sub>
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Utilisation &gt; 90% for sustained periods means either limits are too tight or the desk is taking too much risk. Target: 60–80%.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Cost of VaR Capital <span class="badge">Business</span></h4>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Cost = Regulatory Capital × Cost of Equity (ROE)
+      <br><br>
+      Lower VaR → lower capital → lower cost.
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Model improvements that reduce VaR directly reduce the cost of capital — a hard, measurable ROI.</div>
+  </div>
+
+  <div class="metric business">
+    <h4>Stress Loss Coverage <span class="badge">Business</span></h4>
+    <p><strong>What it measures:</strong> Whether the trading book can survive a hypothetical 2008-style crisis.</p>
+    <div class="formula">
+      <span class="lbl">Formula</span>
+      Coverage = Capital / Stress Loss
+    </div>
+    <div class="interp"><strong>Interpretation:</strong> Coverage &gt; 1.5 = comfortable headroom. Coverage &lt; 1.0 = a severe stress would breach capital.</div>
+  </div>
+
+  <div class="analogy" style="border-left-color:var(--green);background:linear-gradient(90deg,#ecfdf5,#fef2f2);">
+    <strong>Golden rule:</strong> VaR is a snapshot of current risk under normal conditions. It <em>must</em> be paired with (1) daily backtests — the rolling breach count — (2) stress tests for extreme events, and (3) ES or tail metrics to capture what's beyond VaR. A VaR model without monitoring is a fire alarm without batteries.
+  </div>
+</section>
+
+<!-- ================= 7. MATHEMATICS ================= -->
+<section id="s7">
+  <h2><span class="num">7</span> Mathematical Formulas — How VaR Actually Works</h2>
+  <p>The core idea: <strong>VaR is a quantile of the loss distribution. Different methods differ in how they estimate that distribution.</strong></p>
+
+  <h3>7.1 Definition of VaR</h3>
+  <div class="formula">
+    <span class="lbl">General definition</span>
+    VaR<sub>α</sub>( L ) = inf { x ∈ ℝ : P( L &gt; x ) ≤ 1 − α }
+    <br><br>
+    Equivalently: VaR<sub>α</sub> = the α-quantile of the loss distribution L
+    <br><br>
+    <span class="lbl">In terms of P&amp;L (profit/loss)</span>
+    If P&amp;L is normally distributed with mean μ<sub>P</sub> and standard deviation σ<sub>P</sub>:
+    <br><br>
+    VaR<sub>α</sub> = − μ<sub>P</sub> + z<sub>α</sub> · σ<sub>P</sub>
+    <br><br>
+    where z<sub>α</sub> = Φ<sup>−1</sup>( α ) is the α-quantile of the standard normal.
+  </div>
+
+  <h3>7.2 Parametric (Variance-Covariance) VaR</h3>
+  <div class="formula">
+    <span class="lbl">Single-asset, 1-day VaR</span>
+    VaR<sub>α</sub> = z<sub>α</sub> · σ · V
+    <br><br>
+    σ = daily return volatility
+    <br>
+    V = portfolio value
+    <br><br>
+    <span class="lbl">Portfolio VaR (matrix form)</span>
+    VaR<sub>α</sub> = z<sub>α</sub> · √( wᵀ Σ w ) · V
+    <br><br>
+    w = vector of portfolio weights
+    <br>
+    Σ = covariance matrix of asset returns
+    <br><br>
+    <span class="lbl">Multi-horizon scaling (√T rule)</span>
+    VaR<sub>α</sub>( T days ) = VaR<sub>α</sub>( 1 day ) · √T
+    <br><br>
+    This assumes returns are i.i.d. — often violated in practice.
+    <br><br>
+    <span class="lbl">Common z<sub>α</sub> values</span>
+    α = 90% → z = 1.282
+    <br>
+    α = 95% → z = 1.645
+    <br>
+    α = 99% → z = 2.326
+    <br>
+    α = 99.9% → z = 3.090
+  </div>
+
+  <h3>7.3 Historical Simulation VaR</h3>
+  <div class="formula">
+    <span class="lbl">Algorithm</span>
+    Given historical returns r<sub>1</sub>, r<sub>2</sub>, …, r<sub>N</sub> (last N days):
+    <br><br>
+    1. Revalue the current portfolio under each historical scenario:
+    <br>
+    P&amp;L<sub>i</sub> = Portfolio( S<sub>t</sub> · (1 + r<sub>i</sub>) ) − Portfolio( S<sub>t</sub> )
+    <br><br>
+    2. Sort P&amp;L<sub>1:N</sub> ascending: P&amp;L<sub>(1)</sub> ≤ P&amp;L<sub>(2)</sub> ≤ … ≤ P&amp;L<sub>(N)</sub>
+    <br><br>
+    3. VaR<sub>α</sub> = − P&amp;L<sub>(⌈N · (1−α)⌉)</sub>
+    <br><br>
+    For α = 99% and N = 500: VaR = −P&amp;L<sub>(5)</sub> (5th worst loss)
+  </div>
+
+  <h3>7.4 Monte Carlo VaR</h3>
+  <div class="formula">
+    <span class="lbl">Algorithm</span>
+    1. Specify a factor model (e.g. GBM, jump-diffusion)
+    <br>
+    2. Simulate M scenarios of factor returns
+    <br>
+    3. Revalue the portfolio in each scenario
+    <br>
+    4. VaR<sub>α</sub> = empirical α-quantile of simulated P&amp;L
+    <br><br>
+    <span class="lbl">GBM path simulation</span>
+    S<sub>t+Δt</sub> = S<sub>t</sub> · exp[ ( μ − σ²/2 ) · Δt + σ · √Δt · Z ]
+    <br>
+    Z ~ N( 0, 1 )
+    <br><br>
+    <span class="lbl">Required M for target error</span>
+    M ≈ ( z<sub>α</sub> / ε )² · σ²<sub>P&amp;L</sub>
+    <br><br>
+    Monte Carlo error ~ σ<sub>P&amp;L</sub> / √M
+  </div>
+
+  <h3>7.5 Expected Shortfall (ES / CVaR)</h3>
+  <div class="formula">
+    <span class="lbl">Definition</span>
+    ES<sub>α</sub> = E[ L | L &gt; VaR<sub>α</sub> ]
+    <br><br>
+    = ( 1 / (1−α) ) · ∫<sub>α</sub><sup>1</sup> VaR<sub>u</sub> du
+    <br><br>
+    <span class="lbl">Parametric ES (normal)</span>
+    ES<sub>α</sub> = σ · φ( z<sub>α</sub> ) / ( 1 − α ) − μ
+    <br><br>
+    φ = standard normal PDF
+    <br><br>
+    <span class="lbl">Key property: ES is coherent</span>
+    Unlike VaR, ES is sub-additive: ES(A+B) ≤ ES(A) + ES(B)
+    <br>
+    This makes ES well-behaved for portfolio risk aggregation.
+  </div>
+
+  <h3>7.6 Incremental, Marginal, and Component VaR</h3>
+  <div class="formula">
+    <span class="lbl">Incremental VaR (IVaR)</span>
+    IVaR<sub>i</sub> = VaR( w + Δw<sub>i</sub> ) − VaR( w )
+    <br>
+    Risk added or removed by changing position i
+    <br><br>
+    <span class="lbl">Marginal VaR (MVaR)</span>
+    MVaR<sub>i</sub> = ∂VaR / ∂w<sub>i</sub>
+    <br>
+    Under Gaussian assumptions:
+    <br>
+    MVaR<sub>i</sub> = z<sub>α</sub> · ( Σw )<sub>i</sub> / √( wᵀΣw )
+    <br><br>
+    <span class="lbl">Component VaR (CVaR)</span>
+    CVaR<sub>i</sub> = w<sub>i</sub> · MVaR<sub>i</sub>
+    <br><br>
+    <span class="lbl">Euler's theorem (VaR is homogeneous of degree 1)</span>
+    VaR = Σ<sub>i</sub> CVaR<sub>i</sub>
+    <br>
+    This lets you attribute portfolio VaR to each position cleanly.
+  </div>
+
+  <h3>7.7 Backtesting Statistics</h3>
+  <div class="formula">
+    <span class="lbl">Kupiec POF test</span>
+    LR<sub>POF</sub> = −2 · ln[ (1−p)<sup>T−x</sup> · p<sup>x</sup> ] + 2 · ln[ (1−x/T)<sup>T−x</sup> · (x/T)<sup>x</sup> ]
+    <br>
+    ~ χ²(1)
+    <br><br>
+    <span class="lbl">Christoffersen independence</span>
+    LR<sub>IND</sub> = −2 · ln[ (1−π)<sup>n₀₀+n₁₀</sup> · π<sup>n₀₁+n₁₁</sup> ] + 2 · ln[ (1−π₀)<sup>n₀₀</sup> · π₀<sup>n₀₁</sup> · (1−π₁)<sup>n₁₀</sup> · π₁<sup>n₁₁</sup> ]
+    <br>
+    ~ χ²(1)
+    <br><br>
+    <span class="lbl">Conditional coverage (joint test)</span>
+    LR<sub>CC</sub> = LR<sub>POF</sub> + LR<sub>IND</sub> &nbsp; ~ χ²(2)
+    <br><br>
+    <span class="lbl">Standard error of breach rate</span>
+    SE( p̂ ) = √[ p(1−p) / T ]
+    <br>
+    Under H₀, breach count ~ Binomial( T, p )
+  </div>
+
+  <h3>7.8 GARCH-Based VaR (Dynamic Volatility)</h3>
+  <div class="formula">
+    <span class="lbl">GARCH(1,1)</span>
+    σ²<sub>t</sub> = ω + α · ε²<sub>t−1</sub> + β · σ²<sub>t−1</sub>
+    <br><br>
+    ε<sub>t</sub> = σ<sub>t</sub> · z<sub>t</sub>, &nbsp; z<sub>t</sub> ~ i.i.d. N(0,1)
+    <br><br>
+    <span class="lbl">Constraints</span>
+    ω &gt; 0, α ≥ 0, β ≥ 0, α + β &lt; 1 (for stationarity)
+    <br><br>
+    <span class="lbl">Unconditional variance</span>
+    σ²<sub>∞</sub> = ω / (1 − α − β)
+    <br><br>
+    <span class="lbl">Dynamic 1-day VaR</span>
+    VaR<sub>t</sub> = z<sub>α</sub> · σ̂<sub>t</sub> · V
+    <br><br>
+    <span class="lbl">Filtered Historical Simulation</span>
+    1. Fit GARCH to returns
+    <br>
+    2. Extract standardised residuals z<sub>t</sub> = ε<sub>t</sub> / σ<sub>t</sub>
+    <br>
+    3. Resample z<sub>t</sub> and reapply current σ<sub>t</sub>
+    <br>
+    4. VaR<sub>t</sub> = z<sub>α</sub><sup>empirical</sup> · σ̂<sub>t</sub> · V
+  </div>
+
+  <h3>7.9 Extreme Value Theory (EVT) for Tail VaR</h3>
+  <div class="formula">
+    <span class="lbl">Pickands-Balkema-de Haan theorem</span>
+    For large threshold u, excess losses follow a generalised Pareto distribution (GPD):
+    <br><br>
+    P( L − u &gt; y | L &gt; u ) → G<sub>ξ,β</sub>( y )
+    <br><br>
+    <span class="lbl">GPD CDF</span>
+    G<sub>ξ,β</sub>( y ) = 1 − ( 1 + ξ y / β )<sup>−1/ξ</sup> &nbsp; if ξ ≠ 0
+    <br>
+    G<sub>ξ,β</sub>( y ) = 1 − exp( −y / β ) &nbsp; if ξ = 0
+    <br><br>
+    <span class="lbl">Tail VaR estimator</span>
+    VaR<sub>α</sub> = u + ( β / ξ ) · [ ( ( N / N<sub>u</sub> ) · ( 1 − α ) )<sup>−ξ</sup> − 1 ]
+    <br><br>
+    N = total observations
+    <br>
+    N<sub>u</sub> = number of losses exceeding u
+    <br>
+    ξ = tail index (ξ &gt; 0 = fat tail)
+  </div>
+
+  <h3>7.10 Coherent Risk Measures</h3>
+  <p>A risk measure is <em>coherent</em> if it satisfies four axioms. VaR fails one of them; ES satisfies all four.</p>
+  <div class="formula">
+    <span class="lbl">Four coherence axioms</span>
+    1. <strong>Monotonicity:</strong> If X ≤ Y, then ρ(X) ≥ ρ(Y)
+    <br>
+    2. <strong>Translation invariance:</strong> ρ(X + c) = ρ(X) − c
+    <br>
+    3. <strong>Positive homogeneity:</strong> ρ(λX) = λ ρ(X) for λ &gt; 0
+    <br>
+    4. <strong>Sub-additivity:</strong> ρ(X + Y) ≤ ρ(X) + ρ(Y) &nbsp; ← VaR FAILS this
+    <br><br>
+    <span class="lbl">VaR counterexample (sub-additivity)</span>
+    Two independent digital bonds:
+    <br>
+    - Each pays ₹100 unless a specific default occurs (prob 0.9%)
+    <br>
+    - 99% VaR of each alone = ₹0 (default probability &lt; 1%)
+    <br>
+    - Jointly, the probability that at least one defaults is ~1.8% &gt; 1%
+    <br>
+    - Combined 99% VaR = ₹100 &gt; 0 + 0
+    <br>
+    → VaR( A + B ) = 100 &gt; VaR(A) + VaR(B) = 0
+  </div>
+
+  <h3>7.11 Assumptions of VaR</h3>
+  <div class="assumptions">
+    <div class="item">
+      <div class="letter">D</div>
+      <div class="name">Distribution</div>
+      <div class="desc">Returns follow an assumed distribution (normal, t, empirical)</div>
+    </div>
+    <div class="item">
+      <div class="letter">S</div>
+      <div class="name">Stationarity</div>
+      <div class="desc">Historical distribution is representative of the future</div>
+    </div>
+    <div class="item">
+      <div class="letter">L</div>
+      <div class="name">Liquidity</div>
+      <div class="desc">Positions can be liquidated at quoted prices</div>
+    </div>
+    <div class="item">
+      <div class="letter">C</div>
+      <div class="name">Constant positions</div>
+      <div class="desc">Portfolio composition doesn't change over the horizon</div>
+    </div>
+    <div class="item">
+      <div class="letter">I</div>
+      <div class="name">i.i.d.</div>
+      <div class="desc">Returns are independent and identically distributed (for √T scaling)</div>
+    </div>
+  </div>
+
+  <h3>📊 Interactive: √T Scaling — Is it Valid?</h3>
+  <p style="color:var(--muted);font-size:.93rem;">VaR scales with the square root of the horizon under i.i.d. assumptions. This chart shows the √T line vs. actual simulated 10-day VaR under different correlation structures. Positive autocorrelation makes real multi-day VaR higher; mean reversion makes it lower.</p>
+
+  <div class="chart">
+    <div class="chart-title">VaR Scaling: √T Rule vs. Reality</div>
+    <div id="scalingChart" style="height:420px;"></div>
+    <div class="chart-note">The dashed line is the standard √T scaling. Red curve = positively autocorrelated returns (VaR grows faster than √T). Green curve = mean-reverting returns (VaR grows slower).</div>
+  </div>
+</section>
+
+<!-- ================= 8. GLOSSARY ================= -->
+<section id="s8">
+  <h2><span class="num">8</span> Glossary of Acronyms &amp; Terms</h2>
+  <p>Every abbreviation used in this study guide, explained in plain English.</p>
+
+  <h3>Core VaR Concepts</h3>
+  <div class="gloss">
+    <div>VaR</div><div><strong>Value at Risk</strong> — the maximum loss expected over a given horizon at a given confidence level.</div>
+    <div>ES</div><div><strong>Expected Shortfall</strong> — the average loss beyond VaR. Also called Conditional VaR (CVaR) or Average VaR.</div>
+    <div>CVaR</div><div><strong>Conditional Value at Risk</strong> — same as ES. Not to be confused with Component VaR.</div>
+    <div>Confidence Level (α)</div><div>The probability that losses will not exceed VaR. Common: 95%, 99%, 99.9%.</div>
+    <div>Horizon (T)</div><div>The time period over which VaR is measured. Common: 1 day, 10 days, 1 year.</div>
+    <div>Loss Distribution</div><div>The probability distribution of portfolio losses over the horizon.</div>
+    <div>Quantile</div><div>The value below which a given fraction of the distribution lies.</div>
+    <div>Tail Risk</div><div>Risk of extreme losses beyond VaR.</div>
+    <div>Fat Tails</div><div>Distributions with more extreme events than a normal distribution predicts. Also called leptokurtic.</div>
+  </div>
+
+  <h3>VaR Methodologies</h3>
+  <div class="gloss">
+    <div>Historical Simulation</div><div>VaR computed from empirical historical return scenarios.</div>
+    <div>Parametric VaR</div><div>VaR under an assumed distribution (usually normal). Also called variance-covariance.</div>
+    <div>Monte Carlo VaR</div><div>VaR from simulated factor paths and full revaluation.</div>
+    <div>FHS</div><div><strong>Filtered Historical Simulation</strong> — GARCH + resampled standardised residuals.</div>
+    <div>EVT</div><div><strong>Extreme Value Theory</strong> — tail-focused statistical framework.</div>
+    <div>GPD</div><div><strong>Generalised Pareto Distribution</strong> — model for excesses over a threshold.</div>
+    <div>GARCH</div><div><strong>Generalised AutoRegressive Conditional Heteroskedasticity</strong> — time-varying volatility model.</div>
+    <div>EWMA</div><div><strong>Exponentially Weighted Moving Average</strong> — volatility estimator giving more weight to recent data.</div>
+    <div>CAViaR</div><div><strong>Conditional Autoregressive VaR</strong> — direct quantile regression for VaR.</div>
+  </div>
+
+  <h3>VaR Attribution</h3>
+  <div class="gloss">
+    <div>Marginal VaR</div><div>The change in VaR per unit change in position size.</div>
+    <div>Component VaR</div><div>Marginal VaR × position size; sums to total VaR (Euler's theorem).</div>
+    <div>Incremental VaR</div><div>Change in VaR from adding or removing a position.</div>
+    <div>Diversification Benefit</div><div>VaR(portfolio) − Σ VaR(components); usually negative.</div>
+    <div>Undiversified VaR</div><div>Sum of individual VaRs — an upper bound on portfolio VaR.</div>
+  </div>
+
+  <h3>Backtesting</h3>
+  <div class="gloss">
+    <div>Breach</div><div>A day when the actual loss exceeded VaR.</div>
+    <div>Violation</div><div>Synonym for breach.</div>
+    <div>Violation Ratio (VR)</div><div>Observed breaches / expected breaches.</div>
+    <div>Kupiec POF</div><div>Proportion of Failures test — statistical test for breach frequency.</div>
+    <div>Christoffersen Independence</div><div>Test for independence of breaches.</div>
+    <div>Christoffersen CC</div><div>Conditional Coverage test — joint frequency + independence.</div>
+    <div>Traffic Light</div><div>Basel regulatory backtest — green/yellow/red zones.</div>
+    <div>Basel Multiplier</div><div>Capital multiplier (3.0 to 3.85) determined by backtest zone.</div>
+    <div>CUSUM</div><div><strong>Cumulative Sum</strong> — sequential change detection.</div>
+    <div>Binomial Test</div><div>The distribution of breach counts under a correct model.</div>
+  </div>
+
+  <h3>Statistical Concepts</h3>
+  <div class="gloss">
+    <div>i.i.d.</div><div><strong>Independent and Identically Distributed</strong> — returns are uncorrelated and drawn from the same distribution.</div>
+    <div>Normal Distribution</div><div>The Gaussian — mean μ, standard deviation σ.</div>
+    <div>Student-t</div><div>A fat-tailed symmetric distribution with degrees of freedom ν.</div>
+    <div>Skewness</div><div>Asymmetry of a distribution. Negative skew = left tail is fatter.</div>
+    <div>Kurtosis</div><div>Tail-heaviness. Excess kurtosis &gt; 0 = fat tails.</div>
+    <div>Volatility Clustering</div><div>The tendency for large moves to be followed by large moves.</div>
+    <div>Autocorrelation</div><div>Correlation of a series with its own lagged values.</div>
+    <div>Mean Reversion</div><div>The tendency of a series to return to its long-run mean.</div>
+    <div>Coherent Risk Measure</div><div>A risk measure satisfying monotonicity, translation invariance, positive homogeneity, and sub-additivity.</div>
+    <div>Sub-additivity</div><div>ρ(A+B) ≤ ρ(A) + ρ(B) — VaR fails this; ES satisfies it.</div>
+  </div>
+
+  <h3>Monitoring &amp; Operations</h3>
+  <div class="gloss">
+    <div>KPI</div><div><strong>Key Performance Indicator</strong> — a measurable value tracking model or business performance.</div>
+    <div>PSI</div><div><strong>Population Stability Index</strong> — measures distribution shift.</div>
+    <div>KS Test</div><div><strong>Kolmogorov-Smirnov test</strong> — tests whether two distributions differ.</div>
+    <div>KL Divergence</div><div><strong>Kullback-Leibler divergence</strong> — asymmetric distribution difference.</div>
+    <div>QLIKE</div><div>A robust loss function for comparing volatility forecasts.</div>
+    <div>RMSE</div><div><strong>Root Mean Squared Error</strong> — standard forecast accuracy metric.</div>
+    <div>Latency</div><div>Time to compute the VaR after market close.</div>
+    <div>Throughput</div><div>Number of VaR calculations per unit time (across books, scenarios).</div>
+    <div>Data Quality Score</div><div>Fraction of complete, fresh market data inputs.</div>
+  </div>
+
+  <h3>Regulatory &amp; Business</h3>
+  <div class="gloss">
+    <div>Basel</div><div>The Basel Committee on Banking Supervision — sets global bank capital standards.</div>
+    <div>Basel II</div><div>Introduced VaR-based market risk capital (1996 amendment, refined 2004).</div>
+    <div>Basel III</div><div>Post-2008 reforms — higher capital, liquidity ratios.</div>
+    <div>Basel IV / FRTB</div><div><strong>Fundamental Review of the Trading Book</strong> — replaces VaR with ES at 97.5%.</div>
+    <div>FRTB</div><div><strong>Fundamental Review of the Trading Book</strong> — Basel IV's market risk framework.</div>
+    <div>IMA</div><div><strong>Internal Models Approach</strong> — using the bank's own VaR/ES models for regulatory capital.</div>
+    <div>SA</div><div><strong>Standardised Approach</strong> — regulatory-prescribed risk calculation without internal models.</div>
+    <div>Limit Utilisation</div><div>Current VaR / VaR limit for a trading desk.</div>
+    <div>Capital Multiplier</div><div>Basel factor (3.0–3.85) multiplied by average VaR to derive capital.</div>
+    <div>Stress Test</div><div>Simulating portfolio loss under hypothetical extreme scenarios.</div>
+    <div>Reverse Stress Test</div><div>Finding the scenario that would wipe out the firm.</div>
+    <div>Scenario Analysis</div><div>Evaluating impact of specific named scenarios (2008, COVID-19, etc.).</div>
+  </div>
+
+  <h3>Financial Instruments</h3>
+  <div class="gloss">
+    <div>Linear Position</div><div>A position whose value changes linearly with the underlying (stocks, bonds).</div>
+    <div>Non-linear Position</div><div>Options, structured products — value changes non-linearly.</div>
+    <div>Greek</div><div>Sensitivity of an option's price to a parameter (Delta, Gamma, Vega, Theta, Rho).</div>
+    <div>Delta</div><div>Sensitivity to underlying price. Delta-normal VaR uses this.</div>
+    <div>Gamma</div><div>Second-order sensitivity. Ignored by basic Delta-Normal; causes underestimation.</div>
+    <div>Vega</div><div>Sensitivity to implied volatility.</div>
+    <div>Path-Dependent</div><div>Payoff depends on the entire price trajectory (Asian, lookback, barrier options).</div>
+    <div>Full Revaluation</div><div>Repricing the full instrument under each scenario (accurate).</div>
+    <div>Delta Approximation</div><div>Approximating scenario P&amp;L from sensitivities (fast but less accurate).</div>
+  </div>
+</section>
+
+<!-- ================= MASTER TABLE ================= -->
+<section id="master">
+  <h2><span class="num">★</span> Master Formula Reference Table</h2>
+  <p>All KPIs and core formulas in one place for quick revision.</p>
+
+  <table>
+    <tr>
+      <th style="width:24%;">KPI / Formula</th>
+      <th style="width:14%;">Type</th>
+      <th style="width:38%;">Formula</th>
+      <th>Ideal Direction</th>
+    </tr>
+    <tr><td>VaR (general)</td><td>Math</td><td>inf { x : P(L &gt; x) ≤ 1−α }</td><td>—</td></tr>
+    <tr><td>Parametric VaR</td><td>Math</td><td>VaR<sub>α</sub> = −μ<sub>P</sub> + z<sub>α</sub>·σ<sub>P</sub></td><td>—</td></tr>
+    <tr><td>Portfolio VaR</td><td>Math</td><td>z<sub>α</sub> · √(wᵀΣw) · V</td><td>—</td></tr>
+    <tr><td>√T scaling</td><td>Math</td><td>VaR(T) = VaR(1) · √T</td><td>—</td></tr>
+    <tr><td>Historical VaR</td><td>Math</td><td>−P&amp;L<sub>(⌈N(1−α)⌉)</sub> of sorted scenarios</td><td>—</td></tr>
+    <tr><td>Monte Carlo VaR</td><td>Math</td><td>Empirical α-quantile of M simulated P&amp;L</td><td>—</td></tr>
+    <tr><td>Expected Shortfall</td><td>Math</td><td>E[ L | L &gt; VaR<sub>α</sub> ]</td><td>—</td></tr>
+    <tr><td>Parametric ES</td><td>Math</td><td>σ · φ(z<sub>α</sub>) / (1−α) − μ</td><td>—</td></tr>
+    <tr><td>Marginal VaR</td><td>Math</td><td>∂VaR/∂w<sub>i</sub> = z<sub>α</sub>·(Σw)<sub>i</sub>/√(wᵀΣw)</td><td>—</td></tr>
+    <tr><td>Component VaR</td><td>Math</td><td>w<sub>i</sub> · MVaR<sub>i</sub></td><td>Σ CVaR = VaR</td></tr>
+    <tr><td>Tail Ratio</td><td>KPI</td><td>ES<sub>α</sub> / VaR<sub>α</sub></td><td>~1.15 normal, &gt;1.5 fat</td></tr>
+    <tr><td>Violation Ratio</td><td>KPI</td><td>Observed / Expected breaches</td><td>→ 1.0</td></tr>
+    <tr><td>Bias</td><td>KPI</td><td>(1/T) · Σ(Loss<sub>t</sub> − VaR<sub>t</sub>)</td><td>→ 0</td></tr>
+    <tr><td>MAPE</td><td>KPI</td><td>Mean |VaR − Loss| / Loss on breach days</td><td>↓ Lower</td></tr>
+    <tr><td>Kupiec POF</td><td>Backtest</td><td>LR = −2·ln[L₀] + 2·ln[L₁] ~ χ²(1)</td><td>p &gt; 0.05</td></tr>
+    <tr><td>Christoffersen IND</td><td>Backtest</td><td>LR<sub>IND</sub> ~ χ²(1)</td><td>p &gt; 0.05</td></tr>
+    <tr><td>Christoffersen CC</td><td>Backtest</td><td>LR<sub>CC</sub> = LR<sub>POF</sub> + LR<sub>IND</sub> ~ χ²(2)</td><td>p &gt; 0.05</td></tr>
+    <tr><td>Basel Traffic Light</td><td>Regulatory</td><td>0–4 green, 5–9 yellow, 10+ red (250 days)</td><td>Green zone</td></tr>
+    <tr><td>Basel Capital</td><td>Regulatory</td><td>max(VaR<sub>t−1</sub>, m<sub>c</sub>·avg(VaR<sub>60d</sub>))</td><td>m<sub>c</sub> = 3.0</td></tr>
+    <tr><td>ES Backtest Ratio</td><td>Post</td><td>ES<sub>actual</sub> / ES<sub>predicted</sub></td><td>∈ [0.8, 1.2]</td></tr>
+    <tr><td>Rolling VR</td><td>Post</td><td>Breaches / expected over rolling window</td><td>→ 1.0</td></tr>
+    <tr><td>CUSUM</td><td>Post</td><td>max(0, CUSUM<sub>t−1</sub> + Loss<sub>t</sub>/VaR<sub>t</sub> − k)</td><td>&lt; h threshold</td></tr>
+    <tr><td>Volatility QLIKE</td><td>Post</td><td>σ²<sub>r</sub>/σ²<sub>p</sub> − log(σ²<sub>r</sub>/σ²<sub>p</sub>) − 1</td><td>↓ Lower</td></tr>
+    <tr><td>Correlation Drift</td><td>Post</td><td>|| Σ<sup>train</sup> − Σ<sup>current</sup> ||<sub>F</sub> / || Σ<sup>train</sup> ||<sub>F</sub></td><td>↓ &lt; 0.30</td></tr>
+    <tr><td>Distribution PSI</td><td>Post</td><td>Σ (A% − E%) ln(A%/E%)</td><td>↓ &lt; 0.10</td></tr>
+    <tr><td>KS Statistic</td><td>Post</td><td>max |F<sub>train</sub> − F<sub>current</sub>|</td><td>↓ &lt; 0.05</td></tr>
+    <tr><td>Limit Utilisation</td><td>Business</td><td>VaR<sub>current</sub> / VaR<sub>limit</sub></td><td>60–80%</td></tr>
+    <tr><td>Stress Coverage</td><td>Business</td><td>Capital / Stress Loss</td><td>&gt; 1.5</td></tr>
+    <tr><td>ROI of Model</td><td>Business</td><td>Capital saved × Cost of equity</td><td>↑ Higher</td></tr>
+  </table>
+
+  <div class="interp" style="margin-top:24px;background:#fffbeb;border-left-color:#d97706;">
+    <strong style="color:#b45309;">Final tip:</strong> VaR is the most widely used risk measure in the world, but it is not the whole story. Always (1) pair VaR with ES to capture the tail, (2) backtest daily — Kupiec, Christoffersen, and Basel traffic light, (3) stress test with historical crisis scenarios, (4) monitor volatility, correlation, and distribution drift continuously, and (5) treat VaR as one input to a broader risk framework, not a substitute for judgement. The 2008 crisis taught us that a VaR number alone — however precise — can be dangerously misleading.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Value at Risk Models — Complete Interactive Study Material · All charts &amp; calculators recomputed live in your browser
+</footer>
+
+<script>
+/* ============================================================
+   Utility functions
+   ============================================================ */
+function randn(){
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+/* Student-t sample via Marsaglia polar method approximation */
+function randt(nu){
+  if (nu <= 0) return randn();
+  // t = Z / sqrt(chi2/nu)
+  const z = randn();
+  // Chi-square via sum of squared normals (slow but simple for small nu)
+  let chi2 = 0;
+  for (let i = 0; i < nu; i++){ const g = randn(); chi2 += g*g; }
+  return z / Math.sqrt(chi2 / nu);
+}
+/* Normal CDF via Abramowitz-Stegun */
+function normCDF(x){
+  const a1=0.254829592, a2=-0.284496736, a3=1.421413741,
+        a4=-1.453152027, a5=1.061405429, p=0.3275911;
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x) / Math.sqrt(2);
+  const t = 1.0 / (1.0 + p * ax);
+  const y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*Math.exp(-ax*ax);
+  return 0.5 * (1.0 + sign * y);
+}
+
+/* ============================================================
+   1. MAIN VAR INTERACTIVE
+   ============================================================ */
+(function(){
+  const PORTFOLIO = 100e7;      // ₹100 Cr in rupees
+  let returns = [];              // daily return scenarios
+
+  const alphaSlider = document.getElementById('varAlphaSlider');
+  const horizonSlider = document.getElementById('varHorizonSlider');
+  const alphaVal = document.getElementById('varAlphaVal');
+  const alphaLbl = document.getElementById('varAlphaLbl');
+  const horizonLbl = document.getElementById('varHorizonLbl');
+  const varValue = document.getElementById('varValue');
+  const varESValue = document.getElementById('varESValue');
+  const varInterpretation = document.getElementById('varInterpretation');
+  const varESInterpretation = document.getElementById('varESInterpretation');
+  const varSeverity = document.getElementById('varSeverity');
+  const regenBtn = document.getElementById('varRegen');
+
+  function generateReturns(){
+    // Student-t with nu=5, scaled to daily vol 1.2%
+    const vol = 0.012;
+    const nu = 5;
+    const scale = vol / Math.sqrt(nu / (nu - 2));  // scale t to have unit SD
+    returns = [];
+    for (let i = 0; i < 5000; i++){
+      returns.push(randt(nu) * scale);
+    }
+  }
+
+  function update(){
+    const alpha = parseFloat(alphaSlider.value) / 100;
+    const horizon = parseInt(horizonSlider.value);
+    alphaVal.textContent = (alpha * 100).toFixed(1) + '%';
+    alphaLbl.textContent = (alpha * 100).toFixed(1) + '%';
+    horizonLbl.textContent = horizon;
+
+    // Compute P&L scenarios (rupees)
+    const pnl = returns.map(r => PORTFOLIO * r * Math.sqrt(horizon));
+    const sorted = pnl.slice().sort((a,b) => a-b);
+
+    // VaR = -(1-alpha) quantile of P&L
+    const quantileIdx = Math.floor(sorted.length * (1 - alpha));
+    const varValueRupees = -sorted[quantileIdx];
+
+    // ES = average of losses beyond VaR
+    const tail = sorted.slice(0, quantileIdx);
+    const esRupees = tail.length > 0 ? -tail.reduce((a,b)=>a+b,0) / tail.length : varValueRupees;
+
+    const varCr = varValueRupees / 1e7;
+    const esCr = esRupees / 1e7;
+
+    varValue.textContent = '₹' + varCr.toFixed(2) + ' Cr';
+    varESValue.textContent = '₹' + esCr.toFixed(2) + ' Cr';
+
+    varInterpretation.textContent = 'On ' + (alpha*100).toFixed(1) + '% of ' + horizon + '-day periods, losses will not exceed ₹' + varCr.toFixed(2) + ' Cr. Expected breaches: ' + ((1-alpha)*100).toFixed(1) + '% of days.';
+    varESInterpretation.textContent = 'When losses exceed VaR, they average ₹' + esCr.toFixed(2) + ' Cr (vs. VaR cutoff ₹' + varCr.toFixed(2) + ' Cr).';
+    const ratio = esCr / varCr;
+    varSeverity.textContent = 'ES / VaR = ' + ratio.toFixed(3) + ' ' + (ratio > 1.3 ? '(fat tails ⚠️)' : '(normal-ish)');
+    varSeverity.style.color = ratio > 1.3 ? '#dc2626' : '#059669';
+
+    // Histogram
+    const pnlCr = pnl.map(v => v / 1e7);
+    const varCrLine = varCr;
+    const esCrLine = esCr;
+
+    const traceHist = {
+      x: pnlCr, type: 'histogram', name: 'P&L scenarios',
+      marker: {color: '#0891b2', opacity: 0.55, line: {color: '#ffffff', width: 0.3}},
+      nbinsx: 80,
+      histnorm: 'probability density'
+    };
+
+    // Tail region for ES
+    const tailX = pnlCr.filter(v => v < -varCrLine);
+    const traceTail = {
+      x: tailX, type: 'histogram', name: 'Beyond VaR (ES tail)',
+      marker: {color: '#7c3aed', opacity: 0.85, line: {color: '#ffffff', width: 0.3}},
+      nbinsx: 80,
+      histnorm: 'probability density'
+    };
+
+    const shapes = [
+      {
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -varCrLine, x1: -varCrLine, y0: 0, y1: 1,
+        line: {color: '#dc2626', width: 3}
+      },
+      {
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -esCrLine, x1: -esCrLine, y0: 0, y1: 1,
+        line: {color: '#7c3aed', width: 2.5, dash: 'dash'}
+      }
+    ];
+
+    const annotations = [
+      {
+        x: -varCrLine, yref: 'paper', y: 0.95,
+        text: 'VaR<br>₹' + varCrLine.toFixed(2) + ' Cr',
+        showarrow: true, arrowhead: 2, arrowcolor: '#dc2626',
+        ax: 50, ay: -10,
+        font: {color: '#991b1b', size: 11, weight: 'bold'},
+        bgcolor: 'rgba(255,255,255,0.9)', borderpad: 3
+      },
+      {
+        x: -esCrLine, yref: 'paper', y: 0.75,
+        text: 'ES<br>₹' + esCrLine.toFixed(2) + ' Cr',
+        showarrow: true, arrowhead: 2, arrowcolor: '#7c3aed',
+        ax: -50, ay: -10,
+        font: {color: '#5b21b6', size: 11, weight: 'bold'},
+        bgcolor: 'rgba(255,255,255,0.9)', borderpad: 3
+      }
+    ];
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'P&L (₹ Crore)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, zerolinecolor: '#94a3b8', zerolinewidth: 1.5},
+      yaxis:{title:{text:'Probability Density', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.6, y:0.98, font:{size:10}},
+      margin:{l:60, r:30, t:20, b:55},
+      height: 460,
+      bargap: 0.02,
+      shapes: shapes,
+      annotations: annotations,
+      hovermode: 'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('varDistributionChart', [traceHist, traceTail], layout, {responsive:true, displayModeBar:false});
+  }
+
+  alphaSlider.addEventListener('input', update);
+  horizonSlider.addEventListener('input', update);
+  regenBtn.addEventListener('click', () => { generateReturns(); update(); });
+
+  generateReturns();
+  update();
+})();
+
+/* ============================================================
+   2. THREE VaR METHODOLOGIES COMPARISON
+   ============================================================ */
+(function(){
+  const PORTFOLIO = 100e7;
+
+  // Generate returns with fat tails
+  const vol = 0.012;
+  const nu = 5;
+  const scale = vol / Math.sqrt(nu / (nu - 2));
+  const trueReturns = [];
+  for (let i = 0; i < 5000; i++) trueReturns.push(randt(nu) * scale);
+
+  // Historical VaR: use first 1000 as "history"
+  const histReturns = trueReturns.slice(0, 1000);
+  // Parametric VaR: fit normal to histReturns
+  const mu = histReturns.reduce((a,b)=>a+b,0) / histReturns.length;
+  const sigma = Math.sqrt(histReturns.reduce((a,v)=>a+(v-mu)*(v-mu),0) / (histReturns.length - 1));
+  // Monte Carlo VaR: simulate with t-dist
+
+  const alpha = 0.99;
+  const z = 2.326; // normal quantile at 99%
+
+  // Historical VaR
+  const histPnL = histReturns.map(r => PORTFOLIO * r / 1e7).sort((a,b)=>a-b);
+  const histVaR = -histPnL[Math.floor(histPnL.length * (1-alpha))];
+
+  // Parametric VaR
+  const paramVaR = -(PORTFOLIO * mu / 1e7) + z * PORTFOLIO * sigma / 1e7;
+
+  // Monte Carlo VaR (using the true fat-tailed generation)
+  const mcPnL = trueReturns.map(r => PORTFOLIO * r / 1e7).sort((a,b)=>a-b);
+  const mcVaR = -mcPnL[Math.floor(mcPnL.length * (1-alpha))];
+
+  let currentView = 'all';
+
+  function render(){
+    const traces = [];
+
+    // Historical distribution
+    if (currentView === 'all' || currentView === 'hist'){
+      traces.push({
+        x: histPnL, type: 'histogram', name: 'Historical (VaR = ₹' + histVaR.toFixed(2) + ' Cr)',
+        marker: {color: '#dc2626', opacity: 0.5, line: {color: '#ffffff', width: 0.3}},
+        nbinsx: 60, histnorm: 'probability density'
+      });
+    }
+    // Parametric (normal) distribution overlay
+    if (currentView === 'all' || currentView === 'param'){
+      const xs = [];
+      const ys = [];
+      const xMin = mu*PORTFOLIO/1e7 - 5*sigma*PORTFOLIO/1e7;
+      const xMax = mu*PORTFOLIO/1e7 + 5*sigma*PORTFOLIO/1e7;
+      for (let i = 0; i <= 200; i++){
+        const x = xMin + (xMax - xMin) * i / 200;
+        const z = (x - mu*PORTFOLIO/1e7) / (sigma*PORTFOLIO/1e7);
+        xs.push(x);
+        ys.push(Math.exp(-0.5*z*z) / (sigma*PORTFOLIO/1e7 * Math.sqrt(2*Math.PI)));
+      }
+      traces.push({
+        x: xs, y: ys, mode: 'lines', name: 'Parametric Normal (VaR = ₹' + paramVaR.toFixed(2) + ' Cr)',
+        line: {color: '#2563eb', width: 3}
+      });
+    }
+    // Monte Carlo (t-dist) distribution overlay
+    if (currentView === 'all' || currentView === 'mc'){
+      traces.push({
+        x: mcPnL, type: 'histogram', name: 'Monte Carlo t-dist (VaR = ₹' + mcVaR.toFixed(2) + ' Cr)',
+        marker: {color: '#7c3aed', opacity: 0.4, line: {color: '#ffffff', width: 0.3}},
+        nbinsx: 60, histnorm: 'probability density'
+      });
+    }
+
+    // VaR cutoff lines
+    const shapes = [];
+    if (currentView === 'all' || currentView === 'hist'){
+      shapes.push({
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -histVaR, x1: -histVaR, y0: 0, y1: 1,
+        line: {color: '#dc2626', width: 2.5, dash: 'dash'}
+      });
+    }
+    if (currentView === 'all' || currentView === 'param'){
+      shapes.push({
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -paramVaR, x1: -paramVaR, y0: 0, y1: 1,
+        line: {color: '#2563eb', width: 2.5, dash: 'dash'}
+      });
+    }
+    if (currentView === 'all' || currentView === 'mc'){
+      shapes.push({
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -mcVaR, x1: -mcVaR, y0: 0, y1: 1,
+        line: {color: '#7c3aed', width: 2.5, dash: 'dash'}
+      });
+    }
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'P&L (₹ Crore)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, zerolinecolor: '#94a3b8', zerolinewidth: 1.5},
+      yaxis:{title:{text:'Probability Density', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+      margin:{l:60, r:30, t:20, b:55},
+      height: 460,
+      bargap: 0.02,
+      shapes: shapes,
+      hovermode: 'closest',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('varMethodsChart', traces, layout, {responsive:true, displayModeBar:false});
+  }
+
+  document.querySelectorAll('[data-varMethod]').forEach(btn => {
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('[data-varMethod]').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentView = this.getAttribute('data-varMethod');
+      render();
+    });
+  });
+
+  render();
+})();
+
+/* ============================================================
+   3. STUDENT-T vs NORMAL TAIL COMPARISON
+   ============================================================ */
+(function(){
+  const dfSlider = document.getElementById('dfSlider');
+  const dfVal = document.getElementById('dfVal');
+  const dfLbl = document.getElementById('dfLbl');
+  const tVarEl = document.getElementById('tVar');
+  const nVarEl = document.getElementById('nVar');
+  const underestEl = document.getElementById('underestFactor');
+
+  function tPDF(x, nu){
+    // Normalising constant
+    const logConst = (1/2) * Math.log(nu) + Math.log(Math.exp(
+      // Approximation of log Gamma(nu/2) etc using Stirling
+      // We'll just use the standard formula with lgamma approximation
+      0
+    ));
+    // Simpler: use the closed form with gamma function (use lgamma approx)
+    // t_pdf(x,nu) = Gamma((nu+1)/2) / (sqrt(nu*pi) * Gamma(nu/2)) * (1 + x^2/nu)^(-(nu+1)/2)
+    // We'll use a numeric approximation of Gamma via Lanczos
+    function gamma(z){
+      // Lanczos approximation
+      const g = 7;
+      const C = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+                 771.32342877765313, -176.61502916214059, 12.507343278686905,
+                 -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+      if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
+      z -= 1;
+      let x = C[0];
+      for (let i = 1; i < g + 2; i++) x += C[i] / (z + i);
+      const t = z + g + 0.5;
+      return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+    }
+    const num = gamma((nu + 1) / 2);
+    const den = Math.sqrt(nu * Math.PI) * gamma(nu / 2);
+    return (num / den) * Math.pow(1 + x*x/nu, -(nu+1)/2);
+  }
+
+  function update(){
+    const nu = parseFloat(dfSlider.value);
+    dfVal.textContent = nu.toFixed(1);
+    dfLbl.textContent = nu.toFixed(1);
+
+    // Grid
+    const xs = [];
+    for (let i = -80; i <= 80; i++) xs.push(i / 10);
+
+    // Standardised t (variance = 1): multiply by sqrt((nu-2)/nu)
+    const stdT = xs.map(x => tPDF(x * Math.sqrt(nu / (nu - 2)), nu) * Math.sqrt(nu / (nu - 2)));
+    const normal = xs.map(x => Math.exp(-0.5 * x*x) / Math.sqrt(2 * Math.PI));
+
+    // VaR at 99% for both
+    // Normal: z = 2.326
+    const nVar = 2.326;
+    // For t we need to find the 99% quantile. Use numeric search
+    // Compute CDF via numerical integration
+    const dx = 0.001;
+    let cum = 0;
+    let tVar = 0;
+    for (let x = -20; x < 20; x += dx){
+      const pdf = tPDF(x * Math.sqrt(nu / (nu - 2)), nu) * Math.sqrt(nu / (nu - 2));
+      cum += pdf * dx;
+      if (cum >= 0.99){ tVar = x; break; }
+    }
+
+    tVarEl.textContent = tVar.toFixed(3);
+    nVarEl.textContent = nVar.toFixed(3);
+    const ratio = tVar / nVar;
+    underestEl.textContent = ratio.toFixed(2) + '×';
+    underestEl.style.color = ratio > 1.5 ? '#dc2626' : (ratio > 1.2 ? '#d97706' : '#059669');
+
+    const traceT = {
+      x: xs, y: stdT, mode: 'lines', name: 'Student-t (ν=' + nu.toFixed(1) + ')',
+      line: {color: '#7c3aed', width: 3}
+    };
+    const traceN = {
+      x: xs, y: normal, mode: 'lines', name: 'Standard Normal',
+      line: {color: '#2563eb', width: 3, dash: 'dash'}
+    };
+
+    const shapes = [
+      {
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -tVar, x1: -tVar, y0: 0, y1: 1,
+        line: {color: '#7c3aed', width: 2, dash: 'dot'}
+      },
+      {
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: -nVar, x1: -nVar, y0: 0, y1: 1,
+        line: {color: '#2563eb', width: 2, dash: 'dot'}
+      }
+    ];
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Standardised return', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, range: [-5, 5]},
+      yaxis:{title:{text:'Density (log scale)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, type: 'log', range: [-8, 0.5]},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+      margin:{l:60, r:30, t:20, b:55},
+      height: 420,
+      shapes: shapes,
+      annotations: [
+        {x: -tVar, yref: 'paper', y: 0.85, text: 't VaR<br>' + tVar.toFixed(2), showarrow: true, arrowhead: 2, arrowcolor: '#7c3aed', ax: 0, ay: -30, font: {color: '#5b21b6', size: 10, weight: 'bold'}, bgcolor: 'rgba(255,255,255,0.9)', borderpad: 2},
+        {x: -nVar, yref: 'paper', y: 0.55, text: 'Normal VaR<br>' + nVar.toFixed(2), showarrow: true, arrowhead: 2, arrowcolor: '#2563eb', ax: 0, ay: -30, font: {color: '#1e40af', size: 10, weight: 'bold'}, bgcolor: 'rgba(255,255,255,0.9)', borderpad: 2}
+      ],
+      hovermode: 'x unified',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('tailCompareChart', [traceT, traceN], layout, {responsive:true, displayModeBar:false});
+  }
+
+  dfSlider.addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================
+   4. BACKTESTING DEMO
+   ============================================================ */
+(function(){
+  const N_DAYS = 500;
+  const ALPHA = 0.99;
+  const VOL = 0.012;
+  const PORTFOLIO = 100e7;
+
+  let truePnL = [];
+  let varPredictions = [];
+  let esPredictions = [];
+
+  const biasSlider = document.getElementById('btBiasSlider');
+  const biasLbl = document.getElementById('btBiasLbl');
+  const breachCountEl = document.getElementById('btBreachCount');
+  const vrEl = document.getElementById('btVR');
+  const kupiecEl = document.getElementById('btKupiec');
+  const regenBtn = document.getElementById('btRegen');
+
+  function regenerate(){
+    const nu = 5;
+    const scale = VOL / Math.sqrt(nu / (nu - 2));
+    truePnL = [];
+    for (let i = 0; i < N_DAYS; i++){
+      const z = randt(nu);
+      truePnL.push(PORTFOLIO * z * scale / 1e7); // in Cr
+    }
+  }
+
+  function update(){
+    const bias = parseInt(biasSlider.value) / 100;  // 0 to 1
+    biasLbl.textContent = bias.toFixed(2);
+
+    // VaR prediction: correct VaR reduced by bias factor
+    const correctVaR = -PORTFOLIO * VOL * 2.326 / 1e7; // ₹Cr (negative sign means loss)
+    const correctES = -PORTFOLIO * VOL * 2.665 / 1e7;
+    // Apply bias: shrink the magnitude
+    const scale = 1 - bias * 0.7;  // bias 0 → scale 1, bias 1 → scale 0.3
+    varPredictions = new Array(N_DAYS).fill(correctVaR * scale);
+    esPredictions = new Array(N_DAYS).fill(correctES * scale);
+
+    // Count breaches
+    let breaches = [];
+    for (let i = 0; i < N_DAYS; i++){
+      if (truePnL[i] < varPredictions[i]) breaches.push(i);
+    }
+
+    const breachCount = breaches.length;
+    const expected = N_DAYS * (1 - ALPHA);
+    const vr = breachCount / expected;
+
+    // Kupiec POF
+    const p = 1 - ALPHA;
+    const x = breachCount;
+    const T = N_DAYS;
+    let LR;
+    if (x === 0){
+      LR = -2 * (T * Math.log(1 - p)) + 2 * (T * Math.log(1 - 0));
+    } else {
+      LR = -2 * (T * Math.log(1 - p) + x * Math.log(p)) + 2 * ((T - x) * Math.log(1 - x/T) + x * Math.log(x/T));
+    }
+    // Chi-square p-value with 1 df: p = exp(-LR/2) approx for large LR
+    // More accurately: P(chi2_1 > LR) = 2*(1 - Phi(sqrt(LR)))
+    const kupiecP = 2 * (1 - normCDF(Math.sqrt(Math.max(LR, 0))));
+
+    breachCountEl.textContent = breachCount;
+    breachCountEl.style.color = breachCount <= 4 ? '#059669' : (breachCount <= 9 ? '#d97706' : '#dc2626');
+    vrEl.textContent = vr.toFixed(2);
+    vrEl.style.color = (vr >= 0.8 && vr <= 1.2) ? '#059669' : (vr <= 1.5 ? '#d97706' : '#dc2626');
+    kupiecEl.textContent = kupiecP.toFixed(4);
+    kupiecEl.style.color = kupiecP > 0.05 ? '#059669' : '#dc2626';
+
+    // Chart
+    const days = Array.from({length: N_DAYS}, (_, i) => i + 1);
+
+    const tracePnL = {
+      x: days, y: truePnL, mode: 'lines', name: 'Daily P&L',
+      line: {color: '#0891b2', width: 1.2}
+    };
+    const traceVaR = {
+      x: days, y: varPredictions, mode: 'lines', name: 'VaR prediction',
+      line: {color: '#dc2626', width: 2, dash: 'dash'}
+    };
+    const traceES = {
+      x: days, y: esPredictions, mode: 'lines', name: 'ES prediction',
+      line: {color: '#7c3aed', width: 2, dash: 'dot'}
+    };
+    const breachX = breaches.map(i => i + 1);
+    const breachY = breaches.map(i => truePnL[i]);
+    const traceBreach = {
+      x: breachX, y: breachY, mode: 'markers', name: 'Breaches (' + breachCount + ')',
+      marker: {color: '#dc2626', size: 12, symbol: 'x', line: {color: '#ffffff', width: 2}}
+    };
+
+    const layout = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Trading day', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      yaxis:{title:{text:'P&L (₹ Crore)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.02, orientation: 'h', font:{size:10}},
+      margin:{l:60, r:30, t:20, b:55},
+      height: 460,
+      hovermode: 'x unified',
+      hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+    };
+    Plotly.react('btChart', [tracePnL, traceVaR, traceES, traceBreach], layout, {responsive:true, displayModeBar:false});
+
+    // Breach distribution (binomial)
+    const binom = [];
+    for (let k = 0; k <= 25; k++){
+      // Binomial(500, 0.01)
+      let logC = 0;
+      for (let i = 1; i <= k; i++) logC += Math.log(N_DAYS - (k - i)) - Math.log(i);
+      const logP = logC + k * Math.log(p) + (N_DAYS - k) * Math.log(1 - p);
+      binom.push(Math.exp(logP));
+    }
+    const ks = Array.from({length: 26}, (_, i) => i);
+    const colors = ks.map(k => {
+      if (k <= 4) return '#059669';
+      if (k <= 9) return '#d97706';
+      return '#dc2626';
+    });
+    const traceBinom = {
+      x: ks, y: binom, type: 'bar', name: 'Binomial distribution',
+      marker: {color: colors, line: {color: '#ffffff', width: 1}}
+    };
+    const layoutBinom = {
+      paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+      font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+      xaxis:{title:{text:'Number of breaches in 500 days', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true, dtick: 2},
+      yaxis:{title:{text:'Probability', font:{size:11}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+      margin:{l:60, r:30, t:20, b:55},
+      height: 340,
+      showlegend: false,
+      shapes: [{
+        type: 'line', xref: 'x', yref: 'paper',
+        x0: breachCount - 0.5, x1: breachCount - 0.5, y0: 0, y1: 1,
+        line: {color: '#7c3aed', width: 3}
+      }],
+      annotations: [{
+        x: breachCount, yref: 'paper', y: 0.9,
+        text: 'Observed = ' + breachCount,
+        showarrow: true, arrowhead: 2, arrowcolor: '#7c3aed',
+        ax: 30, ay: -10,
+        font: {color: '#5b21b6', size: 11, weight: 'bold'},
+        bgcolor: 'rgba(255,255,255,0.9)', borderpad: 3
+      }]
+    };
+    Plotly.react('btBreachDist', [traceBinom], layoutBinom, {responsive:true, displayModeBar:false});
+  }
+
+  biasSlider.addEventListener('input', update);
+  regenBtn.addEventListener('click', () => { regenerate(); update(); });
+
+  regenerate();
+  update();
+})();
+
+/* ============================================================
+   5. √T SCALING vs REALITY
+   ============================================================ */
+(function(){
+  const horizons = [1, 2, 3, 5, 7, 10, 15, 20];
+  const baseVaR = 2.0; // 1-day VaR in ₹ Cr
+
+  // √T scaling
+  const sqrtScaling = horizons.map(T => baseVaR * Math.sqrt(T));
+  // Linear scaling (upper bound)
+  const linearScaling = horizons.map(T => baseVaR * T);
+  // Positively autocorrelated (rho = 0.2)
+  const rho = 0.2;
+  const posAutocorr = horizons.map(T => {
+    const factor = Math.sqrt(T + 2 * rho / (1 - rho) * (T * (T - 1) / 2 - (T - 1) * T / 2 * 0 + (T - 1) * (1 - Math.pow(rho, T)) / (1 - rho) - (T - 1)));
+    // Simpler: Var(sum) = T*sigma^2 + 2*sum_{i<j} cov = T*sigma^2 * (1 + (T-1)*rho_avg)
+    // For AR(1), effective variance multiplier = T * (1 + rho)/(1 - rho) - 2*rho*(1-rho^T)/(1-rho)^2
+    const mult = T * (1 + rho) / (1 - rho) - 2 * rho * (1 - Math.pow(rho, T)) / Math.pow(1 - rho, 2);
+    return baseVaR * Math.sqrt(mult);
+  });
+  // Mean-reverting (rho = -0.1)
+  const rhoNeg = -0.1;
+  const negAutocorr = horizons.map(T => {
+    const mult = T * (1 + rhoNeg) / (1 - rhoNeg) - 2 * rhoNeg * (1 - Math.pow(rhoNeg, T)) / Math.pow(1 - rhoNeg, 2);
+    return baseVaR * Math.sqrt(Math.max(mult, 0.1));
+  });
+
+  const traces = [
+    {
+      x: horizons, y: sqrtScaling, mode: 'lines+markers', name: '√T scaling (i.i.d.)',
+      line: {color: '#2563eb', width: 3, dash: 'dash'},
+      marker: {size: 8, color: '#2563eb', line: {color: '#ffffff', width: 1.5}}
+    },
+    {
+      x: horizons, y: posAutocorr, mode: 'lines+markers', name: 'Positive autocorr (ρ = 0.2)',
+      line: {color: '#dc2626', width: 3},
+      marker: {size: 8, color: '#dc2626', line: {color: '#ffffff', width: 1.5}}
+    },
+    {
+      x: horizons, y: negAutocorr, mode: 'lines+markers', name: 'Mean-reverting (ρ = −0.1)',
+      line: {color: '#059669', width: 3},
+      marker: {size: 8, color: '#059669', line: {color: '#ffffff', width: 1.5}}
+    },
+    {
+      x: horizons, y: linearScaling, mode: 'lines', name: 'Linear (upper bound)',
+      line: {color: '#94a3b8', width: 2, dash: 'dot'}
+    }
+  ];
+
+  const layout = {
+    paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff',
+    font:{color:'#1e293b', family:'Segoe UI, sans-serif', size:11},
+    xaxis:{title:{text:'Horizon (days)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    yaxis:{title:{text:'VaR (₹ Crore)', font:{size:12}}, gridcolor:'#e2e8f0', showline:true, linecolor:'#cbd5e1', mirror:true},
+    legend:{bgcolor:'rgba(255,255,255,0.95)', bordercolor:'#e2e8f0', borderwidth:1, x:0.02, y:0.98, font:{size:10}},
+    margin:{l:60, r:30, t:20, b:55},
+    height: 420,
+    hovermode: 'x unified',
+    hoverlabel:{bgcolor:'#ffffff', bordercolor:'#cbd5e1', font:{color:'#1e293b'}}
+  };
+  Plotly.newPlot('scalingChart', traces, layout, {responsive:true, displayModeBar:false});
+})();
+
+/* ============================================================
+   6. Smooth scroll for TOC links
+   ============================================================ */
+document.querySelectorAll('nav.toc a').forEach(a => {
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) window.scrollTo({top: target.offsetTop - 20, behavior:'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
