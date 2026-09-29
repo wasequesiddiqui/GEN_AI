@@ -1,0 +1,718 @@
+## Role
+
+Act as an expert **AIBE examination strategist, Indian legal educator, legal-question-bank designer, and instructional-content architect**.
+
+I am an **LLB student preparing for the All India Bar Examination (AIBE) XXI 2026**. Create a comprehensive, rigorous, exam-oriented **AIBE XXI preparation system** using the two supplied PDF documents as the authoritative references:
+
+1. **`AIBE_XXI_English_Set_A.pdf`** — use this as the primary reference for understanding the style, structure, difficulty, wording, subject distribution, and question patterns of the examination.
+2. **`Syllabus for All India Bar Exam-XXI.pdf`** — use this as the authoritative source for the AIBE XXI syllabus and subject coverage.
+
+Do **not** assume that information belongs to the AIBE XXI syllabus merely because it appeared in an older AIBE examination. Clearly distinguish between:
+
+* syllabus-derived content,
+* content inferred from the previous question paper,
+* general Indian legal knowledge, and
+* questions created for practice.
+
+---
+
+# 1. Analyse the Source PDFs First
+
+Before creating the question bank:
+
+### A. Analyse the AIBE XXI question paper
+
+Extract and analyse:
+
+* Subject-wise questions
+* Number of questions per subject
+* Question types
+* Difficulty level
+* Question wording
+* Conceptual vs. factual questions
+* Bare Act-oriented questions
+* Case-law-oriented questions
+* Constitutional/legal principles tested
+* Repeated concepts or themes
+* Application/problem-based questions
+* Multi-statement questions
+* Assertion–Reason patterns, if present
+* Likely distractor patterns
+* Distribution of easy, moderate and difficult questions
+
+Identify the **question-generation patterns** that appear useful for AIBE preparation.
+
+### B. Analyse the official syllabus
+
+Create a complete syllabus map containing:
+
+| Subject | Topics | Subtopics | Important Laws/Acts | Priority |
+| ------- | ------ | --------- | ------------------- | -------- |
+
+Do not omit smaller subjects or apparently low-weightage areas.
+
+---
+
+# 2. Build a Complete AIBE XXI Knowledge Map
+
+For every syllabus subject, create:
+
+### Subject
+
+* Core concepts
+* Important legal principles
+* Important sections/articles
+* Important definitions
+* Important doctrines
+* Important exceptions
+* Important provisos
+* Important amendments where relevant
+* Important landmark judgments
+* Important legal maxims
+* Important procedural provisions
+* Frequently confused provisions
+* Common examination traps
+* High-yield factual points
+
+The content should be **exam-oriented rather than a generic law textbook**.
+
+Prioritise material according to:
+
+1. Explicit syllabus relevance
+2. Frequency of examination
+3. Importance of the legal provision
+4. Conceptual importance
+5. Likelihood of confusion
+6. Relationship with other syllabus topics
+7. Evidence from the supplied AIBE question paper
+
+---
+
+# 3. Detailed Study Notes
+
+For every subject and major topic, create concise but sufficiently detailed study notes.
+
+Each topic should contain:
+
+### Concept
+
+Explain the concept in simple but legally accurate language.
+
+### Legal Provisions
+
+Mention the relevant:
+
+* Sections
+* Articles
+* Rules
+* Regulations
+* Constitutional provisions
+* Statutory provisions
+
+### Important Cases
+
+For each important judgment provide:
+
+* Case name
+* Year
+* Court
+* Legal issue
+* Principle established
+* Why it matters for AIBE
+
+### Exceptions
+
+Explicitly identify exceptions and qualifications.
+
+### Common Confusions
+
+Explain provisions that students commonly mix up.
+
+### AIBE Focus
+
+Identify what a candidate should specifically remember for examination purposes.
+
+---
+
+# 4. Flashpoints
+
+After every major topic, create a **FLASHPOINTS** section.
+
+Flashpoints should be extremely concise, memorable examination facts such as:
+
+* "Article X → principle Y"
+* "Section X → rule Y"
+* "Case A → doctrine B"
+* "Exception → condition"
+* "Limitation period → X"
+* "Authority → power"
+* "Provision A ≠ Provision B"
+
+Use visual emphasis and short memory-oriented statements.
+
+---
+
+# 5. Create a Question Bank of MORE THAN 500 MCQs
+
+Create **at least 600 MCQs**, preferably distributed proportionately across all syllabus subjects.
+
+Do not generate 500 superficial questions by merely changing names or numbers.
+
+The question bank should test different cognitive levels:
+
+### Level 1 — Recall
+
+Definitions, sections, articles, dates, terminology and basic principles.
+
+### Level 2 — Understanding
+
+Conceptual understanding and distinctions.
+
+### Level 3 — Application
+
+Apply a legal principle to a factual situation.
+
+### Level 4 — Analysis
+
+Compare provisions, identify exceptions, analyse competing principles and solve legal problems.
+
+Aim for a meaningful mixture of all four levels, with substantial emphasis on Levels 2–4.
+
+---
+
+# 6. MCQ Structure
+
+Every MCQ must contain:
+
+**Question ID**
+
+**Subject**
+
+**Topic**
+
+**Difficulty:** Easy / Moderate / Difficult
+
+**Cognitive Level:** Recall / Understanding / Application / Analysis
+
+**Question**
+
+A. Option
+B. Option
+C. Option
+D. Option
+
+**Correct Answer**
+
+**Detailed Explanation**
+
+**Legal Basis**
+
+**Why the Other Options Are Wrong**
+
+**Flashpoint**
+
+Where applicable, cite the relevant:
+
+* Section
+* Article
+* Rule
+* Case
+* Statute
+
+Do not provide unsupported legal claims.
+
+---
+
+# 7. Assertion–Reason Questions
+
+Include a substantial dedicated section of **Assertion–Reason questions**.
+
+Use this standard format:
+
+**Assertion (A):** ...
+
+**Reason (R):** ...
+
+Choose:
+
+A. Both A and R are true, and R correctly explains A
+B. Both A and R are true, but R does not correctly explain A
+C. A is true, but R is false
+D. A is false, but R is true
+
+For every question provide:
+
+* Correct answer
+* Explanation of Assertion
+* Explanation of Reason
+* Whether R explains A
+* Relevant legal provision/case
+* Flashpoint
+
+Do not make the answer predictable based on wording.
+
+---
+
+# 8. Scenario-Based Questions
+
+Include a substantial number of factual/problem-based MCQs.
+
+Construct realistic legal scenarios involving:
+
+* Parties
+* Facts
+* Legal rights
+* Procedural circumstances
+* Exceptions
+* Competing provisions
+* Constitutional principles
+* Statutory interpretation
+
+Require the student to **apply the law rather than merely recall it**.
+
+---
+
+# 9. Answer Randomisation — VERY IMPORTANT
+
+Randomise correct answers across A, B, C and D.
+
+The answer distribution must NOT systematically favour any option.
+
+Across the entire question bank:
+
+* A ≈ 25%
+* B ≈ 25%
+* C ≈ 25%
+* D ≈ 25%
+
+Allow only minor statistical variation.
+
+Also ensure:
+
+* No obvious repeating sequence
+* No pattern such as A-B-C-D-A-B-C-D
+* No subject-specific answer bias
+* No difficulty-level answer bias
+* No assertion–reason answer bias
+
+Before finalising the question bank, programmatically calculate the distribution of correct answers and rebalance it if necessary.
+
+Display an **Answer Distribution Audit** showing:
+
+| Option | Count | Percentage |
+| ------ | ----: | ---------: |
+| A      |       |            |
+| B      |       |            |
+| C      |       |            |
+| D      |       |            |
+
+---
+
+# 10. Avoid Poor Question Design
+
+Do NOT create:
+
+* Ambiguous questions
+* Two technically correct options
+* Questions where the answer is obvious from wording
+* Unnecessarily obscure trivia
+* Duplicate questions
+* Near-duplicate questions
+* Artificially complicated language
+* Incorrect legal propositions
+* Outdated law presented as current law
+* Questions outside the AIBE XXI syllabus unless explicitly labelled as supplementary
+* Distractors that are obviously absurd
+
+Every question must have **one defensible correct answer**.
+
+---
+
+# 11. Question Quality Control
+
+After generating the questions, perform an internal quality audit.
+
+Check every question for:
+
+### Legal Accuracy
+
+Is the legal proposition correct?
+
+### Syllabus Alignment
+
+Does it belong to the AIBE XXI syllabus?
+
+### Uniqueness
+
+Is it materially different from existing questions?
+
+### Answer Validity
+
+Is there exactly one correct answer?
+
+### Distractor Quality
+
+Are the incorrect answers plausible?
+
+### Explanation Quality
+
+Does the explanation actually establish why the answer is correct?
+
+### Current Law
+
+Where relevant, ensure that the proposition reflects the law applicable for the AIBE XXI preparation period.
+
+### Source Traceability
+
+Identify the source basis:
+
+* Official syllabus
+* Supplied AIBE question paper
+* Relevant statute/bare Act
+* Constitutional provision
+* Judicial decision
+* Other authoritative legal source
+
+---
+
+# 12. Mock Tests
+
+After the topic-wise question bank, create **full-length AIBE-style mock tests**.
+
+Each mock test should:
+
+* Follow the syllabus distribution
+* Contain realistic AIBE-style questions
+* Mix difficulty levels
+* Include scenario questions
+* Include assertion–reason questions
+* Randomise answer positions
+* Avoid repeating questions from previous mock tests
+
+Create enough mock tests to provide meaningful exam practice.
+
+For every mock test provide:
+
+* Question paper
+* Separate answer key
+* Detailed explanations
+* Subject-wise performance analysis
+* Difficulty analysis
+
+---
+
+# 13. Revision System
+
+Create:
+
+### Rapid Revision Sheets
+
+One compact revision sheet for every subject.
+
+### One-Day Revision
+
+Ultra-condensed high-yield points.
+
+### Seven-Day Revision
+
+A structured seven-day revision plan.
+
+### Final Revision
+
+A final list of the most important:
+
+* Sections
+* Articles
+* Cases
+* Doctrines
+* Maxims
+* Definitions
+* Exceptions
+* Limitation periods
+* Procedural rules
+* Frequently confused concepts
+
+---
+
+# 14. Interactive HTML Application
+
+Create a **professional, modern, responsive, interactive HTML study application**.
+
+It should work locally in a modern browser without requiring a server unless absolutely necessary.
+
+Use:
+
+* HTML5
+* CSS3
+* Vanilla JavaScript
+
+Avoid unnecessary external dependencies.
+
+## Interface
+
+Create a professional legal-education dashboard containing:
+
+### Dashboard
+
+Show:
+
+* Total questions
+* Questions attempted
+* Correct answers
+* Incorrect answers
+* Accuracy %
+* Questions remaining
+* Subject progress
+* Mock-test scores
+
+### Navigation
+
+Include:
+
+* Dashboard
+* Syllabus
+* Study Notes
+* Flashpoints
+* Question Bank
+* Assertion–Reason
+* Scenario Questions
+* Mock Tests
+* Revision
+* Performance Analytics
+
+---
+
+# 15. Interactive Question Bank
+
+Allow the user to:
+
+* Filter by subject
+* Filter by topic
+* Filter by difficulty
+* Filter by question type
+* Filter by cognitive level
+* Search questions
+* Bookmark questions
+* Mark questions for review
+* Hide/show answers
+* View explanations
+* Move to next/previous question
+* Randomise questions
+* Start timed quizzes
+* Resume incomplete quizzes
+
+---
+
+# 16. Answer and Explanation Interface
+
+Initially display only the question and options.
+
+After the user selects an answer:
+
+Display:
+
+* Correct/incorrect status
+* Correct answer
+* Detailed explanation
+* Legal basis
+* Why other options are incorrect
+* Flashpoint
+* Related study topic
+
+Provide a **"Study This Topic"** button linking back to the relevant study material.
+
+---
+
+# 17. Performance Analytics
+
+Track performance locally using JavaScript/localStorage.
+
+Show:
+
+* Overall accuracy
+* Subject accuracy
+* Topic accuracy
+* Difficulty-wise accuracy
+* Cognitive-level accuracy
+* Weak subjects
+* Weak topics
+* Questions repeatedly answered incorrectly
+* Attempt history
+* Mock-test performance
+* Revision progress
+
+Generate actionable study recommendations based on performance, but do not artificially alter legal content.
+
+---
+
+# 18. Spaced Revision
+
+Implement a simple revision mechanism.
+
+Allow questions to be classified as:
+
+* Mastered
+* Learning
+* Needs Revision
+* Difficult
+
+Provide a **"Revise My Weak Areas"** mode.
+
+Prioritise questions the user repeatedly gets wrong.
+
+---
+
+# 19. Data Architecture
+
+Store the question bank and study content in structured JavaScript objects/JSON-like structures.
+
+Each question should have metadata such as:
+
+```text
+id
+subject
+topic
+subtopic
+difficulty
+cognitiveLevel
+questionType
+question
+options
+correctAnswer
+explanation
+legalBasis
+wrongOptionExplanations
+flashpoint
+source
+```
+
+This should make the application easy to expand later.
+
+---
+
+# 20. Design Requirements
+
+The HTML application should look like a **professional legal examination preparation platform**, not a simple HTML page.
+
+Use:
+
+* Clean typography
+* Professional legal/academic aesthetic
+* Responsive layout
+* Desktop and mobile support
+* Cards
+* Progress indicators
+* Tabs
+* Filters
+* Search
+* Modal/dialog components where appropriate
+* Clear answer states
+* Accessible contrast
+* Keyboard-friendly navigation
+* Consistent spacing
+* Intuitive navigation
+
+Avoid excessive decorative elements that interfere with studying.
+
+---
+
+# 21. Offline Capability
+
+Where practical, make the application usable offline.
+
+Persist:
+
+* Progress
+* Bookmarks
+* Incorrect questions
+* Revision status
+* Mock-test results
+
+using browser `localStorage`.
+
+Do not require a database for the initial version.
+
+---
+
+# 22. Final Validation Report
+
+Before delivering the final output, perform and report a validation audit containing:
+
+### Content Audit
+
+* Total MCQs
+* Total Assertion–Reason questions
+* Total Scenario questions
+* Total mock-test questions
+* Number of subjects covered
+* Number of topics covered
+
+### Answer Distribution
+
+A/B/C/D counts and percentages.
+
+### Quality Audit
+
+* Duplicate questions detected
+* Ambiguous questions detected
+* Questions with multiple correct answers
+* Missing explanations
+* Missing legal basis
+* Missing flashpoints
+* Out-of-syllabus questions
+
+### Coverage Audit
+
+Provide a table:
+
+| Subject | Syllabus Topics | Questions | Coverage % |
+| ------- | --------------: | --------: | ---------: |
+
+---
+
+# 23. Important Accuracy Requirement
+
+Legal accuracy is more important than generating a large quantity of questions.
+
+If the supplied documents conflict with general knowledge, identify the conflict explicitly and determine which source should govern based on the nature of the information.
+
+Do not fabricate:
+
+* Sections
+* Case names
+* Judgments
+* Legal principles
+* Amendments
+* Dates
+* Statutory provisions
+* Examination requirements
+
+Where current legal information is required, verify it against authoritative sources before incorporating it.
+
+---
+
+# 24. Deliverables
+
+Produce the following:
+
+1. **Complete AIBE XXI study material**
+2. **Detailed subject-wise study notes**
+3. **Flashpoints**
+4. **600+ high-quality MCQs**
+5. **Assertion–Reason question bank**
+6. **Scenario-based question bank**
+7. **Full-length mock tests**
+8. **Answer keys**
+9. **Detailed explanations**
+10. **Rapid revision material**
+11. **Performance-tracking system**
+12. **Professional interactive HTML application**
+13. **Final validation/audit report**
+
+The final product should function as a **complete AIBE XXI self-study and practice platform**, not merely as a static collection of questions.
+
+## Critical Instruction
+
+Prioritise **accuracy, syllabus coverage, question quality, realistic AIBE-style difficulty, legal reasoning, and meaningful explanations** over simply increasing the number of questions.
+
+Do not stop after generating a small sample. Build the complete system and verify the generated content before presenting the final deliverables.
