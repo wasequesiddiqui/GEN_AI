@@ -186,6 +186,7 @@
     this.storeKey = STORE_PREFIX + cfg.key + ":progress";
     this.progress = loadJSON(this.storeKey);
     this.state = { topic: "", diff: "", search: "", mode: "practice", odd: "all", revealAll: false };
+    this._rendered = false;
   }
 
   View.prototype.q = function (role) { return $('[data-role="' + role + '"]', this.panel); };
@@ -304,6 +305,7 @@
     }
 
     this.updateStats(rows);
+    this._rendered = true;
   };
 
   View.prototype.updateStats = function (rows) {
@@ -416,14 +418,29 @@
     });
   };
 
-  View.prototype.init = function () {
+  View.prototype.ensureRendered = function () {
+    if (!this._rendered) this.render();
+  };
+
+  /* Only the active subject is turned into table rows at load. The others build
+     their chrome and stats immediately but defer their 50x10 rows until the tab
+     is first opened, which halves the work done on a cold page load. */
+  View.prototype.init = function (isActive) {
     this.panel.innerHTML = panelHTML(this.cfg);
     if (!this.questions.length) { this.render(); return; }
+    this.panel.classList.add("practice");
     this.buildTopicFilter();
     this.wire();
     var mode = $('[data-role="mode"][data-mode="practice"]', this.panel);
     if (mode) mode.classList.add("on");
-    this.render();
+    if (isActive) {
+      this.render();
+    } else {
+      var self = this;
+      this.updateStats(this.questions.filter(function (q) { return self.matches(q); }));
+      var rl = this.q("resultLine");
+      if (rl) rl.innerHTML = "<b>" + this.questions.length + "</b> questions ready · open this tab to load them";
+    }
   };
 
   /* ------------------------------------------------------------- tabs/head */
@@ -464,7 +481,7 @@
     activeKey = key;
     views.forEach(function (x) { x.panel.classList.toggle("active", x.cfg.key === key); });
     $$(".tab").forEach(function (t) { t.setAttribute("aria-selected", String(t.dataset.subject === key)); });
-    v.render();
+    v.ensureRendered();
     syncToolbarHeight();
     updateHead(v);
     if (window.location.hash !== "#" + key && (!silent || !window.location.hash)) {
@@ -476,7 +493,16 @@
   function boot() {
     var tabs = $("#tabstrip");
     var host = $("#panels");
-    if (!tabs || !host) return;
+    if (!tabs || !host) {
+      // Most often this means the markup is stale (a cached copy of an older page
+      // paired with a newer script). Say so, instead of silently rendering nothing.
+      var wrap = $(".wrap") || document.body;
+      wrap.innerHTML = '<p class="end-note">This page could not start: its markup and script ' +
+        "are different versions. Hard-refresh to load the current version — press Ctrl+F5 " +
+        "(Windows) or Command+Shift+R (Mac).</p>";
+      console.error("Legal MCQ Hub: mount points #tabstrip / #panels are missing — the page markup is stale.");
+      return;
+    }
 
     tabs.innerHTML = SUBJECTS.map(function (cfg) {
       var n = (DATA[cfg.dataKey] || []).length;
@@ -492,7 +518,7 @@
 
     SUBJECTS.forEach(function (cfg) {
       var v = new View(cfg, $("#panel-" + cfg.key));
-      v.init();
+      v.init(false);
       views.push(v);
     });
 
