@@ -30,7 +30,10 @@ try {
   process.exit(1);
 }
 
-const Q = (sandbox.window.LEGAL_MCQ && sandbox.window.LEGAL_MCQ.constitution) || [];
+const Q = (() => {
+  const bag = sandbox.window.LEGAL_MCQ || {};
+  return Object.keys(bag).reduce((acc, k) => acc.concat(Array.isArray(bag[k]) ? bag[k] : []), []);
+})();
 const LETTERS = ["A", "B", "C", "D"];
 const LEN_FAIL = 1.25;   // max allowed (correct-option length / mean of the others)
 const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();

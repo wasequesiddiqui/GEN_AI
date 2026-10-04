@@ -425,10 +425,10 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Moderate",
     q: "Which of the following statements about Money Bills is INCORRECT?",
     o: [
-      "Money Bills can be introduced only in the Lok Sabha and only on the recommendation of the President",
-      "Money Bills can deal only with matters listed in Article 110(1) and matters incidental to them",
+      "Money Bills can be introduced only in the Lok Sabha",
+      "Money Bills can deal only with matters listed in Article 110(1)",
       "The Rajya Sabha may reject a Money Bill but cannot amend it",
-      "Money Bills cannot be referred to a joint sitting because Article 108 does not apply to them"
+      "Money Bills cannot be referred to a joint sitting"
     ],
     a: 2,
     ex: "The Rajya Sabha can neither reject nor amend a Money Bill; under Article 109 it may only recommend amendments within fourteen days, which the Lok Sabha may accept or reject. Options A, B and D correctly state that introduction is confined to the Lok Sabha on the President's recommendation, that a Money Bill is confined to Article 110(1) matters and incidental provisions, and that the proviso to Article 108(1) excludes Money Bills from a joint sitting.",
@@ -518,7 +518,7 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
       "The Speaker of the Lok Sabha",
       "The Finance Minister",
       "The Public Accounts Committee",
-      "The President"
+      "The President of India"
     ],
     a: 3,
     ex: "Article 113(2) provides that no demand for a grant shall be made except on the recommendation of the President. Under Article 113(1) the estimates of expenditure are submitted to the Lok Sabha in the form of demands for grants, and Article 113(3) allows the Lok Sabha to assent to, refuse or reduce a demand.",
@@ -551,9 +551,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Difficult",
     q: "Which of the following statements about the Finance Commission under Article 280 is INCORRECT?",
     o: [
-      "It is constituted by the President every fifth year or at such earlier time as he considers necessary",
-      "It consists of a Chairman and four other members, whose qualifications are prescribed by Parliament by law",
-      "It recommends the distribution of the net proceeds of taxes between the Union and the States and the principles governing grants-in-aid",
+      "It is constituted by the President every fifth year",
+      "It consists of a Chairman and four other members",
+      "It recommends distribution of taxes between the Union and the States",
       "Its recommendations are binding on the Government of India"
     ],
     a: 3,

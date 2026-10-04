@@ -186,9 +186,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Easy",
     q: "The Ministers of a State, other than the Chief Minister, are appointed by the Governor on whose advice?",
     o: [
-      "On the advice of the Speaker of the Legislative Assembly",
+      "On the advice of the Speaker",
       "On the advice of the President of India",
-      "On the advice of the leader of the largest party in the Assembly",
+      "On the advice of the largest party's leader",
       "On the advice of the Chief Minister"
     ],
     a: 3,
@@ -285,9 +285,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     q: "Which of the following is NOT a duty of the Chief Minister under Article 167?",
     o: [
       "To preside over the sittings of the Legislative Assembly of the State",
-      "To communicate to the Governor all decisions of the Council of Ministers relating to the administration of the State and proposals for legislation",
-      "To furnish such information relating to the administration of the State as the Governor may call for",
-      "To submit for the consideration of the Council of Ministers any matter on which a decision has been taken by a Minister but which has not been considered by the Council"
+      "To communicate to the Governor all decisions of the Council of Ministers",
+      "To furnish such information as the Governor may call for",
+      "To submit any matter decided by a Minister but not considered by the Council"
     ],
     a: 0,
     ex: "Article 167 casts three duties on the Chief Minister: to communicate decisions and legislative proposals to the Governor, to furnish information the Governor calls for, and to place before the Council of Ministers any matter decided by an individual Minister but not considered by the Council. Presiding over the Assembly is the function of the Speaker under Article 178.",
@@ -301,7 +301,7 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     topic: "Chief Minister and State Council of Ministers",
     diff: "Moderate",
     q: "Under Article 166(1), all executive action of the Government of a State shall be expressed to be taken in the name of which authority?",
-    o: ["The Council of Ministers", "The Chief Minister", "The Governor", "The State Legislature"],
+    o: ["The Council of Ministers", "The Chief Minister", "The Governor of the State", "The State Legislative Assembly"],
     a: 2,
     ex: "Article 166(1) requires all executive action of the Government of a State to be expressed to be taken in the name of the Governor, and Article 166(2) provides for authentication of orders and instruments in the manner specified by rules. Article 166(3) requires the Governor to make rules for the convenient transaction of business and allocation of work among Ministers.",
     ref: "Article 166",
@@ -674,10 +674,10 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Moderate",
     q: "The body that reviews the financial position of Municipalities in a State derives its constitutional mandate from which provision?",
     o: [
-      "Article 280, which relates to the Union Finance Commission",
-      "Article 243K, which relates to the State Election Commission",
+      "Article 280 (Finance Commission)",
+      "Article 243K (State Election Commission)",
       "Article 243I, read with Article 243Y",
-      "Article 243ZD, which relates to the District Planning Committee"
+      "Article 243ZD (District Planning Committee)"
     ],
     a: 2,
     ex: "Article 243I requires the Governor to constitute a Finance Commission every fifth year to review the financial position of Panchayats, and Article 243Y directs that the Commission so constituted shall also review the financial position of Municipalities. It recommends the distribution between the State and these bodies of taxes, duties, tolls and fees, and the principles governing grants-in-aid.",
@@ -792,7 +792,7 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     topic: "Scheduled and Tribal Areas",
     diff: "Difficult",
     q: "Under the Fifth Schedule, which authority has the power to declare an area to be a Scheduled Area?",
-    o: ["The Governor of the State by public notification", "Parliament by law", "The Tribes Advisory Council by resolution", "The President by order"],
+    o: ["The Governor of the State", "Parliament by law", "The Tribes Advisory Council", "The President by order"],
     a: 3,
     ex: "Paragraph 6(1) of the Fifth Schedule defines Scheduled Areas as such areas as the President may by order declare to be Scheduled Areas, and the President may also alter, amend or rescind such an order so as to include or exclude areas. Once an area is declared, the Governor exercises the special powers conferred by the Fifth Schedule, including the power under paragraph 5 to modify the application of laws.",
     ref: "Fifth Schedule, paragraph 6(1)",

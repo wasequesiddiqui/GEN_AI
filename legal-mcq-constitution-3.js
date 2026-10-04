@@ -174,9 +174,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     q: "In T.M.A. Pai Foundation v. State of Karnataka, (2002) 8 SCC 481, the Supreme Court held that for determining minority status under Article 30 the unit is which of the following?",
     o: [
       "The whole of India",
-      "The State",
-      "The district in which the institution is situated",
-      "The municipal or local authority area"
+      "The State concerned",
+      "The district concerned",
+      "The local authority"
     ],
     a: 1,
     ex: "The eleven-Judge Bench held that for the purpose of Article 30 a minority must be considered in relation to the State, since the States were reorganised on linguistic lines. The whole country, a district or a local area is not the unit for determining minority status.",
@@ -677,9 +677,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Easy",
     q: "In Hussainara Khatoon v. Home Secretary, State of Bihar, (1980) 1 SCC 81, the Supreme Court gave effect to which right of undertrial prisoners?",
     o: [
-      "The right to free legal aid at the expense of the State",
+      "The right to free legal aid",
       "The right to a speedy trial",
-      "The right to compensation for wrongful detention",
+      "The right to compensation",
       "The right against self-incrimination"
     ],
     a: 1,

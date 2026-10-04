@@ -31,8 +31,8 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     o: [
       "Governor-General of Bengal",
       "Governor of India",
-      "Viceroy of India",
-      "President of the Council of India"
+      "The Viceroy of India",
+      "Governor-General of India"
     ],
     a: 2,
     ex: "The Act of 1858 abolished the East India Company, created the office of Secretary of State for India and made the Governor-General the direct representative of the Crown, known as the Viceroy; Lord Canning was the first Viceroy. Option A is the 1773 designation, and option D confuses the Viceroy with the head of the India Council.",
@@ -551,10 +551,10 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Moderate",
     q: "Under the Constitution of India the residuary power of legislation is vested in:",
     o: [
-      "The Legislatures of the States alone",
-      "Both Parliament and the State Legislatures concurrently",
-      "Parliament alone",
-      "The President, acting on the advice of the Council of Ministers"
+      "The State Legislatures alone",
+      "Parliament and the State Legislatures",
+      "Parliament alone, and not the States",
+      "The President, acting on ministerial advice"
     ],
     a: 2,
     ex: "Article 248 read with Entry 97 of List I of the Seventh Schedule vests the residuary power of legislation exclusively in Parliament, covering all matters not enumerated in the State List or the Concurrent List. This follows the Canadian model and is one of the features that give Indian federalism a strong centralising tendency.",
@@ -660,9 +660,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     q: "Article 1 of the Constitution declares that 'India, that is Bharat' shall be a:",
     o: [
       "Federation of States",
-      "Union of States",
+      "The Union of States",
       "Confederation of States",
-      "Unitary State with no federal features"
+      "Unitary State"
     ],
     a: 1,
     ex: "Article 1(1) declares that India, that is Bharat, shall be a Union of States, and Article 1(2) provides that the States and their territories shall be as specified in the First Schedule. The word 'Union' was deliberately preferred to 'Federation', as Dr Ambedkar explained, to signify that the Union is not the result of an agreement among the States and that no State has the right to secede.",
@@ -858,9 +858,9 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     q: "Which one of the following statements about citizenship in India is correct?",
     o: [
       "An Indian company is not a citizen of India",
-      "Every person who resides in India for five years automatically becomes a citizen",
-      "Any person who voluntarily acquires foreign citizenship continues to be an Indian citizen",
-      "Citizenship of India is itself a fundamental right enforceable under Article 32"
+      "Long residence confers citizenship automatically",
+      "Foreign citizenship does not end Indian citizenship",
+      "Citizenship of India is a fundamental right"
     ],
     a: 0,
     ex: "Citizenship under Indian law belongs only to natural persons, and a company or corporation is not a citizen, as held in State Trading Corporation of India Ltd. v. Commercial Tax Officer, AIR 1963 SC 1811. Mere residence for a fixed period does not confer citizenship, Article 9 denies citizenship to a person who voluntarily acquires foreign citizenship, and citizenship is a statutory status rather than a fundamental right.",

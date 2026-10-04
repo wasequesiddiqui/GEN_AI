@@ -515,10 +515,10 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     diff: "Difficult",
     q: "Which of the following is NOT a ground for imposing reasonable restrictions on the right to form associations or unions under Article 19(4)?",
     o: [
-      "Sovereignty and integrity of India",
+      "Sovereignty of India",
       "Public order",
       "Morality",
-      "Decency"
+      "Public decency"
     ],
     a: 3,
     ex: "Article 19(4) permits restrictions in the interests of the sovereignty and integrity of India, public order or morality. The paired phrase used in Article 19(2) is 'decency or morality', and the word 'decency' does not appear in Article 19(4).",

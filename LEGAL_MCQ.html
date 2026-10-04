@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Constitution of India — 500 MCQ Study Guide | AIBE Preparation</title>
-<meta name="description" content="500 high-quality multiple choice questions on the Constitution of India with explanations, constitutional references, landmark judgments and exam tips — a rigorous All India Bar Examination (AIBE) study guide and revision resource.">
+<title>Legal MCQ Study Hub — Constitution of India &amp; BNSS | AIBE Preparation</title>
+<meta name="description" content="Two 500-question AIBE study guides in one place: the Constitution of India and the Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS), each with explanations, statutory references, landmark judgments and exam tips.">
 <link rel="stylesheet" href="legal-mcq.css">
 </head>
 <body>
@@ -20,148 +20,40 @@
       </div>
       <div class="head-spacer"></div>
       <div class="head-meta">
-        <span class="chip">500 MCQs</span>
+        <span class="chip" id="metaSubject">—</span>
+        <span class="chip" id="metaCount">—</span>
         <span class="chip gold" id="metaDiff">—</span>
-        <span class="chip jade">Explanations · Case law · Exam tips</span>
       </div>
     </div>
 
-    <div class="tabstrip" role="tablist" aria-label="Subjects">
-      <button class="tab" role="tab" id="tab-constitution" aria-selected="true"
-              aria-controls="panel-constitution" data-panel="constitution">
-        Constitution of India <span class="tab-count">500</span>
-      </button>
-    </div>
+    <!-- tabs are built by legal-mcq-app.js from its subject registry -->
+    <div class="tabstrip" id="tabstrip" role="tablist" aria-label="Subjects"></div>
   </div>
 </header>
 
 <!-- ================================================================ body ==== -->
 <div class="wrap">
-
-  <section class="panel active" id="panel-constitution" role="tabpanel" aria-labelledby="tab-constitution">
-
-    <div class="hero">
-      <h1>Constitution of India — 500 MCQ Study Guide</h1>
-      <p>
-        A rigorous, exam-oriented question bank for the All India Bar Examination: factual recall,
-        constitutional interpretation, case-law application and the tricky distinctions the paper
-        is built on. Every question carries an explanation, the governing Article, the leading
-        judgment and a carry-into-the-hall exam tip. Difficulties are graded
-        <b>20% Easy · 50% Moderate · 30% Difficult</b>.
-      </p>
-
-      <div class="hero-grid">
-        <div class="stat"><div class="k">Questions</div><div class="v" id="sTotal">0</div></div>
-        <div class="stat"><div class="k">Shown</div><div class="v" id="sShown">0</div></div>
-        <div class="stat"><div class="k">Attempted</div><div class="v" id="sAttempted">0</div></div>
-        <div class="stat ok"><div class="k">Correct</div><div class="v" id="sCorrect">0</div></div>
-        <div class="stat bad"><div class="k">Wrong</div><div class="v" id="sWrong">0</div></div>
-        <div class="stat"><div class="k">Accuracy</div><div class="v" id="sAcc">—</div></div>
-      </div>
-    </div>
-
-    <div class="toolbar" id="toolbar" role="group" aria-label="Question bank controls">
-      <div class="grow">
-        <label class="sr-only" for="fSearch">Search the question bank</label>
-        <input type="search" id="fSearch" placeholder="Search questions, options, Articles, cases or exam tips…">
-      </div>
-
-      <div class="field">
-        <label for="fTopic">Topic</label>
-        <select id="fTopic"><option value="">All topics</option></select>
-      </div>
-
-      <div class="field">
-        <label for="fDiff">Level</label>
-        <select id="fDiff">
-          <option value="">All levels</option>
-          <option value="Easy">Easy</option>
-          <option value="Moderate">Moderate</option>
-          <option value="Difficult">Difficult</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="fOdd">Show</label>
-        <select id="fOdd">
-          <option value="all">Everything</option>
-          <option value="unattempted">Not yet attempted</option>
-          <option value="wrong">Answered incorrectly</option>
-        </select>
-      </div>
-
-      <div class="field" role="group" aria-label="Display mode">
-        <button type="button" class="btn on" data-mode="practice">✍ Practice</button>
-        <button type="button" class="btn" data-mode="study">📖 Study</button>
-        <button type="button" class="btn" data-mode="key">🔑 Key only</button>
-      </div>
-
-      <button type="button" class="btn" id="fReveal">👁 Reveal all</button>
-      <button type="button" class="btn" id="fCsv">⤓ CSV</button>
-      <button type="button" class="btn" id="fPrint">🖨 Print</button>
-      <button type="button" class="btn ghost" id="fReset">↺ Reset</button>
-    </div>
-
-    <p class="result-line" id="resultLine">Loading question bank…</p>
-
-    <div class="table-shell">
-      <div class="table-scroll">
-        <table class="mcq">
-          <caption class="sr-only">Constitution of India — 500 multiple choice questions with answers, explanations, constitutional references, landmark cases and exam tips</caption>
-          <thead>
-            <tr>
-              <th class="col-no" scope="col">No.</th>
-              <th class="col-topic" scope="col">Topic</th>
-              <th class="col-diff" scope="col">Difficulty</th>
-              <th class="col-q" scope="col">Question</th>
-              <th class="col-opt" scope="col">Option A</th>
-              <th class="col-opt" scope="col">Option B</th>
-              <th class="col-opt" scope="col">Option C</th>
-              <th class="col-opt" scope="col">Option D</th>
-              <th class="col-ans" scope="col">Correct Answer</th>
-              <th class="col-ex" scope="col">Explanation</th>
-              <th class="col-ref" scope="col">Constitutional Reference</th>
-              <th class="col-case" scope="col">Landmark Case</th>
-              <th class="col-tip" scope="col">Exam Tip</th>
-            </tr>
-          </thead>
-          <tbody id="mcqBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <p class="end-note" id="emptyNote" hidden>
-      No question matches the current filters. Clear the search box or reset the filters to see the full bank.
-    </p>
-
-    <p class="end-note" id="loadWarn" hidden>
-      The question data could not be loaded. Open this page from the folder that contains the
-      <code>legal-mcq-constitution-*.js</code> files.
-    </p>
-
-    <p class="end-note">
-      <b>How to use this guide.</b> Work through it in <b>Practice</b> mode, answering before you peek.
-      Switch to <b>Study</b> mode to read the reasoning and the judgment, and to <b>Key only</b> for a
-      rapid revision sweep of the answer column. Progress is saved in this browser only.
-    </p>
-
-  </section>
+  <!-- one panel per subject, built by legal-mcq-app.js -->
+  <div id="panels"></div>
 </div>
 
 <footer class="site-foot">
-  Constitution of India — 500 MCQ study guide for the All India Bar Examination. Prepared on the
-  current Constitution and prevailing constitutional law. Answers are randomised; no option pattern
-  is intended. Study aid only — always verify against the bare Act and the latest Supreme Court
-  decisions before relying on any proposition in practice.
+  Legal MCQ study guides for the All India Bar Examination, prepared on the current law. Each bank
+  carries the same column set: No. · Topic · Difficulty · Question · Options A–D · Correct Answer ·
+  Explanation · statutory reference · landmark case · exam tip. Answers are randomised; no option
+  pattern is intended. Study aid only — always verify against the bare Act and the latest judgments
+  before relying on any proposition in practice.
 </footer>
 
 <noscript>
   <p style="max-width:900px;margin:1rem auto;padding:1rem;border:1px solid #e2e7ef;border-radius:12px;background:#fff">
-    This question bank is rendered in the browser. Please enable JavaScript to view all 500 questions.
+    This question bank is rendered in the browser. Please enable JavaScript to view the questions.
   </p>
 </noscript>
 
-<!-- Question data: one file per 50 questions. Each appends to window.LEGAL_MCQ.constitution. -->
+<!-- Question data: one file per 50 questions. Each appends to its own subject key. -->
+
+<!-- Constitution of India -->
 <script src="legal-mcq-constitution-1.js"></script>
 <script src="legal-mcq-constitution-2.js"></script>
 <script src="legal-mcq-constitution-3.js"></script>
@@ -172,6 +64,18 @@
 <script src="legal-mcq-constitution-8.js"></script>
 <script src="legal-mcq-constitution-9.js"></script>
 <script src="legal-mcq-constitution-10.js"></script>
+
+<!-- Bharatiya Nagarik Suraksha Sanhita, 2023 -->
+<script src="legal-mcq-bnss-1.js"></script>
+<script src="legal-mcq-bnss-2.js"></script>
+<script src="legal-mcq-bnss-3.js"></script>
+<script src="legal-mcq-bnss-4.js"></script>
+<script src="legal-mcq-bnss-5.js"></script>
+<script src="legal-mcq-bnss-6.js"></script>
+<script src="legal-mcq-bnss-7.js"></script>
+<script src="legal-mcq-bnss-8.js"></script>
+<script src="legal-mcq-bnss-9.js"></script>
+<script src="legal-mcq-bnss-10.js"></script>
 
 <script src="legal-mcq-app.js"></script>
 

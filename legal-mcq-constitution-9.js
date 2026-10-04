@@ -847,8 +847,8 @@ window.LEGAL_MCQ.constitution = window.LEGAL_MCQ.constitution || [];
     o: [
       "Finance Commission",
       "Inter-State Council",
-      "Goods and Services Tax Council",
-      "NITI Aayog"
+      "GST Council",
+      "The NITI Aayog"
     ],
     a: 3,
     ex: "The Finance Commission is constituted under Article 280, the Inter-State Council under Article 263, and the Goods and Services Tax Council under Article 279A, inserted by the One Hundred and First Amendment Act, 2016; all three are therefore constitutional bodies. NITI Aayog was set up in 2015 by an executive resolution of the Union Cabinet and derives its existence only from that resolution. It is consequently neither a constitutional nor a statutory body.",
