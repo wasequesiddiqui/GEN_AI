@@ -89,17 +89,21 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
 <!-- ===== TOPICS GRID ===== -->
 <div class="container">
   <div class="tabs">
-    <button class="tab-btn active" id="tabStudy" onclick="switchTab('study')">📚 Study Guides</button>
+    <button class="tab-btn active" id="tabStats" onclick="switchTab('stats')">📊 Stats</button>
+    <button class="tab-btn" id="tabStudy" onclick="switchTab('study')">📚 Study Guides</button>
     <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">📝 Practice Quizzes</button>
     <button class="tab-btn" id="tabML" onclick="switchTab('ml')">🤖 ML Model</button>
     <button class="tab-btn" id="tabLLM" onclick="switchTab('llm')">🧠 LLM</button>
     <button class="tab-btn" id="tabAppendix" onclick="switchTab('appendix')">📎 Appendix</button>
     <button class="tab-btn" id="tabGlossary" onclick="switchTab('glossary')">🔤 Acronym Glossary</button>
   </div>
-  <h2 class="section-title" id="gridTitle">📚 All Study Guides</h2>
-  <p class="section-desc" id="gridDesc">Click any card to open the full interactive guide. Each includes key concepts, architecture diagrams, and practice quizzes.</p>
+  <h2 class="section-title" id="gridTitle">📊 Stats</h2>
+  <p class="section-desc" id="gridDesc">Statistics, probability, and machine learning foundations — interactive study guide with 12 topics and 277 practice MCQs.</p>
 
-  <div class="grid" id="studyGrid">
+  <div class="grid" id="statsGrid">
+    <!-- Stats cards injected by JS below -->
+  </div>
+  <div class="grid hidden" id="studyGrid">
     <!-- Cards injected by JS below -->
   </div>
   <div class="grid hidden" id="quizGrid">
@@ -134,6 +138,10 @@ footer{text-align:center;padding:2rem;color:#6b5b7b;font-size:.85rem;border-top:
 </footer>
 
 <script>
+const stats = [
+  { title:"Statistics, Probability &amp; ML Foundations", file:"STATS_BASIC.html", desc:"Foundations and descriptive statistics, probability, statistical inference, regression, classification, learning theory, Bayesian AI, experimental design, time series, information theory, missing data, and advanced topics — with 277 practice MCQs.", tag:"Statistics" },
+];
+
 const topics = [
   { title:"Fundamentals of Generative AI", file:"GENAI_FUNDAMENTALS.html", desc:"Core concepts: generative vs discriminative models, likelihood, latent variables, and the foundation of modern generative AI.", tag:"Core Theory" },
   { title:"Generative vs Discriminative Models", file:"Generative_Discriminative_StudyGuide.html", desc:"Side-by-side comparison of generative and discriminative approaches with decision boundary visualizations.", tag:"Core Theory" },
@@ -305,6 +313,7 @@ function renderGlossary() {
   });
 }
 
+renderGrid('statsGrid', stats);
 renderGrid('studyGrid', topics);
 renderGrid('quizGrid', quizzes);
 renderGrid('mlGrid', mlModels);
@@ -313,6 +322,7 @@ renderGrid('appendixGrid', appendix);
 renderGlossary();
 
 function switchTab(tab) {
+  const statsGrid = document.getElementById('statsGrid');
   const studyGrid = document.getElementById('studyGrid');
   const quizGrid = document.getElementById('quizGrid');
   const mlGrid = document.getElementById('mlGrid');
@@ -320,6 +330,7 @@ function switchTab(tab) {
   const glossaryGrid = document.getElementById('glossaryGrid');
   const glossaryControls = document.getElementById('glossaryControls');
   const llmGrid = document.getElementById('llmGrid');
+  const tabStats = document.getElementById('tabStats');
   const tabStudy = document.getElementById('tabStudy');
   const tabQuiz = document.getElementById('tabQuiz');
   const tabML = document.getElementById('tabML');
@@ -336,6 +347,8 @@ function switchTab(tab) {
   glossaryGrid.classList.add('hidden');
   glossaryControls.classList.add('hidden');
   llmGrid.classList.add('hidden');
+  statsGrid.classList.add('hidden');
+  tabStats.classList.remove('active');
   tabStudy.classList.remove('active');
   tabQuiz.classList.remove('active');
   tabML.classList.remove('active');
@@ -369,6 +382,11 @@ function switchTab(tab) {
     tabGlossary.classList.add('active');
     gridTitle.textContent = '🔤 Acronym Glossary';
     gridDesc.textContent = 'Commonly used acronyms across Python, pandas, machine learning, and AI — each with a short explanation and its related Python library.';
+  } else if (tab === 'stats') {
+    statsGrid.classList.remove('hidden');
+    tabStats.classList.add('active');
+    gridTitle.textContent = '📊 Stats';
+    gridDesc.textContent = 'Statistics, probability, and machine learning foundations — interactive study guide with 12 topics and 277 practice MCQs.';
   } else {
     studyGrid.classList.remove('hidden');
     tabStudy.classList.add('active');
