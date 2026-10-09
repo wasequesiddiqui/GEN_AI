@@ -147,6 +147,8 @@ tr:hover td{background:#fafbfd}
 }
 .callout.warn{border-color:#f59e0b;background:#fffbeb;color:#78350f}
 .callout.tip{border-color:var(--success);background:var(--success-soft);color:#14532d}
+.callout.example{border-color:var(--accent);background:#f5f3ff;color:#4c1d95}
+.callout.example .label{color:var(--accent)}
 .callout .label{font-weight:700;display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
 
 /* ---------- MCQ ---------- */
@@ -405,6 +407,8 @@ sample = rng.choice(population, size=<span class="num">100</span>, replace=<span
 <span class="fn">print</span>(<span class="str">f"Sample xbar={sample.mean():.2f}, s={sample.std(ddof=1):.2f}"</span>)</code></pre>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Guess what your electricity board does when it wants the average monthly bill of all 40,000 homes in your area? It cannot visit every home, so it reads just 400 meters. Those 400 homes are the <em>sample</em>; all 40,000 are the <em>population</em>. The sample gives Rs 1,240 - read a different 400 homes and you might get Rs 1,190 or Rs 1,300. The true average for everyone, called the parameter, is fixed but unknown. Here is the neat part: the typical error shrinks with 1 divided by the square root of the number you read, so 400 homes give about plus or minus Rs 60, and 1,600 homes only halve that to Rs 30. <strong>But if you read meters only in the AC colony, a bigger sample just gives a confident wrong answer.</strong></div>
+
     <h3>1.2 Types of Data (Stevens' Scales)</h3>
     <div class="table-wrap">
       <table>
@@ -425,6 +429,8 @@ sample = rng.choice(population, size=<span class="num">100</span>, replace=<span
       <li><strong>Discretising continuous data loses information</strong> — binning a ratio variable into “low/medium/high” throws away rank detail and can hide monotone effects or manufacture spurious ones.</li>
       <li><strong>Measurement determines validity</strong> — a thermometer with an arbitrary zero cannot support claims about proportional change, so the same statistical test can be legitimate on a ratio scale and invalid on an interval one.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>At a hospital OPD counter, four kinds of details sit in the same register, and each allows different maths. Blood group is just a label with no order, so you may only count and find the most common one - a "mean blood group" means nothing. The doctor's pain score from 1 to 5 is ordered, but the jump from 1 to 2 is not the same as 4 to 5, so report the middle value instead of an average. Body temperature in Celsius has equal steps, but its zero is made up, which is why 40 C is not twice as warm as 20 C. Weight in kilos has a true zero, so "twice as heavy" and the usual averages work fine. <strong>Match the maths to the kind of data before you calculate anything.</strong></div>
 
     <h3>1.3 Center</h3>
     <div class="formula-block">
@@ -457,6 +463,8 @@ sample = rng.choice(population, size=<span class="num">100</span>, replace=<span
 x = pd.Series([<span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">100</span>])
 <span class="fn">print</span>(<span class="str">"mean:"</span>, x.mean(), <span class="str">"median:"</span>, x.median(), <span class="str">"mode:"</span>, x.mode()[<span class="num">0</span>])</code></pre>
     </div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your gully cricket team scored 4, 6, 8, 9, 10, 12, 14, 15, 18, 22 and 92 in Sunday's match. Add all 11 scores and divide, and the mean is about 19. Now sort them and take the middle one - the median is only 12. That gap is the whole story: one batter smashed 92 and pulled the mean up, while ten others scored small. The mean uses every value, so a single hero innings moves it; the median only cares about position, so it barely budges. Drop the top and bottom scores and average the rest: a trimmed mean near 13, steady yet still using almost everyone. <strong>When one big value hogs the maths, report the median.</strong></div>
 
     <h3>1.4 Spread</h3>
     <div class="formula-block">
@@ -511,6 +519,8 @@ x = np.array([<span class="num">1</span>,<span class="num">2</span>,<span class=
       <p class="chart-note">Skew drags the <b>mean</b> toward the long tail while the <b>median</b> barely moves. Set skew to 0 and untick the outlier to recover a symmetric distribution in which both summaries agree.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Two Swiggy riders bring you food from the same cafe, and both take 24 minutes on average. That tells you nothing about who to bet on. Ravi's times barely move - give or take 3 minutes - so his box arrives warm. Meera swings from 15 minutes to 55, a spread of about 11 minutes, so some meals reach you cold. Spread is measured by the standard deviation, roughly the typical distance from the average, or by the interquartile range, the width of the middle 50% of runs. Meera's range of 40 minutes rests on just two bad days and is too jumpy to trust. Also, when you average squared distances over 100 deliveries, divide by 99 and not 100, or you always understate the spread. <strong>Same average, very different experience - always ask about spread.</strong></div>
+
     <h3>1.5 Percentiles, Quantiles, Boxplots</h3>
     <ul>
       <li><strong>p-th percentile</strong> — the value below which p% of the observations fall. Q₁ = 25th, Q₂ = median = 50th, Q₃ = 75th. Percentiles describe the <em>shape</em> of a distribution without assuming any particular form.</li>
@@ -520,6 +530,8 @@ x = np.array([<span class="num">1</span>,<span class="num">2</span>,<span class=
       <li><strong>Percentiles beat means for skewed data</strong> — income, latency and house prices are all better summarised by medians and 90th percentiles than by averages, because the average is dominated by a small tail.</li>
       <li><strong>Quartile computation varies</strong> — there are at least nine defensible definitions (R-1 … R-9) that disagree slightly on small samples, so always state which convention your software used before comparing numbers.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Mumbai local trains rarely run exactly on time, so the railway report shows percentiles rather than an average. The 50th percentile (the median) delay is 2 minutes, meaning half the trains are at most that late. The 90th percentile is 11 minutes: only the unlucky one in ten waits longer. The 99th is 40 minutes, the sort of delay that ruins a job interview. A boxplot draws this as a box from the 25th to the 75th percentile with a line at the median, plus whiskers covering the normal days, while the few trains far beyond get marked as flags. Percentiles describe the shape of the timings without assuming any bell curve. <strong>Ask for the 90th percentile, because averages hide the worst days.</strong></div>
 
     <h3>1.6 Shape</h3>
     <div class="formula-block">
@@ -547,6 +559,8 @@ x = np.array([<span class="num">1</span>,<span class="num">2</span>,<span class=
       <li><strong>Distributional shape drives method choice</strong> — symmetric and light-tailed supports mean-based methods; skewed supports medians, log transforms, or GLMs; bimodal means you probably have two populations and should split the analysis.</li>
       <li><strong>Measures are fragile in small samples</strong> — skewness and especially kurtosis are themselves dominated by rare observations, so they need large n and should always be read alongside a histogram.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Think about monsoon rain in your town. Most days bring a light drizzle, many bring nothing, and a few dump a whole week's rain in an hour. Draw this and you get a long right tail - that is skew. When the tail stretches right, the mean sits above the median, because the few heavy days tug it upward. Numbers called skewness (around +3 here) and tail weight capture this, but they need many days of data before they settle down. A heavy tail is a warning: once-in-a-decade floods arrive far more often than a neat bell curve predicts. That is why farmers, insurers and dam engineers plan with percentiles and with models that allow rare giant events, not with an average. <strong>A long tail is real structure, not a mistake - plan for the extreme days.</strong></div>
 
     <h3>1.7 Covariance and Correlation</h3>
     <div class="formula-block">
@@ -597,6 +611,8 @@ Y = X**<span class="num">2</span> + rng.normal(scale=<span class="num">0.1</span
 <span class="fn">print</span>(<span class="str">"Spearman:"</span>, st.spearmanr(X, Y).statistic) <span class="com"># high</span></code></pre>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>On cold mornings your school canteen sells more chai and more samosas, so the two move together. That shared movement is covariance. The trouble is that covariance comes out in odd units, like cups multiplied by samosas, so you cannot compare it across shops. Divide it by the spread of each variable and you get the correlation r, a clean number between -1 and +1; here it works out to about +0.85. But r only measures straight-line togetherness. Plot park visitors against afternoon temperature and you get a hill shape, where r sits near zero even though the weather clearly matters. And two things can move together with no cause at all. <strong>Correlation shows a pattern, never a reason - always look at the scatter plot.</strong></div>
+
     <h3>1.8 Visualising Distributions</h3>
     <ul>
       <li><strong>Histogram</strong> — counts of observations per bin. Its shape depends on the bin width you choose, so always try several widths before drawing conclusions; too-wide bins hide structure, too-narrow bins show noise.</li>
@@ -606,6 +622,8 @@ Y = X**<span class="num">2</span> + rng.normal(scale=<span class="num">0.1</span
       <li><strong>Violin / strip plots</strong> — combine density shape with the individual observations, which matters because two groups with identical boxplots can hide very different multimodal structures.</li>
       <li><strong>Plot before you compute</strong> — Anscombe's quartet and the Datasaurus show four datasets with identical means, variances and correlations but completely different shapes. A summary statistic is not a substitute for a picture.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your phone logs your daily screen time for a month, and one picture can tell the whole story. Group the days into wide buckets of 2 hours and it looks like a single lump. Narrow the buckets to 30 minutes and a second lump appears - school days cluster low, weekends sit much higher. That bucket width is quietly doing the analysis. A smooth curve, called a KDE, avoids picking buckets but adds its own smoothing knob. The ECDF needs no knob at all: it climbs and tells you plainly that 40% of days stayed under 3 hours. A Q-Q plot checks whether the times follow a bell curve, and it bends away at the ends if they do not. <strong>Plot before you compute - one summary number can hide two different habits.</strong></div>
 
     <h3>1.9 Outliers and Robust Statistics</h3>
     <ul>
@@ -638,6 +656,8 @@ Y = X**<span class="num">2</span> + rng.normal(scale=<span class="num">0.1</span
       <p class="chart-note">Stretch the outliers and watch the <b>mean</b> and <b>standard deviation</b> chase them while the <b>median</b> and <b>IQR</b> hold firm. That is why the z-score rule becomes unreliable on contaminated data — the SD it divides by has itself been inflated by the points it is trying to detect.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your neighbourhood kirana shop is checking its daily sales for the month. Most days bring Rs 4,000 to Rs 7,000, but one day shows Rs 42,000 because a big mela happened down the road. The 1.5 x IQR rule flags that day as unusual. The z-score rule (roughly, more than 3 spreads away from the mean) may stay quiet, because that mela day has itself blown up the very average and spread it divides by. Worse, silently deleting such days could erase genuine festival demand. So check first: a typing error, or a real rush? Then report the month both with and without it. The median and IQR hold steady either way. <strong>An odd value is a question to investigate, never a number to auto-delete.</strong></div>
+
     <h3>1.10 Standardisation and Normalisation</h3>
     <div class="formula-block">
       <div class="formula">z = (x − μ) / σ  &nbsp;·&nbsp;  x' = (x − min) / (max − min)</div>
@@ -664,6 +684,8 @@ Y = X**<span class="num">2</span> + rng.normal(scale=<span class="num">0.1</span
       <li><strong>Always refit inside the CV loop</strong> — scaling parameters must be learned from the training fold only; computing them once on the full dataset before splitting leaks test information into training and inflates your reported score.</li>
     </ul>
     <div class="callout warn"><span class="label">Pitfall</span>Fit the scaler on training data only, then apply to test. Otherwise leakage.</div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your report card compares subjects marked out of different totals - Maths out of 80, Science out of 100 - so adding up raw marks is unfair to Maths. Turn each subject into a z-score: subtract the class average, then divide by the class spread. Now being 1 mark above the class average means the same thing in every subject, and a computer comparing students is not fooled by bigger totals. A min-max version squeezes everyone between 0 and 1, but one topper scoring a fluke 100 squashes all your friends into a tiny band. Also learn the average and spread from practice tests only, never from the final exam you are trying to predict - that is a quiet form of cheating. <strong>Scale the subjects fairly, and learn the scale from the practice round alone.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -694,6 +716,8 @@ Y = X**<span class="num">2</span> + rng.normal(scale=<span class="num">0.1</span
       <li><strong>Derived rules worth memorising</strong> — complement P(Aᶜ) = 1 − P(A); the general addition rule P(A ∪ B) = P(A) + P(B) − P(A ∩ B), where the subtraction removes the double-counted overlap; and monotonicity, A ⊆ B ⟹ P(A) ≤ P(B).</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your Class 10 board result can end in exactly three ways: first division, second division or fail. Those three cover everything, so their chances must add up to exactly 1 - that is the second axiom, and it just says "something certain" is written as 1. No chance can be negative either - that is the first axiom, so there is no such thing as minus 0.2 chance of passing. If first division is 0.25 and second division is 0.60, then failing has to be 0.15. Passing means first or second division, and since one student cannot be in both at once, you simply add: 0.25 + 0.60 = 0.85. <strong>Lesson: only add the chances of things that cannot happen together, or you will double-count and make the result look bigger than it is.</strong></div>
+
     <h3>2.2 Conditional, Independence, Mutual Exclusivity</h3>
     <div class="formula-block">
       <div class="formula">P(A | B) = P(A ∩ B) / P(B)  &nbsp;·&nbsp;  Independent: P(A ∩ B) = P(A) · P(B)</div>
@@ -720,6 +744,8 @@ Y = X**<span class="num">2</span> + rng.normal(scale=<span class="num">0.1</span
       <li><strong>Chain rule</strong> — P(A₁ ∩ … ∩ Aₙ) = P(A₁) · P(A₂ | A₁) · … , which is how joint probabilities of sequences are built in HMMs and language models.</li>
       <li><strong>Law of total probability</strong> — P(B) = Σ P(B | Aᵢ)P(Aᵢ) over a partition {Aᵢ}. This supplies the denominator of Bayes' theorem.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Monsoon in Mumbai. Let R mean "it rains today" and L mean "your local train is late". Suppose it rains on 40 out of 100 days, and on 30 of those rainy days the train runs late. Then the chance of a late train given that it rains is 30 divided by 40, which is 0.75. That is a conditional chance - you have shrunk the world down to rainy days only. Now "on time" and "late" cannot both happen for the same train, so they are mutually exclusive, and knowing one happened proves the other did not - that makes them dependent, never independent. Two things are independent only when one tells you nothing about the other, like your train being late and your friend's exam marks. <strong>Lesson: a conditional is not its reverse - P(late given rain) is not P(rain given late).</strong></div>
 
     <h3>2.3 Bayes' Theorem</h3>
     <div class="formula-block">
@@ -768,6 +794,8 @@ posterior = sensitivity*prevalence / p_pos
 <span class="fn">print</span>(<span class="str">f"P(D|+) = {posterior:.3f}"</span>)   <span class="com"># 0.161</span></code></pre>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>It is dengue season and your colony clinic tests 1,000 people. Only about 20 truly have dengue, because it is rare. The rapid test catches 9 out of 10 sick people, so 18 of those 20 show positive. Among the 980 healthy people, the test wrongly says positive for about 2 in 100, so roughly 20 healthy people also show positive. Total positives = 18 + 20 = 38. So if your report comes back positive, the chance you really have dengue is 18 out of 38, about 47% - a coin flip, not a death sentence. Bayes' theorem is just this careful counting: start with what is common, then let the test nudge your belief. <strong>Lesson: when something is rare, even a good test makes many mistakes, so always ask what the chance was before the test.</strong></div>
+
     <h3>2.4 Random Variables</h3>
     <div class="formula-block">
       <div class="formula">PMF p(x) = P(X = x)  &nbsp;·&nbsp;  PDF: P(a ≤ X ≤ b) = ∫<sub>a</sub><sup>b</sup> f(x) dx  &nbsp;·&nbsp;  CDF F(x) = P(X ≤ x)</div>
@@ -793,6 +821,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Transformations</strong> — a function of a random variable is itself random. E[g(X)] = Σ g(x)p(x), which is <em>not</em> the same as g(E[X]) unless g is linear (Jensen's inequality).</li>
       <li><strong>Independence of random variables</strong> — X and Y are independent when their joint density factorises, f(x, y) = f(x)f(y); this is what makes variances add and makes most simulation-based inference tractable.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>At your school canteen, let X be the number of samosas a student buys and Y be the minutes spent waiting in the queue. X is discrete: it can be 0, 1, 2 or 3, since nobody buys 1.7 samosas, so we give a chance to each value, like P(X = 2) = 0.35, and those chances must add up to 1. Y is continuous: it can be 2.5 or 2.53 minutes, so the chance that Y is exactly 2.5 minutes is zero - only a range carries a real chance. To get the chance of waiting between 2 and 5 minutes, read the cumulative curve F and subtract: F(5) - F(2). The very same curve, F(y) = P(Y &lt;= y), also answers questions about X. <strong>Lesson: decide first whether you are counting things or measuring them, because the maths is different.</strong></div>
 
     <h3>2.5 Expectation, Variance, Covariance</h3>
     <div class="formula-block">
@@ -821,6 +851,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Jensen's inequality</strong> — for a convex g, E[g(X)] ≥ g(E[X]); taking a mean and then a nonlinear transform is not the same as transforming first, a frequent source of modelling error.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Meera studies for her Class 10 tests every Sunday. Let X be her minutes of maths practice, averaging 40, and Y her minutes of science practice, averaging 35. The average of her total is simply 40 + 35 = 75 minutes - averages add neatly, whether or not the two subjects are linked. Spread is not so kind. Maths time has variance 36 and science 25, but on days before a test she studies both more, so they move together with covariance 12. Her total variance is then 36 + 25 + 2 x 12 = 85, not 61. Forget that covariance and you badly underestimate how wildly her total study time swings. <strong>Lesson: averages always add, but spreads add only when the two things do not move together.</strong></div>
+
     <h3>2.6 Joint, Marginal, Conditional</h3>
     <div class="formula-block">
       <div class="formula">Marginal p(x) = Σ<sub>y</sub> p(x, y)  &nbsp;·&nbsp;  Conditional p(y | x) = p(x, y) / p(x)  &nbsp;·&nbsp;  Independence p(x, y) = p(x) · p(y)</div>
@@ -847,6 +879,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Simpson's paradox</strong> — an association that holds inside every subgroup can reverse when the groups are pooled, precisely because the marginal distribution weights the subgroups differently from each conditional.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Two coaching institutes both claim the better Class 10 pass rate. Look at 1,000 students from each. Institute A put 900 students in a relaxed 6-month batch and only 100 in a rushed crash course. Institute B did the opposite: just 100 in the 6-month batch and 900 in the crash course. Inside each batch, B actually wins - 80% pass in its 6-month batch against 78% for A, and 40% in the crash course against 38% for A. Yet overall A shows 74% passing while B shows only 44%. Why? B stuffed almost everyone into the harder crash course. The headline rate just reflects which batch held more students. <strong>Lesson: before trusting an overall percentage, break it into fair groups, because the mix can flip the whole story.</strong></div>
+
     <h3>2.7 Total Expectation and Total Variance</h3>
     <div class="formula-block">
       <div class="formula">E[X] = E[E[X | Y]]  &nbsp;·&nbsp;  Var(X) = E[Var(X | Y)] + Var(E[X | Y])</div>
@@ -872,6 +906,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Basis of ANOVA and mixed models</strong> — F-tests compare the two components, and random-effects models estimate them separately so that clustered data (students in schools, users in cohorts) gets correct standard errors.</li>
       <li><strong>Why it matters in practice</strong> — ignoring group structure makes you treat correlated observations as independent, which understates standard errors and produces spuriously significant results.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A city hospital measures the waiting time in its OPD. Let Y be the department you are sent to and X your waiting minutes. Waiting times overall have variance 400. Inside each department the spread is smaller, about 300 on average, while the department averages themselves differ, adding another 100. Notice 300 + 100 = 400 exactly - nothing is lost and nothing is counted twice. So the department you land in explains roughly a quarter of your waiting time. The overall average wait comes from the same idea: average the department averages, giving each department a weight equal to the number of patients it sees. <strong>Lesson: group averages build the overall average, and the total spread splits neatly into inside-group plus between-group.</strong></div>
 
     <h3>2.8 Limit Theorems</h3>
     <div class="formula-block">
@@ -922,6 +958,8 @@ posterior = sensitivity*prevalence / p_pos
       <div class="kpi-row" id="c-clt-kpi"></div>
       <p class="chart-note">At n = 1 you are looking at the raw source distribution. Increase n and watch the histogram of the sample mean turn into a Normal curve whatever the source shape, while the KPI row shows the standard error falling as <b>σ/√n</b> and the mean staying put.</p>
     </div>
+
+    <div class="callout example"><span class="label">Real-life example</span>You want to know what share of families in your colony pay by UPI. Asking everyone is impossible, so you ask 1,500 people and 52% say yes. Your estimate carries a typical error of about 1.3 percentage points, giving the familiar plus or minus 2.5 point range. Two big theorems work quietly behind this. The central limit theorem says that even though each answer is just a plain yes or no, the average of 1,500 such answers behaves like a bell curve, so the range can be trusted. The law of large numbers says the more people you ask, the closer you land to the real share. <strong>Lesson: to halve your error you must ask four times as many people, and a 1.3-point lead is still a tie, not a win.</strong></div>
 
     <h3>2.9 Common Distributions</h3>
     <div class="table-wrap">
@@ -997,6 +1035,8 @@ posterior = sensitivity*prevalence / p_pos
       <p class="chart-note">The slider labels change with the family, so you are always editing real parameters (<b>n and p</b> for Binomial, <b>λ</b> for Poisson, <b>α and β</b> for Beta). Switch on the CDF to see how the same distribution is read as cumulative area.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Tatkal booking opens at 10 in the morning and it is pure chaos. The number of tickets booked per minute is a count with no fixed limit, so we model it as a Poisson with average 240 per minute - and for a Poisson the average equals the spread, so the typical wobble is the square root of 240, about 15.5. The wait for the next booking is a waiting time, so it follows an Exponential with average 1/240 minutes, a quarter of a second, and it is memoryless: a quiet second says nothing about the next one. Each user either gets a confirmed seat or not, a yes/no with chance 0.18. Across 240 bookings that becomes a Binomial with average 240 x 0.18 = 43.2 confirmed seats. <strong>Lesson: match the model to the story - counts, waiting times and yes/no each need their own family.</strong></div>
+
     <h3>2.10 Moment Generating Functions</h3>
     <div class="formula-block">
       <div class="formula">M<sub>X</sub>(t) = E[e<sup>tX</sup>]  &nbsp;·&nbsp;  M<sub>X+Y</sub>(t) = M<sub>X</sub>(t) · M<sub>Y</sub>(t)  &nbsp;·&nbsp;  E[X<sup>k</sup>] = M<sub>X</sub><sup>(k)</sup>(0)</div>
@@ -1022,6 +1062,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Proof engine for the limit theorems</strong> — the CLT and the Poisson limit are proved by showing MGFs converge pointwise, which is technically far easier than manipulating distribution functions.</li>
       <li><strong>Limitations</strong> — MGFs need not exist (the Cauchy has none, and log-normal tails are delicate), so the characteristic function E[e^(itX)] is used in rigorous treatments because it always exists.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your neighbourhood tea stall serves one customer in X minutes, where X follows an Exponential distribution with average 0.4 minutes. Suppose 50 such stalls each serve one customer independently. Think of the moment generating function as a magic box that stores every average of X inside one formula: M(t) = E[e^(tX)] = lambda / (lambda - t). Because the stalls are independent, you simply multiply the boxes together, and the result 50 times over is the fingerprint of a Gamma distribution, not a Normal one. Averages come free from the same box - one small differentiation gives E[X] = 1/lambda = 0.4 minutes, so serving 50 customers takes about 20 minutes in total. <strong>Lesson: multiplying these magic boxes identifies the total far faster than adding up every case by hand.</strong></div>
 
     <h3>2.11 Concentration Inequalities</h3>
     <div class="table-wrap">
@@ -1082,6 +1124,8 @@ posterior = sensitivity*prevalence / p_pos
       <p class="chart-note">Chebyshev guarantees Pr(|X − μ| ≥ kσ) ≤ 1/k² for <em>every</em> distribution with finite variance, so the dashed curve is always an upper bound. The solid curve is the truth for the family you selected — the gap between them is the price of not knowing the distribution.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your recharge app tests two payment screens, a new one and the old one, on 40,000 users each. We only record whether a user pays or not, so every result is a 0 or a 1 sitting between 0 and 1. The new screen converts 3.2% and the old one 3.0%. Hoeffding's inequality uses that bounded range and says the chance that your measured gap is off by more than 0.001 is about 2 times e raised to minus 80 - so tiny it is never going to happen, which is exactly why such tests are trusted. Chebyshev is looser: it only promises that at most 1 in 4 users land more than two spreads from the mean, when a bell curve keeps it near 1 in 20. <strong>Lesson: knowing your values have hard limits gives far sharper guarantees than knowing only the average.</strong></div>
+
     <h3>Real-life Applications</h3>
     <ul>
       <li><strong>Medical testing</strong> — Bayes' theorem converts sensitivity and specificity into the probability the patient actually has the disease, which is what the clinician must act on.</li>
@@ -1130,6 +1174,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Asymptotic Normality</strong> — under regularity conditions the MLE is approximately Normal around the truth with variance given by the inverse Fisher information, which is what makes standard errors and Wald intervals available automatically.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your school wants the average Class 10 maths marks of all 1,200 students. Asking everyone is too much work, so you ask just 100 students and get 68. That single best guess is called a point estimate. One popular recipe, maximum likelihood, asks which true average would make the marks you actually saw most likely; when marks cluster neatly, the answer is simply your sample average, 68. Another recipe, MAP, mixes in a hunch before you look - if past years averaged 62, your answer gets nudged down to about 66. You could also drop the 5 highest and 5 lowest marks and average the rest, landing near 69. <strong>There is no single right recipe - each one trades accuracy for steadiness.</strong></div>
+
     <h3>3.2 Estimator Properties</h3>
     <div class="formula-block">
       <div class="formula">MSE(θ̂) = E[(θ̂ − θ)²] = Bias(θ̂)² + Var(θ̂)</div>
@@ -1156,6 +1202,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Sufficiency</strong> — a statistic is sufficient if it captures everything the sample says about θ. Maximum likelihood estimators are functions of sufficient statistics, which is why they lose no information.</li>
       <li><strong>Robustness</strong> — the flip side of efficiency: the most efficient estimator under a model assumption can be catastrophic when that assumption fails, which is why medians and trimmed means remain popular.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Ever judged a batsman from just two innings? Careful! Your mohalla team wants Kabir's true batting average. In 5 innings he made 60, 10, 20, 15 and 45, so his average is 30. But 5 innings is tiny, so this guess wobbles a lot. Suppose the whole league averages 22. Blending Kabir's 30 with the league's 22 gives about 26. That blend is a little off-target, which we call bias, but far less jumpy, which we call low variance. Total error is bias squared plus variance, and here the steadier guess usually wins. After 200 innings the wobble shrinks on its own and the blend hardly matters. <strong>A steady guess that is slightly off often beats a jumpy one that is bang on target.</strong></div>
 
     <h3>3.3 Confidence Intervals</h3>
     <div class="formula-block">
@@ -1201,6 +1249,8 @@ posterior = sensitivity*prevalence / p_pos
     </div>
     <div class="callout warn"><span class="label">Interpretation</span>A 95% CI is produced by a procedure that captures the true parameter in 95% of repeated samples. <strong>Not</strong> "95% probability the parameter is in this interval" — that's a Bayesian credible interval.</div>
 
+    <div class="callout example"><span class="label">Real-life example</span>How much does an auto ride really cost? One number is not enough. You want the average fare from your area to the metro station. You note 100 rides and find an average of Rs 90, with rides varying by about Rs 20. The typical error of that average is the spread divided by the square root of 100, so Rs 20 / 10 = Rs 2. A 95 percent confidence interval says the true average sits in roughly Rs 86 to Rs 94. Note 400 rides instead and the margin halves to Rs 1. Asking for 99 percent confidence stretches the range. <strong>Read it as a promise about your method: ranges built this way catch the true value about 95 times out of 100.</strong></div>
+
     <h3>3.4 Hypothesis Testing</h3>
     <div class="formula-block">
       <div class="formula">t = (x̄ − μ₀) / (s / √n)  &nbsp;·&nbsp;  p = P(|T| ≥ |t| | H₀)  &nbsp;·&nbsp;  Power = 1 − β</div>
@@ -1244,6 +1294,8 @@ posterior = sensitivity*prevalence / p_pos
       <p class="chart-note">The curve is the sampling distribution of t <em>assuming H₀ is true</em>. The shaded tails are the rejection region set by α and the marker is your observed statistic. Drag t toward the center and the p-value climbs above α — significance only measures how far the estimate sits from H₀ in standard-error units.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>The tea stall owner claims her new masala chai sells 50 cups a day, the same as before. She tries it for 30 days and sells 56 cups a day on average. Is that a real jump or just a lucky month? Start by assuming nothing changed - that is the null hypothesis. Measure the gap of 6 cups against the day-to-day wobble and you get a test score of about 2.5. The p-value then asks: if nothing really changed, how often would we see a gap this big? Here it is only about 1 in 100, so she rejects "nothing changed". <strong>A small p-value means the data sits awkwardly with "nothing changed" - it does not prove the new recipe is better.</strong></div>
+
     <h3>3.5 Common Tests</h3>
     <div class="table-wrap">
       <table>
@@ -1282,6 +1334,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Omnibus then pairwise</strong> — when ANOVA rejects, follow up with corrected pairwise comparisons; running t-tests between all pairs without adjustment resurrects the multiple-testing problem from 3.6.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Three plots, three fertilisers - which one really wins? Ravi tries each fertiliser on its own patch of wheat and wants to know if the yields differ. Comparing all three at once is called ANOVA. It checks whether the gaps between the average yields are bigger than the natural ups and downs inside each patch. Say the yields average 22, 27 and 29 sacks, and the test gives a p-value of 0.003, so at least one fertiliser is genuinely different. But it does not say which pair, so compare them two at a time, with a small correction for making many comparisons. If yields are very lopsided, use a rank test instead. <strong>Always say how big the gap is - 7 extra sacks matters to a farmer, 0.05 sacks does not.</strong></div>
+
     <h3>3.6 Multiple Testing</h3>
     <div class="formula-block">
       <div class="formula">Bonferroni: α' = α / m  &nbsp;·&nbsp;  Benjamini–Hochberg: reject H<sub>(i)</sub> if p<sub>(i)</sub> ≤ (i / m) · α</div>
@@ -1309,6 +1363,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>Publish the whole family</strong> — the correction is only meaningful if m counts every test you actually ran, including the ones you did not write up. Selective reporting silently breaks the guarantee.</li>
       <li><strong>Alternatives</strong> — Holm's step-down procedure is uniformly more powerful than Bonferroni while still controlling FWER, and is a strict improvement for almost every use case.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Imagine you try 50 different discount offers in your online shop and check which ones sell more. Even if none of them really work, a test at the 5 percent level will flag 2 or 3 as winners purely by luck. That is the many-tests trap. One fix, Bonferroni, is blunt: instead of calling a result special when it beats 5 percent, demand that it beat 5 percent divided by 50, which is 0.1 percent. Very safe, but you may miss a real winner. A smarter fix, Benjamini-Hochberg, lines the p-values up in order and allows a few false alarms in exchange for catching more true ones. <strong>Count every test you ran - quietly hiding the failed ones breaks the safety net.</strong></div>
 
     <h3>3.7 Resampling</h3>
     <div class="chart-card">
@@ -1343,6 +1399,8 @@ posterior = sensitivity*prevalence / p_pos
       <li><strong>When to prefer resampling</strong> — small samples with non-Normal data, statistics with no closed-form standard error (medians, ratios, R², AUC), and complex designs where theory is unavailable.</li>
       <li><strong>Limitations</strong> — the bootstrap cannot rescue a biased sample, fails for extreme order statistics such as the maximum, and needs care with dependent data (use block or cluster bootstraps for time series and grouped data).</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A dairy wants the typical, that is median, litres of milk sold per household each day. A few families buy buckets, so the numbers are very lopsided and no neat formula gives the typical error. So the dairy takes its one real list of 500 families and makes pretend lists: pick 500 families at random, allowing repeats, and find the median again. Do this 2,000 times. The middle 95 percent of those medians, say 3.1 to 4.4 litres, is the percentile confidence interval. This trick, the bootstrap, works because your one real list stands in for the whole town. <strong>Mind the limits: it cannot fix a lopsided sample, and it stumbles on the single biggest value.</strong></div>
 
     <h3>3.8 Bayesian Inference</h3>
     <div class="formula-block">
@@ -1380,6 +1438,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Prior sensitivity</strong> — always check how much the conclusion depends on the prior. With weak or uninformative priors the data should dominate, and a result that flips with a reasonable prior change is not a robust finding.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>An ASHA worker wants to know what fraction of families in her village boil their drinking water. Before asking anyone, she starts with a mild hunch, equal to having seen 2 families who do and 2 who do not. Now she visits 100 families and 70 say yes. Update by simple addition, like a shopkeeper's ledger: the hunch becomes 2 + 70 = 72 yes against 2 + 30 = 32 no. Her best guess is 72 out of 104, about 0.69, sitting between her hunch of 0.50 and what she actually saw, 0.70. The 95 percent credible interval runs about 0.59 to 0.76 and, unlike the usual confidence range, can honestly be read as a 95 percent chance that the true value lies inside. <strong>If a reasonable change in your starting hunch flips the answer, the finding is fragile.</strong></div>
+
     <h3>3.9 Model Selection</h3>
     <div class="formula-block">
       <div class="formula">AIC = 2k − 2 ln L̂  &nbsp;·&nbsp;  BIC = k · ln(n) − 2 ln L̂</div>
@@ -1408,6 +1468,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Alternatives</strong> — cross-validation directly estimates out-of-sample error and is preferable when the model family is complex, the sample is small or prediction is the whole point.</li>
       <li><strong>Not the same as a hypothesis test</strong> — information criteria compare many models at once and never produce a p-value, which is exactly why they are less prone to the multiple-testing problems of Section 3.6.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Fancy models always fit the past better. That is exactly the trap. A power company wants to predict how much electricity a city will need every hour. It tries three sets of clues: 4 clues, then 9, then 15. As expected, the fanciest one fits past hours best, so each rule charges rent per clue. AIC charges 2 per clue and scores them 1,842, 1,839 and 1,849 - the middle one wins, because the 15-clue model's extra fit does not cover its 30 points of rent. BIC charges about 9 per clue when you have 8,760 hours of history, giving 1,870, 1,903 and 1,955, so it picks the simplest model instead. Neither is wrong: AIC aims at predicting new hours well, BIC at finding the truest model. <strong>Compare only models fitted to the same data, and treat a gap of 10 or more as strong evidence.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -1474,6 +1536,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Each grey segment is a residual — the vertical gap between an observation and your line — and <b>SSE</b> is the sum of their squares, the exact quantity OLS minimises. Press <b>Snap to OLS fit</b> to jump to the true least-squares solution, then drag the line away and watch how slowly <b>R²</b> degrades: two very different fits can report similar R², which is why you must always inspect residuals rather than trust a single number.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>You want to guess the monthly rent of a flat in Pune. So you collect 400 real listings and note the area in square feet, the number of rooms and the distance to the metro. Ordinary least squares is simply this: draw the one line that makes the total of all squared gaps between your guess and the real rent as small as possible. Your fit says each extra square foot adds about Rs 22, as long as the rooms and the distance stay the same. R-squared comes to 0.37, so 37% of the ups and downs in rent are explained. <strong>That "everything else same" phrase is what makes a slope mean anything, and never trust the line for a 5,000 square foot bungalow your data never saw.</strong></div>
+
     <h3>4.2 Assumptions (LINE + No Collinearity)</h3>
     <div class="table-wrap">
       <table>
@@ -1496,6 +1560,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>No influential outliers</strong> — a single point with high leverage can move the whole hyperplane. Check leverage and Cook's distance rather than relying on the raw residual alone.</li>
       <li><strong>Diagnose in order of consequence</strong> — independence and correct functional form hurt you most; mild non-Normality hurts you least, so triage the checks by how much they actually change your conclusions.</li>
     </ul>
+    <div class="callout example"><span class="label">Real-life example</span>A farmer in Nashik grows onions and wants to know what really drives her harvest, so she writes down rainfall, kilos of fertilizer and hours of sunlight for 300 plots. The checks she must pass are nicknamed LINE: a straight-line link, independent errors, roughly Normal errors and equal spread. Here rainfall and sunlight rise together in the monsoon, so the model cannot tell which one is doing the work - the two are tangled, their numbers swing about and sometimes flip sign. The errors also fan out: small plots are guessed well, big ones badly. So she drops one of the tangled pair and takes logs to steady the spread. <strong>Fix the shape and independence first - a slightly odd error pattern hurts far less than a tangle you have ignored.</strong></div>
+
     <h3>4.3 Diagnostics</h3>
     <div class="formula-block">
       <div class="formula">R² = 1 − SS<sub>res</sub> / SS<sub>tot</sub>  &nbsp;·&nbsp;  adjusted R² = 1 − (1 − R²)(n − 1) / (n − p − 1)  &nbsp;·&nbsp;  VIFⱼ = 1 / (1 − R²ⱼ)</div>
@@ -1525,6 +1591,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>High R² is not validation</strong> — overfit models report excellent in-sample R² and fail on new data. Split the data, or compare with cross-validated error, before believing the number.</li>
       <li><strong>Diagnostics are for prediction and inference alike</strong> — even when you only care about forecasts, uncorrected heteroscedasticity or autocorrelation makes your uncertainty statements wrong.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A food delivery app wants to guess delivery time in minutes from distance, number of stops and traffic level, using 9,000 past orders. The fit explains 40% of the variation, which sounds decent. Now comes the honest part, checking whether the model can be trusted. One huge 400-stop bulk order pulls the whole result: delete that single row and the distance effect moves by 15%. Its Cook's distance, which measures how much one point changes everything, is 2.3, way above 1, so it truly matters. The leftover errors also spread wider on long routes. <strong>Show the model both with and without that odd row, and never brag about a high R-squared - it says nothing about how you do on fresh orders.</strong></div>
 
     <h3>4.4 Logistic Regression</h3>
     <div class="formula-block">
@@ -1571,6 +1639,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">The sigmoid always returns a probability, while <b>exp(β₁)</b> is the multiplicative change in odds per one-unit step in x — slide β₁ and watch that ratio, not the probability, move by a constant factor. Then drag the threshold: recall rises as precision falls, because the threshold is nothing more than the relative cost you place on a false negative versus a false positive.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>A small lending app wants to guess whether a borrower will miss an EMI. The answer is only yes or no, so a straight line will not do. Logistic regression turns the chance into odds - odds of 3 means three times more likely to miss than to pay - and fits log-odds = -3.1 + 0.85 x debt-to-income. Each extra point of debt-to-income multiplies the odds by about 2.3, not the chance itself. At a 0.5 cut-off the app catches 44 of every 100 defaulters; dropping the cut-off to 0.3 catches 68 of them but flags many safe borrowers too. <strong>Choose the cut-off from what a miss really costs you, and remember it is the odds that move by a fixed factor, not the probability.</strong></div>
+
     <h3>4.5 Poisson Regression and GLMs</h3>
     <div class="formula-block">
       <div class="formula">log(μ) = β₀ + β₁x₁ + …  &nbsp;·&nbsp;  GLM = distribution + linear predictor + link function</div>
@@ -1598,6 +1668,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Interpretation on the natural scale</strong> — report exp(β) and say “the rate is 1.34 times higher”, not “log-rate increased by 0.29”, because stakeholders think in ratios.</li>
       <li><strong>Goodness of fit</strong> — examine deviance residuals and Pearson χ² rather than R², which has no clean meaning for count models.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Some things you count, not measure - dengue cases, customers, accidents. Poisson regression models such counts on a log scale, so effects multiply instead of add. A city health office models daily dengue visits at 60 clinics against rainfall. Each clinic covers a different number of people, so log(population) enters as an offset and results are read as rates. The fit says every 10 mm of extra rain multiplies the visit rate by 1.34, a 34% jump. One warning: the spread in the data is 3.2 times its average, so the plain model's error bars are too tight. <strong>Always compare spread with average before trusting a count model, and report the multiplier - people think in "1.3 times", not log units.</strong></div>
 
     <h3>4.6 Regularised Regression</h3>
     <div class="table-wrap">
@@ -1656,6 +1728,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Each line traces one coefficient as the penalty grows. Under <b>ridge</b> all seven shrink smoothly together and a correlated pair shares the blame; under <b>lasso</b> they drop to exactly zero one after another until only the strongest survive. Drag λ toward the left for a flexible fit and toward the right for a sparse, heavily regularised one — then pick the value by cross-validation, never by eye.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Suppose an online store wants to guess next month's sales for 800 items using 5,000 signals - past views, discounts, festival flags and more. With so many signals and so few months, ordinary regression goes haywire and starts fitting pure noise. Regularisation adds a fine for big coefficients. Ridge shrinks every coefficient gently but keeps all 5,000. Lasso is stricter and pushes most of them to exactly zero, so only about 40 signals survive - a clean, short list. Mix the two and you get elastic net. Scale every signal first, or one measured in large units gets squeezed unfairly. <strong>Pick the size of the fine by testing on unseen months, and never read a shrunken number as a true cause.</strong></div>
+
     <h3>4.7 Extensions</h3>
     <div class="formula-block">
       <div class="formula">Cox model: h(t | x) = h₀(t) · exp(βx)  &nbsp;·&nbsp;  quantile regression: Q<sub>τ</sub>(y | x) = xβ<sub>τ</sub></div>
@@ -1684,6 +1758,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Generalised additive models</strong> — smooth nonlinear relationships (splines) inside a GLM framework, giving flexibility without the interpretability losses of a black-box model.</li>
       <li><strong>Robust and heavy-tailed errors</strong> — Student-t or Huber losses replace the Normal likelihood when residuals have fat tails, so a few extreme points cannot dominate the fit.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A streaming app wants to know when subscribers will quit. The awkward part: half of them have not quit yet - they might leave next month. Throwing those people out would twist the answer badly, and calling them "safe" throws away real information. A Cox model handles this by comparing, at each moment, the people who left with everyone still around, giving a hazard - the risk of leaving right then. Watching one extra hour a week multiplies that risk by 0.62, a 38% drop. Separately, looking at the top 10% of quitters rather than the average shows the heaviest viewers leave over price while typical ones leave over content. <strong>Count time from a clear start, keep the still-subscribed rows, and check the tails when an average hides who is really at risk.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -1743,6 +1819,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Always scale and always validate</strong> — distance and margin methods require standardised features, and no classifier choice should be trusted without cross-validation on data it has not seen.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your inbox gets two million mails a day and the app must sort spam from real mail. Naive Bayes pretends each word is unrelated to the others. Not quite true, but it trains in seconds and works well on text. A linear SVM draws the cleanest possible boundary and often does better, yet it needs every feature scaled and careful tuning. A decision tree keeps splitting on the most useful word: a node that is half spam and half real has entropy H = 1 bit, and a perfect split takes that to 0. Nearest-neighbour is hopeless here, because in 50,000-word space everything looks far from everything. <strong>Start with a simple linear model, scale your inputs, and crown the winner only after testing on mail it has never seen.</strong></div>
+
     <h3>5.2 Evaluation Metrics</h3>
     <div class="formula-block">
       <div class="formula">Precision = TP / (TP + FP)  &nbsp;·&nbsp;  Recall = TP / (TP + FN)  &nbsp;·&nbsp;  F1 = 2 · Precision · Recall / (Precision + Recall)</div>
@@ -1788,6 +1866,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Pull <b>Class separation</b> to the left and the two score distributions overlap until the curve collapses onto the diagonal — <b>AUC ≈ 0.5</b>, no better than a coin flip. Moving the <b>Threshold</b> slides the operating point along the curve, buying recall at the price of precision. Changing <b>Prevalence</b> rewrites the confusion counts and the precision, yet leaves the ROC curve itself completely unchanged — the flaw that makes PR-AUC the safer summary on rare-event problems.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>A hospital screens 10,000 women for a cancer that about 1.5% of them have. Overall accuracy looks great - 95.7% correct. But hold on, just saying "healthy" to everyone would already score 98.5%, so accuracy is fooling you. Ask sharper questions. Of those flagged, how many really had it? Precision = 120/(120+400) = 0.23. Of the 150 who did have it, how many did we catch? Recall = 120/150 = 0.80. F1, the balanced average of the two, is only 0.36 because precision is low. <strong>Always show the four counts and the cut-off you chose and why, because a test that flags too many healthy people scares them for nothing.</strong></div>
+
     <h3>5.3 Multivariate Methods</h3>
     <ul>
       <li><strong>PCA</strong> — finds orthogonal directions of maximum variance and projects the data onto the first few. Standardise features first, because an unscaled variable measured in large units will dominate the components; the price of the compression is that components are linear combinations and therefore hard to interpret.</li>
@@ -1813,6 +1893,8 @@ a1, b1 = a0 + k, b0 + n - k
       <div class="kpi-row" id="c-pca-kpi"></div>
       <p class="chart-note">PC1 points along the direction of greatest variance and PC2 is perpendicular to it. With one component kept, each point is replaced by its projection onto PC1 — the reconstructed cloud collapses onto a straight line, and the <b>variance explained</b> figure tells you exactly how much information that compression threw away. Drive ρ toward 0 and see the components become indistinguishable because there is no longer any redundancy to exploit.</p>
     </div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Picture 500,000 phone customers, each described by 40 columns - monthly bill, data used, complaints, months with you. You want five tidy groups for marketing. First PCA squashes those 40 columns into a few new ones that capture the most variety, and the first two alone carry 78% of it. Scale every column first, or bills in rupees will swamp months. Then k-means sorts customers into groups. Choose how many groups by plotting the score and seeing where it flattens, not by grabbing the biggest number, and check the groups make sense to the business. A t-SNE picture is only for slides, since its blob sizes and gaps are fake. <strong>Scale before squashing, justify your number of groups, and never measure distances off a pretty plot.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -1879,6 +1961,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">The dashed curve is the true relationship. At low degree the fit is too stiff and misses the structure — <b>high bias</b>. At high degree it bends through every noisy point — <b>high variance</b> — and the lower plot shows training error still falling while test error turns upward. The minimum of the blue curve is the complexity that cross-validation is trying to find.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Imagine you and your friends want to guess how many runs your gully cricket team will score in the next over. If you always shout "six runs" no matter what, you are steady but always a bit wrong - that steady wrongness is <em>bias</em>. A friend instead memorises every single ball of every match, including yesterday's lucky edge off the bat, and his guesses swing wildly each time - that wild swinging is <em>variance</em>. Add the two, plus the plain luck of cricket that nobody can predict, and you get your total error. The real trick is balance. <strong>A model that is too simple stays wrong the same way, while one that is too clever fools itself, so always check how it does on fresh matches.</strong></div>
+
     <h3>6.2 Theory</h3>
     <div class="formula-block">
       <div class="formula">R(h) ≤ R̂(h) + complexity term  &nbsp;·&nbsp;  PAC: with probability ≥ 1 − δ, error ≤ ε  &nbsp;·&nbsp;  VC dimension of linear models in d dims = d + 1</div>
@@ -1907,6 +1991,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Structural risk minimisation</strong> — minimise training error plus a capacity penalty, which is precisely what L1/L2 regularisation, weight decay and early stopping do in practice.</li>
       <li><strong>Why the theory is loose in the deep-learning era</strong> — modern networks have enough capacity to shatter random labels yet still generalise well, which classical uniform-convergence bounds cannot explain. Implicit regularisation, data structure and optimisation dynamics matter as much as raw capacity.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A coaching class builds an app to predict whether a student will pass the board exam. Give it 2 details and it can only make a few kinds of rules. Give it 40 details - marks, sleep, phone hours, pocket money - and it can fit any answer you like for about 41 students, even answers that make no sense. That ability to fit anything is the model's <em>capacity</em>, and more capacity means it can memorise nonsense. A maths result called PAC says: to trust the app to be right within 1 percent, most of the time, you need a huge number of example students - far more than a small class has. Getting 99 percent on students it already saw means little if real results are 90 percent. <strong>Make the model pay a penalty for extra rules, then judge it only on students it has never seen.</strong></div>
 
     <h3>6.3 Practical Toolkit</h3>
     <ul>
@@ -1939,6 +2025,8 @@ a1, b1 = a0 + k, b0 + n - k
       <div class="kpi-row" id="c-lc-kpi"></div>
       <p class="chart-note">Read the shape, not the absolute numbers. A <b>wide, persistent gap</b> between the two curves means high variance — more data or stronger regularisation will close it. Both curves <b>flattening above the noise floor</b> means high bias — the model class itself is too rigid, so more data will not help and you must change the hypothesis space instead. Very large validation errors are <em>clipped</em> to keep the axis readable; the KPI row reports how many points were clipped and the true final values. Switch the model class and watch which failure mode appears.</p>
     </div>
+
+    <div class="callout example"><span class="label">Real-life example</span>You order biryani on Swiggy and the app promises 32 minutes. How does it guess? One rider's opinion is shaky, so the app asks 50 riders, each with slightly different experience, and averages their guesses. Their random mistakes cancel out, so the promise becomes steady without becoming any more biased - that is <em>bagging</em>, like asking a whole class and taking the average. Then the app looks at where it is still off and adds a second round of learners to fix those leftovers. That second trick, <em>boosting</em>, cuts the stubborn bias, but if you keep adding rounds forever it starts memorising odd days and gets worse. <strong>Average many noisy guesses to calm them down, then carefully patch the pattern - and stop before you over-polish.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -1987,6 +2075,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Structure learning</strong> — the graph itself is often unknown and must be estimated from data, which is a combinatorial search usually driven by conditional-independence tests or score functions with a complexity penalty.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>During the monsoon, a village clinic in Kerala sees many fever cases. The doctor does not treat each symptom alone. She links them in a little map: heavy rain raises mosquito breeding, which raises the chance of <em>dengue</em>, which makes platelets drop and fever spike. That map is a <em>Bayesian network</em> - boxes for each thing, arrows for "this can cause that". The beauty is size: with 30 yes-or-no signs, writing down every combination would need a billion rows, but if each sign depends on only a few parents, a few hundred small numbers are enough. One trap: two signs can look unrelated until you also peek at a shared result, and then they suddenly seem linked. <strong>Draw the arrow map honestly first, because one wrong arrow quietly changes every probability you read off it.</strong></div>
+
     <h3>7.2 Hidden Markov Models</h3>
     <div class="formula-block">
       <div class="formula">a<sub>ij</sub> = P(z<sub>t+1</sub> = j | z<sub>t</sub> = i)  &nbsp;·&nbsp;  b<sub>j</sub>(o<sub>t</sub>) = P(o<sub>t</sub> | z<sub>t</sub> = j)  &nbsp;·&nbsp;  π<sub>i</sub> = P(z₁ = i)  &nbsp;·&nbsp;  α<sub>t</sub>(i) = b<sub>i</sub>(o<sub>t</sub>) Σ<sub>j</sub> α<sub>t−1</sub>(j) a<sub>ji</sub></div>
@@ -2015,6 +2105,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Scaling and numerical issues</strong> — probabilities of long sequences underflow, so implementations work in log space or rescale the forward variables at each step.</li>
       <li><strong>Modern context</strong> — HMMs built the speech-recognition and bioinformatics pipelines of the 1990s and are still the theoretical foundation for understanding state-space models, though sequence tasks are now dominated by transformers and recurrent networks.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your Mumbai local train is either running fine or stuck behind a signal, but nobody tells you which. All you get are noisy clues: the crowd on the platform, whether the announcement chime rings, how fast the train whooshes past. The true condition is <em>hidden</em>; the clues are what you see. A <em>hidden Markov model</em> is exactly this setup. It keeps a table of how likely today's condition is to become tomorrow's, and how likely each clue is under each condition. Then it works backwards smoothly through the clues instead of guessing from a single chime. A clever shortcut finds the single most likely whole journey, so you avoid the flickering of deciding signal by signal. <strong>Learn the pattern once from many journeys, and you can judge today's train from just its sounds.</strong></div>
 
     <h3>7.3 Expectation-Maximisation</h3>
     <div class="formula-block">
@@ -2061,6 +2153,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Solid curves are the current component densities and the shaded band shows the responsibility each point assigns to the red component. Press <b>Run 1 EM step</b> repeatedly: the E-step recomputes responsibilities and the M-step re-estimates weights, means and variances. The lower panel tracks the log-likelihood, which climbs on every iteration and then flattens — and notice how a badly separated start settles into a <b>local optimum</b> rather than the true answer, which is why random restarts matter.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>A tea stall owner feels his customers come in two kinds - quick regulars who order one cutting chai, and slow groups who linger and order snacks. But no customer wears a label saying which type they are. So he guesses a first split, then repeats two simple moves. First, for each customer he asks: given my current idea of the two types, how much does this person look like each one? He gives soft scores, like 0.7 and 0.3. Second, he re-does the two profiles using those scores as weights. Repeat, and the profiles get sharper. This is <em>expectation-maximisation</em>. Each round improves the fit and never makes it worse, but you can settle into a wrong split. <strong>So start the guessing several times over and keep the version that ends up best.</strong></div>
+
     <h3>7.4 Variational Inference vs MCMC</h3>
     <div class="formula-block">
       <div class="formula">ELBO = E<sub>q</sub>[ log p(x, z) ] − E<sub>q</sub>[ log q(z) ] = log p(x) − KL( q(z) ‖ p(z | x) )</div>
@@ -2100,6 +2194,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Modern middle ground</strong> — amortised inference with normalising flows, importance-weighted ELBOs and stochastic variational inference narrow the gap, and hybrid schemes often start with VI and refine with short MCMC runs.</li>
       <li><strong>Diagnostics are mandatory</strong> — for MCMC, trace plots, R̂ near 1.01 and sufficient effective sample size; for VI, sensitivity of the results to the chosen variational family, which is easy to forget precisely because nothing visibly fails.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A jeweller must guess the true weight of a gold necklace using an old, slightly shaky weighing scale. Two ways exist. The quick way: assume the answer is a neat bell shape and slide it around until it roughly matches the readings. That takes seconds and is always a bit off, usually too confident - a narrower range than the truth. The slow way: take thousands of careful readings, letting the guesses wander like a random walk, until they settle where the true weight most likely sits. That is accurate but can take minutes, and you must check it actually settled rather than got stuck. The quick method is <em>variational inference</em>; the slow one is <em>MCMC</em>. <strong>Use the fast one to shortlist options, and the slow, honest one when a small error in the answer really costs money.</strong></div>
 
     <h3>7.5 Gaussian Processes</h3>
     <div class="formula-block">
@@ -2143,6 +2239,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">A GP is a distribution over functions: the solid line is the posterior mean and the shaded band the 95% credible region. Near observed points the band collapses to the noise level; far from them it widens back to the prior — the model literally says “I do not know here”. A small <b>lengthscale</b> makes the function wiggly, a large one makes it nearly linear, and raising <b>σ<sub>n</sub></b> loosens the curve from the data.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>You jot down the tomato price at your local mandi every day, and want to guess tomorrow's. Prices wander smoothly, so instead of one fixed formula, imagine a whole family of wiggly curves, all plausible, and let the data narrow it down. That is a <em>Gaussian process</em>. Its charm is honesty about gaps. On days you have prices, the guess hugs the data and the range of doubt is thin. Stretch far from what you have seen - say three weeks ahead in the off-season - and the range balloons, because the model truly does not know. A smooth setting makes gentle curves; a twitchy setting lets it wiggle. <strong>You get not just a number for tomorrow but also how unsure you should be, which is often more useful than the number itself.</strong></div>
+
     <h3>7.6 Bayesian Optimisation</h3>
     <div class="formula-block">
       <div class="formula">EI(x) = E[ max( f(x) − f⁺, 0 ) ]  &nbsp;·&nbsp;  UCB(x) = μ(x) + κ · σ(x)</div>
@@ -2170,6 +2268,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Practical scales</strong> — it shines for roughly 5–50 dimensions and up to a few hundred evaluations. Beyond that, tree-structured Parzen estimators and meta-learned warm starts are typically used instead.</li>
       <li><strong>Batch and constraint variants</strong> — parallel acquisition functions allow several evaluations at once, and constrained or multi-objective versions handle feasibility and trade-offs.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your school canteen runs a chai competition, and you want the perfect cup. Sugar, milk and boiling time are the knobs, and each trial drink costs real time and tastes. You cannot try every combination, so be smart. After a few random cups, you sketch a rough map of how good the chai is for every setting, plus how unsure you are at each spot. Now you pick the next cup where either the chai looks promising or you are still very unsure - a mix of chasing a winner and exploring the unknown. Taste it, update the map, repeat. This is <em>Bayesian optimisation</em>. It wastes far fewer tries than blindly testing everything. <strong>Spend your early cups exploring, then use the last few to lock in the best recipe you found.</strong></div>
 
     <h3>7.7 Probabilistic Programming</h3>
     <div class="formula-block">
@@ -2199,6 +2299,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Practical costs</strong> — inference is slower and more delicate than maximum-likelihood fitting, and correctness depends on convergence diagnostics rather than on a single loss number going down.</li>
       <li><strong>Model checking is part of the workflow</strong> — posterior predictive checks compare simulated data from the fitted model with the real data, exposing where the generative story fails.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your school bus app shows a dot moving on the map, but the GPS in the bus jumps and lags - one second it shows the bus past your stop, the next it is behind. How does the app still draw a smooth line? It combines two things: a simple rule of how a bus moves (a bus cannot teleport, it rolls forward) and each noisy GPS ping. With every new ping it nudges its best guess of the bus's real position, trusting the steady rule when the ping looks odd. That is the <em>Kalman filter</em> idea, and in a <em>probabilistic programming</em> tool you write the bus's story in a few lines and let the computer work out the maths. <strong>Write the story of how your data was made and the tool does the guessing - but always check the story fits reality.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -2245,6 +2347,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">The curve shows how power rises with the sample size per arm. Halving the smallest effect you want to detect <b>quadruples</b> the sample you need, because required n scales as 1/effect². That single fact explains why most experiments that try to detect a 1% lift never reach significance, and why the effect size must be chosen from business relevance, not from hope.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your favourite food app in Bengaluru wants to know if a one-tap reorder button beats the old three-step checkout. Before starting, the team writes down ONE headline number: reorder rate. That is the <em>primary metric</em>, and choosing it in advance stops them hunting for any number that happens to look good. Next they fix the sample size, because a 5% bump on a 4% base needs about 1.5 lakh users on each side - and remember, half the effect means four times the users. Users are split by user id, not by session, so nobody sees both versions. They lock a 14-day run with no peeking, since checking daily and stopping at the first lucky p-value is like tossing a coin till you win. A quick A/A test first proved the setup finds nothing when nothing is there. <strong>The result is reported as a range of likely lifts, not one bare p-value.</strong></div>
+
     <h3>8.2 Bias</h3>
     <ul>
       <li><strong>Confounding</strong> — a third variable influences both the treatment and the outcome, manufacturing an association that is not causal. Randomisation or explicit adjustment is required, and unmeasured confounders cannot be adjusted away at all.</li>
@@ -2269,6 +2373,8 @@ a1, b1 = a0 + k, b0 + n - k
       <div class="kpi-row" id="c-simpson-kpi"></div>
       <p class="chart-note">Both subgroups can slope <b>upward</b> while the pooled cloud slopes <b>downward</b>. The trick is the imbalance slider: when most treated units come from the low-baseline group, the aggregate comparison is dominated by the gap between groups rather than by the treatment effect within them. It is the single clearest argument for stratifying — or randomising — before you compare anything.</p>
     </div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Two tuition teachers are compared on board marks. Overall, Teacher B looks better: 68 average marks against Teacher A's 62. Now split by class, and the picture flips. In Class 9, A averages 60 and B averages 58. In Class 10, A gets 75 and B gets 72. A wins inside <em>both</em> groups! So why does B lead when you add everyone up? Because B mostly taught Class 10, who score higher anyway - 80% of B's students were in Class 10, against only 25% of A's. Class level is a <strong>confounder</strong>: it pushes both who teaches you and how you score. That flip is <strong>Simpson's paradox</strong>. One more trap: dropping students who left before the exam quietly deletes the weakest, a <strong>survivorship bias</strong>. <strong>Always look at the group-wise table before trusting the combined one.</strong></div>
 
     <h3>8.3 Causal Inference</h3>
     <div class="formula-block">
@@ -2300,6 +2406,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Randomised experiments remain the gold standard</strong> — they make the assumption true by construction. Observational methods are what you use when randomisation is impossible, unethical or already in the past.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>A state government runs a 12-week tailoring course and asks whether it raises monthly income. Comparing everyone, trainees earn Rs 3,200 more. But wait - keen people are more likely to join AND more likely to earn well, so motivation opens a sneaky side route from "joined" to "income". That route is the <strong>backdoor path</strong>. Once you block it by accounting for the local job market and earlier income, the overall gain - the <strong>ATE</strong> - drops to about Rs 1,400, with a range of Rs 600 to Rs 2,200. Split the group and the story changes again: young trainees without a degree gain Rs 2,900, graduates almost nothing. Those are different <strong>CATE</strong>s. Two mistakes to dodge: never adjust for hours worked after joining, which is part of the effect itself (a <strong>mediator</strong>), and never adjust for finishing the course (a <strong>collider</strong>). <strong>The key assumption that nothing else is sneaking in can never be tested.</strong></div>
+
     <h3>8.4 Observational Methods</h3>
     <div class="formula-block">
       <div class="formula">Propensity score: e(x) = P(T = 1 | X = x)  &nbsp;·&nbsp;  IPW estimator: ATE = E[ TY/e(X) − (1 − T)Y/(1 − e(X)) ]</div>
@@ -2327,6 +2435,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Regression discontinuity</strong> — highly credible locally, because units just below and just above the cutoff are nearly identical; it estimates the effect at the threshold only and needs a bandwidth choice plus a manipulation check.</li>
       <li><strong>No method fixes a bad design</strong> — every one of these approaches trades a testable assumption for an untestable one, so report the assumption, the sensitivity analysis and the estimand being targeted.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A health insurance company wants to know whether free nurse coaching over the phone keeps diabetic members out of hospital. Nobody was made to join, so this is watching, not an experiment. To make the two groups fair to compare, they build a <strong>propensity score</strong>: for each member, the chance of joining, based on age, earlier hospital visits and number of medicines - 30 facts squeezed into a single number. Then comes <strong>inverse probability weighting</strong>, the idea that a rare kind of joiner must speak for more people. A member who was unlikely to join, say a 10% chance, gets counted 10 times; a similar non-joiner is counted 1.1 times. Before believing the answer they check <strong>balance</strong>, not how clever the model looks: every gap between the groups must be tiny, under 0.10. Wild weights above 20 get cut off. <strong>Fancy maths still cannot rescue a bad design.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -2375,6 +2485,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Structural breaks mimic non-stationarity</strong> — a one-off level shift makes a series look non-stationary in the full sample even though it is stationary within each regime; test for a break before reaching for differencing.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>A metro rail system predicts how many people will ride each day. Plot the numbers and the level keeps climbing year after year, so the average is not steady - and that alone means it fails <strong>stationarity</strong>. A stationary series needs a steady average, a steady spread, and a pattern of ups and downs that depends only on how far apart the days are. The test returns p = 0.71. Careful here: the ADF test's default guess is a <em>unit root</em>, so a big p-value is no proof of steadiness. The AR(1) number comes out at phi = 0.98, dangerously near 1, where shocks pile up forever. So they difference the series - today minus yesterday - and p falls to 0.01. Festival swings widen the spread too, so they take logs. <strong>Test before you difference, because differencing an already steady series adds fake noise.</strong></div>
+
     <h3>9.2 ACF / PACF</h3>
     <div class="table-wrap">
       <table>
@@ -2412,6 +2524,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Seasonality shows up as periodic spikes</strong> — strong spikes at lags 12, 24, 36 in monthly data mean a seasonal term or seasonal differencing is required.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>A city hospital records its OPD queue length every hour for 60 days - 1,440 readings in all. Then it compares the series with its own past copies. The <strong>ACF</strong> fades out slowly, while the <strong>PACF</strong> drops dead after lag 2. That is the textbook signature of an AR(2): the PACF strips out the effect of the days in between, so only the direct link shows through. Under pure noise the dashed 95% band sits at plus or minus 1.96 divided by the square root of 1,440, which is about 0.05. One spike at lag 7 pokes just past it, but scan 24 lags and roughly one in twenty will cross by pure chance, so the analyst shrugs it off. Had the ACF crawled down slowly instead, that would signal non-stationarity and demand differencing. <strong>After fitting, whatever is left over should look like pure noise, with no pattern remaining.</strong></div>
+
     <h3>9.3 Models</h3>
     <div class="formula-block">
       <div class="formula">ARIMA(p, d, q): y′<sub>t</sub> = c + Σ<sub>i=1..p</sub> φ<sub>i</sub> y′<sub>t−i</sub> + Σ<sub>j=1..q</sub> θ<sub>j</sub> ε<sub>t−j</sub> + ε<sub>t</sub>  &nbsp;·&nbsp;  GARCH(1,1): σ²<sub>t</sub> = ω + αε²<sub>t−1</sub> + βσ²<sub>t−1</sub></div>
@@ -2442,6 +2556,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Modern alternatives</strong> — gradient boosting with lag features and dedicated architectures (Prophet, N-BEATS, temporal transformers) often beat classical ARIMA on large, multivariate or hierarchical series.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>A bullion dealer in Mumbai tracks how much the gold price moves each day. The daily level itself is basically unpredictable, so nothing needs differencing. But the wobble is very predictable, because big jumps arrive in bunches - calm weeks, then a spike, then more spikes. That bunching is <strong>volatility clustering</strong>, and <strong>GARCH</strong> is built to forecast the wobble rather than the price. Fitting GARCH(1, 1) gives alpha = 0.09 and beta = 0.88. Add them and you get 0.97, very close to 1, meaning a shock to the wobble fades slowly and takes about 23 days to halve. So after one rough day, tomorrow's likely swing is far bigger. The 99% worst-case one-day loss more than doubles when the daily wobble rises from a calm 0.6% to a stressed 1.6%. <strong>Risk sized on one fixed wobble badly understates the scary days.</strong></div>
+
     <h3>9.4 Evaluation</h3>
     <div class="formula-block">
       <div class="formula">MAE = (1/n) Σ |y<sub>t</sub> − ŷ<sub>t</sub>|  &nbsp;·&nbsp;  RMSE = √( (1/n) Σ (y<sub>t</sub> − ŷ<sub>t</sub>)² )  &nbsp;·&nbsp;  MAPE = (100/n) Σ |y<sub>t</sub> − ŷ<sub>t</sub>| / |y<sub>t</sub>|</div>
@@ -2469,6 +2585,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Check whether the truth lies inside the interval</strong> — forecast intervals need coverage diagnostics of their own; a point forecast that looks accurate can still have wildly miscalibrated uncertainty.</li>
       <li><strong>Beware of metric gaming</strong> — MAPE flatters models that under-forecast and RMSE flatters models tuned to avoid big misses; neither detects systematic bias, so plot residuals against time.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A milk cooperative forecasts how many packets each delivery route will need. Never shuffle the days: they train on the first 78 weeks and test on the last 26, sliding the window forward one week at a time so every forecast uses only what was known then. On one route <strong>MAE</strong> is 42 packets - on a typical day they are off by about 42 either way. <strong>RMSE</strong> is 88, much larger, because it punishes the few really bad misses far more harshly. <strong>MAPE</strong> is 11%, a percentage miss that is easy to compare across routes but goes wild where sales are almost zero. The must-do check is the <strong>naive seasonal baseline</strong> - simply copying last year's same week - which scores 15%, so their model genuinely helps. Error is 6% one day ahead but 19% eight days ahead. <strong>Always beat the simple baseline and report error at the horizon you actually need.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -2546,6 +2664,22 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Move q away from p and the cross-entropy rises above the entropy — the gap between the grey and blue bars <em>is</em> the KL divergence. Notice the asymmetry: KL(0.9‖0.1) and KL(0.1‖0.9) are different numbers, which is why KL is a divergence rather than a distance. Set p = q and the gap closes to exactly zero.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Guess what your friend will order at the school canteen. If masala dosa, samosa, vada pav and tea are equally likely, you need a full two yes-or-no questions to pin the answer down. That is entropy: the average surprise, measured in bits. Now imagine samosa comes up 70 percent of the time. You can often guess it straight away, so the average surprise falls, say to about 1.4 bits. Entropy is just the average number of clever yes-or-no questions needed to guess an outcome, and it sets the shortest possible message - a file cannot be squeezed below the entropy of what it holds. <strong>More even the chances, more surprise; more surprise, more bits.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your coaching class has a mock test, and your teacher bets which chapter each question will come from. If she says "algebra, almost certain" and it is algebra, the cost is tiny. But if she says "trigonometry, barely a 5 percent chance" and trigonometry turns up, that confident wrong call costs a lot - about 4 questions worth of penalty. Cross-entropy adds up that penalty across the whole paper. Had she spread her guesses more honestly, the same paper would have cost less. Cross-entropy is the average cost of your predictions when reality follows a pattern different from the one you assumed. <strong>Confident and wrong is the most expensive mistake, so leave a little room for being surprised.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>You plan your Mumbai local train trip using last month's timetable. You still reach home, but you waste a few minutes on the platform because the rush-hour schedule shifted. KL divergence measures exactly that waste: the extra cost of using an old plan when the real world has changed. Say the new timetable added morning fast trains, and your stale plan now costs you about 12 extra minutes every day. That gap is the KL divergence between your plan and reality. It is never negative - no plan can beat the truth - and it is lopsided. Your old plan wastes 12 minutes on the new crowds, but a plan built for the new crowds would waste only 4 minutes on the old days. <strong>Wrong plans cost extra, and how much depends on which direction you compare.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Does rain tell you anything about traffic jams in Bengaluru? At first the link looks weak, because jams happen on dry days too. Look closer and heavy rain almost always brings a jam, so knowing the weather genuinely cuts your uncertainty about the roads. Mutual information measures how much: here, knowing whether it rained removes about 0.4 of the 0.9 bits of uncertainty about that day's traffic. A simple correlation number only catches straight-line links, but mutual information catches any link at all, even a zig-zag one. If it comes out zero, the two things are truly independent - rain tells you nothing about jams. <strong>Ask how much one clue shrinks your uncertainty about the other; that is mutual information.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>At your school mela you want to guess who will buy a lucky-draw ticket. Start confused: 6 out of 10 people buy, so your uncertainty is about 0.97 bits. Now ask one clever question - "Did you buy last year?" One group turns out 9-out-of-10 buyers, the other just 2-out-of-10. Average confusion drops to about 0.6 bits, so the question earned 0.97 minus 0.6, roughly 0.37 bits of information gain. Had you asked "Do you like blue?", the gain would be almost zero, so that question is useless. Information gain is how much a question cleans up your confusion. <strong>Ask the question that removes the most confusion first - that is exactly how decision trees choose their splits.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Two IPL teams bat very differently - one loves sixes, the other nudges singles. Are their scoring patterns really different, or nearly the same? Jensen-Shannon divergence gives one friendly number between 0 and 1. First picture the "average innings" - half of team A's habits, half of team B's. Then check how far each team sits from that middle. If the answer is 0.04, the teams score almost alike; if it jumped to 0.30, their styles have clearly split apart. The best part: it is symmetrical, so comparing A to B gives the same number as B to A. It also stays calm even when a team never plays one shot at all, which is why it is used to compare two equals fairly. <strong>Symmetrical and safely bounded between 0 and 1: ideal when neither side is the boss.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>Watch your phone guess the next word as you type a WhatsApp message. If it is as confused as someone picking blindly from 32 equally likely words, its perplexity is 32. After about 500 messages it learns your style, and the confusion drops to maybe 20 words, so the suggestions come out sharper. Perplexity is simply the effective number of choices the model is juggling. Lower is better. Going from 32 choices to 20 means each word costs about 0.7 fewer bits to guess. <strong>Fewer choices in the model's head means a sharper model - but only compare perplexity between keyboards that use the very same word list.</strong></div>
+
+    <div class="callout example"><span class="label">Real-life example</span>You are on a school trip to Ooty and want to send 40 photos to your grandmother, but the network there is weak. You can shrink each photo, and the more you shrink it, the blurrier it gets - that blur is the distortion. The rate-distortion idea says: for a blur level you can accept, there is a smallest number of bits needed, and no clever trick can go below it. Accept a little blur and one photo might need only 1.4 units of data per pixel. Insist on near-perfect sharpness and it might need 2.6, which your weak signal cannot carry. Sending the full 8 units per pixel is nearly six times more than the theory says is needed for that acceptable quality. <strong>Decide how much blur your viewer can tolerate, then spend only the bits that target really needs.</strong></div>
+
     <h3>Real-life Applications</h3>
     <ul>
       <li><strong>Compression</strong> — entropy sets the theoretical lower bound, which is why ZIP, gzip and modern codecs all approach it but never beat it on lossless data.</li>
@@ -2608,6 +2742,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Filled circles are retained, hollow circles are missing. Under <b>MCAR</b> the holes are scattered at random, so complete-case analysis stays unbiased and merely wastes data. Under <b>MAR</b> missingness follows the observed X, so the holes cluster along that axis — the conditional model survives and imputation from X can recover the truth, but the usable range shrinks and the estimates become far less precise. Under <b>MNAR</b> the holes depend on the unobserved Y itself: the slope is now systematically <em>flattened</em> (the average over 120 simulated runs shows the bias) no matter which imputation you choose, which is why sensitivity analysis is the only honest response.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your colony group collects everyone's monthly mobile recharge amount, but some forms come back blank. Why they are blank changes everything. If the sheets simply blew away in the rain, the blanks are completely random, so you can safely ignore those rows. If only people with old basic phones skipped the question, the blankness follows something you did record - the phone type - so you can repair it using the other answers. But if the people with the biggest bills quietly refuse to say, the blank hides the very number you wanted, and no filling-in can fix that. Notice the three cases are named by why the data vanished, not how much, and you can never prove which one is true from the data alone. <strong>Ask why a value is missing, then run a what-if check before trusting any filling.</strong></div>
+
     <h3>11.2 Handling Missing Data</h3>
     <ul>
       <li><strong>Mean or median imputation</strong> — trivially simple and almost always wrong. It shrinks variance, distorts every correlation toward zero, and manufactures a spike of identical values that models will happily treat as real.</li>
@@ -2620,6 +2756,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Never drop silently</strong> — complete-case analysis is a valid choice only under MCAR. Report how many rows were removed, which variables drove the removal, and how the conclusions change if you impute instead.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Your class marks sheet has blanks for students who missed the internal test. Writing the class average into every blank is the lazy fix; it flattens the spread and pretends everyone scored the same. A better way: guess each missing mark from that student's other subjects - but instead of one guess, build 20 different plausible sheets, analyse all 20, and combine the answers. The final number then comes with an honest error bar that grows because of the guessing. Another route is to give extra weight to the students who did attend, so the group resembles the whole class. Some teachers just let the software deal with blanks on its own. <strong>Never silently delete absent students; fill carefully, keep many filled versions, and report how much the guesses move your answer.</strong></div>
+
     <h3>11.3 Quality Issues</h3>
     <ul>
       <li><strong>Measurement error</strong> — noisy predictors bias slopes toward zero (attenuation) while noisy outcomes inflate variance and weaken power. Errors that are random are tolerable; systematic instrument bias is not.</li>
@@ -2630,6 +2768,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Duplicate and near-duplicate records</strong> — the same customer entered twice, or the same transaction recorded by two systems, inflates both confidence and apparent accuracy.</li>
       <li><strong>Definition and schema drift</strong> — a field quietly changes meaning (“revenue” becomes “gross revenue”) and the model silently degrades. Version your data definitions and monitor input distributions in production.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Your friend builds a model to predict who will top the Class 10 board exams, and it is right 99 percent of the time - too good to be true. The trick: one input, "final rank", was copied into the register only after the results came out, so the answer was sitting inside the question paper. That is leakage. Similar traps lurk everywhere: a wobbly weighing scale at the ration shop that adds 2 kilos to everyone (a steady measurement error), and a survey you ran only among tuition-going friends, which quietly favours one kind of student. Duplicate entries from two registers also inflate your confidence. <strong>A score that looks impossibly good is a warning light, not a trophy - check what sneaked into your inputs.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
@@ -2678,6 +2818,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Caveats</strong> — threshold and block-size choices are subjective, data in the tail is by definition scarce, and results are extremely sensitive to the extremes you happen to have observed.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>In a cotton-growing village, a co-operative sells crop insurance against two disasters at once: heavy unseasonal rain and a pest attack. Normal maths struggles with both, because each one has its own pattern. A copula fixes this - it is a separate rule for how the two move together, kept aside from how each behaves alone. For the worst years, the co-op looks only at seasons above a high cut-off, say losses beyond Rs 80,000 an acre, and fits a tail curve to just those. With only 6 such years on record, the fitted tail says a 1-in-50-year loss is about 8 times that cut-off. <strong>So what: the danger is not each disaster alone, but the chance both strike together, and that joint risk is where the price hides.</strong></div>
+
     <h3>12.2 Stochastic Processes</h3>
     <div class="formula-block">
       <div class="formula">Poisson: P(N(t) = n) = (λt)<sup>n</sup> e<sup>−λt</sup>/n!  &nbsp;·&nbsp;  Markov chain: P(X<sub>t+1</sub> = j | X<sub>t</sub> = i) = P<sub>ij</sub>, &nbsp; π = πP  &nbsp;·&nbsp;  Martingale: E[X<sub>t+1</sub> | ℱ<sub>t</sub>] = X<sub>t</sub></div>
@@ -2704,6 +2846,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Brownian motion and diffusion</strong> — the continuous-time limit of a random walk, used for physical diffusion and, in finance, for asset-price models.</li>
       <li><strong>Real-world validity</strong> — constant-rate assumptions ignore clustering, seasonality and regime changes, so real arrivals are usually modelled with inhomogeneous or self-exciting (Hawkes) processes.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Imagine a tea stall outside a coaching centre. Customers walk in at random, about 12 every hour, and the neat part is that the count in any hour is as unpredictable as its own average - that is a Poisson process. The waiting is memoryless: someone who has already waited 15 minutes is not suddenly due sooner. Now track one regular. If the chance he returns tomorrow is 0.6 and the chance he tries the rival stall is 0.4, then applying the same rule week after week settles into a steady split, say 60% loyal. <strong>So what: real crowds bunch up after class and in the winter months, so a single fixed hourly rate misleads; staff to the hour instead.</strong></div>
 
     <h3>12.3 Bandits & Regret</h3>
     <div class="formula-block">
@@ -2749,6 +2893,8 @@ a1, b1 = a0 + k, b0 + n - k
       <p class="chart-note">Regret is the reward you gave up by not always playing the best arm. The <b>greedy</b> policy (ε = 0) can lock onto a lucky-but-worse arm and then pay a linear price forever. <b>UCB</b> and <b>Thompson sampling</b> keep learning, so their regret curves bend over — that bend <em>is</em> sublinearity. Widen the <b>arm gap</b> and every policy improves, because the right answer becomes easier to identify.</p>
     </div>
 
+    <div class="callout example"><span class="label">Real-life example</span>An online sari shop is testing 6 different homepage photos. After 150 views, photo C looks best, with about a 4% tap rate, but photo F has been shown only 12 times, so we barely know it. The smart rule scores each photo as its average plus a bonus for how little we have tried it. For F, shown 12 times by round 2,000, that bonus works out to roughly 0.07, which beats C's thin 0.03 lead, so F gets another chance. A lazy rule that always shows the current winner would lock onto a lucky-but-worse photo and quietly lose taps forever. <strong>So what: regret is just the taps you gave up by not always showing the best photo, and a good rule keeps that loss small.</strong></div>
+
     <h3>12.4 Uncertainty Quantification</h3>
     <div class="formula-block">
       <div class="formula">Total: Var(y | x) = E<sub>θ</sub>[ Var(y | x, θ) ] + Var<sub>θ</sub>[ E(y | x, θ) ]</div>
@@ -2776,6 +2922,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Operational value</strong> — uncertainties enable abstention, human review, active learning and safe automation, which is where most of the business value of “knowing what you don't know” actually appears.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>Picture a cricket app guessing how many runs a batsman will score next match. It shows a range, not one number, and that range hides two kinds of doubt. One is plain luck - a lucky edge or a dropped catch - worth about 15 runs either way, and no amount of extra matches will shrink it. The other is simply not knowing this newcomer well; with only 4 of his innings seen, the range is wide, maybe 40 runs, and it tightens as more matches arrive. So the app runs 5 separate models and checks how much they disagree; big disagreement means we are just ignorant. <strong>So what: separate the doubt that data can cure from the doubt it cannot, and when the models disagree, ask a human.</strong></div>
+
     <h3>12.5 Conformal Prediction</h3>
     <div class="formula-block">
       <div class="formula">Coverage guarantee: P( Y ∈ C(X) ) ≥ 1 − α  &nbsp;·&nbsp;  C(X) = { y : s(X, y) ≤ q<sub>1−α</sub> }  &nbsp;·&nbsp;  q<sub>1−α</sub> = the ⌈(n+1)(1−α)⌉/n empirical quantile of calibration scores</div>
@@ -2802,6 +2950,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>The critical caveat</strong> — the guarantee is marginal, averaged over the data distribution, not conditional on every x. Under distribution shift it silently degrades, so monitor coverage in production.</li>
       <li><strong>Why it is becoming a default</strong> — it delivers the calibrated uncertainty that Bayesian and ensemble methods only approximate, with almost no extra modelling effort.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>Suppose an app predicts how late your train will reach. A clever trick called conformal prediction gives a range that is honest about how often it is right. First it checks itself on 2,000 past journeys, noting how wrong it was each time. To be right 90% of the time, it picks the 1,801st smallest miss, say 25 minutes. Now every new train gets a range of plus or minus that miss. A train on a smooth route gets plus or minus 8 minutes; one crawling through a flooded section gets plus or minus 60, because the range adapts journey by journey, and a wide range is itself a warning. <strong>So what: the 90% promise only holds while past and future journeys look alike, so re-check after every timetable change.</strong></div>
 
     <h3>12.6 Fairness & Privacy</h3>
     <div class="formula-block">
@@ -2835,6 +2985,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Operational artefacts</strong> — model cards, data sheets, bias audits, disaggregated performance reporting and a documented appeal path turn these principles into something auditable.</li>
     </ul>
 
+    <div class="callout example"><span class="label">Real-life example</span>A coaching institute selects students for a free scholarship. Looking closely, it picks 80% of the boys who deserved it but only 66% of the girls who deserved it - a real gap in fairness, even though the overall pick rates looked similar. Meanwhile the institute wants to publish average marks by group without exposing any single student. So it adds a little random noise to every number before releasing it: with a big group of 5,000 students the average stays usable, but with a tiny group of 40 the noise swamps the truth. <strong>So what: fairness and privacy are choices you make on purpose, so pick the fairness rule your purpose needs and spend the privacy budget with care.</strong></div>
+
     <h3>12.7 Causal ML & RL</h3>
     <div class="formula-block">
       <div class="formula">Causal ML: uplift τ(x) = E[ Y | T = 1, X = x ] − E[ Y | T = 0, X = x ]  &nbsp;·&nbsp;  RL return: G<sub>t</sub> = Σ<sub>k≥0</sub> γ<sup>k</sup> r<sub>t+k</sub>  &nbsp;·&nbsp;  Q<sup>π</sup>(s, a) = E<sub>π</sub>[ G<sub>t</sub> | S<sub>t</sub> = s, A<sub>t</sub> = a ]</div>
@@ -2864,6 +3016,8 @@ a1, b1 = a0 + k, b0 + n - k
       <li><strong>Off-policy evaluation</strong> — when a new policy cannot be run online, importance sampling and doubly robust estimators estimate its value from logged data, with high-variance importance weights as the main practical obstacle.</li>
       <li><strong>Where the risks lie</strong> — distribution shift, reward misspecification and unsafe exploration are the failure modes that keep most RL deployments in simulation, and they are the reason causal and RL methods increasingly borrow each other's tools.</li>
     </ul>
+
+    <div class="callout example"><span class="label">Real-life example</span>A city hospital sends reminder messages to cut missed OPD appointments. A plain model would text the 5,000 patients most likely to skip their slot. But many of them would have come anyway, and a few actually get annoyed and skip because of the text - the famous sleeping dogs. What truly matters is the nudge effect: how much each patient's chance of coming rises because of the message. Counting that per patient lifts avoided misses per rupee by about 2 times, because money flows only where behaviour really changes, not merely where risk is high. <strong>So what: aim at the change you cause, not the risk you predict, and prove it with a fair randomised test rather than old records.</strong></div>
 
     <h3>Real-life Applications</h3>
     <ul>
