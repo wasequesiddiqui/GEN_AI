@@ -13,10 +13,11 @@
 .welcome,.chapter,.visual,.interview,.project,.study-plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1rem,2.5vw,1.8rem);box-shadow:var(--shadow);margin-bottom:1.2rem}.welcome h2,.chapter>h2,.interview>h2,.project>h2,.study-plan>h2{margin:.15rem 0 .5rem;color:var(--navy);font-size:clamp(1.45rem,3vw,2rem);line-height:1.25}.welcome .lead{font-size:1.05rem;color:#3c4b61}.chapter{scroll-margin-top:1rem}.chapter>h2{border-bottom:2px solid var(--line);padding-bottom:.7rem}.chapter-no{display:inline-grid;place-items:center;background:var(--navy);color:#fff;border-radius:50%;width:2rem;height:2rem;font-size:1rem;margin-right:.4rem;vertical-align:.1em}.chapter-intro{color:var(--muted);margin:.7rem 0 1.2rem}.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}.topic{min-width:0;border:1px solid var(--line);border-radius:12px;padding:1rem 1.05rem;background:linear-gradient(150deg,#fff,#fcfdff);scroll-margin-top:1rem}.topic h3{font-size:1.03rem;line-height:1.4;color:#1e3b68;margin:0 0 .48rem}.topic p{margin:.45rem 0}.topic .definition{color:#25354d}.topic .example{padding:.65rem .75rem;border-left:3px solid var(--teal);background:var(--soft-teal);border-radius:0 8px 8px 0;color:#23473f}.topic .tradeoff{padding:.65rem .75rem;border-left:3px solid var(--gold);background:var(--soft-gold);border-radius:0 8px 8px 0;color:#554117}.topic .one-line{font-weight:700;color:#254c8b}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--muted)}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f0f3f8;padding:.1rem .35rem;border-radius:5px;overflow-wrap:anywhere}.callout{padding:.85rem 1rem;border-radius:10px;background:var(--soft-blue);border-left:4px solid var(--blue);margin:1rem 0}.callout strong{color:#1e467f}.note{font-size:.9rem;color:var(--muted)}
 .visuals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;min-width:0}.visual{min-width:0;margin:0;padding:1.1rem}.visual h3{margin:.1rem 0 .3rem;font-size:1.05rem;color:#203e6c}.visual p{margin:.3rem 0 .7rem;color:var(--muted);font-size:.9rem}.canvas-wrap{position:relative;height:260px;width:100%;max-width:100%}.visual-wide{grid-column:1/-1}.chart-fallback{font-size:.88rem;color:var(--muted)}
 .flow{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:.8rem 0}.flow span{padding:.45rem .65rem;background:var(--soft-blue);border:1px solid #d4e1f8;border-radius:8px;font-weight:650;font-size:.88rem}.flow b{color:var(--teal)}
+.chart-controls{display:grid;gap:.45rem;margin:.8rem 0;padding:.7rem .8rem;border:1px solid var(--line);border-radius:10px;background:#f8fafc}.chart-controls label{display:flex;justify-content:space-between;gap:.75rem;font-size:.88rem;font-weight:700;color:#344760}.chart-controls input{width:100%;accent-color:var(--blue)}.chart-controls output{color:#194f9f;font-variant-numeric:tabular-nums}.concept-lab{margin-top:.85rem;border:1px solid #cbd8ea;border-radius:11px;background:#fafdff;overflow:hidden}.concept-lab summary{cursor:pointer;padding:.75rem .9rem;font-weight:800;color:#214577;background:#f0f5fc}.concept-lab[open] summary{border-bottom:1px solid #dce4ef}.concept-lab-content{display:grid;gap:.75rem;padding:.85rem}.concept-block{margin:0;padding:.8rem;border-radius:9px;background:white;border:1px solid #e2e8f0}.concept-block h4{margin:0 0 .35rem;color:#1e3b68;font-size:.92rem}.concept-block p{margin:.35rem 0}.concept-equation{display:block;margin:.45rem 0;padding:.55rem .65rem;border-radius:7px;background:#f0f3f8;color:#172b4d;overflow-wrap:anywhere;font:600 .95rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}.concept-diagram{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;align-items:stretch}.diagram-step{position:relative;padding:.65rem;border:1px solid #cbd8ea;border-radius:9px;background:linear-gradient(145deg,#fff,#f4f8ff);font-size:.87rem}.diagram-step:not(:last-child):after{content:"→";position:absolute;right:-.55rem;top:50%;z-index:1;transform:translate(50%,-50%);padding:0 .12rem;color:var(--teal);font-weight:900;background:white}.diagram-step strong{display:block;margin-bottom:.2rem;color:#214577}.concept-story{border-left:4px solid var(--teal)}.concept-story p{line-height:1.7}.concept-story strong{color:#214577}
 .interview{border-top:5px solid var(--purple)}.interview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}.qa{border:1px solid var(--line);border-radius:11px;padding:.85rem;background:#fdfcff}.qa h3{font-size:1rem;margin:0 0 .45rem;color:#513997}.qa p{margin:.35rem 0}.steps{counter-reset:step;list-style:none;padding:0;display:grid;gap:.65rem}.steps li{counter-increment:step;padding:.75rem .85rem .75rem 3rem;background:#f8fafc;border-radius:10px;position:relative}.steps li:before{content:counter(step);position:absolute;left:.8rem;top:.68rem;width:1.55rem;height:1.55rem;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800}.hide{display:none!important}.no-results{padding:1rem;background:#fff4e8;border:1px solid #f2d5a8;border-radius:10px;color:#67450c}
 footer{max-width:1380px;margin:auto;padding:1rem 1.3rem 2.5rem;color:var(--muted);font-size:.88rem}footer a{color:#234f91}
 @media(max-width:980px){.layout{grid-template-columns:1fr}.rail{position:static;max-height:none}.rail nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.1rem}.rail h2{margin-top:0}}
-@media(max-width:680px){.hero{padding:2.5rem 1rem}.layout{padding:.75rem}.rail nav{grid-template-columns:repeat(2,minmax(0,1fr))}.topic-grid,.interview-grid{grid-template-columns:1fr}.visuals{grid-template-columns:minmax(0,1fr)}.visual-wide{grid-column:auto}.canvas-wrap{height:230px}.toolbar button{width:100%}}
+@media(max-width:680px){.hero{padding:2.5rem 1rem}.layout{padding:.75rem}.rail nav{grid-template-columns:repeat(2,minmax(0,1fr))}.topic-grid,.interview-grid{grid-template-columns:1fr}.visuals{grid-template-columns:minmax(0,1fr)}.visual-wide{grid-column:auto}.canvas-wrap{height:230px}.toolbar button{width:100%}.concept-diagram{grid-template-columns:1fr}.diagram-step:not(:last-child):after{right:50%;top:auto;bottom:-.65rem;transform:translate(50%,50%) rotate(90deg)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -26,7 +27,7 @@ footer{max-width:1380px;margin:auto;padding:1rem 1.3rem 2.5rem;color:var(--muted
     <div class="eyebrow">The visual, India-context study guide</div>
     <h1>Machine Learning Concepts, Made Understandable</h1>
     <p>A friendly but technically honest map of machine learning, statistics, deep learning, language models, and production. Start with an everyday example, then connect it to the idea an interviewer expects you to explain.</p>
-    <div class="hero-pills"><span class="pill">15 learning chapters</span><span class="pill">Indian real-life examples</span><span class="pill">Interactive Chart.js graphs</span><span class="pill">Interview-ready explanations</span></div>
+    <div class="hero-pills"><span class="pill">15 learning chapters</span><span class="pill">A diagram, equation & story for every concept</span><span class="pill">Interactive Chart.js graphs</span><span class="pill">Grade 10-friendly explanations</span></div>
   </div>
 </header>
 <div class="layout">
@@ -55,8 +56,9 @@ footer{max-width:1380px;margin:auto;padding:1rem 1.3rem 2.5rem;color:var(--muted
 <p id="no-results" class="no-results hide" role="status">No matching guide entries. Try a different word or clear the search.</p>
 <section class="welcome">
   <h2>How to use this guide</h2>
-  <p class="lead">Imagine a computer learning to make useful guesses from examples. In each topic, the <strong>definition</strong> is the formal idea, the <strong>example</strong> makes it concrete, and the <strong>trade-off</strong> tells you when the method can mislead you. Read the cards as a connected story—not as a list of magic algorithms.</p>
+  <p class="lead">Imagine a computer learning to make useful guesses from examples. Every concept in the 15 learning chapters now has its definition, trade-off, a labeled picture, a representative equation explained in everyday language, and a detailed Indian-use-case story with the same recurring characters. Open “Explore this concept” on any card to follow the complete walkthrough.</p>
   <div class="callout"><strong>Interview answer recipe:</strong> say what the method does, give a small real example, name its key assumption or trade-off, and explain how you would check whether it worked. A simple accurate explanation beats unexplained jargon.</div>
+  <p class="note"><strong>Equation key:</strong> <span class="formula">x</span> is information given to a model; <span class="formula">y</span> is a known answer; <span class="formula">ŷ</span> (“y-hat”) is the model’s estimate; <span class="formula">θ</span> (“theta”) stands for learned settings; <span class="formula">Σ</span> means add; and <span class="formula">P</span> means probability. Each concept also explains the symbols that matter in its chapter.</p>
   <p class="note">The graphs below are teaching illustrations—not benchmark results. All explanatory text is part of the page; charts add a visual aid but are not required to understand the material.</p>
 </section>
 <section class="visuals" aria-label="Interactive learning graphs">
@@ -64,18 +66,21 @@ footer{max-width:1380px;margin:auto;padding:1rem 1.3rem 2.5rem;color:var(--muted
     <h3>Learning a rule: bias and variance</h3>
     <p>As a model becomes more flexible, training error tends to fall. Test error can fall and then rise when the model starts memorising its training examples.</p>
     <div class="canvas-wrap"><canvas id="biasChart" role="img" aria-label="Illustration: training error decreases as complexity grows; test error first decreases then rises."></canvas></div>
+    <div class="chart-controls"><label for="complexity-control">Choose model complexity <output id="complexity-value" for="complexity-control" aria-live="polite">Balanced</output></label><input id="complexity-control" type="range" min="0" max="4" value="2" step="1" aria-describedby="complexity-help"><span id="complexity-help" class="note">Move the marker to compare training and test error at different flexibility levels.</span></div>
     <figcaption class="chart-fallback">The central lesson: choose complexity using data kept aside from training, not training score alone.</figcaption>
   </figure>
   <figure class="visual">
     <h3>Classification is a decision threshold</h3>
     <p>A fraud model may estimate risk, but the bank chooses the alert threshold. Moving it changes how many true frauds and legitimate payments are flagged.</p>
     <div class="canvas-wrap"><canvas id="thresholdChart" role="img" aria-label="Illustration: lower alert threshold catches more fraud but also flags more legitimate transactions."></canvas></div>
+    <div class="chart-controls"><label for="threshold-control">Set the alert threshold <output id="threshold-value" for="threshold-control" aria-live="polite">Medium</output></label><input id="threshold-control" type="range" min="0" max="4" value="2" step="1" aria-describedby="threshold-help"><span id="threshold-help" class="note">Lower the threshold to catch more possible fraud, while watching legitimate payments flagged.</span></div>
     <figcaption class="chart-fallback">Pick a threshold using the cost of missed fraud, investigation capacity, and customer inconvenience.</figcaption>
   </figure>
   <figure class="visual">
     <h3>Keep the test set as the final exam</h3>
     <p>This illustrative split gives most data to learning and reserves separate examples for model choice and a final check. Real proportions depend on data size and time structure.</p>
     <div class="canvas-wrap"><canvas id="splitChart" role="img" aria-label="Illustrative data split: 70 percent training, 15 percent validation, and 15 percent test."></canvas></div>
+    <div class="chart-controls"><label for="train-split-control">Training share <output id="train-split-value" for="train-split-control">70%</output></label><input id="train-split-control" type="range" min="50" max="80" value="70" step="1" aria-describedby="split-help"><label for="validation-split-control">Validation share <output id="validation-split-value" for="validation-split-control">15%</output></label><input id="validation-split-control" type="range" min="5" max="30" value="15" step="1" aria-describedby="split-help"><span>Test share <output id="test-split-value" aria-live="polite">15%</output></span><span id="split-help" class="note">The test share is the remainder. The chart updates so all three shares always add to 100%.</span></div>
     <figcaption class="chart-fallback">For time series, use earlier periods for training and later periods for validation and testing instead of random splitting.</figcaption>
   </figure>
   <figure class="visual visual-wide">
@@ -488,6 +493,271 @@ footer{max-width:1380px;margin:auto;padding:1rem 1.3rem 2.5rem;color:var(--muted
   var status=document.getElementById("search-status");
   var noResults=document.getElementById("no-results");
   var topics=Array.prototype.slice.call(document.querySelectorAll(".topic"));
+  var equations={
+    fundamentals:[
+      "Supervised: θ* = arg minθ (1/n)Σᵢ ℓ(fθ(xᵢ), yᵢ); reinforcement: maxπ E[Σₜ γᵗrₜ]",
+      "Expected prediction error = Bias² + Variance + unavoidable noise",
+      "Underfit: train error ≈ test error (both high); overfit: train error ≪ test error",
+      "D = Dtrain ∪ Dvalidation ∪ Dtest; the three sets do not overlap",
+      "CV score = (1/k) Σⱼ score on fold j",
+      "Parametric: f(x;θ), θ∈Rᵖ with fixed p; non-parametric: effective complexity may grow with n",
+      "Discriminative: P(y|x); generative: P(x,y) = P(x|y)P(y)",
+      "Fraction of a d-dimensional unit cube within ε of one corner = εᵈ",
+      "No Free Lunch (average over all tasks): error(A) = error(B)",
+      "θ* = arg minθ [data loss(θ) + λ × assumption penalty(θ)]"
+    ],
+    preprocessing:[
+      "Mean = Σxᵢ/n; IQR = Q₃ − Q₁; KNN fills from nearby rows; MICE models each missing column",
+      "IQR = Q₃ − Q₁; z = (x − mean)/standard deviation; anomaly score = −isolation depth",
+      "Min–Max: (x − min)/(max − min); Standard: (x − mean)/SD; Robust: (x − median)/IQR",
+      "One-hot: 1[x = category]; target encoding: mean(y | category)",
+      "Chosen features S* = arg maxₛ validation score(Xₛ)",
+      "Selection: Xselected = X[:, S]; extraction: Z = g(X)",
+      "SMOTE: xnew = xi + λ(xneighbor − xi); weighted loss = Σᵢ wᵧᵢℓᵢ",
+      "Fit preprocessing on training rows only: parameters = fit(Xtrain)",
+      "VIFⱼ = 1/(1 − Rⱼ²)",
+      "Bin(x) = j when bj ≤ x < bⱼ₊₁",
+      "Box–Cox: (xλ − 1)/λ; at λ = 0 use log(x). Yeo–Johnson also permits zero/negative x",
+      "y = β₀ + β₁x₁ + β₂x₂ + β₃(x₁x₂)"
+    ],
+    regression:[
+      "ŷ = β₀ + Σⱼ βⱼxⱼ; OLS chooses β to minimize Σᵢ(yi − ŷi)²",
+      "OLS: β* = arg minβ L(β); gradient descent: β ← β − η∇L(β)",
+      "Ridge: loss + λΣβⱼ²; Lasso: loss + λΣ|βⱼ|; Elastic Net: both penalties",
+      "ŷ = β₀ + β₁x + β₂x² + … + βₘxᵐ",
+      "P(y=1|x) = σ(z) = 1/(1 + e⁻ᶻ); z = β₀ + βᵀx",
+      "Residual eᵢ = yi − ŷi; constant spread means Var(e|x) = σ²",
+      "MSE = mean(e²); RMSE = √MSE; MAE = mean(|e|); R² = 1 − SSE/SST"
+    ],
+    classification:[
+      "P(class|words) ∝ P(class) × Πⱼ P(wordⱼ|class)",
+      "ŷ = majority label among the k closest points",
+      "Margin = minᵢ yi(wᵀxi + b); choose a wide margin while penalizing violations",
+      "Gini = 1 − Σₖpₖ²; information gain = parent impurity − weighted child impurity",
+      "Pruned tree = arg minT [training error(T) + α × number of leaves(T)]",
+      "OvR: K binary classifiers; OvO: K(K−1)/2 pairwise classifiers",
+      "Calibrated probability ≈ observed positive fraction among cases scored near p"
+    ],
+    ensembles:[
+      "Bagged prediction = (1/B)Σᵦ fᵦ(x)",
+      "Random forest: ŷ = (1/B)Σᵦ Tb(x), with each tree trained on a bootstrap sample and random feature subset",
+      "Boosting: Fₘ(x) = Fₘ₋₁(x) + ηhₘ(x)",
+      "Boosted trees: prediction = Σₘ ηₘ × treeₘ(x)",
+      "Stacking: ŷ = g(f₁(x), f₂(x), …, fB(x))",
+      "Hard vote = mode of labels; soft vote = arg maxₖ (1/B)Σᵦ Pᵦ(k|x)"
+    ],
+    unsupervised:[
+      "K-Means: minimize Σᵢ ||xᵢ − μcluster(i)||²",
+      "Merge the closest clusters repeatedly; linkage defines cluster-to-cluster distance",
+      "Core point: at least MinPts neighbors within ε; density-connected points form a cluster",
+      "p(x) = Σₖ πₖN(x|μₖ,Σₖ); EM alternates membership estimates and parameter updates",
+      "Z = XW; choose W to retain the directions with greatest variance",
+      "Low-dimensional coordinates = nonlinear map that preserves chosen neighborhood relations",
+      "LDA direction w maximizes between-class spread / within-class spread",
+      "Anomaly = point with unusually low density or unusually large distance from normal data",
+      "Support = P(A∩B); confidence = P(B|A); lift = P(B|A)/P(B)"
+    ],
+    metrics:[
+      "Actual + predicted + → TP; actual − predicted + → FP; actual + predicted − → FN",
+      "Precision = TP/(TP+FP); recall = TP/(TP+FN); F1 = 2PR/(P+R)",
+      "TPR = TP/(TP+FN); FPR = FP/(FP+TN); AUC = area under ROC",
+      "Precision = TP/(TP+FP); Recall = TP/(TP+FN)",
+      "Cross-entropy = −Σᵢ Σₖ yᵢₖ log(pᵢₖ)",
+      "MCC = (TP·TN − FP·FN)/√((TP+FP)(TP+FN)(TN+FP)(TN+FN))",
+      "AP = Σₖ (Recallₖ − Recallₖ₋₁)Precisionₖ; DCG = Σᵢ relᵢ/log₂(i+1)",
+      "Expected value of a model = benefit of correct decisions − cost of errors"
+    ],
+    optimization:[
+      "θ ← θ − η∇L(θ); batch uses all rows, SGD one, mini-batch a small group",
+      "Momentum: vt = βvt−1 + gt; θt+1 = θt − ηvt. Adam also tracks squared gradients",
+      "θₜ₊₁ = θₜ − ηₜ∇L(θₜ)",
+      "MSE = mean((y−ŷ)²); cross-entropy = −log p(correct); hinge = max(0,1−yz); Huber is quadratic then linear",
+      "L1/L2 objective = data loss + λ₁||w||₁ + λ₂||w||₂²; dropout masks units; early stopping halts on validation",
+      "Choose θ* = arg minθ validation loss(θ); grid, random, and Bayesian search choose candidates differently",
+      "Convex: L(aθ₁+(1−a)θ₂) ≤ aL(θ₁)+(1−a)L(θ₂)",
+      "MLE: arg maxθ P(data|θ); MAP: arg maxθ P(data|θ)P(θ)"
+    ],
+    "deep-learning":[
+      "a = φ(wᵀx + b); an MLP repeats this step across layers",
+      "∂L/∂w = (∂L/∂a)(∂a/∂w) (chain rule)",
+      "ReLU=max(0,x); sigmoid=1/(1+e⁻ˣ); softmaxᵢ=eˣⁱ/Σⱼeˣʲ",
+      "Backpropagated gradient = product of layer derivatives; repeated tiny/large factors vanish/explode",
+      "Xavier variance ≈ 2/(fan-in+fan-out); He variance ≈ 2/fan-in",
+      "Normalize a feature: (x−mean)/√(variance+ε); the examples used for mean/variance differ",
+      "Dropout training: h′ = m⊙h/(1−p), with each mask entry kept with probability 1−p",
+      "Output width = floor((input + 2×padding − filter)/stride) + 1",
+      "Residual block: output = F(x) + x",
+      "RNN: ht = f(Wx xt + Wh ht−1 + b); LSTM/GRU add gates to control memory",
+      "Fine-tuning: θnew = θpretrained + learned update",
+      "Autoencoder: z = encoder(x), x̂ = decoder(z); VAE also minimizes KL(q(z|x)||p(z))",
+      "GAN: minG maxD E[log D(x)] + E[log(1−D(G(z)))]"
+    ],
+    nlp:[
+      "Text = concat(token₁, token₂, …, tokenₘ); subword tokenization balances vocabulary size and sequence length",
+      "TF(t,d) = count(t,d); IDF(t) = log(N/df(t)); TF-IDF = TF × IDF",
+      "Word vector wi is learned from neighboring word/context prediction",
+      "Attention(Q,K,V) = softmax(QKᵀ/√dk)V",
+      "Transformer input = token embeddings + position information",
+      "BERT uses P(token | left and right context); GPT uses P(next token | previous tokens)",
+      "Perplexity = exp(−mean log probability); BLEU/ROUGE compare generated and reference text"
+    ],
+    genai:[
+      "Next-token model: P(y|x) = Πₜ P(yt|x,y<t)",
+      "P(answer | question, retrieved passages) = language model conditioned on question + passages",
+      "Similarity(q,d) = q·d/(||q||||d||) (cosine similarity)",
+      "Chunk i = tokens[sᵢ:sᵢ+L]; sᵢ₊₁ = sᵢ + L − O (L = length, O = overlap)",
+      "Prompting: no weight update; RAG: add retrieved context; fine-tuning: update weights",
+      "Low-rank update: W′ = W + BA, where rank(BA) is kept small",
+      "DPO loss = −log σ(β × [preferred-vs-rejected policy log-odds − reference log-odds])",
+      "Hallucination rate = unsupported factual claims / factual claims checked",
+      "Temperature: pᵢ ∝ exp(logitᵢ/T); top-k/top-p keep only selected candidates",
+      "Context = prompt + generated tokens ≤ context limit; cache stores past keys and values",
+      "Agent loop: observe → choose tool/action → receive result → decide again",
+      "Task quality = successful rubric checks / checks performed on a representative test set",
+      "Quantize: wq = Δ round(w/Δ); distill: minimize KL(teacher probabilities || student probabilities)"
+    ],
+    statistics:[
+      "P(A|B) = P(B|A)P(A)/P(B)",
+      "SE(mean) = σ/√n; sample means approach a normal shape under CLT conditions",
+      "p-value = P(result at least this extreme | null hypothesis is true)",
+      "Estimate ± critical value × standard error",
+      "Effect = mean(treatment) − mean(control), with random assignment",
+      "Normal: f(x)=exp(−(x−μ)²/(2σ²))/(σ√(2π)); Binomial: P(X=k)=C(n,k)pᵏ(1−p)ⁿ⁻ᵏ",
+      "Cov(X,Y) = E[(X−μx)(Y−μy)]; Corr(X,Y) = Cov(X,Y)/(σxσy)",
+      "Entropy H(P)=−Σp log p; KL(P||Q)=Σp log(p/q); MI=H(X)−H(X|Y)"
+    ],
+    math:[
+      "Av = λv (v ≠ 0)",
+      "A = UΣVᵀ",
+      "Gradient = first partial derivatives; Hessian = matrix of second partial derivatives",
+      "L1 = Σ|wᵢ|; L2 = √(Σwᵢ²)"
+    ],
+    "time-series":[
+      "ADF: Δyt = α + βt + γyt−1 + ΣᵢδᵢΔyt−i + εt",
+      "ARIMA(p,d,q): differenced y depends on past values and past errors; SARIMA adds seasonal terms",
+      "Observed series = trend + seasonality + remainder (additive form)",
+      "Collaborative: similar users/items; content-based: similar item features",
+      "R ≈ U Vᵀ (low-rank user × item preference factors)",
+      "Cold start: no interaction history ⇒ little evidence for a personalized estimate"
+    ],
+    mlops:[
+      "Client request → API validation → model(x) → response; container packages app + dependencies",
+      "Data drift: Pnew(x) ≠ Ptrain(x); concept drift: Pnew(y|x) ≠ Ptrain(y|x)",
+      "Monitor quality, latency, errors, input data, and changes over time",
+      "Feature store: same defined feature(x, time) for training and serving",
+      "CI/CD: test → build → version → deploy → monitor; MLflow/DVC track model/data artifacts",
+      "Batch: many predictions on a schedule; real-time: request → prediction with latency target",
+      "SHAP: allocate prediction difference across features; LIME: fit a local simple model",
+      "Fairness check: compare error rates and benefits across relevant groups"
+    ]
+  };
+  var chapterEquationNotes={
+    fundamentals:"x means the observed clues, y the known answer, and θ the model's adjustable settings.",
+    preprocessing:"x is the raw measurement; the equation describes a careful way to fill, transform, or select it.",
+    regression:"x means the input measurements, y the real value, and ŷ the model's estimate.",
+    classification:"P means probability; TP, FP, FN, and TN count different correct and incorrect decisions.",
+    ensembles:"f is a model's prediction; the sum or vote combines several models.",
+    unsupervised:"x is a data point, μ a group centre, and p a probability; the equation describes how patterns are grouped or scored.",
+    metrics:"The letters count correct and incorrect predictions, or measure ranking quality; denominators show which cases are being checked.",
+    optimization:"θ means adjustable model settings, L means error, and η controls the size of each update.",
+    "deep-learning":"x is an input, W/w are learned weights, b is an offset, and φ/f is a calculation repeated through the network.",
+    nlp:"Tokens are small text pieces; P is a probability, and Q, K, V are attention's query, key, and value arrays.",
+    genai:"x is the prompt, y is generated text, and P is the model's probability; each tool has its own assumptions.",
+    statistics:"P is probability, n is sample size, and μ/σ describe an average and spread in a population.",
+    math:"A is a matrix of numbers, v is a vector, and λ is a number describing how a transformation acts.",
+    "time-series":"yₜ is the measured value at time t; a lag means a value from an earlier time.",
+    mlops:"The expressions describe how data, predictions, and checks move through a deployed system."
+  };
+  var chapters=Array.prototype.slice.call(document.querySelectorAll(".chapter"));
+  chapters.forEach(function(chapter){
+    var formulas=equations[chapter.id];
+    if(!formulas){return;}
+    var chapterTopics=Array.prototype.slice.call(chapter.querySelectorAll(".topic"));
+    if(formulas.length!==chapterTopics.length){
+      console.error("Concept equation count mismatch in chapter "+chapter.id+": expected "+chapterTopics.length+", found "+formulas.length);
+    }
+    chapterTopics.forEach(function(topic,index){
+      var title=topic.querySelector("h3").textContent.trim();
+      var definition=topic.querySelector(".definition");
+      var example=topic.querySelector(".example");
+      var tradeoff=topic.querySelector(".tradeoff");
+      if(!definition||!example||!tradeoff||!formulas[index]){
+        console.error("Concept walkthrough is incomplete for "+chapter.id+": "+title);
+        return;
+      }
+      var definitionText=definition.textContent.replace(/^Definition\.\s*/,"").trim();
+      var exampleText=example.textContent.replace(/^(India-context example|Example)\.\s*/,"").trim();
+      var tradeoffText=tradeoff.textContent.replace(/^(Trade-off|Check|Lesson|Why the name)\.\s*/,"").trim();
+      var truncate=function(text,max){return text.length>max?text.slice(0,max-1).trim()+"…":text;};
+      var lab=document.createElement("details");
+      lab.className="concept-lab";
+      var summary=document.createElement("summary");
+      summary.textContent="Explore this concept: picture, equation & story";
+      lab.appendChild(summary);
+      var content=document.createElement("div");
+      content.className="concept-lab-content";
+
+      var diagram=document.createElement("section");
+      diagram.className="concept-block";
+      var diagramHeading=document.createElement("h4");
+      diagramHeading.textContent="A simple picture";
+      diagram.appendChild(diagramHeading);
+      var diagramFlow=document.createElement("div");
+      diagramFlow.className="concept-diagram";
+      diagramFlow.setAttribute("role","img");
+      diagramFlow.setAttribute("aria-label","A three-step diagram showing a real-world problem, "+title+", and a useful result.");
+      [
+        ["1. Local question",truncate(exampleText,220)],
+        ["2. The ML idea",title+": "+truncate(definitionText,250)],
+        ["3. What it helps with","The team uses the evidence to make, check, or improve the decision described in the example."]
+      ].forEach(function(step){
+        var box=document.createElement("div");
+        box.className="diagram-step";
+        var label=document.createElement("strong");
+        label.textContent=step[0];
+        var detail=document.createElement("span");
+        detail.textContent=step[1];
+        box.appendChild(label);
+        box.appendChild(detail);
+        diagramFlow.appendChild(box);
+      });
+      diagram.appendChild(diagramFlow);
+      content.appendChild(diagram);
+
+      var equation=document.createElement("section");
+      equation.className="concept-block";
+      var equationHeading=document.createElement("h4");
+      equationHeading.textContent="A representative equation, in simple words";
+      var equationText=document.createElement("code");
+      equationText.className="concept-equation";
+      equationText.textContent=formulas[index];
+      var equationNote=document.createElement("p");
+      equationNote.textContent=definitionText+" "+(chapterEquationNotes[chapter.id]||"")+" Read the equation as a compact version of this idea; each symbol stands for a quantity or operation in the definition.";
+      equation.appendChild(equationHeading);
+      equation.appendChild(equationText);
+      equation.appendChild(equationNote);
+      content.appendChild(equation);
+
+      var story=document.createElement("section");
+      story.className="concept-block concept-story";
+      story.setAttribute("aria-label","Indian use-case story with recurring characters");
+      var storyHeading=document.createElement("h4");
+      storyHeading.textContent="The story: Riya, Asha, Dev & Kabir";
+      var storyStart=document.createElement("p");
+      storyStart.textContent="Riya is learning machine learning. Asha understands the local setting, Dev asks careful questions, and Kabir is one of the people affected by the result. Their challenge is this: "+exampleText;
+      var storyMiddle=document.createElement("p");
+      storyMiddle.textContent="Riya introduces "+title+". In everyday language, "+definitionText+" This helps the group turn the situation into a clearer estimate, comparison, or explanation instead of relying only on a guess. Asha checks that the data and assumptions fit what people actually experience. Dev asks what evidence would show that the method is wrong. Kabir explains what a useful and understandable result would mean for someone on the receiving end.";
+      var storyEnd=document.createElement("p");
+      storyEnd.textContent="Before using the result, the four review an important caution: "+tradeoffText+" Asha checks local context, Dev checks the evidence and possible failure cases, and Riya compares the result with suitable held-out data or feedback. Kabir gets a chance to question an unfair or confusing outcome. The concept helps this team because it gives them a structured way to address the original problem while reminding them to check where the method may fail.";
+      story.appendChild(storyHeading);
+      story.appendChild(storyStart);
+      story.appendChild(storyMiddle);
+      story.appendChild(storyEnd);
+      content.appendChild(story);
+      lab.appendChild(content);
+      topic.appendChild(lab);
+    });
+  });
   function filterTopics(){
     var query=input.value.trim().toLocaleLowerCase();
     var shown=0;
@@ -510,11 +780,62 @@ footer{max-width:1380px;margin:auto;padding:1rem 1.3rem 2.5rem;color:var(--muted
   var colors={blue:"#2864d7",teal:"#07827c",gold:"#db9518",rose:"#b84363",purple:"#7251bd",muted:"#65758b"};
   var common={responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:"index"},plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8}},tooltip:{enabled:true}},scales:{x:{title:{display:true,text:"Model flexibility"}},y:{beginAtZero:true,title:{display:true,text:"Illustrative error"}}}};
   var biasCanvas=document.getElementById("biasChart");
-  if(biasCanvas){new Chart(biasCanvas,{type:"line",data:{labels:["Very simple","Simple","Balanced","Flexible","Very flexible"],datasets:[{label:"Training error",data:[6.7,4.9,3.2,1.7,.8],borderColor:colors.blue,backgroundColor:colors.blue,tension:.32},{label:"Test error",data:[6.9,5.1,3.8,4.4,6.3],borderColor:colors.rose,backgroundColor:colors.rose,tension:.32}]},options:common});}
+  var complexityLabels=["Very simple","Simple","Balanced","Flexible","Very flexible"];
+  var biasChart=null;
+  if(biasCanvas){biasChart=new Chart(biasCanvas,{type:"line",data:{labels:complexityLabels,datasets:[{label:"Training error",data:[6.7,4.9,3.2,1.7,.8],borderColor:colors.blue,backgroundColor:colors.blue,tension:.32},{label:"Test error",data:[6.9,5.1,3.8,4.4,6.3],borderColor:colors.rose,backgroundColor:colors.rose,tension:.32}]},options:common});}
+  var complexityControl=document.getElementById("complexity-control");
+  if(complexityControl){
+    complexityControl.addEventListener("input",function(){
+      var selected=Number(complexityControl.value);
+      document.getElementById("complexity-value").textContent=complexityLabels[selected];
+      if(biasChart){
+        biasChart.data.datasets.forEach(function(dataset){dataset.pointRadius=complexityLabels.map(function(_,index){return index===selected?7:2;});});
+        biasChart.update();
+      }
+    });
+    complexityControl.dispatchEvent(new Event("input"));
+  }
   var thresholdCanvas=document.getElementById("thresholdChart");
-  if(thresholdCanvas){new Chart(thresholdCanvas,{type:"line",data:{labels:["Very high","High","Medium","Low","Very low"],datasets:[{label:"Frauds caught (recall)",data:[18,38,65,84,96],borderColor:colors.teal,backgroundColor:colors.teal,tension:.3},{label:"Legitimate payments flagged",data:[1,5,14,31,62],borderColor:colors.gold,backgroundColor:colors.gold,tension:.3}]},options:{...common,scales:{x:{title:{display:true,text:"Alert threshold (decreasing →)"}},y:{min:0,max:100,title:{display:true,text:"Illustrative percentage"}}}}});}
+  var thresholdLabels=["Very high","High","Medium","Low","Very low"];
+  var thresholdChart=null;
+  if(thresholdCanvas){thresholdChart=new Chart(thresholdCanvas,{type:"line",data:{labels:thresholdLabels,datasets:[{label:"Frauds caught (recall)",data:[18,38,65,84,96],borderColor:colors.teal,backgroundColor:colors.teal,tension:.3},{label:"Legitimate payments flagged",data:[1,5,14,31,62],borderColor:colors.gold,backgroundColor:colors.gold,tension:.3}]},options:{...common,scales:{x:{title:{display:true,text:"Alert threshold (decreasing →)"}},y:{min:0,max:100,title:{display:true,text:"Illustrative percentage"}}}}});}
+  var thresholdControl=document.getElementById("threshold-control");
+  if(thresholdControl){
+    thresholdControl.addEventListener("input",function(){
+      var selected=Number(thresholdControl.value);
+      document.getElementById("threshold-value").textContent=thresholdLabels[selected];
+      if(thresholdChart){
+        thresholdChart.data.datasets.forEach(function(dataset){dataset.pointRadius=thresholdLabels.map(function(_,index){return index===selected?7:2;});});
+        thresholdChart.update();
+      }
+    });
+    thresholdControl.dispatchEvent(new Event("input"));
+  }
   var splitCanvas=document.getElementById("splitChart");
-  if(splitCanvas){new Chart(splitCanvas,{type:"doughnut",data:{labels:["Training","Validation","Test"],datasets:[{data:[70,15,15],backgroundColor:[colors.blue,colors.teal,colors.gold],borderColor:"#ffffff",borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:function(context){return context.label+": "+context.raw+"% (illustrative)";}}}}}});}
+  var splitChart=null;
+  if(splitCanvas){splitChart=new Chart(splitCanvas,{type:"doughnut",data:{labels:["Training","Validation","Test"],datasets:[{data:[70,15,15],backgroundColor:[colors.blue,colors.teal,colors.gold],borderColor:"#ffffff",borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:function(context){return context.label+": "+context.raw+"% (illustrative)";}}}}}});}
+  var trainSplitControl=document.getElementById("train-split-control");
+  var validationSplitControl=document.getElementById("validation-split-control");
+  if(trainSplitControl&&validationSplitControl){
+    function updateSplit(){
+      var training=Number(trainSplitControl.value);
+      var maxValidation=Math.min(30,95-training);
+      validationSplitControl.max=String(maxValidation);
+      if(Number(validationSplitControl.value)>maxValidation){validationSplitControl.value=String(maxValidation);}
+      var validation=Number(validationSplitControl.value);
+      var test=100-training-validation;
+      document.getElementById("train-split-value").textContent=training+"%";
+      document.getElementById("validation-split-value").textContent=validation+"%";
+      document.getElementById("test-split-value").textContent=test+"%";
+      if(splitChart){
+        splitChart.data.datasets[0].data=[training,validation,test];
+        splitChart.update();
+      }
+    }
+    trainSplitControl.addEventListener("input",updateSplit);
+    validationSplitControl.addEventListener("input",updateSplit);
+    updateSplit();
+  }
 })();
 </script>
 </body>
